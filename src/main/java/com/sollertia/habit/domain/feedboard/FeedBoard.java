@@ -11,12 +11,12 @@ import javax.persistence.ManyToOne;
 public class FeedBoard {
     @Id
     @GeneratedValue
-    Long id;
+    private Long id;
 
-    String title;
+    private String title;
 
-    String content;
+    private String content;
 
     @ManyToOne
-    User user;
+    private User user;
 }

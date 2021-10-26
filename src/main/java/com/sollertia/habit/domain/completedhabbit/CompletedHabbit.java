@@ -11,26 +11,26 @@ public class CompletedHabbit {
 
     @Id
     @GeneratedValue
-    Long id;
+    private Long id;
 
-    int accomplishedSessionCounter;
+    private int accomplishedSessionCounter;
 
     @ManyToOne
-    User user;
+    private User user;
 
-    long goalPercentage;
-
-    @Enumerated(EnumType.STRING)
-    Category category;
+    private long goalPercentage;
 
     @Enumerated(EnumType.STRING)
-    HabbitType habbitType;
+    private Category category;
+
+    @Enumerated(EnumType.STRING)
+    private HabbitType habbitType;
 
     @Column(nullable = true)
-    Long GoalTime;
+    private Long GoalTime;
 
     @Column(nullable = true)
-    Long goalCount;
+    private Long goalCount;
 
-    Long experiencePoint;
+    private Long experiencePoint;
 }
