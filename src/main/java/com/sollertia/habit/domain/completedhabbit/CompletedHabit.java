@@ -1,13 +1,13 @@
 package com.sollertia.habit.domain.completedhabbit;
 
-import com.sollertia.habit.domain.habbit.enums.Category;
-import com.sollertia.habit.domain.habbit.enums.HabbitType;
+import com.sollertia.habit.domain.habit.enums.Category;
+import com.sollertia.habit.domain.habit.enums.HabitType;
 import com.sollertia.habit.domain.user.User;
 
 import javax.persistence.*;
 
 @Entity
-public class CompletedHabbit {
+public class CompletedHabit {
 
     @Id
     @GeneratedValue
@@ -24,7 +24,7 @@ public class CompletedHabbit {
     private Category category;
 
     @Enumerated(EnumType.STRING)
-    private HabbitType habbitType;
+    private HabitType habitType;
 
     @Column(nullable = true)
     private Long GoalTime;

@@ -1,7 +1,7 @@
-package com.sollertia.habit.domain.habbit;
+package com.sollertia.habit.domain.habit;
 
-import com.sollertia.habit.domain.habbit.enums.Category;
-import com.sollertia.habit.domain.habbit.enums.Day;
+import com.sollertia.habit.domain.habit.enums.Category;
+import com.sollertia.habit.domain.habit.enums.Day;
 import com.sollertia.habit.domain.team.Team;
 import com.sollertia.habit.domain.user.User;
 
@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "DTYPE")
-public abstract class Habbit {
+public abstract class Habit {
 
     @Id
     @GeneratedValue

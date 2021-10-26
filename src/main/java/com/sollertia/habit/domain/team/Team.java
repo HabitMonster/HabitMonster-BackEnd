@@ -1,6 +1,6 @@
 package com.sollertia.habit.domain.team;
 
-import com.sollertia.habit.domain.habbit.Habbit;
+import com.sollertia.habit.domain.habit.Habit;
 import com.sollertia.habit.domain.userteam.UserTeam;
 
 import javax.persistence.Entity;
@@ -19,7 +19,7 @@ public class Team {
     private String name;
 
     @OneToMany(mappedBy = "team")
-    private List<Habbit> habits;
+    private List<Habit> habits;
 
     @OneToMany(mappedBy = "team")
     private List<UserTeam> userTeam;

@@ -1,11 +1,11 @@
-package com.sollertia.habit.domain.habbit;
+package com.sollertia.habit.domain.habit;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
 @Entity
 @DiscriminatorValue("C")
-public class HabbitWithCounter extends Habbit {
+public class HabitWithCounter extends Habit {
 
     //현재 달성
     private Long count = 0l;
