@@ -2,7 +2,7 @@ package com.sollertia.habit.domain.user;
 
 import com.sollertia.habit.domain.avatar.Avatar;
 import com.sollertia.habit.domain.exp.Exp;
-import com.sollertia.habit.domain.habbit.Habbit;
+import com.sollertia.habit.domain.habit.Habit;
 import com.sollertia.habit.domain.userteam.UserTeam;
 
 import javax.persistence.*;
@@ -21,7 +21,7 @@ public class User {
     private ProviderType providerType;
 
     @OneToMany(mappedBy = "user")
-    private List<Habbit> habits;
+    private List<Habit> habits;
 
     @OneToMany(mappedBy = "user")
     private List<UserTeam> userTeam;

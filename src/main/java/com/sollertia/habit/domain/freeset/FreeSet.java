@@ -1,8 +1,8 @@
 package com.sollertia.habit.domain.freeset;
 
-import com.sollertia.habit.domain.habbit.enums.Category;
-import com.sollertia.habit.domain.habbit.enums.Day;
-import com.sollertia.habit.domain.habbit.enums.SessionDuration;
+import com.sollertia.habit.domain.habit.enums.Category;
+import com.sollertia.habit.domain.habit.enums.Day;
+import com.sollertia.habit.domain.habit.enums.SessionDuration;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

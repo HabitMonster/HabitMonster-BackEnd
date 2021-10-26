@@ -1,11 +1,11 @@
-package com.sollertia.habit.domain.habbit;
+package com.sollertia.habit.domain.habit;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
 @Entity
 @DiscriminatorValue("T")
-public class HabbitWithTimer extends Habbit {
+public class HabitWithTimer extends Habit {
 
     // == case : 1 ==
     //타이머 시작 호출마다 갱신
