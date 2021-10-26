@@ -40,7 +40,6 @@ public abstract class Habit {
     @Enumerated(EnumType.STRING)
     private Category category;
 
-    @Enumerated(EnumType.STRING)
     private Long sessionDuration;
 
     @Enumerated(EnumType.STRING)

@@ -24,7 +24,6 @@ public class History {
 
     private Category category;
 
-
     @OneToOne
     private User user;
 

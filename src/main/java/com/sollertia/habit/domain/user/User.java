@@ -25,15 +25,15 @@ public class User {
 
     private Level level;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Habit> habits;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<UserTeam> userTeam;
 
-    @OneToMany
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<AvatarCollection> avatarCollections;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Avatar avatar;
 }
