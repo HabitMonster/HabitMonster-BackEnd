@@ -25,8 +25,6 @@ public abstract class Habit {
 
     private Boolean isAccomplishInSession;
 
-    private Long expereincePoint;
-
     private LocalDateTime createdAt;
 
     private LocalDateTime endUpDateTime;
