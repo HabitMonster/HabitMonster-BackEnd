@@ -10,6 +10,8 @@ public class Avatar {
 
     private String type;
 
+    //user n:m
+
     @Enumerated(EnumType.STRING)
     private EvolutionGrade grade;
 

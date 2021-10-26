@@ -1,8 +1,11 @@
 package com.sollertia.habit.domain.habit;
 
+import lombok.Getter;
+
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
+@Getter
 @Entity
 @DiscriminatorValue("C")
 public class HabitWithCounter extends Habit {
