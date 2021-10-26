@@ -2,7 +2,7 @@ package com.sollertia.habit.domain.user;
 
 import com.sollertia.habit.domain.avatar.Avatar;
 import com.sollertia.habit.domain.avatar.AvatarCollection;
-import com.sollertia.habit.domain.habbit.Habbit;
+import com.sollertia.habit.domain.habit.Habit;
 import com.sollertia.habit.domain.userteam.UserTeam;
 
 import javax.persistence.*;
@@ -20,16 +20,16 @@ public class User {
 
     private ProviderType providerType;
 
-    long expPoints;
+    private Long expPoint;
 
     @OneToMany(mappedBy = "user")
-    private List<Habbit> habits;
+    private List<Habit> habits;
 
     @OneToMany(mappedBy = "user")
     private List<UserTeam> userTeam;
 
-    @OneToMany(mappedBy = "user")
-    private List<AvatarCollection> collectedAvatars;
+    @OneToMany
+    private List<AvatarCollection> avatarCollections;
 
     @ManyToOne
     private Avatar avatar;
