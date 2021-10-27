@@ -42,11 +42,11 @@ public class JwtTokenProvider {
     protected static final String REFRESH_TOKEN = "refreshToken";
 
     // Refresh, Access 토큰 구분
-    public String getRefreshToken(User user){
+    public String responseRefreshToken(User user){
         return createToken(user.getUserId(), user.getType(), REFRESH_TOKEN_USETIME);
     }
 
-    public String getAccessToken(User user){
+    public String responseAccessToken(User user){
         return createToken(user.getUserId(), user.getType(), ACCESS_TOKEN_USETIME);
     }
 
@@ -63,20 +63,26 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    // token을 사용하여 UserDetails 생성
+    // token을 사용하여 UserDetails 생성 및 등록 준비
     public Authentication getAuthentication(String token) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserInfo(token));
+        UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserId(token));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
-    // 토큰에서 회원 정보 추출
-    private String getUserInfo(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject(); // 토큰에서 userId 추출
+
+    // 토큰에서 userId 추출
+    public String getUserId(String token) {
+        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
-    // Header 에서 토큰 값 가져오기
-    public String resolveToken(HttpServletRequest request) {
-        return request.getHeader("H-AUTH-TOKEN");
+    // Header 에서 access토큰 값 가져오기
+    public String requestAccessToken(HttpServletRequest request) {
+        return request.getHeader("A-AUTH-TOKEN");
+    }
+
+    // Header 에서 refresh토큰 값 가져오기
+    public String requestRefreshToken(HttpServletRequest request) {
+        return request.getHeader("R-AUTH-TOKEN");
     }
 
     // 토큰의 유효성 + 만료일자 확인

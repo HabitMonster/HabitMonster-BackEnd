@@ -2,37 +2,27 @@ package com.sollertia.habit.config;
 
 import com.sollertia.habit.config.jwt.JwtAuthenticationFilter;
 import com.sollertia.habit.config.jwt.JwtTokenProvider;
-import lombok.AllArgsConstructor;
+import com.sollertia.habit.domain.user.UserRepository;
+import com.sollertia.habit.utils.RedisUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-@AllArgsConstructor
+@RequiredArgsConstructor
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtTokenProvider jwtTokenProvider;
-
-    @Bean
-    public HttpHeaders headers(){
-        return new HttpHeaders();
-    }
-
-
-    @Bean
-    public BCryptPasswordEncoder encodePassword() {
-        return new BCryptPasswordEncoder();
-    }
-
+    private final RedisUtil redisUtil;
+    private final UserRepository userRepository;
 
     @Bean
     @Override
@@ -50,10 +40,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .anyRequest().permitAll()
                 .and()
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider,redisUtil,userRepository),
                         UsernamePasswordAuthenticationFilter.class);
     }
-
 
     @Override
     public void configure(WebSecurity web) {

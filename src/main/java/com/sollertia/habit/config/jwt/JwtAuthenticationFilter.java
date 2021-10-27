@@ -1,34 +1,72 @@
 package com.sollertia.habit.config.jwt;
 
+import com.sollertia.habit.domain.user.User;
+import com.sollertia.habit.domain.user.UserRepository;
+import com.sollertia.habit.utils.RedisUtil;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.filter.GenericFilterBean;
-
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.filter.OncePerRequestFilter;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@RequiredArgsConstructor
-public class JwtAuthenticationFilter extends GenericFilterBean {
+@AllArgsConstructor
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    private final  RedisUtil redisUtil;
 
-        // 헤더에서 JWT 받아옴
-        String token = jwtTokenProvider.resolveToken((HttpServletRequest) request);
-        // 유효한 토큰인지 확인
-        if (token != null && jwtTokenProvider.validateToken(token)) {
-            // 토큰이 유효하면 토큰으로부터 유저 정보를 받아옴
-            Authentication authentication = jwtTokenProvider.getAuthentication(token);
-            // SecurityContext 에 Authentication 객체를 저장
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+    private final  UserRepository userRepository;
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+
+        String jwtToken = jwtTokenProvider.requestAccessToken(request);
+
+        String refreshToken = null;
+        String refreshUserId;
+
+        if (jwtToken != null) {
+            if (jwtTokenProvider.validateToken(jwtToken)) {
+
+                Authentication authentication = jwtTokenProvider.getAuthentication(jwtToken);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            } else {
+
+                refreshToken = jwtTokenProvider.requestRefreshToken(request);
+
+            }
+        } else {
+            refreshToken = jwtTokenProvider.requestRefreshToken(request);
         }
-        chain.doFilter(request, response);  // request로 정보를 받아와서 검증을 한 후 결과를 reponse로 내보냄
+
+        if (refreshToken != null) {
+            if (jwtTokenProvider.validateToken(refreshToken)) {
+
+                refreshUserId = redisUtil.getData(refreshToken);
+
+                if (refreshUserId.equals(jwtTokenProvider.getUserId(refreshToken))) {
+
+                    Authentication authentication = jwtTokenProvider.getAuthentication(refreshToken);
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+
+                    User user = userRepository.findByUserId(refreshUserId)
+                            .orElseThrow(() -> new UsernameNotFoundException("유저를 찾을 수 없습니다."));
+
+                    String newAccessToken = jwtTokenProvider.responseAccessToken(user);
+
+                    response.addHeader("A-AUTH-TOKEN", newAccessToken);
+                }
+            }
+        }
+
+        filterChain.doFilter(request, response);
     }
 }
