@@ -1,4 +1,4 @@
-package com.sollertia.habit.domain.user.oauth2.userinfo;
+package com.sollertia.habit.domain.oauth2.userinfo;
 
 import com.sollertia.habit.domain.user.ProviderType;
 

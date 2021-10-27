@@ -1,13 +1,13 @@
-package com.sollertia.habit.domain.user.oauth2;
+package com.sollertia.habit.domain.oauth2;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.sollertia.habit.domain.user.oauth2.dto.GoogleOauthRequestDto;
-import com.sollertia.habit.domain.user.oauth2.dto.GoogleOauthResponseDto;
-import com.sollertia.habit.domain.user.oauth2.userinfo.GoogleOauth2UserInfo;
+import com.sollertia.habit.domain.oauth2.dto.GoogleOauthRequestDto;
+import com.sollertia.habit.domain.oauth2.dto.GoogleOauthResponseDto;
+import com.sollertia.habit.domain.oauth2.userinfo.GoogleOauth2UserInfo;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -17,7 +17,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.util.Map;
 
 @Service
-public class GoogleOauth2Service implements Oauth2Service{
+public class GoogleOauth2Service implements Oauth2Service {
 
     final static String GOOGLE_TOKEN_BASE_URL = "https://oauth2.googleapis.com/token";
     final static String GOOGLE_TOKEN_INFO_URL = "https://oauth2.googleapis.com/tokeninfo";

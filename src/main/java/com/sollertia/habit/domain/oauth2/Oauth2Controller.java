@@ -1,9 +1,9 @@
-package com.sollertia.habit.domain.user.oauth2;
+package com.sollertia.habit.domain.oauth2;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sollertia.habit.domain.user.User;
-import com.sollertia.habit.domain.user.oauth2.userinfo.GoogleOauth2UserInfo;
-import com.sollertia.habit.domain.user.oauth2.userinfo.Oauth2UserInfo;
+import com.sollertia.habit.domain.oauth2.userinfo.GoogleOauth2UserInfo;
+import com.sollertia.habit.domain.oauth2.userinfo.Oauth2UserInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
