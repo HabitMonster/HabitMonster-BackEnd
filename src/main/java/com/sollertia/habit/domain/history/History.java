@@ -1,8 +1,7 @@
 package com.sollertia.habit.domain.history;
 
-import com.sollertia.habit.domain.habit.Habit;
+import com.sollertia.habit.domain.habit.habitCounter.HabitWithCounter;
 import com.sollertia.habit.domain.habit.enums.Category;
-import com.sollertia.habit.domain.habit.enums.HabitType;
 import com.sollertia.habit.domain.user.User;
 
 import javax.persistence.*;
@@ -53,7 +52,7 @@ public class History {
 
     }
 
-    public static History makeHistory(Habit habit) {
+    public static History makeHistory(HabitWithCounter habit) {
         LocalDateTime schedulerNow = LocalDateTime.now().minusDays(1);
         History history = new History();
         history.setHabitTitle(habit.getTitle());
