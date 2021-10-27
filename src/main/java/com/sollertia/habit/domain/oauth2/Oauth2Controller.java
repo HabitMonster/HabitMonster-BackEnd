@@ -17,7 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class Oauth2Controller {
 
     private final GoogleOauth2Service googleOauth2Service;
-    private final Oauth2UserService oAuth2UserService;
+    private final KakaoOauth2Service kakaoOauth2Service;
+    private final Oauth2UserService oauth2UserService;
 
     //Authentication Code를 전달 받는 엔드포인트
     @GetMapping("/user/login/{socialName}")
@@ -28,11 +29,11 @@ public class Oauth2Controller {
         switch (providerType) {
             case GOOGLE: userInfo = googleOauth2Service.getUserInfoByCode(authCode); break;
 //            case NAVER: return new NaverOAuth2UserInfo(attributes);
-//            case KAKAO: return new KakaoOAuth2UserInfo(attributes);
+            case KAKAO: userInfo = kakaoOauth2Service.getUserInfoByCode(authCode); break;
             default: throw new InvalidSocialNameException("올바른 소셜 로그인 서비스 이름이 아닙니다.");
         }
-        boolean isFirstLogin = oAuth2UserService.isFirstLogin(userInfo);
-        User user = oAuth2UserService.loadUser(userInfo, isFirstLogin);
+        boolean isFirstLogin = oauth2UserService.isFirstLogin(userInfo);
+        User user = oauth2UserService.loadUser(userInfo, isFirstLogin);
 
 
         //todo 서버 access token, refresh token 생성 하고 전달
