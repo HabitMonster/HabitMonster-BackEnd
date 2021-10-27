@@ -72,7 +72,7 @@ public class User {
         this.setUsername(username);
     }
 
-    public static User register(Oauth2UserInfo userInfo) {
+    public static User create(Oauth2UserInfo userInfo) {
         User newUser = new User();
         newUser.setUserId(userInfo.getId());
         newUser.setEmail(userInfo.getEmail());
