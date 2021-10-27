@@ -1,4 +1,4 @@
-package com.sollertia.habit.config.auth;
+package com.sollertia.habit.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -15,9 +15,11 @@ public class WebConfig implements WebMvcConfigurer{
                     .allowedMethods(
                             HttpMethod.GET.name(),
                             HttpMethod.POST.name(),
+                            HttpMethod.PATCH.name(),
                             HttpMethod.PUT.name(),
                             HttpMethod.DELETE.name(),
-                            HttpMethod.HEAD.name())
+                            HttpMethod.HEAD.name(),
+                            HttpMethod.OPTIONS.name())
                     .allowCredentials(true);
         }
 }
