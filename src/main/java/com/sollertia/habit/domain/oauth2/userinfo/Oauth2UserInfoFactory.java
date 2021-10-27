@@ -8,7 +8,6 @@ public class Oauth2UserInfoFactory {
     public static Oauth2UserInfo getOAuth2UserInfo(ProviderType providerType, Map<String, Object> attributes) {
         switch (providerType) {
             case GOOGLE: return new GoogleOauth2UserInfo(attributes);
-//            case FACEBOOK: return new FacebookOAuth2UserInfo(attributes);
 //            case NAVER: return new NaverOAuth2UserInfo(attributes);
 //            case KAKAO: return new KakaoOAuth2UserInfo(attributes);
             default: throw new IllegalArgumentException("Invalid Provider Type.");

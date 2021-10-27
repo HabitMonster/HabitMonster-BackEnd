@@ -1,9 +1,10 @@
 package com.sollertia.habit.domain.oauth2;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.sollertia.habit.domain.user.User;
-import com.sollertia.habit.domain.oauth2.userinfo.GoogleOauth2UserInfo;
 import com.sollertia.habit.domain.oauth2.userinfo.Oauth2UserInfo;
+import com.sollertia.habit.domain.user.ProviderType;
+import com.sollertia.habit.domain.user.User;
+import com.sollertia.habit.exception.InvalidSocialNameException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,11 +20,17 @@ public class Oauth2Controller {
     private final Oauth2UserService oAuth2UserService;
 
     //Authentication Code를 전달 받는 엔드포인트
-    @GetMapping("/oauth/{providerType}/token")
-    public ResponseEntity<Oauth2UserInfo> auth(@RequestParam(value = "code") String authCode, @PathVariable String providerType)
+    @GetMapping("/user/login/{socialName}")
+    public ResponseEntity<Oauth2UserInfo> login(@RequestParam(value = "code") String authCode, @PathVariable String socialName)
             throws JsonProcessingException {
-
-        GoogleOauth2UserInfo userInfo = googleOauth2Service.getUserInfoByCode(authCode);
+        ProviderType providerType = ProviderType.valueOf(socialName.toUpperCase());
+        Oauth2UserInfo userInfo;
+        switch (providerType) {
+            case GOOGLE: userInfo = googleOauth2Service.getUserInfoByCode(authCode); break;
+//            case NAVER: return new NaverOAuth2UserInfo(attributes);
+//            case KAKAO: return new KakaoOAuth2UserInfo(attributes);
+            default: throw new InvalidSocialNameException("올바른 소셜 로그인 서비스 이름이 아닙니다.");
+        }
         User user = oAuth2UserService.loadUser(userInfo);
 
 
