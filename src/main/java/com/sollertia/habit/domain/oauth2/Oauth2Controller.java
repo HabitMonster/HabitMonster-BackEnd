@@ -31,7 +31,8 @@ public class Oauth2Controller {
 //            case KAKAO: return new KakaoOAuth2UserInfo(attributes);
             default: throw new InvalidSocialNameException("올바른 소셜 로그인 서비스 이름이 아닙니다.");
         }
-        User user = oAuth2UserService.loadUser(userInfo);
+        boolean isFirstLogin = oAuth2UserService.isFirstLogin(userInfo);
+        User user = oAuth2UserService.loadUser(userInfo, isFirstLogin);
 
 
         //todo 서버 access token, refresh token 생성 하고 전달
