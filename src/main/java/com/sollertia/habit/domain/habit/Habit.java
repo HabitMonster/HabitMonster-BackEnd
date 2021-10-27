@@ -1,5 +1,6 @@
 package com.sollertia.habit.domain.habit;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sollertia.habit.domain.habit.enums.Category;
 import com.sollertia.habit.domain.habit.enums.Day;
 import com.sollertia.habit.domain.team.Team;
@@ -8,6 +9,7 @@ import lombok.Getter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 @Getter
 @Entity
@@ -23,32 +25,40 @@ public abstract class Habit {
 
     private String description;
 
-    private int accomplishSessionCounter = 0;
+    private long accomplishSessionCounter = 0L;
 
     private Boolean isAccomplishInSession;
 
-    private LocalDateTime createdAt;
+    private LocalDateTime durationStart;
 
-    private LocalDateTime endUpDateTime;
+    private LocalDateTime durationEnd;
 
-    @ManyToOne
+    private Long sessionDuration;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "team_id")
+    @JsonIgnore
     private Team team;
 
     @Enumerated(EnumType.STRING)
     private Category category;
 
-    private Long sessionDuration;
 
     @Enumerated(EnumType.STRING)
     private Day day;
 
-    public String getGoalPercentage() {
-        // 달성률
-        // return 달성한 날 수 / 총 기간(21일, 66일)	+ "%";
-        return null;
+    public Long getGoalPercentage() {
+        long between = ChronoUnit.DAYS.between(durationStart, durationEnd);
+        if (this.sessionDuration == 1) {
+            return this.accomplishSessionCounter / between;
+        } else {
+            return this.accomplishSessionCounter / (between / 7);
+        }
     }
 
 }

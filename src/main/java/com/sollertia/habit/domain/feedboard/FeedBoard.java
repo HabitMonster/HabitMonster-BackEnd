@@ -1,11 +1,9 @@
 package com.sollertia.habit.domain.feedboard;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sollertia.habit.domain.user.User;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Entity
 public class FeedBoard {
@@ -17,6 +15,8 @@ public class FeedBoard {
 
     private String content;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User user;
 }

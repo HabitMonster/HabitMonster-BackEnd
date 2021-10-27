@@ -24,14 +24,14 @@ public class History {
 
     private Category category;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     private User user;
 
 
     public void setCategory(Category category) {
         this.category = category;
     }
-
 
     private void setEndUpDateTime(LocalDateTime endUpDateTime) {
         this.endUpDateTime = endUpDateTime;

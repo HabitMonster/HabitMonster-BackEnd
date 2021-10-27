@@ -1,5 +1,6 @@
 package com.sollertia.habit.domain.completedhabbit;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sollertia.habit.domain.habit.enums.Category;
 import com.sollertia.habit.domain.habit.enums.HabitType;
 import com.sollertia.habit.domain.user.User;
@@ -15,7 +16,9 @@ public class CompletedHabit {
 
     private int accomplishedSessionCounter;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="user_id")
+    @JsonIgnore
     private User user;
 
     private long goalPercentage;
