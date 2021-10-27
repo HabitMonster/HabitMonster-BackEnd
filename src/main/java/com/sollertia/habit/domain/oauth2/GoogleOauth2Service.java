@@ -22,9 +22,9 @@ public class GoogleOauth2Service implements Oauth2Service {
     final static String GOOGLE_TOKEN_BASE_URL = "https://oauth2.googleapis.com/token";
     final static String GOOGLE_TOKEN_INFO_URL = "https://oauth2.googleapis.com/tokeninfo";
 
-    @Value("${api.client_id}")
+    @Value("${oauth2.google.client_id}")
     String clientId;
-    @Value("${api.client_secret}")
+    @Value("${oauth2.google.client_secret}")
     String clientSecret;
 
     @Override
@@ -42,7 +42,7 @@ public class GoogleOauth2Service implements Oauth2Service {
                 .clientId(clientId)
                 .clientSecret(clientSecret)
                 .code(authCode)
-                .redirectUri("http://localhost:8080/oauth/google")
+                .redirectUri("http://localhost:8080/user/login/test/google")
                 .grantType("authorization_code")
                 .build();
 
