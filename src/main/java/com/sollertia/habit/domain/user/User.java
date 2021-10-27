@@ -2,13 +2,16 @@ package com.sollertia.habit.domain.user;
 
 import com.sollertia.habit.domain.avatar.Avatar;
 import com.sollertia.habit.domain.avatar.AvatarCollection;
-import com.sollertia.habit.domain.habit.Habit;
+import com.sollertia.habit.domain.habit.habitCounter.HabitWithCounter;
 import com.sollertia.habit.domain.habit.enums.Level;
+import com.sollertia.habit.domain.habit.habitTimer.HabitWithTimer;
 import com.sollertia.habit.domain.userteam.UserTeam;
+import lombok.Getter;
 
 import javax.persistence.*;
 import java.util.List;
 
+@Getter
 @Entity
 public class User {
     @Id
@@ -19,6 +22,7 @@ public class User {
 
     private String password;
 
+    @Enumerated(EnumType.STRING)
     private ProviderType providerType;
 
     private Long expPoint;
@@ -26,7 +30,10 @@ public class User {
     private Level level;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Habit> habits;
+    private List<HabitWithCounter> habitsWithCounter;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<HabitWithTimer> habitsWithTimer;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<UserTeam> userTeam;
