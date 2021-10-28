@@ -1,5 +1,9 @@
 package com.sollertia.habit.domain.oauth2;
 
+import com.sollertia.habit.domain.oauth2.loginutil.GoogleSocialLoginUtil;
+import com.sollertia.habit.domain.oauth2.loginutil.KakaoSocialLoginUtil;
+import com.sollertia.habit.domain.oauth2.loginutil.NaverSocialLoginUtil;
+import com.sollertia.habit.domain.oauth2.loginutil.SocialLoginUtil;
 import com.sollertia.habit.domain.oauth2.userinfo.Oauth2UserInfo;
 import com.sollertia.habit.domain.user.ProviderType;
 import org.springframework.beans.factory.annotation.Autowired;

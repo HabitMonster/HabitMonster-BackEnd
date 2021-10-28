@@ -1,10 +1,9 @@
-package com.sollertia.habit.domain.oauth2;
+package com.sollertia.habit.domain.oauth2.loginutil;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sollertia.habit.domain.oauth2.dto.KakaoOauthResponseDto;
-import com.sollertia.habit.domain.oauth2.userinfo.KakaoOauth2UserInfo;
 import com.sollertia.habit.domain.oauth2.userinfo.Oauth2UserInfo;
 import com.sollertia.habit.domain.oauth2.userinfo.Oauth2UserInfoFactory;
 import com.sollertia.habit.domain.user.ProviderType;

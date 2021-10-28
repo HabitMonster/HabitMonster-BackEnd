@@ -1,4 +1,4 @@
-package com.sollertia.habit.domain.oauth2;
+package com.sollertia.habit.domain.oauth2.loginutil;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
