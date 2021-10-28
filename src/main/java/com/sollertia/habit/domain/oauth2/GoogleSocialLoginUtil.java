@@ -17,7 +17,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.util.Map;
 
 @Service
-public class GoogleOauth2Service implements Oauth2Service {
+public class GoogleSocialLoginUtil implements SocialLoginUtil {
 
     final static String GOOGLE_TOKEN_BASE_URL = "https://oauth2.googleapis.com/token";
     final static String GOOGLE_TOKEN_INFO_URL = "https://oauth2.googleapis.com/tokeninfo";
@@ -28,9 +28,19 @@ public class GoogleOauth2Service implements Oauth2Service {
     String clientSecret;
 
     @Override
-    public GoogleOauth2UserInfo getUserInfoByCode(String authCode) throws JsonProcessingException {
-        String accessToken = getAccessTokenByCode(authCode);
-        return getUserInfoByToken(accessToken);
+    public GoogleOauth2UserInfo getUserInfoByCode(String authCode, String state) {
+        return getUserInfoByCode(authCode);
+    }
+
+    @Override
+    public GoogleOauth2UserInfo getUserInfoByCode(String authCode) {
+        try {
+            String accessToken = getAccessTokenByCode(authCode);
+            return getUserInfoByToken(accessToken);
+        } catch (JsonProcessingException exception) {
+            System.out.println(exception.getMessage());
+            return null;
+        }
     }
 
     private String getAccessTokenByCode(String authCode) throws JsonProcessingException {
