@@ -1,8 +1,8 @@
 package com.sollertia.habit.config;
 
 import com.sollertia.habit.config.jwt.JwtAuthenticationFilter;
+import com.sollertia.habit.config.jwt.JwtExceptionHandlerFilter;
 import com.sollertia.habit.config.jwt.JwtTokenProvider;
-import com.sollertia.habit.domain.user.UserRepository;
 import com.sollertia.habit.utils.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
@@ -22,12 +23,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisUtil redisUtil;
-    private final UserRepository userRepository;
+    private final JwtExceptionHandlerFilter jwtExceptionHandlerFilter;
 
     @Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
+    }
+
+    @Bean // 비밀번호 암호화해서 등록할 때 사용
+    public BCryptPasswordEncoder encodePassword() {
+        return new BCryptPasswordEncoder();
     }
 
     @Override
@@ -40,8 +46,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .anyRequest().permitAll()
                 .and()
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider,redisUtil,userRepository),
-                        UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider,redisUtil),
+                        UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtExceptionHandlerFilter, JwtAuthenticationFilter.class);
     }
 
     @Override

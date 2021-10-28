@@ -6,10 +6,12 @@ import com.sollertia.habit.domain.habit.Habit;
 import com.sollertia.habit.domain.habit.enums.Level;
 import com.sollertia.habit.domain.userteam.UserTeam;
 import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
 
+@Setter // test용
 @Getter
 @Entity
 public class User {

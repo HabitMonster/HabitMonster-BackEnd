@@ -1,14 +1,12 @@
 package com.sollertia.habit.config.jwt;
 
-import com.sollertia.habit.domain.user.User;
-import com.sollertia.habit.domain.user.UserRepository;
 import com.sollertia.habit.utils.RedisUtil;
+import io.jsonwebtoken.*;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.filter.OncePerRequestFilter;
+
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -20,53 +18,78 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    private final  RedisUtil redisUtil;
-
-    private final  UserRepository userRepository;
+    private final RedisUtil redisUtil;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         String jwtToken = jwtTokenProvider.requestAccessToken(request);
-
-        String refreshToken = null;
-        String refreshUserId;
+        String refreshToken = jwtTokenProvider.requestRefreshToken(request);
+        String refreshUserId = null;
 
         if (jwtToken != null) {
-            if (jwtTokenProvider.validateToken(jwtToken)) {
 
-                Authentication authentication = jwtTokenProvider.getAuthentication(jwtToken);
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+            try {
 
-            } else {
+                checkToken(jwtToken);
 
-                refreshToken = jwtTokenProvider.requestRefreshToken(request);
-
+            } catch (ExpiredJwtException ex) {
+                createRequest(request, "accessToken 만료", request.getRequestURI());
+                throw ex;
+            } catch (SignatureException ex) {
+                createRequest(request, "accessToken 인증 오류", request.getRequestURI());
+                throw ex;
+            } catch (MalformedJwtException ex) {
+                createRequest(request, "accessToken 손상", request.getRequestURI());
+                throw ex;
+            } catch (UnsupportedJwtException ex) {
+                createRequest(request, "accessToken 지원불가", request.getRequestURI());
+                throw ex;
             }
-        } else {
-            refreshToken = jwtTokenProvider.requestRefreshToken(request);
-        }
 
-        if (refreshToken != null) {
-            if (jwtTokenProvider.validateToken(refreshToken)) {
+        } else if (refreshToken != null) {
 
-                refreshUserId = redisUtil.getData(refreshToken);
+            try {
 
-                if (refreshUserId.equals(jwtTokenProvider.getUserId(refreshToken))) {
-
-                    Authentication authentication = jwtTokenProvider.getAuthentication(refreshToken);
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-
-                    User user = userRepository.findByUserId(refreshUserId)
-                            .orElseThrow(() -> new UsernameNotFoundException("유저를 찾을 수 없습니다."));
-
-                    String newAccessToken = jwtTokenProvider.responseAccessToken(user);
-
-                    response.addHeader("A-AUTH-TOKEN", newAccessToken);
+                try {
+                    refreshUserId = redisUtil.getData(refreshToken);
+                } catch (Exception ex) {
+                    createRequest(request, "Redis 연결에 문제가 있습니다.", request.getRequestURI());
+                    throw ex;
                 }
+
+                if (!refreshUserId.equals(jwtTokenProvider.getUserId(refreshToken))) {
+                    createRequest(request, "RefreshToken 탈취 가능성이 있습니다. RefreshToken을 새롭게 발급 받으세요.", request.getRequestURI());
+                    throw new JwtException("");
+                }
+
+                checkToken(refreshToken);
+
+            } catch (ExpiredJwtException ex) {
+                createRequest(request, "refreshToken 만료", request.getRequestURI());
+                throw ex;
+            } catch (SignatureException ex) {
+                createRequest(request, "refreshToken 인증 오류", request.getRequestURI());
+                throw ex;
+            } catch (MalformedJwtException ex) {
+                createRequest(request, "refreshToken 손상", request.getRequestURI());
+                throw ex;
+            } catch (UnsupportedJwtException ex) {
+                createRequest(request, "refreshToken 지원불가", request.getRequestURI());
+                throw ex;
             }
         }
-
         filterChain.doFilter(request, response);
+    }
+
+    private void createRequest(HttpServletRequest request, String message, String clientRequestUrl) {
+        request.setAttribute("msg", message);
+        request.setAttribute("clientRequestUrl", clientRequestUrl);
+    }
+
+    private void checkToken(String token) {
+        jwtTokenProvider.validateToken(token);
+        Authentication authentication = jwtTokenProvider.getAuthentication(token);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 }
