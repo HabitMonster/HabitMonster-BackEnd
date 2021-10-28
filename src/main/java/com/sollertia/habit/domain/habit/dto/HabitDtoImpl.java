@@ -20,16 +20,16 @@ public class HabitDtoImpl {
 
     private HabitType habitType = HabitType.HABITWITHCOUNTER;
     private HabitSession habitSession = HabitSession.NPERDAY;
-    private Long goalTime = 0l;
     private User user = null;
     private Team team = null;
     private String title;
     private String description;
     private String durationStart;
     private String durationEnd;
-    private Long count;
     private String category;
+    private Long count;
     private Long sessionDuration;
-    private List<Day> dayList;
+    private List<Day> dayList = null;
+    private Long goalTime = 0l;
 
 }
