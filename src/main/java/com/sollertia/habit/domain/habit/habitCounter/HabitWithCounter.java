@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sollertia.habit.domain.habit.Habit;
 import com.sollertia.habit.domain.habit.dto.HabitDtoImpl;
 import com.sollertia.habit.domain.habit.enums.Category;
+import com.sollertia.habit.domain.habit.enums.HabitSession;
+import com.sollertia.habit.domain.habit.habitTimer.HabitWithTimer;
 import com.sollertia.habit.domain.team.Team;
 import com.sollertia.habit.domain.user.User;
 import lombok.AccessLevel;
@@ -36,9 +38,11 @@ public abstract class HabitWithCounter implements Habit {
 
     private LocalDate durationEnd;
 
-    private Long countPerSession = 0l;
+    private Long current = 0l;
 
     private Long goalCountInSession;
+
+    private Long sessionDuration;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -53,7 +57,7 @@ public abstract class HabitWithCounter implements Habit {
     @Enumerated(EnumType.STRING)
     private Category category;
 
-    public Long getGoalPercentage() {
+    public Long getAchievePercentage() {
         return null;
     }
 
@@ -77,6 +81,11 @@ public abstract class HabitWithCounter implements Habit {
         this.goalCountInSession = goalCountInSession;
     }
 
+    protected void setSessionDuration(Long sessionDuration) {
+        this.sessionDuration = sessionDuration;
+    }
+
+
     protected void setUser(User user) {
         this.user = user;
         user.getHabitsWithCounter().add(this);
@@ -91,16 +100,25 @@ public abstract class HabitWithCounter implements Habit {
         this.category = category;
     }
 
-    public static Habit createHabit(HabitDtoImpl habitDtoImpl) {
-        Habit habit = null;
-        switch (habitDtoImpl.getHabitSession()) {
+
+    public static Habit createHabit(HabitSession habitSession, HabitDtoImpl habitDto) {
+        switch (habitSession) {
             case NPERDAY:
-                habit = HabitWithCounterNPerDay.createHabitWithCounterNPerDay(habitDtoImpl);
-                break;
+                return HabitWithCounterNPerDay.createHabitWithCounterNPerDay(habitDto);
             case SPECIFICDAY:
-                habit = HabitWithCounterSpecificDay.createHabitWithCounterSpecificDay(habitDtoImpl);
-                break;
+                return HabitWithCounterSpecificDay.createHabitWithCounterSpecificDay(habitDto);
         }
-        return habit;
+        return null;
     }
+    /**
+     *
+     *
+     * public Boolean plusCount(Long value) {
+     *     current += value
+     *
+     *     return (current >= goal);
+     * }
+     *
+     */
+
 }

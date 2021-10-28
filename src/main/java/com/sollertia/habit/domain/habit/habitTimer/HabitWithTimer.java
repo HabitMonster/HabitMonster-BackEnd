@@ -5,6 +5,7 @@ import com.sollertia.habit.domain.habit.Habit;
 import com.sollertia.habit.domain.habit.dto.HabitDtoImpl;
 import com.sollertia.habit.domain.habit.enums.Category;
 
+import com.sollertia.habit.domain.habit.enums.HabitSession;
 import com.sollertia.habit.domain.team.Team;
 import com.sollertia.habit.domain.user.User;
 import lombok.Getter;
@@ -35,9 +36,11 @@ public abstract class HabitWithTimer implements Habit {
 
     private LocalDate durationEnd;
 
-    private Long currentDurationTime = 0L;
+    private Long current = 0L;
 
     private Long goalDurationTimePerSession;
+
+    private Long sessionDuration;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -72,6 +75,13 @@ public abstract class HabitWithTimer implements Habit {
         this.goalDurationTimePerSession = goalDurationTimePerSession;
     }
 
+    protected void setSessionDuration(Long sessionDuration) {
+        this.sessionDuration = sessionDuration;
+    }
+
+    @Override
+    public Long getAchievePercentage(){return null;}
+
     protected void setUser(User user) {
         this.user = user;
         user.getHabitsWithTimer().add(this);
@@ -86,16 +96,14 @@ public abstract class HabitWithTimer implements Habit {
         this.category = category;
     }
 
-    public static Habit createHabit(HabitDtoImpl habitDtoImpl) {
-        Habit habit = null;
-        switch (habitDtoImpl.getHabitSession()) {
+    public static Habit createHabit(HabitSession habitSession, HabitDtoImpl habitDto) {
+        switch (habitSession) {
             case NPERDAY:
-                habit = HabitWithTimerNPerDay.createHabitWithTimerNPerDay(habitDtoImpl);
-                break;
+                return HabitWithTimerNPerDay.createHabitWithTimerNPerDay(habitDto);
             case SPECIFICDAY:
-                habit = HabitWithTimerSpecificDay.createHabitWithTimerSpecificDay(habitDtoImpl);
-                break;
+                return HabitWithTimerSpecificDay.createHabitWithTimerSpecificDay(habitDto);
         }
-        return habit;
+        return null;
     }
+
 }

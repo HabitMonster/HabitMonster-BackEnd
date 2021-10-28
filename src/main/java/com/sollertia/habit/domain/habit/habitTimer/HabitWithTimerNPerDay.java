@@ -18,14 +18,10 @@ import java.time.format.DateTimeFormatter;
 @DiscriminatorValue("N")
 public class HabitWithTimerNPerDay extends HabitWithTimer {
 
-    private Long sessionDuration;
+
 
     @Enumerated(EnumType.STRING)
     private Day day;
-
-    private void setSessionDuration(Long sessionDuration) {
-        this.sessionDuration = sessionDuration;
-    }
 
     private void setDay(Day day) {
         this.day = day;

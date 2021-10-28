@@ -22,14 +22,10 @@ import java.time.format.DateTimeFormatter;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class HabitWithCounterNPerDay extends HabitWithCounter {
 
-    private Long sessionDuration;
+
 
     @Enumerated(EnumType.STRING)
     private Day day;
-
-    private void setSessionDuration(Long sessionDuration) {
-        this.sessionDuration = sessionDuration;
-    }
 
     private void setDay(Day day) {
         this.day = day;

@@ -1,24 +1,29 @@
 package com.sollertia.habit.domain.habit;
 
-import com.sollertia.habit.domain.habit.dto.HabitDtoImpl;
-import com.sollertia.habit.domain.habit.habitCounter.HabitWithCounter;
-import com.sollertia.habit.domain.habit.habitTimer.HabitWithTimer;
 
-public interface  Habit {
-    public static Habit getHabit(HabitDtoImpl habitDtoImpl) {
-        Habit habit = null;
-        switch (habitDtoImpl.getHabitType()) {
-            case HABITWITHTIMER:
-                habit = HabitWithTimer.createHabit(habitDtoImpl);
-                break;
-            case HABITWITHCOUNTER:
-                habit = HabitWithCounter.createHabit(habitDtoImpl);
-                break;
-        }
+import com.sollertia.habit.domain.habit.enums.Category;
 
-        return habit;
+import java.time.LocalDate;
 
-    }
+public interface Habit {
 
-//    public Long getGoalPercentage();
+    public Long getAchievePercentage();
+
+    public String getTitle();
+
+    public String getDescription();
+
+    public Long getId();
+
+    public LocalDate getDurationStart();
+
+    public LocalDate getDurationEnd();
+
+    public Category getCategory();
+
+    public Long getCurrent();
+
+    public Long getSessionDuration();
+
+    //public void plusCount();
 }
