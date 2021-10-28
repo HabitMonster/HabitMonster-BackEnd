@@ -4,10 +4,11 @@ import com.sollertia.habit.domain.oauth2.userinfo.Oauth2UserInfo;
 import com.sollertia.habit.domain.user.User;
 import com.sollertia.habit.domain.user.UserRepository;
 import com.sollertia.habit.exception.OAuthProviderMissMatchException;
-import com.sollertia.habit.exception.UserIdNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -16,22 +17,28 @@ public class Oauth2UserService {
 
     private final UserRepository userRepository;
 
-    public User loadUser(Oauth2UserInfo userInfo, boolean isFirstLogin) {
-        User user = findUserOrCreateNewUser(userInfo, isFirstLogin);
-        checkProviderBetween(userInfo, user);
-        return updateUserIfChanged(user, userInfo);
+    public Map<String, Object> loadUser(Oauth2UserInfo userInfo) {
+        Map<String, Object> userMap = findUserOrCreateNewUser(userInfo);
+        checkProviderBetween(userInfo, (User) userMap.get("user"));
+        updateUserIfChanged((User) userMap.get("user"), userInfo);
+        return userMap;
     }
 
-    private User findUserOrCreateNewUser(Oauth2UserInfo userInfo, boolean isFirstLogin) {
+    private Map<String, Object> findUserOrCreateNewUser(Oauth2UserInfo userInfo) {
+        boolean isFirstLogin = true;
         User user;
-        if ( isFirstLogin ) {
-            user = createUser(userInfo);
+
+        Optional<User> optionalUser = userRepository.findByUserId(userInfo.getId());
+        if ( optionalUser.isPresent() ) {
+            user = optionalUser.get();
+            isFirstLogin = false;
         } else {
-            user = userRepository.findByUserId(userInfo.getId()).orElseThrow(
-                    () -> new UserIdNotFoundException("사용자를 찾을 수 없습니다.")
-            );
+            user = createUser(userInfo);
         }
-        return user;
+        Map<String, Object> userMap = new HashMap<>();
+        userMap.put("isFirstLogin", isFirstLogin);
+        userMap.put("user", user);
+        return userMap;
     }
 
     private User createUser(Oauth2UserInfo userInfo) {
@@ -57,10 +64,6 @@ public class Oauth2UserService {
 
     public boolean isFirstLogin(Oauth2UserInfo userInfo) {
         Optional<User> optionalUser = userRepository.findByUserId(userInfo.getId());
-        if ( optionalUser.isPresent() ) {
-            return false;
-        } else {
-            return true;
-        }
+        return !optionalUser.isPresent();
     }
 }
