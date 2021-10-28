@@ -7,8 +7,6 @@ import com.sollertia.habit.exception.OAuthProviderMissMatchException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -17,28 +15,22 @@ public class Oauth2UserService {
 
     private final UserRepository userRepository;
 
-    public Map<String, Object> loadUser(Oauth2UserInfo userInfo) {
-        Map<String, Object> userMap = findUserOrCreateNewUser(userInfo);
-        checkProviderBetween(userInfo, (User) userMap.get("user"));
-        updateUserIfChanged((User) userMap.get("user"), userInfo);
-        return userMap;
+    public Oauth2UserInfo putUserInto(Oauth2UserInfo userInfo) {
+        Oauth2UserInfo updatedUserInfo = updateUserInfo(userInfo);
+        checkProviderBetween(updatedUserInfo.getUser(), userInfo);
+        updateUserIfChanged(updatedUserInfo.getUser(), userInfo);
+        return userInfo;
     }
 
-    private Map<String, Object> findUserOrCreateNewUser(Oauth2UserInfo userInfo) {
-        boolean isFirstLogin = true;
-        User user;
-
+    private Oauth2UserInfo updateUserInfo(Oauth2UserInfo userInfo) {
         Optional<User> optionalUser = userRepository.findByUserId(userInfo.getId());
         if ( optionalUser.isPresent() ) {
-            user = optionalUser.get();
-            isFirstLogin = false;
+            userInfo.putUser(optionalUser.get());
         } else {
-            user = createUser(userInfo);
+            userInfo.putUser(createUser(userInfo));
+            userInfo.toFirstLogin();
         }
-        Map<String, Object> userMap = new HashMap<>();
-        userMap.put("isFirstLogin", isFirstLogin);
-        userMap.put("user", user);
-        return userMap;
+        return userInfo;
     }
 
     private User createUser(Oauth2UserInfo userInfo) {
@@ -46,7 +38,7 @@ public class Oauth2UserService {
         return userRepository.save(user);
     }
 
-    private void checkProviderBetween(Oauth2UserInfo userInfo, User user) {
+    private void checkProviderBetween(User user, Oauth2UserInfo userInfo) {
         if (userInfo.getProviderType() != user.getProviderType()) {
             throw new OAuthProviderMissMatchException(
                     "Looks like you're signed up with " + userInfo.getProviderType() +

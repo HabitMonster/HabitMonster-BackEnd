@@ -5,6 +5,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sollertia.habit.domain.oauth2.dto.KakaoOauthResponseDto;
 import com.sollertia.habit.domain.oauth2.userinfo.KakaoOauth2UserInfo;
+import com.sollertia.habit.domain.oauth2.userinfo.Oauth2UserInfo;
+import com.sollertia.habit.domain.oauth2.userinfo.Oauth2UserInfoFactory;
+import com.sollertia.habit.domain.user.ProviderType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -27,12 +30,12 @@ public class KakaoSocialLoginUtil implements SocialLoginUtil {
     String clientId;
 
     @Override
-    public KakaoOauth2UserInfo getUserInfoByCode(String authCode, String state) {
+    public Oauth2UserInfo getUserInfoByCode(String authCode, String state) {
         return getUserInfoByCode(authCode);
     }
 
     @Override
-    public KakaoOauth2UserInfo getUserInfoByCode(String authCode) {
+    public Oauth2UserInfo getUserInfoByCode(String authCode) {
         try {
             String accessToken = getAccessTokenByCode(authCode);
             return getUserInfoByToken(accessToken);
@@ -64,9 +67,7 @@ public class KakaoSocialLoginUtil implements SocialLoginUtil {
         return responseDto.getAccess_token();
     }
 
-    private KakaoOauth2UserInfo getUserInfoByToken(String token) throws JsonProcessingException {
-        // 2. 토큰으로 카카오 API 호출
-        // HTTP Header 생성
+    private Oauth2UserInfo getUserInfoByToken(String token) throws JsonProcessingException {
         RestTemplate restTemplate = new RestTemplate();
         ObjectMapper mapper = new ObjectMapper();
 
@@ -74,7 +75,6 @@ public class KakaoSocialLoginUtil implements SocialLoginUtil {
         headers.add("Authorization", "Bearer " + token);
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
-        // HTTP 요청 보내기
         HttpEntity<MultiValueMap<String, String>> kakaoUserInfoRequest = new HttpEntity<>(headers);
         ResponseEntity<String> response = restTemplate.exchange(
                 KAKAO_TOKEN_INFO_URL,
@@ -84,6 +84,6 @@ public class KakaoSocialLoginUtil implements SocialLoginUtil {
         );
 
         Map<String,Object> userInfo = mapper.readValue(response.getBody(), new TypeReference<Map<String, Object>>(){});
-        return new KakaoOauth2UserInfo(userInfo);
+        return Oauth2UserInfoFactory.getOAuth2UserInfo(ProviderType.KAKAO, userInfo);
     }
 }

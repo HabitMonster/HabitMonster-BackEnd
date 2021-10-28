@@ -7,7 +7,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.sollertia.habit.domain.oauth2.dto.GoogleOauthRequestDto;
 import com.sollertia.habit.domain.oauth2.dto.GoogleOauthResponseDto;
-import com.sollertia.habit.domain.oauth2.userinfo.GoogleOauth2UserInfo;
+import com.sollertia.habit.domain.oauth2.userinfo.Oauth2UserInfo;
+import com.sollertia.habit.domain.oauth2.userinfo.Oauth2UserInfoFactory;
+import com.sollertia.habit.domain.user.ProviderType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -28,12 +30,12 @@ public class GoogleSocialLoginUtil implements SocialLoginUtil {
     String clientSecret;
 
     @Override
-    public GoogleOauth2UserInfo getUserInfoByCode(String authCode, String state) {
+    public Oauth2UserInfo getUserInfoByCode(String authCode, String state) {
         return getUserInfoByCode(authCode);
     }
 
     @Override
-    public GoogleOauth2UserInfo getUserInfoByCode(String authCode) {
+    public Oauth2UserInfo getUserInfoByCode(String authCode) {
         try {
             String accessToken = getAccessTokenByCode(authCode);
             return getUserInfoByToken(accessToken);
@@ -62,7 +64,7 @@ public class GoogleSocialLoginUtil implements SocialLoginUtil {
         return responseDto.getIdToken();
     }
 
-    private GoogleOauth2UserInfo getUserInfoByToken(String token) throws JsonProcessingException {
+    private Oauth2UserInfo getUserInfoByToken(String token) throws JsonProcessingException {
         RestTemplate restTemplate = new RestTemplate();
         ObjectMapper mapper = getObjectMapperInstance();
 
@@ -72,7 +74,7 @@ public class GoogleSocialLoginUtil implements SocialLoginUtil {
         String resultJson = restTemplate.getForObject(requestUrl, String.class);
         Map<String,Object> userInfo = mapper.readValue(resultJson, new TypeReference<Map<String, Object>>(){});
 
-        return new GoogleOauth2UserInfo(userInfo);
+        return Oauth2UserInfoFactory.getOAuth2UserInfo(ProviderType.GOOGLE, userInfo);
     }
 
     private ObjectMapper getObjectMapperInstance() {

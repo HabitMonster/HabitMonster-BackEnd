@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Map;
-
 @RestController
 @RequiredArgsConstructor
 public class Oauth2Controller {
@@ -19,24 +17,16 @@ public class Oauth2Controller {
     private final Oauth2UserService oauth2UserService;
     private final SocialLoginService socialLoginService;
 
-    @GetMapping("/user/login/test/{socialName}")
-    public void loginTest(@RequestParam(value = "code") String authCode,
-                          @Nullable @RequestParam(value = "state") String state,
-                          @PathVariable String socialName) {
-        System.out.println(state);
-        System.out.println(socialName);
-        System.out.println(authCode);
-    }
-
     @GetMapping("/user/login/{socialName}")
     public ResponseEntity<Oauth2UserInfo> login(@RequestParam(value = "code") String authCode,
                                                 @Nullable @RequestParam(value = "state") String state,
                                                 @PathVariable String socialName) {
 
         Oauth2UserInfo userInfo = socialLoginService.getUserInfo(socialName, authCode, state);
-        Map<String, Object> map = oauth2UserService.loadUser(userInfo);
-        boolean isFirstLogin = (boolean) map.get("isFirstLogin");
-        User User = (User) map.get("user");
+        userInfo = oauth2UserService.putUserInto(userInfo);
+
+        boolean isFirstLogin = userInfo.isFirstLogin();
+        User User = userInfo.getUser();
 
         //todo 서버 access token, refresh token 생성 하고 전달
         return ResponseEntity.ok().body(userInfo);

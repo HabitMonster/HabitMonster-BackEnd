@@ -4,8 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sollertia.habit.domain.oauth2.dto.NaverOauthResponseDto;
-import com.sollertia.habit.domain.oauth2.userinfo.NaverOauth2UserInfo;
 import com.sollertia.habit.domain.oauth2.userinfo.Oauth2UserInfo;
+import com.sollertia.habit.domain.oauth2.userinfo.Oauth2UserInfoFactory;
+import com.sollertia.habit.domain.user.ProviderType;
 import com.sollertia.habit.exception.NaverOauth2Exception;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -36,7 +37,7 @@ public class NaverSocialLoginUtil implements SocialLoginUtil {
     }
 
     @Override
-    public NaverOauth2UserInfo getUserInfoByCode(String authCode, String state) {
+    public Oauth2UserInfo getUserInfoByCode(String authCode, String state) {
         try {
             String accessToken = getAccessTokenByCode(authCode, state);
             return getUserInfoByToken(accessToken);
@@ -64,7 +65,7 @@ public class NaverSocialLoginUtil implements SocialLoginUtil {
         return responseDto.getAccess_token();
     }
 
-    private NaverOauth2UserInfo getUserInfoByToken(String token) throws JsonProcessingException {
+    private Oauth2UserInfo getUserInfoByToken(String token) throws JsonProcessingException {
         RestTemplate restTemplate = new RestTemplate();
         ObjectMapper mapper = new ObjectMapper();
 
@@ -80,6 +81,6 @@ public class NaverSocialLoginUtil implements SocialLoginUtil {
         );
 
         Map<String,Object> userInfo = mapper.readValue(response.getBody(), new TypeReference<Map<String, Object>>(){});
-        return new NaverOauth2UserInfo(userInfo);
+        return Oauth2UserInfoFactory.getOAuth2UserInfo(ProviderType.NAVER, userInfo);
     }
 }

@@ -14,13 +14,15 @@ public class SocialLoginService {
     Map<ProviderType, SocialLoginUtil> loginUtilMap = new HashMap<>();
 
     @Autowired
-    public SocialLoginService(GoogleSocialLoginUtil googleOauth2Service, NaverSocialLoginUtil naverOauth2Service, KakaoSocialLoginUtil kakaoOauth2Service) {
-        loginUtilMap.put(ProviderType.GOOGLE, googleOauth2Service);
-        loginUtilMap.put(ProviderType.KAKAO, kakaoOauth2Service);
-        loginUtilMap.put(ProviderType.NAVER, naverOauth2Service);
+    private SocialLoginService(GoogleSocialLoginUtil googleSocialLoginUtil,
+                               NaverSocialLoginUtil naverSocialLoginUtil,
+                               KakaoSocialLoginUtil kakaoSocialLoginUtil) {
+        loginUtilMap.put(ProviderType.GOOGLE, googleSocialLoginUtil);
+        loginUtilMap.put(ProviderType.KAKAO, kakaoSocialLoginUtil);
+        loginUtilMap.put(ProviderType.NAVER, naverSocialLoginUtil);
     }
 
-    Oauth2UserInfo getUserInfo(String socialName, String authCode, String state) {
+    public Oauth2UserInfo getUserInfo(String socialName, String authCode, String state) {
         ProviderType providerType = ProviderType.valueOf(socialName.toUpperCase());
         return loginUtilMap.get(providerType).getUserInfoByCode(authCode, state);
     }
