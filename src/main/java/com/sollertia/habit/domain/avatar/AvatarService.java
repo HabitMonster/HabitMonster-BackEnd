@@ -4,6 +4,7 @@ import com.sollertia.habit.domain.avatar.dto.AvatarListResponseDto;
 import com.sollertia.habit.domain.avatar.dto.AvatarResponseDto;
 import com.sollertia.habit.domain.avatar.dto.AvatarSelectRequestDto;
 import com.sollertia.habit.domain.user.User;
+import com.sollertia.habit.domain.user.UserRepository;
 import com.sollertia.habit.exception.AvatarNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ public class AvatarService {
 
     private final AvatarRepository avatarRepository;
     private final AvatarCollectionRepository avatarCollectionRepository;
+    private final UserRepository userRepository;
 
     public AvatarListResponseDto getAllAvatars() {
         List<Avatar> avatars = avatarRepository.findAllByGrade(EvolutionGrade.EV1);
@@ -38,6 +40,7 @@ public class AvatarService {
             avatarCollectionRepository.save(avatarCollection);
         }
         user.selectAvatar(avatar, avatarName);
+        userRepository.save(user);
 
         return AvatarResponseDto.builder()
                 .avatarId(avatar.getId())
