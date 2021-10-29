@@ -14,5 +14,6 @@ public class JwtResponseDto {
     private String accesstoken;
     private String refreshtoken;
     private Boolean isFirstLongin;
+    private String message;
 
 }

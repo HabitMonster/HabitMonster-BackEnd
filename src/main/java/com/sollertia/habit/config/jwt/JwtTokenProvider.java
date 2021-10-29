@@ -33,14 +33,12 @@ public class JwtTokenProvider {
     }
 
     // 토큰 유효시간 설정 cf) now.getTime() 는 밀리 초 이기 때문에 ms -> s 변환이 필요해서 1000 곱함  1s = 1000ms
-//    protected static final long ACCESS_TOKEN_USETIME = 30 * 60 * 1000L; //30분
-//    protected static final long REFRESH_TOKEN_USETIME = 7 * 24 * 60 * 60 * 1000L; //7일
+//    public static final long ACCESS_TOKEN_USETIME = 30 * 60 * 1000L; //30분
+//    public static final long REFRESH_TOKEN_USETIME = 7 * 24 * 60 * 60 * 1000L; //7일
 
-    protected static final long ACCESS_TOKEN_USETIME = 5 * 1000L; //5초
-    protected static final long REFRESH_TOKEN_USETIME = 10 * 1000L; //10초
+    public static final long ACCESS_TOKEN_USETIME = 5 * 1000L; //5초
+    public static final long REFRESH_TOKEN_USETIME = 10 * 1000L; //10초
 
-    protected static final String ACCESS_TOKEN = "accessToken";
-    protected static final String REFRESH_TOKEN = "refreshToken";
 
     // Refresh, Access 토큰 구분
     public String responseRefreshToken(User user) {
@@ -90,13 +88,10 @@ public class JwtTokenProvider {
     }
 
     // 토큰의 유효성 + 만료일자 확인
-    public boolean validateToken(String jwtToken) {
+    public void validateToken(String jwtToken) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken);
-            return !claims.getBody().getExpiration().before(new Date());
-        } catch (ExpiredJwtException ex) {
-            throw ex;
-        } catch (SignatureException ex) {
+        } catch (ExpiredJwtException | SignatureException ex) {
             throw ex;
         }
     }

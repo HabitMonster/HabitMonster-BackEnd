@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @Builder
 public class JwtExceptionDto {
     private String message;
-    private String clientRequestUrl;
+    private String clientRequestUri;
 }

@@ -22,20 +22,20 @@ public class JwtExceptionHandlerFilter extends OncePerRequestFilter {
         try {
             filterChain.doFilter(request, response);
         } catch (RuntimeException ex) {
-            String clientRequestUrl = (String) request.getAttribute("clientRequestUrl");
+            String clientRequestUri = (String) request.getAttribute("clientRequestUri");
             String message = (String) request.getAttribute("msg");
-            responseExceptionMsg(response, clientRequestUrl, message);
+            responseExceptionMsg(response, clientRequestUri, message);
         }
 
     }
 
-    private void responseExceptionMsg(HttpServletResponse response, String requestURI, String msg) {
+    private void responseExceptionMsg(HttpServletResponse response, String clientRequestUri, String msg) {
         ObjectMapper objectMapper = new ObjectMapper();
         response.setContentType("application/json");
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setCharacterEncoding("UTF-8");
         ResponseEntity<JwtExceptionDto> errorResponse =
-                ResponseEntity.ok(JwtExceptionDto.builder().message(msg).clientRequestUrl(requestURI).build());
+                ResponseEntity.ok(JwtExceptionDto.builder().message(msg).clientRequestUri(clientRequestUri).build());
         try {
             String json = objectMapper.writeValueAsString(errorResponse.getBody());
             response.getWriter().write(json);

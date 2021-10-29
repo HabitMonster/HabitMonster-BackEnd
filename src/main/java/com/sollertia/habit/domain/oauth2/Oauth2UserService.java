@@ -3,6 +3,8 @@ package com.sollertia.habit.domain.oauth2;
 import com.sollertia.habit.domain.oauth2.userinfo.Oauth2UserInfo;
 import com.sollertia.habit.domain.user.User;
 import com.sollertia.habit.domain.user.UserRepository;
+import com.sollertia.habit.domain.user.UserType;
+import com.sollertia.habit.exception.InvalidSocialNameException;
 import com.sollertia.habit.exception.OAuthProviderMissMatchException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -34,8 +36,12 @@ public class Oauth2UserService {
     }
 
     private User createUser(Oauth2UserInfo userInfo) {
-        User user = User.create(userInfo);
-        return userRepository.save(user);
+        switch (userInfo.getProviderType()){
+            case KAKAO: return userRepository.save(User.create(userInfo, UserType.Kakao));
+            case NAVER: return userRepository.save(User.create(userInfo, UserType.Naver));
+            case GOOGLE: return userRepository.save(User.create(userInfo, UserType.Google));
+            default: throw new InvalidSocialNameException("잘못된 소셜 로그인 타입입니다.");
+        }
     }
 
     private void checkProviderBetween(User user, Oauth2UserInfo userInfo) {

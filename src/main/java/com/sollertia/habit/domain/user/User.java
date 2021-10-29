@@ -10,7 +10,6 @@ import lombok.Getter;
 
 import javax.persistence.*;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Getter
@@ -24,8 +23,6 @@ public class User {
     private String username;
 
     private String email;
-
-    private String password;
 
     private ProviderType providerType;
 
@@ -63,25 +60,23 @@ public class User {
         this.username = username;
     }
 
-    private void setPassword(String password) {
-        this.password = password;
-    }
-
     private void setProviderType(ProviderType providerType) {
         this.providerType = providerType;
     }
+
+    private void setType(UserType type){this.type = type;}
 
     public void updateUsername(String username) {
         this.setUsername(username);
     }
 
-    public static User create(Oauth2UserInfo userInfo) {
+    public static User create(Oauth2UserInfo userInfo, UserType type) {
         User newUser = new User();
         newUser.setUserId(userInfo.getId());
         newUser.setEmail(userInfo.getEmail());
         newUser.setUsername(userInfo.getName());
-        newUser.setPassword(UUID.randomUUID().toString());
         newUser.setProviderType(userInfo.getProviderType());
+        newUser.setType(type);
         return newUser;
     }
 }
