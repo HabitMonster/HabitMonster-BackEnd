@@ -7,11 +7,11 @@ import com.sollertia.habit.domain.habit.habitTimer.HabitWithTimer;
 import com.sollertia.habit.domain.oauth2.userinfo.Oauth2UserInfo;
 import com.sollertia.habit.domain.userteam.UserTeam;
 import lombok.Getter;
-import org.hibernate.usertype.UserType;
+
 
 import javax.persistence.*;
 import java.util.List;
-import java.util.UUID;
+
 
 @Entity
 @Getter

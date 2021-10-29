@@ -30,5 +30,7 @@ public interface Habit {
 
     public User getUser();
 
+    public Boolean getIsAccomplishInSession();
+
     //public void plusCount();
 }
