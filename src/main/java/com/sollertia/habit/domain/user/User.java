@@ -33,6 +33,8 @@ public class User {
 
     private Level level;
 
+    private String avatarName;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Habit> habits;
 
@@ -68,6 +70,14 @@ public class User {
         this.providerType = providerType;
     }
 
+    private void setAvatarName(String avatarName) {
+        this.avatarName = avatarName;
+    }
+
+    private void setAvatar(Avatar avatar) {
+        this.avatar = avatar;
+    }
+
     public void updateUsername(String username) {
         this.setUsername(username);
     }
@@ -80,5 +90,10 @@ public class User {
         newUser.setPassword(UUID.randomUUID().toString());
         newUser.setProviderType(userInfo.getProviderType());
         return newUser;
+    }
+
+    public void selectAvatar(Avatar avatar, String avatarName) {
+        this.setAvatar(avatar);
+        this.setAvatarName(avatarName);
     }
 }
