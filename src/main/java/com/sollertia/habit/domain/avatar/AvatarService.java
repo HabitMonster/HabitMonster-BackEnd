@@ -18,11 +18,7 @@ public class AvatarService {
 
     public AvatarListResponseDto getAllAvatars() {
         List<Avatar> avatars = avatarRepository.findAllByGrade(EvolutionGrade.EV1);
-        return AvatarListResponseDto.builder()
-                .avatars(avatars)
-                .responseMessage("LV1 아바타를 불러오는데 성공했습니다.")
-                .statusCode(200)
-                .build();
+        return new AvatarListResponseDto("LV1 아바타를 불러오는데 성공했습니다.", avatars);
     }
 
     public AvatarResponseDto selectAvatar(UserDetails userDetails,
@@ -39,12 +35,6 @@ public class AvatarService {
             avatarCollectionRepository.save(avatarCollection);
         }
         user.selectAvatar(avatar, avatarName);
-//        return new AvatarResponseDto("아바타가 선택되었습니다.", avatar, avatarName);
-        return AvatarResponseDto.builder()
-                .responseMessage("아바타가 선택되었습니다.")
-                .statusCode(200)
-                .avatarId(avatar.getId())
-                .avatarName(avatarName)
-                .build();
+        return new AvatarResponseDto("아바타가 선택되었습니다.", avatar, avatarName);
     }
 }
