@@ -15,6 +15,7 @@ public class GoogleOauth2UserInfo extends Oauth2UserInfo {
         return attributes.get("sub")+"G";
     }
 
+
     @Override
     public String getName() {
         return (String) attributes.get("name");

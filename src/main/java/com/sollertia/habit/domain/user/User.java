@@ -7,12 +7,11 @@ import com.sollertia.habit.domain.habit.habitTimer.HabitWithTimer;
 import com.sollertia.habit.domain.oauth2.userinfo.Oauth2UserInfo;
 import com.sollertia.habit.domain.userteam.UserTeam;
 import lombok.Getter;
-
+import org.hibernate.usertype.UserType;
 
 import javax.persistence.*;
 import java.util.List;
 import java.util.UUID;
-
 
 @Entity
 @Getter
@@ -27,14 +26,15 @@ public class User {
 
     private String email;
 
-    private String password;
-
     @Enumerated(EnumType.STRING)
     private ProviderType providerType;
 
     private Long expPoint;
 
     private Level level;
+
+    @Enumerated(value = EnumType.STRING)
+    private UserType type;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<HabitWithCounter> habitsWithCounter;
@@ -66,25 +66,23 @@ public class User {
         this.username = username;
     }
 
-    private void setPassword(String password) {
-        this.password = password;
-    }
-
     private void setProviderType(ProviderType providerType) {
         this.providerType = providerType;
     }
+
+    private void setType(UserType type){this.type = type;}
 
     public void updateUsername(String username) {
         this.setUsername(username);
     }
 
-    public static User create(Oauth2UserInfo userInfo) {
+    public static User create(Oauth2UserInfo userInfo, UserType type) {
         User newUser = new User();
         newUser.setUserId(userInfo.getId());
         newUser.setEmail(userInfo.getEmail());
         newUser.setUsername(userInfo.getName());
-        newUser.setPassword(UUID.randomUUID().toString());
         newUser.setProviderType(userInfo.getProviderType());
+        newUser.setType(type);
         return newUser;
     }
 
