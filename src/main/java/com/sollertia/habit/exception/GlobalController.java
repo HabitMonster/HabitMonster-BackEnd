@@ -23,4 +23,9 @@ public class GlobalController {
     public ResponseEntity<ErrorResponseDto> userIdNotFoundExceptionHandler(UserIdNotFoundException exception) {
         return new ResponseEntity<>(ErrorResponseDto.notFound(exception.getMessage()), HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponseDto> naverOauth2ExceptionHandler(NaverOauth2Exception exception) {
+        return new ResponseEntity<>(ErrorResponseDto.notFound(exception.getMessage()), HttpStatus.BAD_REQUEST);
+    }
 }

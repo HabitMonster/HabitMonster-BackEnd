@@ -1,11 +1,12 @@
-package com.sollertia.habit.domain.oauth2;
+package com.sollertia.habit.domain.oauth2.loginutil;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sollertia.habit.domain.oauth2.dto.KakaoOauthResponseDto;
-import com.sollertia.habit.domain.oauth2.userinfo.KakaoOauth2UserInfo;
 import com.sollertia.habit.domain.oauth2.userinfo.Oauth2UserInfo;
+import com.sollertia.habit.domain.oauth2.userinfo.Oauth2UserInfoFactory;
+import com.sollertia.habit.domain.user.ProviderType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -19,17 +20,28 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Map;
 
 @Service
-public class KakaoOauth2Service implements Oauth2Service {
+public class KakaoSocialLoginUtil implements SocialLoginUtil {
 
     final static String KAKAO_TOKEN_BASE_URL = "https://kauth.kakao.com/oauth/token";
+    final static String KAKAO_TOKEN_INFO_URL = "https://kapi.kakao.com/v2/user/me";
 
     @Value("${oauth2.kakao.client_id}")
     String clientId;
 
     @Override
-    public Oauth2UserInfo getUserInfoByCode(String authCode) throws JsonProcessingException {
-        String accessToken = getAccessTokenByCode(authCode);
-        return getUserInfoByToken(accessToken);
+    public Oauth2UserInfo getUserInfoByCode(String authCode, String state) {
+        return getUserInfoByCode(authCode);
+    }
+
+    @Override
+    public Oauth2UserInfo getUserInfoByCode(String authCode) {
+        try {
+            String accessToken = getAccessTokenByCode(authCode);
+            return getUserInfoByToken(accessToken);
+        } catch (JsonProcessingException exception) {
+            System.out.println(exception.getMessage());
+            return null;
+        }
     }
 
     private String getAccessTokenByCode(String authCode) throws JsonProcessingException {
@@ -54,26 +66,23 @@ public class KakaoOauth2Service implements Oauth2Service {
         return responseDto.getAccess_token();
     }
 
-    private KakaoOauth2UserInfo getUserInfoByToken(String accessToken) throws JsonProcessingException {
-        // 2. 토큰으로 카카오 API 호출
-        // HTTP Header 생성
+    private Oauth2UserInfo getUserInfoByToken(String token) throws JsonProcessingException {
         RestTemplate restTemplate = new RestTemplate();
         ObjectMapper mapper = new ObjectMapper();
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + accessToken);
+        headers.add("Authorization", "Bearer " + token);
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
-        // HTTP 요청 보내기
         HttpEntity<MultiValueMap<String, String>> kakaoUserInfoRequest = new HttpEntity<>(headers);
         ResponseEntity<String> response = restTemplate.exchange(
-                "https://kapi.kakao.com/v2/user/me",
+                KAKAO_TOKEN_INFO_URL,
                 HttpMethod.GET,
                 kakaoUserInfoRequest,
                 String.class
         );
 
         Map<String,Object> userInfo = mapper.readValue(response.getBody(), new TypeReference<Map<String, Object>>(){});
-        return new KakaoOauth2UserInfo(userInfo);
+        return Oauth2UserInfoFactory.getOAuth2UserInfo(ProviderType.KAKAO, userInfo);
     }
 }
