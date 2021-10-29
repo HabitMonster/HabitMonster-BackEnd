@@ -1,4 +1,4 @@
-package com.sollertia.habit.domain.freeset;
+package com.sollertia.habit.domain.preset;
 
 import com.sollertia.habit.domain.habit.enums.Category;
 import com.sollertia.habit.domain.habit.enums.Day;
@@ -8,7 +8,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-public class FreeSet {
+public class PreSet {
     @Id
     @GeneratedValue
     Long id;
@@ -30,7 +30,7 @@ public class FreeSet {
     private LocalDateTime endUpDateTime;
 
     @Enumerated(EnumType.STRING)
-    private FreeSetType freeSetType;
+    private PreSetType preSetType;
 
     @Enumerated(EnumType.STRING)
     private SessionDuration sessionDuration;
