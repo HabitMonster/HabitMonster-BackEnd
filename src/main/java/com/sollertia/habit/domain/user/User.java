@@ -2,16 +2,14 @@ package com.sollertia.habit.domain.user;
 
 import com.sollertia.habit.domain.avatar.Avatar;
 import com.sollertia.habit.domain.avatar.AvatarCollection;
-import com.sollertia.habit.domain.habit.habitCounter.HabitWithCounter;
-import com.sollertia.habit.domain.habit.habitTimer.HabitWithTimer;
+import com.sollertia.habit.domain.habit.Habit;
+import com.sollertia.habit.domain.habit.enums.Level;
 import com.sollertia.habit.domain.oauth2.userinfo.Oauth2UserInfo;
 import com.sollertia.habit.domain.userteam.UserTeam;
 import lombok.Getter;
 
-
 import javax.persistence.*;
 import java.util.List;
-
 
 @Entity
 @Getter
@@ -35,6 +33,8 @@ public class User {
 
     @Enumerated(value = EnumType.STRING)
     private UserType type;
+
+    private String avatarName;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<HabitWithCounter> habitsWithCounter;
@@ -72,6 +72,14 @@ public class User {
 
     private void setType(UserType type){this.type = type;}
 
+    private void setAvatarName(String avatarName) {
+        this.avatarName = avatarName;
+    }
+
+    private void setAvatar(Avatar avatar) {
+        this.avatar = avatar;
+    }
+
     public void updateUsername(String username) {
         this.setUsername(username);
     }
@@ -88,5 +96,10 @@ public class User {
 
     public void plusExpPoint() {
         this.expPoint += this.level.getPlusPoint();
+    }
+
+    public void selectAvatar(Avatar avatar, String avatarName) {
+        this.setAvatar(avatar);
+        this.setAvatarName(avatarName);
     }
 }
