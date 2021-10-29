@@ -24,6 +24,8 @@ public class User {
 
     private String email;
 
+    private String password;
+
     private ProviderType providerType;
 
     private Long expPoint;
@@ -32,6 +34,8 @@ public class User {
 
     @Enumerated(value = EnumType.STRING)
     private UserType type;
+
+    private String avatarName;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Habit> habits;
@@ -66,6 +70,14 @@ public class User {
 
     private void setType(UserType type){this.type = type;}
 
+    private void setAvatarName(String avatarName) {
+        this.avatarName = avatarName;
+    }
+
+    private void setAvatar(Avatar avatar) {
+        this.avatar = avatar;
+    }
+
     public void updateUsername(String username) {
         this.setUsername(username);
     }
@@ -78,5 +90,10 @@ public class User {
         newUser.setProviderType(userInfo.getProviderType());
         newUser.setType(type);
         return newUser;
+    }
+
+    public void selectAvatar(Avatar avatar, String avatarName) {
+        this.setAvatar(avatar);
+        this.setAvatarName(avatarName);
     }
 }
