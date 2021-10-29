@@ -2,12 +2,15 @@ package com.sollertia.habit.domain.habit;
 
 
 import com.sollertia.habit.domain.habit.enums.Category;
+import com.sollertia.habit.domain.user.User;
 
 import java.time.LocalDate;
 
 public interface Habit {
 
     public Long getAchievePercentage();
+
+    public Boolean check(Long Value);
 
     public String getTitle();
 
@@ -24,6 +27,8 @@ public interface Habit {
     public Long getCurrent();
 
     public Long getSessionDuration();
+
+    public User getUser();
 
     //public void plusCount();
 }

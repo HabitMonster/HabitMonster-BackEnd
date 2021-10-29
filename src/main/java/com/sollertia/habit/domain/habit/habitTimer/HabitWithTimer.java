@@ -36,6 +36,7 @@ public abstract class HabitWithTimer implements Habit {
 
     private LocalDate durationEnd;
 
+
     private Long current = 0L;
 
     private Long goalDurationTimePerSession;
@@ -104,6 +105,16 @@ public abstract class HabitWithTimer implements Habit {
                 return HabitWithTimerSpecificDay.createHabitWithTimerSpecificDay(habitDto);
         }
         return null;
+    }
+
+    @Override
+    public Boolean check(Long value) {
+        this.current += value;
+        boolean isAccomplishToday = this.current >= this.goalDurationTimePerSession;
+        if (isAccomplishToday) {
+            this.isAccomplishInSession = true;
+        }
+        return isAccomplishToday;
     }
 
 }

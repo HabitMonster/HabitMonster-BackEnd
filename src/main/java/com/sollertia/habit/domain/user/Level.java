@@ -1,4 +1,4 @@
-package com.sollertia.habit.domain.habit.enums;
+package com.sollertia.habit.domain.user;
 
 import lombok.Getter;
 

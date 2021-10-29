@@ -8,6 +8,7 @@ import com.sollertia.habit.domain.habit.dto.HabitDetail;
 import com.sollertia.habit.domain.habit.dto.HabitTypeDto;
 import com.sollertia.habit.domain.habit.dto.ResponseDto;
 import com.sollertia.habit.domain.habit.enums.HabitType;
+import com.sollertia.habit.domain.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
@@ -20,10 +21,12 @@ import java.util.Map;
 public class HabitServiceImpl implements HabitService {
 
     private final Map<HabitType, JpaRepository> repositories;
+    private final UserRepository userRepository;
 
     @Autowired
     public HabitServiceImpl(HabitCounterRepository habitCounterRepository,
-                            HabitTimerRepository habitTimerRepository) {
+                            HabitTimerRepository habitTimerRepository,
+                            UserRepository userRepository) {
 
         Map<HabitType, JpaRepository> repositories = new HashMap<>();
 
@@ -32,6 +35,7 @@ public class HabitServiceImpl implements HabitService {
         repositories.put(HabitType.HABITWITHTIMER, habitTimerRepository);
 
         this.repositories = repositories;
+        this.userRepository = userRepository;
     }
 
 
@@ -69,21 +73,19 @@ public class HabitServiceImpl implements HabitService {
     public ResponseDto checkHabit(HabitTypeDto habitTypeDto, Long habitId) {
 
         Habit habit = (Habit) repositories.get(habitTypeDto.getHabitType()).findById(habitId).get();
-        //Boolean isAchieve = habit.plusvalue(Long 1L);
-        //if(isAchieve){
-        //  userRepository.findbyid(habit.getuser.getid);
-        //  habit.getUser.plusExp();
-        //  userRepository.save(user)
-        //}
-        //
-        //
-
-        return null;
+        Boolean isAchieve = habit.check(1L);
+        if (isAchieve) {
+            habit.getUser().plusExpPoint();
+        }
+        userRepository.save(habit.getUser());
+        //성공 여부, 오늘 수행 횟수, 만약 이번 체크로 수행완료했다면 얻게된 경험치 등 반환 가능.
+        return new ResponseDto(200L, "성공했습니다.");
     }
 
     @Override
     public ResponseDto deleteHabit(HabitTypeDto habitTypeDto, Long habitId) {
-        return null;
+        repositories.get(habitTypeDto.getHabitType()).delete(habitId);
+        return new ResponseDto(200L, "삭제되었습니다.");
     }
 
 }

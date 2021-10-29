@@ -110,15 +110,15 @@ public abstract class HabitWithCounter implements Habit {
         }
         return null;
     }
-    /**
-     *
-     *
-     * public Boolean plusCount(Long value) {
-     *     current += value
-     *
-     *     return (current >= goal);
-     * }
-     *
-     */
+
+    @Override
+    public Boolean check(Long value) {
+        this.current += value;
+        boolean isAccomplishToday = this.current >= this.goalCountInSession;
+        if (isAccomplishToday) {
+            this.isAccomplishInSession = true;
+        }
+        return isAccomplishToday;
+    }
 
 }
