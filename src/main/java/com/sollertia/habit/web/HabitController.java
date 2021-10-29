@@ -29,6 +29,7 @@ public class HabitController {
     @GetMapping("/{habitId}")
     public HabitDetailResponseDto habitDetailResponseDto(@PathVariable Long habitId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
+
         HabitTypeDto habitTypeDto = new HabitTypeDto("counter", "nPerDay");
 
         HabitDetail habitDetail = habitService.getHabitDetail(habitTypeDto, habitId);
