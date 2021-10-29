@@ -5,7 +5,7 @@ import com.sollertia.habit.domain.habit.dto.HabitDtoImpl;
 import com.sollertia.habit.domain.habit.dto.HabitDetail;
 import com.sollertia.habit.domain.habit.dto.HabitTypeDto;
 import com.sollertia.habit.domain.habit.dto.ResponseDto;
-import com.sollertia.habit.domain.habit.enums.HabitType;
+
 
 public interface HabitService {
 

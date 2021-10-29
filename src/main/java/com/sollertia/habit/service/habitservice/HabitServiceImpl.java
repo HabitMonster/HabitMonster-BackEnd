@@ -8,6 +8,8 @@ import com.sollertia.habit.domain.habit.dto.HabitDetail;
 import com.sollertia.habit.domain.habit.dto.HabitTypeDto;
 import com.sollertia.habit.domain.habit.dto.ResponseDto;
 import com.sollertia.habit.domain.habit.enums.HabitType;
+import com.sollertia.habit.domain.history.History;
+import com.sollertia.habit.domain.history.HistoryRepository;
 import com.sollertia.habit.domain.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,11 +24,13 @@ public class HabitServiceImpl implements HabitService {
 
     private final Map<HabitType, JpaRepository> repositories;
     private final UserRepository userRepository;
+    private final HistoryRepository historyRepository;
 
     @Autowired
     public HabitServiceImpl(HabitCounterRepository habitCounterRepository,
                             HabitTimerRepository habitTimerRepository,
-                            UserRepository userRepository) {
+                            UserRepository userRepository,
+                            HistoryRepository historyRepository) {
 
         Map<HabitType, JpaRepository> repositories = new HashMap<>();
 
@@ -36,6 +40,7 @@ public class HabitServiceImpl implements HabitService {
 
         this.repositories = repositories;
         this.userRepository = userRepository;
+        this.historyRepository = historyRepository;
     }
 
 
@@ -51,9 +56,16 @@ public class HabitServiceImpl implements HabitService {
     }
 
     @Override
-    public HabitDetail getHabitDetail(HabitTypeDto habitTypeDto, Long habitId) throws Throwable {
+    public HabitDetail getHabitDetail(HabitTypeDto habitTypeDto, Long habitId) {
 
-        Habit foundHabit = (Habit) repositories.get(habitTypeDto.getHabitType()).findById(habitId).get();
+        Habit foundHabit = null;
+        try {
+            foundHabit = (Habit)repositories
+                    .get(habitTypeDto.getHabitType())
+                    .findById(habitId).orElseThrow(()-> new IllegalArgumentException("habit not found execption"));
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
 
         HabitDetail build = HabitDetail.builder()
                 .habitId(foundHabit.getId())
@@ -76,10 +88,15 @@ public class HabitServiceImpl implements HabitService {
         Boolean isAchieve = habit.check(1L);
         if (isAchieve) {
             habit.getUser().plusExpPoint();
+            History history = History.makeHistory(habit);
+            historyRepository.save(history);
         }
         userRepository.save(habit.getUser());
+        repositories.get(habitTypeDto.getHabitType()).save(habit);
+        return new ResponseDto(200L, "체크 성공");
         //성공 여부, 오늘 수행 횟수, 만약 이번 체크로 수행완료했다면 얻게된 경험치 등 반환 가능.
-        return new ResponseDto(200L, "성공했습니다.");
+
+
     }
 
     @Override
