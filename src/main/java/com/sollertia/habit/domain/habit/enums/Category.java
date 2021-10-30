@@ -1,7 +1,7 @@
 package com.sollertia.habit.domain.habit.enums;
 
 public enum Category {
-    A("1"), B("2"), C("3");
+    Health("1"), B("2"), C("3");
 
     private String cate;
 
