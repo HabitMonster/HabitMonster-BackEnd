@@ -1,6 +1,6 @@
-package com.sollertia.habit.domain.preset.enums;
+package com.sollertia.habit.domain.category.enums;
 
-import com.sollertia.habit.domain.preset.dto.CategoryVo;
+import com.sollertia.habit.domain.category.dto.CategoryVo;
 
 import java.util.ArrayList;
 import java.util.List;

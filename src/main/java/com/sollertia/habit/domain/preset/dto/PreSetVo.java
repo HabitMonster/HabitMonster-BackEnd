@@ -1,11 +1,9 @@
 package com.sollertia.habit.domain.preset.dto;
 
-import com.sollertia.habit.domain.preset.enums.Category;
+import com.sollertia.habit.domain.category.enums.Category;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-
-import java.util.List;
 
 @Getter
 @AllArgsConstructor
@@ -18,6 +16,5 @@ public class PreSetVo {
     private int period;
     private Long count;
     private Category category;
-    private String session;
     private String practiseDays;
 }

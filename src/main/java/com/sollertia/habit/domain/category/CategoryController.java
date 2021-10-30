@@ -1,8 +1,8 @@
-package com.sollertia.habit.domain.preset;
+package com.sollertia.habit.domain.category;
 
-import com.sollertia.habit.domain.preset.dto.CategoryResponseDto;
-import com.sollertia.habit.domain.preset.dto.CategoryVo;
-import com.sollertia.habit.domain.preset.enums.Category;
+import com.sollertia.habit.domain.category.dto.CategoryResponseDto;
+import com.sollertia.habit.domain.category.dto.CategoryVo;
+import com.sollertia.habit.domain.category.enums.Category;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;

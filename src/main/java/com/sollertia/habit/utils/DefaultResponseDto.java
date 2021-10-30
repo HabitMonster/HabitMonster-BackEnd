@@ -1,7 +1,9 @@
 package com.sollertia.habit.utils;
 
+import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
+@Getter
 @SuperBuilder
 public abstract class DefaultResponseDto {
     private int statusCode;
