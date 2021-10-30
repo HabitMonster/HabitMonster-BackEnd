@@ -15,7 +15,7 @@ public class PreSetVo {
     private Long categoryId;
     private String title;
     private String description;
-    private Long period;
+    private int period;
     private Long count;
     private Category category;
     private String session;
