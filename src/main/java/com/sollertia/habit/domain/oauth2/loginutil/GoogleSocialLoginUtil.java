@@ -55,6 +55,7 @@ public class GoogleSocialLoginUtil implements SocialLoginUtil {
                 .clientSecret(clientSecret)
                 .code(authCode)
                 .redirectUri("http://localhost:8080/user/login/test/google")
+//                .redirectUri("http://localhost:3000/login")
                 .grantType("authorization_code")
                 .build();
 
