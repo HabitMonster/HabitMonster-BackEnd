@@ -7,7 +7,7 @@ public enum Category {
     Health(1L), Study(2L), Life(3L),
     Emotion(4L), Relation(5L), Hobby(6L), Etc(7L);
 
-    private Long category;
+    private final Long category;
 
     Category(Long category) {
         this.category = category;
