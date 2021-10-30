@@ -7,7 +7,5 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @SuperBuilder
 public class AvatarResponseDto extends DefaultResponseDto {
-    private Long avatarId;
-    private String avatarImage;
-    private String avatarName;
+    private AvatarVo avatar;
 }

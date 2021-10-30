@@ -3,6 +3,7 @@ package com.sollertia.habit.domain.avatar;
 import com.sollertia.habit.domain.avatar.dto.AvatarListResponseDto;
 import com.sollertia.habit.domain.avatar.dto.AvatarResponseDto;
 import com.sollertia.habit.domain.avatar.dto.AvatarSelectRequestDto;
+import com.sollertia.habit.domain.avatar.dto.AvatarVo;
 import com.sollertia.habit.domain.user.User;
 import com.sollertia.habit.domain.user.UserRepository;
 import com.sollertia.habit.exception.AvatarNotFoundException;
@@ -50,10 +51,10 @@ public class AvatarService {
         user.selectAvatar(avatar, avatarName);
         userRepository.save(user);
 
+        AvatarVo avatarVo = new AvatarVo(avatar.getId(), avatar.getImageUrl(), avatarName);
+
         return AvatarResponseDto.builder()
-                .avatarId(avatar.getId())
-                .avatarName(avatarName)
-                .avatarImage(avatar.getImageUrl())
+                .avatar(avatarVo)
                 .responseMessage("아바타가 선택되었습니다.")
                 .statusCode(200)
                 .build();
