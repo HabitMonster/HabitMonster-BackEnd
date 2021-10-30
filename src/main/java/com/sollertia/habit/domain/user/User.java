@@ -2,8 +2,8 @@ package com.sollertia.habit.domain.user;
 
 import com.sollertia.habit.domain.avatar.Avatar;
 import com.sollertia.habit.domain.avatar.AvatarCollection;
-import com.sollertia.habit.domain.habit.habitCounter.HabitWithCounter;
-import com.sollertia.habit.domain.habit.habitTimer.HabitWithTimer;
+import com.sollertia.habit.domain.habit.Habit;
+import com.sollertia.habit.domain.habit.HabitWithCounter;
 import com.sollertia.habit.domain.oauth2.userinfo.Oauth2UserInfo;
 import com.sollertia.habit.domain.userteam.UserTeam;
 import lombok.Getter;
@@ -37,10 +37,7 @@ public class User {
     private String avatarName;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<HabitWithCounter> habitsWithCounter;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<HabitWithTimer> habitsWithTimer;
+    private List<Habit> habit;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<UserTeam> userTeam;
