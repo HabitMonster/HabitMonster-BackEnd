@@ -23,9 +23,8 @@ public class HabitDtoImpl {
     private String durationStart;
     private String durationEnd;
     private String category;
+    private String dayList;
     private Long count;
-    private Long sessionDuration;
-    private List<Day> dayList = null;
     private Long goalTime = 0l;
 
 }
