@@ -7,6 +7,7 @@ import com.sollertia.habit.domain.preset.enums.PreSet;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.text.DateFormat;
@@ -18,7 +19,7 @@ import java.util.List;
 public class PreSetController {
 
     @ApiOperation(value = "선택한 Category의 PreSet 목록 조회")
-    @GetMapping("/categories/{category_id}/presets")
+    @PostMapping("/categories/{category_id}/presets")
     public PreSetResponseDto categoryPresetList(@PathVariable Long category_id){
             List<PreSetVo> list = PreSet.getPreSetList(category_id);
             return PreSetResponseDto.builder().preSets(list).statusCode(200).responseMessage("PreSets 전달 완료").build();
