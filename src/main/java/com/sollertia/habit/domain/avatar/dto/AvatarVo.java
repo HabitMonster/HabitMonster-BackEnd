@@ -1,10 +1,10 @@
 package com.sollertia.habit.domain.avatar.dto;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor
+@Builder
 public class AvatarVo {
     private Long avatarid;
     private String avatarImage;

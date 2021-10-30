@@ -29,14 +29,6 @@ public class AvatarService {
                 .build();
     }
 
-    public AvatarResponseDto getAvatar(User user) {
-        return AvatarResponseDto.builder()
-                .avatarId(user.getAvatar().getId())
-                .avatarName(user.getAvatarName())
-                .avatarImage(user.getAvatar().getImageUrl())
-                .build();
-    }
-
     public AvatarResponseDto selectAvatar(User user,
                                           AvatarSelectRequestDto requestDto) {
         Avatar avatar = avatarRepository.findById(requestDto.getAvatarId()).orElseThrow(
@@ -51,12 +43,18 @@ public class AvatarService {
         user.selectAvatar(avatar, avatarName);
         userRepository.save(user);
 
-        AvatarVo avatarVo = new AvatarVo(avatar.getId(), avatar.getImageUrl(), avatarName);
-
         return AvatarResponseDto.builder()
-                .avatar(avatarVo)
+                .avatar(getAvatarVo(user))
                 .responseMessage("아바타가 선택되었습니다.")
                 .statusCode(200)
+                .build();
+    }
+
+    public AvatarVo getAvatarVo(User user) {
+        return AvatarVo.builder()
+                .avatarid(user.getAvatar().getId())
+                .avatarName(user.getAvatarName())
+                .avatarImage(user.getAvatar().getImageUrl())
                 .build();
     }
 }
