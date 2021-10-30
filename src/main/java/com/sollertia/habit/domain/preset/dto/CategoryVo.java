@@ -9,6 +9,6 @@ import lombok.Getter;
 @AllArgsConstructor
 @Builder
 public class CategoryVo {
-    private int categoryId;
+    private Long categoryId;
     private Category category;
 }

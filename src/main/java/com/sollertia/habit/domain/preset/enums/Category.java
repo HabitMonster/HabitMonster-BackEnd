@@ -1,6 +1,9 @@
 package com.sollertia.habit.domain.preset.enums;
 
-import java.util.Objects;
+import com.sollertia.habit.domain.preset.dto.CategoryVo;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public enum Category {
 
@@ -13,16 +16,15 @@ public enum Category {
         this.category = category;
     }
 
-    public Long getType() {
+    public Long getCategoryId() {
         return this.category;
     }
 
-    public static Category getCategory(Long category) {
-        for ( Category c : Category.values()) {
-            if (Objects.equals(c.category, category)) {
-                return c;
-            }
+    public static List<CategoryVo> getCategories() {
+        List<CategoryVo> list = new ArrayList<>();
+        for (Category p : Category.values()) {
+            list.add(CategoryVo.builder().categoryId(p.getCategoryId()).category(p).build());
         }
-        return null;
+        return list;
     }
 }

@@ -33,10 +33,7 @@ public class PreSetController {
         Calendar Startdate = Calendar.getInstance();
         Calendar Enddate = Calendar.getInstance();
         DateFormat form = new SimpleDateFormat("yyyy-MM-dd");
-        System.out.println("current: " + form.format(Startdate.getTime()));
-
         Enddate.add(Calendar.DATE, preSetVo.getPeriod());
-        System.out.println("end: " + form.format(Enddate.getTime()));
 
         HabitDtoImpl habitDto = HabitDtoImpl.builder().title(preSetVo.getTitle()).description(preSetVo.getDescription()).
         durationStart(form.format(Startdate.getTime())).durationEnd(form.format(Enddate.getTime())).categoryType(preSetVo.getCategory()).
