@@ -26,6 +26,6 @@ public class HabitDtoImpl {
     private Long sessionDuration;
     private List<Day> dayList = null;
     private Long goalTime = 0l;
-    private List<Integer> week;
+    private String practiseDays;
     private Category categoryType;
 }

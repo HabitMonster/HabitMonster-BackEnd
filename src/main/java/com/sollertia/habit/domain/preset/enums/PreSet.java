@@ -40,24 +40,16 @@ public enum PreSet {
         return list;
     }
 
-    private static List<Integer> makeWeek(int num) {
-        List<Integer> week = new ArrayList<>();
+    private static String practiseDays(int num) {
         switch (num) {
             case 1:
-                week.add(2);
-                week.add(4);
-                week.add(6); // 월, 수, 금
-                break;
+                return "135";// 월, 수, 금
             case 2:
-                week.add(3);
-                week.add(5); // 화, 목
-                break;
+               return "24"; // 화, 목
             case 3:
-                week.add(1);
-                week.add(7); // 일, 토
-                break;
+               return "06"; // 일, 토
+            default: return "0123456";
         }
-        return week;
     }
 
 
@@ -68,7 +60,7 @@ public enum PreSet {
                 .count(3L).period(30).session("nPerDay").build();
         // workOut
         PreSetVo workOut = PreSetVo.builder().presetId(2L).category(Category.Health).categoryId(Category.Health.getCategoryId()).title("헬스장 2시간 운동").description("월, 수, 금")
-                .count(1L).period(30).session("specificDay").week(makeWeek(1)).build();
+                .count(1L).period(30).session("specificDay").practiseDays(practiseDays(1)).build();
 
         // ================================Emotion================================
         // laugh
@@ -76,7 +68,7 @@ public enum PreSet {
                 .count(3L).period(30).session("nPerDay").build();
         // meditation
         PreSetVo meditation = PreSetVo.builder().presetId(4L).category(Category.Emotion).categoryId(Category.Emotion.getCategoryId()).title("명상하기 30분").description("토, 일")
-                .count(1L).period(30).session("specificDay").week(makeWeek(3)).build();
+                .count(1L).period(30).session("specificDay").practiseDays(practiseDays(3)).build();
 
         // ================================Hobby================================
         // readBook
@@ -84,7 +76,7 @@ public enum PreSet {
                 .count(1L).period(30).session("nPerDay").build();
         // climbing
         PreSetVo climbing = PreSetVo.builder().presetId(6L).category(Category.Hobby).categoryId(Category.Hobby.getCategoryId()).title("암벽등반 1시간").description("화, 목")
-                .count(1L).period(30).session("specificDay").week(makeWeek(2)).build();
+                .count(1L).period(30).session("specificDay").practiseDays(practiseDays(2)).build();
 
         // ================================Life================================
         // washingDishes
@@ -92,7 +84,7 @@ public enum PreSet {
                 .count(2L).period(30).session("nPerDay").build();
         // wash
         PreSetVo wash = PreSetVo.builder().presetId(8L).category(Category.Life).categoryId(Category.Life.getCategoryId()).title("빨래 하기").description("월, 수, 금")
-                .count(1L).period(30).session("specificDay").week(makeWeek(1)).build();
+                .count(1L).period(30).session("specificDay").practiseDays(practiseDays(1)).build();
 
         // ================================Study================================
         // english
@@ -100,7 +92,7 @@ public enum PreSet {
                 .count(1L).period(30).session("nPerDay").build();
         // math
         PreSetVo math = PreSetVo.builder().presetId(10L).category(Category.Study).categoryId(Category.Study.getCategoryId()).title("수학 문제집 풀기").description("월, 수, 금")
-                .count(1L).period(30).session("specificDay").week(makeWeek(1)).build();
+                .count(1L).period(30).session("specificDay").practiseDays(practiseDays(1)).build();
 
         // ================================Relation================================
         // friend
@@ -108,7 +100,7 @@ public enum PreSet {
                 .count(1L).period(30).session("nPerDay").build();
         // filial
         PreSetVo filial = PreSetVo.builder().presetId(12L).category(Category.Relation).categoryId(Category.Relation.getCategoryId()).title("부모님께 사랑한다 말하기 하루에 3번").description("토, 일")
-                .count(3L).period(30).session("specificDay").week(makeWeek(3)).build();
+                .count(3L).period(30).session("specificDay").practiseDays(practiseDays(3)).build();
 
         // ================================Etc================================
         // WorkOut
@@ -116,7 +108,7 @@ public enum PreSet {
                 .count(1L).period(30).session("nPerDay").build();
         // WorkOut
         PreSetVo mung = PreSetVo.builder().presetId(14L).category(Category.Etc).categoryId(Category.Etc.getCategoryId()).title("멍 때리기 1시간").description("머리를 비워보자 - 화, 목")
-                .count(1L).period(30).session("specificDay").week(makeWeek(2)).build();
+                .count(1L).period(30).session("specificDay").practiseDays(practiseDays(2)).build();
 
         switch (title) {
             case "water":

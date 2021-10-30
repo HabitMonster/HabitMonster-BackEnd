@@ -19,5 +19,5 @@ public class PreSetVo {
     private Long count;
     private Category category;
     private String session;
-    private List<Integer> week;
+    private String practiseDays;
 }

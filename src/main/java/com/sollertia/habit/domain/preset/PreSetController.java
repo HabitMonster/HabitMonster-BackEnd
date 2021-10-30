@@ -37,7 +37,7 @@ public class PreSetController {
 
         HabitDtoImpl habitDto = HabitDtoImpl.builder().title(preSetVo.getTitle()).description(preSetVo.getDescription()).
         durationStart(form.format(Startdate.getTime())).durationEnd(form.format(Enddate.getTime())).categoryType(preSetVo.getCategory()).
-        count(preSetVo.getCount()).sessionDuration(1L).week(preSetVo.getWeek()).build();
+        count(preSetVo.getCount()).sessionDuration(1L).practiseDays(preSetVo.getPractiseDays()).build();
         return PreSetResponseDto.builder().habitDto(habitDto).statusCode(200).responseMessage("PreSet 저장 완료").build();
     }
 }
