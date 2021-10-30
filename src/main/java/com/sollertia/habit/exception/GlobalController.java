@@ -33,4 +33,14 @@ public class GlobalController {
     public ResponseEntity<ErrorResponseDto> avatarNotFoundExceptionHandler(AvatarNotFoundException exception) {
         return new ResponseEntity<>(ErrorResponseDto.notFound(exception.getMessage()), HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponseDto> HabitIdNotFoundExceptionHandler(HabitIdNotFoundException exception) {
+        return new ResponseEntity<>(ErrorResponseDto.notFound(exception.getMessage()), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponseDto> HabitTypeNotFoundExceptionHandler(HabitTypeNotFoundException exception) {
+        return new ResponseEntity<>(ErrorResponseDto.notFound(exception.getMessage()), HttpStatus.NOT_FOUND);
+    }
 }
