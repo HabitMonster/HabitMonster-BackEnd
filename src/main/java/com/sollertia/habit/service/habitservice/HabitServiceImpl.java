@@ -2,11 +2,9 @@ package com.sollertia.habit.service.habitservice;
 
 import com.sollertia.habit.domain.habit.Habit;
 import com.sollertia.habit.domain.habit.HabitFactory;
-import com.sollertia.habit.domain.habit.Repository.*;
-import com.sollertia.habit.domain.habit.dto.HabitDtoImpl;
-import com.sollertia.habit.domain.habit.dto.HabitDetail;
-import com.sollertia.habit.domain.habit.dto.HabitTypeDto;
-import com.sollertia.habit.domain.habit.dto.ResponseDto;
+import com.sollertia.habit.domain.habit.Repository.HabitCounterRepository;
+import com.sollertia.habit.domain.habit.Repository.HabitTimerRepository;
+import com.sollertia.habit.domain.habit.dto.*;
 import com.sollertia.habit.domain.habit.enums.HabitType;
 import com.sollertia.habit.domain.history.History;
 import com.sollertia.habit.domain.history.HistoryRepository;
@@ -15,8 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 
 @Service
@@ -103,6 +100,18 @@ public class HabitServiceImpl implements HabitService {
     public ResponseDto deleteHabit(HabitTypeDto habitTypeDto, Long habitId) {
         repositories.get(habitTypeDto.getHabitType()).delete(habitId);
         return new ResponseDto(200L, "삭제되었습니다.");
+    }
+
+
+    @Override
+    public List<HabitSummaryResponseDto> getHabitSummaryList(Long userId) {
+        List<HabitSummaryResponseDto> responseDtoList = new ArrayList<>();
+        Collection<JpaRepository> values = repositories.values();
+        for (JpaRepository value : values) {
+            responseDtoList.addAll(value.findAllByUserId(userId));
+        }
+
+        return null;
     }
 
 }
