@@ -1,8 +1,8 @@
 package com.sollertia.habit.web;
 
 import com.sollertia.habit.domain.avatar.AvatarService;
-import com.sollertia.habit.domain.avatar.dto.AvatarResponseDto;
-import com.sollertia.habit.domain.habit.dto.HabitSummaryResponseDto;
+import com.sollertia.habit.domain.avatar.dto.AvatarVo;
+import com.sollertia.habit.domain.habit.dto.HabitSummaryVo;
 import com.sollertia.habit.domain.user.User;
 import com.sollertia.habit.service.habitservice.HabitService;
 import com.sollertia.habit.web.dto.MainPageResponseDto;
@@ -19,13 +19,13 @@ public class MainPageService {
     private final HabitService habitService;
 
     public MainPageResponseDto getMainPageResponseDto(User user) {
-        List<HabitSummaryResponseDto> habitSummaryResponseDtoList =
-                habitService.getHabitSummaryList(user.getId());
-        AvatarResponseDto avatarResponseDto = avatarService.getAvatar(user);
+        List<HabitSummaryVo> habitSummaryList =
+                habitService.getHabitSummaryVoList(user.getId());
+        AvatarVo avatarVo = avatarService.getAvatarVo(user);
 
         return MainPageResponseDto.builder()
-                .habits(habitSummaryResponseDtoList)
-                .avatar(avatarResponseDto)
+                .habits(habitSummaryList)
+                .avatar(avatarVo)
                 .expPercentage(user.getExpPoint())
                 .responseMessage("메인페이지 조회 성공")
                 .statusCode(200)

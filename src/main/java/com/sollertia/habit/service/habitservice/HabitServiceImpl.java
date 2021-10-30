@@ -104,14 +104,16 @@ public class HabitServiceImpl implements HabitService {
 
 
     @Override
-    public List<HabitSummaryResponseDto> getHabitSummaryList(Long userId) {
-        List<HabitSummaryResponseDto> responseDtoList = new ArrayList<>();
+    public List<HabitSummaryVo> getHabitSummaryVoList(Long userId) {
         Collection<JpaRepository> values = repositories.values();
+        List<HabitSummaryVo> summaryVoList = new ArrayList<>();
+
         for (JpaRepository value : values) {
-            responseDtoList.addAll(value.findAllByUserId(userId));
+            List<Habit> habits = value.findAllByUserId(userId);
+            summaryVoList.addAll(HabitSummaryVo.listOf(habits));
         }
 
-        return null;
+        return summaryVoList;
     }
 
 }

@@ -16,6 +16,6 @@ public interface HabitService {
 
     public ResponseDto deleteHabit(HabitTypeDto habitTypeDto, Long habitId);
 
-    public List<HabitSummaryResponseDto> getHabitSummaryList(Long userId);
+    public List<HabitSummaryVo> getHabitSummaryVoList(Long userId);
 
 }
