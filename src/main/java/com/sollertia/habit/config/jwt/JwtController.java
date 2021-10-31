@@ -27,7 +27,7 @@ public class JwtController {
 
     // 로그인 체크할 시 refreshToken 만료기간,유효성 확인하고 accessToken 재발급, 만료 되었다면 실패 메세지 -> 클라이언트에서 유저를 소셜로그인으로 유도
     // 유저가 다시 소셜 로그인 하면 새롭게 access, refresh 토큰 발급
-    @PostMapping("/user/logincheck")
+    @PostMapping("/user/loginCheck")
     public ResponseEntity<JwtResponseDto> loginCheck(@RequestBody JwtRequestDto requestDto) {
 
         String refreshToken = requestDto.getRefreshToken();
@@ -51,8 +51,7 @@ public class JwtController {
                 Optional<User> user = userRepository.findBySocialId(jwtTokenProvider.getUserId(refreshToken));
                 if (user.isPresent()) {
                     String accessToken = jwtTokenProvider.responseAccessToken(user.get());
-                    return ResponseEntity.ok().body(JwtResponseDto.builder().message("accessToken 발급완료!")
-                            .accesstoken(accessToken).build());
+                    return ResponseEntity.ok().body(JwtResponseDto.builder().responseMessage("accessToken 발급완료!").statusCode(200).accesstoken(accessToken).build());
                 } else {
                     throw new IllegalArgumentException("유저가 존재하지 않습니다.");
                 }

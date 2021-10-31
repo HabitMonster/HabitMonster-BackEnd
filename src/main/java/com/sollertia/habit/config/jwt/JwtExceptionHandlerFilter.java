@@ -42,7 +42,7 @@ public class JwtExceptionHandlerFilter extends OncePerRequestFilter {
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setCharacterEncoding("UTF-8");
         ResponseEntity<JwtExceptionDto> errorResponse =
-                ResponseEntity.ok(JwtExceptionDto.builder().message(msg).clientRequestUri(clientRequestUri).body(body).build());
+                ResponseEntity.ok(JwtExceptionDto.builder().responseMessage(msg).statusCode(400).clientRequestUri(clientRequestUri).body(body).build());
         try {
             String json = objectMapper.writeValueAsString(errorResponse.getBody());
             response.getWriter().write(json);
