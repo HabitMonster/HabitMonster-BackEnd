@@ -8,13 +8,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-@RestController("/habits")
+@RestController
 @RequiredArgsConstructor
 public class HabitController {
 
     private final HabitServiceImpl habitService;
 
-    @PostMapping("/")
+    @PostMapping("/habits")
     public ResponseDto createHabit(@RequestBody HabitDtoImpl habitDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         HabitTypeDto habitTypeDto = new HabitTypeDto("counter", "nPerDay");
@@ -26,7 +26,7 @@ public class HabitController {
         return new ResponseDto(200L, "성공했습니다.");
     }
 
-    @GetMapping("/{habitId}")
+    @GetMapping("/habits/{habitId}")
     public HabitDetailResponseDto habitDetailResponseDto(@PathVariable Long habitId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
 
@@ -37,7 +37,7 @@ public class HabitController {
         return new HabitDetailResponseDto(habitDetail, 200L, "성공");
     }
 
-    @DeleteMapping("/{habitId}")
+    @DeleteMapping("/habits/{habitId}")
     public ResponseDto deleteHabit(@PathVariable Long habitId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         //예외처리 핸들러로 로그인 여부 예외처리 진행
@@ -49,7 +49,7 @@ public class HabitController {
         return responseDto;
     }
 
-    @GetMapping("/check/{habitId}")
+    @GetMapping("/habits/check/{habitId}")
     public ResponseDto checkHabit(@PathVariable Long habitId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         //예외처리 핸들러로 로그인 여부 예외처리 진행
