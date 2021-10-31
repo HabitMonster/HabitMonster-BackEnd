@@ -12,12 +12,12 @@ import com.sollertia.habit.domain.user.UserRepository;
 import com.sollertia.habit.exception.HabitIdNotFoundException;
 import com.sollertia.habit.exception.UserIdNotFoundException;
 import com.sollertia.habit.utils.DefaultResponseDto;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Service
 public class HabitServiceImpl implements HabitService {
 
@@ -36,7 +36,7 @@ public class HabitServiceImpl implements HabitService {
 
         Habit habit = Habit.createHabit(habitTypeDto.getHabitType(), createHabitRequestDto);
 
-        Habit save = (Habit) habitRepository.save(habit);
+        habitRepository.save(habit);
 
         return DefaultResponseDto.builder().statusCode(200).responseMessage("Save Completed").build();
 
@@ -95,7 +95,7 @@ public class HabitServiceImpl implements HabitService {
     }
 
     private List<HabitSummaryResponseVo> makeHabitSummaryList(Long userId) {
-        User user = userRepository.findByUserId(userId).orElseThrow(() -> new UserIdNotFoundException("Couldn't load request User"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserIdNotFoundException("Couldn't load request User"));
 
         List<HabitSummaryResponseVo> getHabitSummaryList = new ArrayList<>();
 

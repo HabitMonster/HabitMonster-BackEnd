@@ -5,10 +5,12 @@ import com.sollertia.habit.domain.habit.enums.Category;
 import lombok.Getter;
 
 import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 @Getter
+@Entity
 @DiscriminatorValue("T")
 public class HabitWithTimer extends Habit {
 

@@ -1,6 +1,7 @@
 package com.sollertia.habit.domain.team;
 
 import com.sollertia.habit.domain.habit.Habit;
+import com.sollertia.habit.domain.habit.HabitWithTimer;
 import com.sollertia.habit.domain.userteam.UserTeam;
 import lombok.Getter;
 
@@ -19,9 +20,6 @@ public class Team {
 
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
     private List<Habit> habitsWithCounter;
-
-    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
-    private List<HabitWithTimer> habitsWithTimer;
 
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
     private List<UserTeam> userTeam;
