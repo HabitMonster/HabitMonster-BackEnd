@@ -34,11 +34,11 @@ public class JwtTokenProvider {
 
     // 토큰 유효시간 설정 cf) now.getTime() 는 밀리 초 이기 때문에 ms -> s 변환이 필요해서 1000 곱함  1s = 1000ms
 //    public static final long ACCESS_TOKEN_USETIME = 30 * 60 * 1000L; //30분
-//    public static final long REFRESH_TOKEN_USETIME = 7 * 24 * 60 * 60 * 1000L; //7일
+    public static final long REFRESH_TOKEN_USETIME = 7 * 24 * 60 * 60 * 1000L; //7일
 
     //test User 용
-    public static final long ACCESS_TOKEN_USETIME = 30 * 24 * 60 * 60 * 1000L;
-    public static final long REFRESH_TOKEN_USETIME = 30 * 24 * 60 * 60 * 1000L;
+    //public static final long ACCESS_TOKEN_USETIME = 30 * 24 * 60 * 60 * 1000L;
+    public static final long ACCESS_TOKEN_USETIME = 5 * 1000L;
 
 
     // Refresh, Access 토큰 구분

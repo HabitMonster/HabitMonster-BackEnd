@@ -29,8 +29,11 @@ public class JwtExceptionHandlerFilter extends OncePerRequestFilter {
             String clientRequestUri = (String) request.getAttribute("clientRequestUri");
             String message = (String) request.getAttribute("msg");
             String body = (String) request.getAttribute("messageBody");
-            ObjectMapper objectMapper = new ObjectMapper();
-            Map<String, Object> bodyM = objectMapper.readValue(body, new TypeReference<Map<String, Object>>() {});
+            Map<String, Object> bodyM = null;
+            if(!body.isEmpty()){
+                ObjectMapper objectMapper = new ObjectMapper();
+                bodyM = objectMapper.readValue(body, new TypeReference<Map<String, Object>>() {});
+            }
             responseExceptionMsg(response, clientRequestUri, message, bodyM);
         }
 
