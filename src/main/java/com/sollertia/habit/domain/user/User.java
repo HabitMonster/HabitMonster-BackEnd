@@ -6,11 +6,14 @@ import com.sollertia.habit.domain.habit.habitCounter.HabitWithCounter;
 import com.sollertia.habit.domain.habit.habitTimer.HabitWithTimer;
 import com.sollertia.habit.domain.oauth2.userinfo.Oauth2UserInfo;
 import com.sollertia.habit.domain.userteam.UserTeam;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 import javax.persistence.*;
 import java.util.List;
-
+@AllArgsConstructor //Test용
+@Builder //Test용
 @Entity
 @Getter
 public class User {
@@ -18,7 +21,7 @@ public class User {
     @GeneratedValue
     private Long id;
 
-    private String userId;
+    private String socialId;
 
     private String username;
 
@@ -51,11 +54,14 @@ public class User {
     @ManyToOne(fetch = FetchType.LAZY)
     private Avatar avatar;
 
-    protected User() {
+    public User() {
     }
 
-    private void setUserId(String userId) {
-        this.userId = userId;
+//    protected User() {  // 이유가 궁금하니다!
+//    }
+
+    private void setSocialId(String socialId) {
+        this.socialId = socialId;
     }
 
     private void setEmail(String email) {
@@ -86,7 +92,7 @@ public class User {
 
     public static User create(Oauth2UserInfo userInfo, UserType type) {
         User newUser = new User();
-        newUser.setUserId(userInfo.getId());
+        newUser.setSocialId(userInfo.getId());
         newUser.setEmail(userInfo.getEmail());
         newUser.setUsername(userInfo.getName());
         newUser.setProviderType(userInfo.getProviderType());

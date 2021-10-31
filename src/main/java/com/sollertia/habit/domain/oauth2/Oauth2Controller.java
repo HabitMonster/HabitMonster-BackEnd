@@ -1,6 +1,5 @@
 package com.sollertia.habit.domain.oauth2;
 
-import com.sollertia.habit.config.jwt.JwtHandler;
 import com.sollertia.habit.config.jwt.JwtTokenProvider;
 import com.sollertia.habit.config.jwt.dto.JwtResponseDto;
 import com.sollertia.habit.domain.oauth2.userinfo.Oauth2UserInfo;
@@ -20,7 +19,7 @@ public class Oauth2Controller {
 
     private final Oauth2UserService oauth2UserService;
     private final SocialLoginService socialLoginService;
-    private final JwtHandler jwtHandler;
+    private final JwtTokenProvider jwtTokenProvider;
     private final RedisUtil redisUtil;
 
     @GetMapping("/user/login/{socialName}")
@@ -35,9 +34,9 @@ public class Oauth2Controller {
         User user = userInfo.getUser();
 
         //todo 서버 access token, refresh token 생성 하고 전달
-        String accessToken = jwtHandler.getAccessToken(user);
-        String refreshToken = jwtHandler.getRefreshToken(user);
-        redisUtil.setDataExpire(refreshToken, user.getUserId(), JwtTokenProvider.REFRESH_TOKEN_USETIME / 1000L);
+        String accessToken =  jwtTokenProvider.responseAccessToken(user);
+        String refreshToken = jwtTokenProvider.responseRefreshToken(user);
+        redisUtil.setDataExpire(refreshToken, user.getSocialId(), JwtTokenProvider.REFRESH_TOKEN_USETIME / 1000L);
 
         return ResponseEntity.ok().body(JwtResponseDto.builder().accesstoken(accessToken).
                 isFirstLongin(isFirstLogin).refreshtoken(refreshToken).build());
