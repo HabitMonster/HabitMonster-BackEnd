@@ -41,14 +41,14 @@ public class JwtController {
                     throw new RedisConnectionException("Redis 연결에 문제가 있습니다.");
                 }
 
-                if (!refreshUserId.equals(jwtTokenProvider.getUserId(refreshToken))) {
+                if (!refreshUserId.equals(jwtTokenProvider.getSocialId(refreshToken))) {
                     throw new JwtException("RefreshToken 탈취 가능성이 있습니다. RefreshToken을 새롭게 발급 받으세요.");
                 }
 
                 jwtTokenProvider.validateToken(refreshToken);
                 jwtTokenProvider.getAuthentication(refreshToken);
 
-                Optional<User> user = userRepository.findBySocialId(jwtTokenProvider.getUserId(refreshToken));
+                Optional<User> user = userRepository.findBySocialId(jwtTokenProvider.getSocialId(refreshToken));
                 if (user.isPresent()) {
                     String accessToken = jwtTokenProvider.responseAccessToken(user.get());
                     return ResponseEntity.ok().body(JwtResponseDto.builder().responseMessage("accessToken 발급완료!").statusCode(200).accesstoken(accessToken).build());

@@ -32,7 +32,7 @@ public class JwtTokenProvider {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
 
-    // 토큰 유효시간 설정 cf) now.getTime() 는 밀리 초 이기 때문에 ms -> s 변환이 필요해서 1000 곱함  1s = 1000ms
+    // 토큰 유효시간 설정 => now.getTime() 는 밀리 초 이기 때문에 ms -> s 변환이 필요해서 1000 곱함  1s = 1000ms
 //    public static final long ACCESS_TOKEN_USETIME = 30 * 60 * 1000L; //30분
     public static final long REFRESH_TOKEN_USETIME = 7 * 24 * 60 * 60 * 1000L; //7일
 
@@ -51,12 +51,12 @@ public class JwtTokenProvider {
     }
 
     // JWT 토큰 생성
-    private String createToken(String userId, UserType userType, long useTime) {
-        Claims claims = Jwts.claims().setSubject(userId);
+    private String createToken(String socialId, UserType userType, long useTime) {
+        Claims claims = Jwts.claims().setSubject(socialId);
         claims.put("type", userType);
         Date now = new Date();
         return Jwts.builder()
-                .setClaims(claims) // 정보 저장 - userId, userType
+                .setClaims(claims) // 정보 저장 - socialId, userType
                 .setIssuedAt(now) // 토큰 발행 시간 정보
                 .setExpiration(new Date(now.getTime() + useTime)) // set ExpireTime
                 .signWith(signatureAlgorithm, secretKey)
@@ -66,15 +66,15 @@ public class JwtTokenProvider {
     // token을 사용하여 UserDetails 생성 및 등록 준비
     public Authentication getAuthentication(String token) {
         try {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserId(token));
+            UserDetails userDetails = userDetailsService.loadUserByUsername(this.getSocialId(token));
             return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
         } catch (MalformedJwtException ex) {
             throw ex;
         }
     }
 
-    // 토큰에서 userId 추출
-    public String getUserId(String token) {
+    // 토큰에서 socialId 추출
+    public String getSocialId(String token) {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
@@ -88,10 +88,10 @@ public class JwtTokenProvider {
         return request.getHeader("R-AUTH-TOKEN");
     }
 
-    // 토큰의 유효성 + 만료일자 확인
+    // 토큰의 유효성 및 만료일자 확인
     public void validateToken(String jwtToken) {
         try {
-            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken);
+            Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken);
         } catch (ExpiredJwtException | SignatureException ex) {
             throw ex;
         }
