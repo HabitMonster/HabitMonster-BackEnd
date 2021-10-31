@@ -36,17 +36,18 @@ public class JwtTokenProvider {
 //    public static final long ACCESS_TOKEN_USETIME = 30 * 60 * 1000L; //30분
 //    public static final long REFRESH_TOKEN_USETIME = 7 * 24 * 60 * 60 * 1000L; //7일
 
-    public static final long ACCESS_TOKEN_USETIME = 5 * 1000L; //5초
-    public static final long REFRESH_TOKEN_USETIME = 10 * 1000L; //10초
+    //test User 용
+    public static final long ACCESS_TOKEN_USETIME = 30 * 24 * 60 * 60 * 1000L;
+    public static final long REFRESH_TOKEN_USETIME = 30 * 24 * 60 * 60 * 1000L;
 
 
     // Refresh, Access 토큰 구분
     public String responseRefreshToken(User user) {
-        return createToken(user.getUserId(), user.getType(), REFRESH_TOKEN_USETIME);
+        return createToken(user.getSocialId(), user.getType(), REFRESH_TOKEN_USETIME);
     }
 
     public String responseAccessToken(User user) {
-        return createToken(user.getUserId(), user.getType(), ACCESS_TOKEN_USETIME);
+        return createToken(user.getSocialId(), user.getType(), ACCESS_TOKEN_USETIME);
     }
 
     // JWT 토큰 생성

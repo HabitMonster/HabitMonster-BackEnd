@@ -23,8 +23,6 @@ public class JwtController {
 
     private final RedisUtil redisUtil;
 
-    private final JwtHandler jwtHandler;
-
     private final UserRepository userRepository;
 
     // 로그인 체크할 시 refreshToken 만료기간,유효성 확인하고 accessToken 재발급, 만료 되었다면 실패 메세지 -> 클라이언트에서 유저를 소셜로그인으로 유도
@@ -50,9 +48,9 @@ public class JwtController {
                 jwtTokenProvider.validateToken(refreshToken);
                 jwtTokenProvider.getAuthentication(refreshToken);
 
-                Optional<User> user = userRepository.findByUserId(jwtTokenProvider.getUserId(refreshToken));
+                Optional<User> user = userRepository.findBySocialId(jwtTokenProvider.getUserId(refreshToken));
                 if (user.isPresent()) {
-                    String accessToken = jwtHandler.getAccessToken(user.get());
+                    String accessToken = jwtTokenProvider.responseAccessToken(user.get());
                     return ResponseEntity.ok().body(JwtResponseDto.builder().message("accessToken 발급완료!")
                             .accesstoken(accessToken).build());
                 } else {
