@@ -17,7 +17,7 @@ public class HomeController {
     private final MainPageService mainPageService;
 
     @ApiOperation(value = "메인페이지 정보 요청", notes = "몬스터 정보, 습관 리스트, 경험치 비율 반환")
-    @GetMapping("/")
+    @GetMapping("/main")
     public MainPageResponseDto getMainPageData(
             @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) throws Throwable {
         return mainPageService.getMainPageResponseDto(userDetails.getUser());

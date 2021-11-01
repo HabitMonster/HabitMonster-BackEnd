@@ -1,7 +1,7 @@
 package com.sollertia.habit.domain.history;
 
+import com.sollertia.habit.domain.category.enums.Category;
 import com.sollertia.habit.domain.habit.Habit;
-import com.sollertia.habit.domain.habit.enums.Category;
 import com.sollertia.habit.domain.user.User;
 
 import javax.persistence.*;
