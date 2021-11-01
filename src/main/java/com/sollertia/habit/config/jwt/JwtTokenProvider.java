@@ -37,8 +37,8 @@ public class JwtTokenProvider {
     public static final long REFRESH_TOKEN_USETIME = 7 * 24 * 60 * 60 * 1000L; //7일
 
     //test User 용
-    //public static final long ACCESS_TOKEN_USETIME = 30 * 24 * 60 * 60 * 1000L;
-    public static final long ACCESS_TOKEN_USETIME = 5 * 1000L;
+    public static final long ACCESS_TOKEN_USETIME = 30 * 24 * 60 * 60 * 1000L;
+    //public static final long ACCESS_TOKEN_USETIME = 5 * 1000L;
 
 
     // Refresh, Access 토큰 구분
