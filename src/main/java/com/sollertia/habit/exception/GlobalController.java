@@ -30,7 +30,7 @@ public class GlobalController {
     }
 
     @ExceptionHandler
-    public ResponseEntity<ErrorResponseDto> avatarNotFoundExceptionHandler(AvatarNotFoundException exception) {
+    public ResponseEntity<ErrorResponseDto> monsterNotFoundExceptionHandler(MonsterNotFoundException exception) {
         return new ResponseEntity<>(ErrorResponseDto.notFound(exception.getMessage()), HttpStatus.NOT_FOUND);
     }
 }
