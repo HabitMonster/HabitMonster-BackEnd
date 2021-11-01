@@ -3,7 +3,6 @@ package com.sollertia.habit.domain.user;
 import com.sollertia.habit.domain.monster.Monster;
 import com.sollertia.habit.domain.monster.MonsterCollection;
 import com.sollertia.habit.domain.habit.Habit;
-import com.sollertia.habit.domain.habit.HabitWithCounter;
 import com.sollertia.habit.domain.oauth2.userinfo.Oauth2UserInfo;
 import com.sollertia.habit.domain.userteam.UserTeam;
 import lombok.AllArgsConstructor;
@@ -11,7 +10,9 @@ import lombok.Builder;
 import lombok.Getter;
 
 import javax.persistence.*;
+import javax.transaction.Transactional;
 import java.util.List;
+
 @AllArgsConstructor //Test용
 @Builder //Test용
 @Entity
@@ -32,14 +33,14 @@ public class User {
 
     private Long expPoint;
 
-    private Level level;
+    private Level level = Level.LV1;
 
     @Enumerated(value = EnumType.STRING)
     private UserType type;
 
     private String monsterName;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Habit> habit;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)

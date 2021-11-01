@@ -12,15 +12,12 @@ import lombok.*;
 @Builder
 public class HabitDtoImpl {
 
-    private User user = null;
-    private Team team = null;
     private String title;
     private String description;
     private String durationStart;
     private String durationEnd;
-    private String category;
-    private Long count;
-    private Long goalTime = 0l;
+    private Long category;
+    private int count;
+    private int goalTime = 0;
     private String practiseDays;
-    private Category categoryType;
 }

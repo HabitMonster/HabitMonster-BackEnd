@@ -1,8 +1,8 @@
 package com.sollertia.habit.domain.habit;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sollertia.habit.domain.category.enums.Category;
 import com.sollertia.habit.domain.habit.dto.HabitDtoImpl;
-import com.sollertia.habit.domain.habit.enums.Category;
 import com.sollertia.habit.domain.habit.enums.HabitType;
 import com.sollertia.habit.domain.team.Team;
 import com.sollertia.habit.domain.user.User;
@@ -14,8 +14,6 @@ import javax.persistence.*;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 @Getter
@@ -41,7 +39,7 @@ public abstract class Habit {
 
     private String practiceDays;
 
-    private Long accomplishCounter = 0L;
+    private int accomplishCounter = 0;
 
     // == n일에 n번 수행하는 습관 생성용 칼럼 ==
     private Long sessionDuration;
@@ -51,7 +49,7 @@ public abstract class Habit {
     private LocalDate nextPracticeDay;
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     @JsonIgnore
     private User user;
@@ -96,7 +94,7 @@ public abstract class Habit {
         isAccomplishInSession = accomplishInSession;
     }
 
-    public abstract Long getCurrent();
+    public abstract int getCurrent();
 
     public Long getAchievePercentage() {
 
@@ -159,12 +157,12 @@ public abstract class Habit {
     }
 
 
-    public static Habit createHabit(HabitType habitType, HabitDtoImpl habitDto) {
+    public static Habit createHabit(HabitType habitType, HabitDtoImpl habitDto, User user) {
         switch (habitType) {
             case HABITWITHTIMER:
-                return HabitWithTimer.createHabitWithTimer(habitDto);
+                return HabitWithTimer.createHabitWithTimer(habitDto, user);
             case HABITWITHCOUNTER:
-                return HabitWithCounter.createHabitWithCounter(habitDto);
+                return HabitWithCounter.createHabitWithCounter(habitDto, user);
         }
         return null;
     }

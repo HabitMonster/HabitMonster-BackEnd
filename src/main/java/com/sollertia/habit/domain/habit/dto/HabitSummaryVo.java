@@ -1,8 +1,7 @@
 package com.sollertia.habit.domain.habit.dto;
 
-import com.sollertia.habit.domain.habit.Habit;
+import com.sollertia.habit.domain.category.enums.Category;
 import com.sollertia.habit.domain.habit.HabitWithCounter;
-import com.sollertia.habit.domain.habit.enums.Category;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -16,8 +15,8 @@ public class HabitSummaryVo {
     private String title;
     private String durationStart;
     private String durationEnd;
-    private Long count;
-    private Long current;
+    private int count;
+    private int current;
     private Long sessionDuration;
     private Long progressPercentage;
     private Category category;

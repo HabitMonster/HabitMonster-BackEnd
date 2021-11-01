@@ -22,9 +22,7 @@ public class HabitController {
 
         HabitTypeDto habitTypeDto = new HabitTypeDto("counter", "specificDay");
 
-        habitDto.setUser(userDetails.getUser());
-
-        return habitService.createHabit(habitTypeDto, habitDto);
+        return habitService.createHabit(habitTypeDto, habitDto, userDetails.getUser());
     }
     @ApiOperation(value = "습관 상세정보 요청", notes = "성공 실패여부 반환")
     @GetMapping("/habits/{habitId}")

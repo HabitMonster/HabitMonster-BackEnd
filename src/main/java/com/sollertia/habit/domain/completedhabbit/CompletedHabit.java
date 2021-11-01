@@ -1,7 +1,7 @@
 package com.sollertia.habit.domain.completedhabbit;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.sollertia.habit.domain.habit.enums.Category;
+import com.sollertia.habit.domain.category.enums.Category;
 import com.sollertia.habit.domain.habit.enums.HabitType;
 import com.sollertia.habit.domain.user.User;
 import lombok.Getter;
