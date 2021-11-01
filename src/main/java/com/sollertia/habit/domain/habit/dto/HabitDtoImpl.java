@@ -18,6 +18,6 @@ public class HabitDtoImpl {
     private Long categoryId;
     private int count;
     private Long goalTime = 0l;
-    private String practiseDays;
+    private String practiceDays;
     private Category categoryType;
 }

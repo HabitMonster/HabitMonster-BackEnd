@@ -16,7 +16,7 @@ public class PreSetVo {
     private String title;
     private String description;
     private int period;
-    private Long count;
+    private int count;
     private Category category;
     private String practiseDays;
 

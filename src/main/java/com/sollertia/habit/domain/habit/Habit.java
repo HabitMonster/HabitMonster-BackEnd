@@ -130,8 +130,8 @@ public abstract class Habit {
         } else {
             // 나머지가 있다면 (시작요일 + 나머지)를 7로 나누어 해당 요일에 습관을 수행하기로 했는지 비교
             for (int i = startDay; i <= startDay + (wholeDays % 7); i++) {
-                int i1 = i % 7;
-                boolean contains = days.stream().anyMatch(x -> x == i1);
+                int leftover = i % 7;
+                boolean contains = days.stream().anyMatch(x -> x == leftover);
                 // 해당 요일 있으면 값추가
                 if (contains) {
                     wholeDays += 1;

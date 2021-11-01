@@ -17,7 +17,7 @@ public class PreSet {
     private String title;
     private String description;
     private int period;
-    private Long count;
+    private int count;
     @Enumerated(EnumType.STRING)
     private Category category;
     private String practiseDays;
@@ -42,7 +42,7 @@ public class PreSet {
         this.period = period;
     }
 
-    private void setCount(Long count) {
+    private void setCount(int count) {
         this.count = count;
     }
 

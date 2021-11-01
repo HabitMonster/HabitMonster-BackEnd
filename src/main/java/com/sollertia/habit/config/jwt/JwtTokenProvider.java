@@ -83,6 +83,7 @@ public class JwtTokenProvider {
         return request.getHeader("A-AUTH-TOKEN");
     }
 
+
     // Header 에서 refresh토큰 값 가져오기
     public String requestRefreshToken(HttpServletRequest request) {
         return request.getHeader("R-AUTH-TOKEN");

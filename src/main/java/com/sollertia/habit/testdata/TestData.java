@@ -3,6 +3,7 @@ package com.sollertia.habit.testdata;
 import com.sollertia.habit.domain.monster.EvolutionGrade;
 import com.sollertia.habit.domain.monster.Monster;
 import com.sollertia.habit.domain.monster.MonsterRepository;
+import com.sollertia.habit.domain.user.Level;
 import com.sollertia.habit.domain.user.User;
 import com.sollertia.habit.domain.user.UserRepository;
 import com.sollertia.habit.domain.user.UserType;
@@ -26,7 +27,7 @@ public class TestData implements ApplicationRunner {
         monsterRepository.save(monster1);
         monsterRepository.save(monster2);
 
-        User testUser = User.builder().socialId("1234G").type(UserType.Google).build();
+        User testUser = User.builder().socialId("1234G").type(UserType.Google).level(Level.LV1).build();
         userRepository.save(testUser);
     }
 }

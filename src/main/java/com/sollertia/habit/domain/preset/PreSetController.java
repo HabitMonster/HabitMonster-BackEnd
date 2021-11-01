@@ -4,6 +4,7 @@ import com.sollertia.habit.domain.habit.dto.HabitDtoImpl;
 import com.sollertia.habit.domain.habit.dto.HabitTypeDto;
 import com.sollertia.habit.domain.preset.dto.PreSetResponseDto;
 import com.sollertia.habit.domain.preset.dto.PreSetVo;
+import com.sollertia.habit.domain.preset.enums.PreSet;
 import com.sollertia.habit.domain.preset.presetservice.PreSetServiceImpl;
 import com.sollertia.habit.domain.user.UserDetailsImpl;
 import com.sollertia.habit.domain.habit.habitservice.HabitServiceImpl;
@@ -26,7 +27,8 @@ import java.util.List;
 public class PreSetController {
 
     private final PreSetServiceImpl preSetService;
-    private final HabitServiceImpl habitService;
+    private final HabitServiceImpl
+            habitService;
 
     @ApiOperation(value = "선택한 Category의 PreSet 목록 조회")
     @PostMapping("/categories/{category_id}/presets")
@@ -40,8 +42,8 @@ public class PreSetController {
     @ApiOperation(value = "선택한 PreSet Habit 테이블에 저장")
     @GetMapping("/presets/{preset_id}")
     public DefaultResponseDto selectPreSet(@PathVariable Long preset_id, @AuthenticationPrincipal UserDetailsImpl userDetails){
-//        PreSetVo preSetVo = PreSet.getPreSet(preset_id);
-        PreSetVo preSetVo = preSetService.getPreSet(preset_id);
+        PreSetVo preSetVo = PreSet.getPreSet(preset_id);
+        //PreSetVo preSetVo = preSetService.getPreSet(preset_id);
 
         Calendar startDate = Calendar.getInstance();
         Calendar endDate = Calendar.getInstance();
@@ -49,12 +51,11 @@ public class PreSetController {
         endDate.add(Calendar.DATE, preSetVo.getPeriod());
 
         HabitDtoImpl habitDto = HabitDtoImpl.builder().durationStart(form.format(startDate.getTime())).durationEnd(form.format(endDate.getTime()))
-                .count(preSetVo.getCount()).title(preSetVo.getTitle()).description(preSetVo.getDescription()).practiseDays(preSetVo.getPractiseDays()).build();
+                .count(preSetVo.getCount()).title(preSetVo.getTitle()).description(preSetVo.getDescription()).practiceDays(preSetVo.getPractiseDays()).categoryId(preSetVo.getCategoryId()).build();
 
-        HabitTypeDto habitTypeDto = new HabitTypeDto("counter", "specifi cDay");
+        HabitTypeDto habitTypeDto = new HabitTypeDto("counter", "specificDay");
 
-        habitDto.setUser(userDetails.getUser());
-        habitService.createHabit(habitTypeDto, habitDto);
+        habitService.createHabit(habitTypeDto, habitDto, userDetails.getUser());
 
         return DefaultResponseDto.builder().responseMessage("습관 등록 완료").statusCode(200).build();
     }

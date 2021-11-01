@@ -40,6 +40,7 @@ public class HabitWithCounter extends Habit {
         habit.setUser(user);
         habit.setCategory(Category.getCategory(habitDtoImpl.getCategoryId()));
         habit.setGoalCountInSession(habitDtoImpl.getCount());
+        habit.setPracticeDays(habitDtoImpl.getPracticeDays());
         return habit;
     }
 
