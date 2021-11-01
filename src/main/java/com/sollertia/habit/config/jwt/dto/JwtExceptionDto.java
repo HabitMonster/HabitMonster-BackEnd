@@ -1,18 +1,14 @@
 package com.sollertia.habit.config.jwt.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import com.sollertia.habit.utils.DefaultResponseDto;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.util.Map;
 
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class JwtExceptionDto {
-    private String message;
+@SuperBuilder
+public class JwtExceptionDto extends DefaultResponseDto {
     private String clientRequestUri;
     private Map<String,Object> body;
 }

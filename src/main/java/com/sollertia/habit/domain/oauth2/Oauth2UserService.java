@@ -25,7 +25,7 @@ public class Oauth2UserService {
     }
 
     private Oauth2UserInfo updateUserInfo(Oauth2UserInfo userInfo) {
-        Optional<User> optionalUser = userRepository.findByUserId(userInfo.getId());
+        Optional<User> optionalUser = userRepository.findBySocialId(userInfo.getId());
         if ( optionalUser.isPresent() ) {
             userInfo.putUser(optionalUser.get());
         } else {
@@ -61,7 +61,7 @@ public class Oauth2UserService {
     }
 
     public boolean isFirstLogin(Oauth2UserInfo userInfo) {
-        Optional<User> optionalUser = userRepository.findByUserId(userInfo.getId());
+        Optional<User> optionalUser = userRepository.findBySocialId(userInfo.getId());
         return !optionalUser.isPresent();
     }
 }

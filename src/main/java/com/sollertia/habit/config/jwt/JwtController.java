@@ -23,13 +23,11 @@ public class JwtController {
 
     private final RedisUtil redisUtil;
 
-    private final JwtHandler jwtHandler;
-
     private final UserRepository userRepository;
 
     // 로그인 체크할 시 refreshToken 만료기간,유효성 확인하고 accessToken 재발급, 만료 되었다면 실패 메세지 -> 클라이언트에서 유저를 소셜로그인으로 유도
     // 유저가 다시 소셜 로그인 하면 새롭게 access, refresh 토큰 발급
-    @PostMapping("/user/logincheck")
+    @PostMapping("/user/loginCheck")
     public ResponseEntity<JwtResponseDto> loginCheck(@RequestBody JwtRequestDto requestDto) {
 
         String refreshToken = requestDto.getRefreshToken();
@@ -43,18 +41,17 @@ public class JwtController {
                     throw new RedisConnectionException("Redis 연결에 문제가 있습니다.");
                 }
 
-                if (!refreshUserId.equals(jwtTokenProvider.getUserId(refreshToken))) {
+                if (!refreshUserId.equals(jwtTokenProvider.getSocialId(refreshToken))) {
                     throw new JwtException("RefreshToken 탈취 가능성이 있습니다. RefreshToken을 새롭게 발급 받으세요.");
                 }
 
                 jwtTokenProvider.validateToken(refreshToken);
                 jwtTokenProvider.getAuthentication(refreshToken);
 
-                Optional<User> user = userRepository.findByUserId(jwtTokenProvider.getUserId(refreshToken));
+                Optional<User> user = userRepository.findBySocialId(jwtTokenProvider.getSocialId(refreshToken));
                 if (user.isPresent()) {
-                    String accessToken = jwtHandler.getAccessToken(user.get());
-                    return ResponseEntity.ok().body(JwtResponseDto.builder().message("accessToken 발급완료!")
-                            .accesstoken(accessToken).build());
+                    String accessToken = jwtTokenProvider.responseAccessToken(user.get());
+                    return ResponseEntity.ok().body(JwtResponseDto.builder().responseMessage("accessToken 발급완료!").statusCode(200).accesstoken(accessToken).build());
                 } else {
                     throw new IllegalArgumentException("유저가 존재하지 않습니다.");
                 }

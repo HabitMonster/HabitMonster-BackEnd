@@ -1,19 +1,14 @@
 package com.sollertia.habit.config.jwt.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import com.sollertia.habit.utils.DefaultResponseDto;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class JwtResponseDto {
+@SuperBuilder
+public class JwtResponseDto extends DefaultResponseDto {
 
     private String accesstoken;
     private String refreshtoken;
     private Boolean isFirstLongin;
-    private String message;
-
 }

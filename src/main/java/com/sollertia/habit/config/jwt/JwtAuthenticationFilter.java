@@ -31,7 +31,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String jwtToken = jwtTokenProvider.requestAccessToken(request);
         String refreshToken = jwtTokenProvider.requestRefreshToken(request);
-        String refreshUserId = null;
+        String refreshSocialId;
 
         ServletInputStream inputStream = request.getInputStream();
         String messageBody = StreamUtils.copyToString(inputStream, StandardCharsets.UTF_8);
@@ -61,13 +61,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             try {
 
                 try {
-                    refreshUserId = redisUtil.getData(refreshToken);
+                    refreshSocialId = redisUtil.getData(refreshToken);
                 } catch (Exception ex) {
                     createRequest(request, "Redis 연결에 문제가 있습니다.", request.getRequestURI(), messageBody);
                     throw ex;
                 }
 
-                if (!refreshUserId.equals(jwtTokenProvider.getUserId(refreshToken))) {
+                if (!refreshSocialId.equals(jwtTokenProvider.getSocialId(refreshToken))) {
                     createRequest(request, "RefreshToken 탈취 가능성이 있습니다. RefreshToken을 새롭게 발급 받으세요.", request.getRequestURI(), messageBody);
                     throw new JwtException("");
                 }

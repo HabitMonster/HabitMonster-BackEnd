@@ -14,7 +14,7 @@ public class HomeController {
     private final MainPageService mainPageService;
 
     @GetMapping("/")
-    public MainPageResponseDto getMainPageData(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public MainPageResponseDto getMainPageData(@AuthenticationPrincipal UserDetailsImpl userDetails) throws Throwable {
         return mainPageService.getMainPageResponseDto(userDetails.getUser());
     }
 }
