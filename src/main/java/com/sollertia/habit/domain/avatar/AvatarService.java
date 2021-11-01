@@ -29,6 +29,14 @@ public class AvatarService {
                 .build();
     }
 
+    public AvatarResponseDto getAvatar(User user) {
+        return AvatarResponseDto.builder()
+                .avatarId(user.getAvatar().getId())
+                .avatarName(user.getAvatarName())
+                .avatarImage(user.getAvatar().getImageUrl())
+                .build();
+    }
+
     public AvatarResponseDto selectAvatar(User user,
                                           AvatarSelectRequestDto requestDto) {
         Avatar avatar = avatarRepository.findById(requestDto.getAvatarId()).orElseThrow(

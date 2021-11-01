@@ -4,6 +4,8 @@ import com.sollertia.habit.domain.habit.Habit;
 import com.sollertia.habit.domain.habit.dto.*;
 import com.sollertia.habit.domain.user.UserDetailsImpl;
 import com.sollertia.habit.service.habitservice.HabitServiceImpl;
+import com.sollertia.habit.utils.DefaultResponseDto;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -14,49 +16,40 @@ public class HabitController {
 
     private final HabitServiceImpl habitService;
 
+    @ApiOperation(value = "습관 생성", notes = "성공 실패여부 반환")
     @PostMapping("/habits")
-    public ResponseDto createHabit(@RequestBody HabitDtoImpl habitDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public DefaultResponseDto createHabit(@RequestBody HabitDtoImpl habitDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        HabitTypeDto habitTypeDto = new HabitTypeDto("counter", "nPerDay");
+        HabitTypeDto habitTypeDto = new HabitTypeDto("counter", "specificDay");
 
         habitDto.setUser(userDetails.getUser());
 
-        Habit habit = habitService.createHabit(habitTypeDto, habitDto);
-
-        return new ResponseDto(200L, "성공했습니다.");
+        return habitService.createHabit(habitTypeDto, habitDto);
     }
-
+    @ApiOperation(value = "습관 상세정보 요청", notes = "성공 실패여부 반환")
     @GetMapping("/habits/{habitId}")
     public HabitDetailResponseDto habitDetailResponseDto(@PathVariable Long habitId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
 
-        HabitTypeDto habitTypeDto = new HabitTypeDto("counter", "nPerDay");
+        HabitTypeDto habitTypeDto = new HabitTypeDto("counter", "specificDay");
 
-        HabitDetail habitDetail = habitService.getHabitDetail(habitTypeDto, habitId);
-
-        return new HabitDetailResponseDto(habitDetail, 200L, "성공");
+        return habitService.getHabitDetail(habitTypeDto, habitId);
     }
 
+    @ApiOperation(value = "습관 삭제", notes = "성공 실패여부 반환")
     @DeleteMapping("/habits/{habitId}")
-    public ResponseDto deleteHabit(@PathVariable Long habitId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public DefaultResponseDto deleteHabit(@PathVariable Long habitId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        //예외처리 핸들러로 로그인 여부 예외처리 진행
+        HabitTypeDto habitTypeDto = new HabitTypeDto("counter", "specificDay");
 
-        HabitTypeDto habitTypeDto = new HabitTypeDto("counter", "nPerDay");
-
-        ResponseDto responseDto = habitService.deleteHabit(habitTypeDto, habitId);
-
-        return responseDto;
+        return habitService.deleteHabit(habitTypeDto, habitId);
     }
-
+    @ApiOperation(value = "습관 체크", notes = "성공 실패여부 반환")
     @GetMapping("/habits/check/{habitId}")
-    public ResponseDto checkHabit(@PathVariable Long habitId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public DefaultResponseDto checkHabit(@PathVariable Long habitId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        //예외처리 핸들러로 로그인 여부 예외처리 진행
-        HabitTypeDto habitTypeDto = new HabitTypeDto("counter", "nPerDay");
+        HabitTypeDto habitTypeDto = new HabitTypeDto("counter", "specificDay");
 
-        ResponseDto responseDto = habitService.checkHabit(habitTypeDto, habitId);
-
-        return responseDto;
+        return habitService.checkHabit(habitTypeDto, habitId);
     }
 }
