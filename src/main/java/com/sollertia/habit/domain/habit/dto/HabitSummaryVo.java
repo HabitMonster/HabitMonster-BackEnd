@@ -19,7 +19,7 @@ public class HabitSummaryVo {
     private Long count;
     private Long current;
     private Long sessionDuration;
-    private Long progressPercentage;
+    private Long achievePercentage;
     private Category category;
 
     public static List<HabitSummaryVo> listOf(List<HabitWithCounter> habits) {
@@ -39,7 +39,7 @@ public class HabitSummaryVo {
                 .count(habit.getGoalCountInSession())
                 .current(habit.getCurrent())
                 .sessionDuration(habit.getSessionDuration())
-                .progressPercentage(habit.getAchievePercentage())
+                .achievePercentage(habit.getAchievePercentage())
                 .category(habit.getCategory())
                 .build();
     }
