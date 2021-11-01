@@ -15,13 +15,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MainPageService {
 
-    private final MonsterService avatarService;
+    private final MonsterService monsterService;
     private final HabitService habitService;
 
     public MainPageResponseDto getMainPageResponseDto(User user) throws Throwable {
         List<HabitSummaryVo> habitSummaryList =
                 habitService.getHabitSummaryList(user);
-        MonsterVo monsterVo = avatarService.getMonsterVo(user);
+        MonsterVo monsterVo = monsterService.getMonsterVo(user);
 
         return MainPageResponseDto.builder()
                 .habits(habitSummaryList)
