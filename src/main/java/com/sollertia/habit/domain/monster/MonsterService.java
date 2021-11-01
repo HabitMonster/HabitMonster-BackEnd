@@ -50,7 +50,7 @@ public class MonsterService {
         user.updateMonster(monster, monsterName);
         userRepository.save(user);
 
-        MonsterVo monsterVo = new MonsterVo(monster.getId(), monster.getImageUrl(), monsterName);
+        MonsterVo monsterVo = MonsterVo.of(monster, monsterName);
 
         return MonsterResponseDto.builder()
                 .monster(monsterVo)
@@ -78,11 +78,9 @@ public class MonsterService {
     }
 
     public MonsterVo getMonsterVo(User user) {
-        Monster monster = user.getMonster();
-        return MonsterVo.builder()
-                .monsterid(monster.getId())
-                .monsterImage(monster.getImageUrl())
-                .monsterName(user.getMonsterName())
-                .build();
+       Monster monster = monsterRepository.findById(user.getMonster().getId()).orElseThrow(
+                () -> new MonsterNotFoundException("올바르지 않은 몬스터 ID입니다.")
+        );
+        return MonsterVo.of(monster, user.getMonsterName());
     }
 }
