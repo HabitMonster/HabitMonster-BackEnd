@@ -1,12 +1,16 @@
-package com.sollertia.habit.domain.avatar;
+package com.sollertia.habit.domain.monster;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
-public class Avatar {
+@NoArgsConstructor //test
+@AllArgsConstructor //test
+public class Monster {
     @Id
     @GeneratedValue
     private Long id;

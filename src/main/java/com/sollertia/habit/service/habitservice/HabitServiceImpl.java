@@ -1,21 +1,21 @@
 package com.sollertia.habit.service.habitservice;
 
+import com.sollertia.habit.domain.habit.Habit;
 import com.sollertia.habit.domain.habit.HabitWithCounter;
 import com.sollertia.habit.domain.habit.Repository.HabitRepository;
 import com.sollertia.habit.domain.habit.Repository.HabitWithCounterRepository;
 import com.sollertia.habit.domain.habit.dto.*;
-import com.sollertia.habit.domain.habit.Habit;
 import com.sollertia.habit.domain.history.History;
 import com.sollertia.habit.domain.history.HistoryRepository;
 import com.sollertia.habit.domain.user.User;
 import com.sollertia.habit.domain.user.UserRepository;
 import com.sollertia.habit.exception.HabitIdNotFoundException;
-import com.sollertia.habit.exception.UserIdNotFoundException;
 import com.sollertia.habit.utils.DefaultResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -87,28 +87,13 @@ public class HabitServiceImpl implements HabitService {
 
 
     @Override
-    public List<HabitSummaryResponseVo> getHabitSummaryList(Long userId) throws Throwable {
-
-
-        List<HabitSummaryResponseVo> habitSummaryResponseVos = makeHabitSummaryList(userId);
-        return habitSummaryResponseVos;
-    }
-
-    private List<HabitSummaryResponseVo> makeHabitSummaryList(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new UserIdNotFoundException("Couldn't load request User"));
-
-        List<HabitSummaryResponseVo> getHabitSummaryList = new ArrayList<>();
-
-        List<Habit> habitsWithCounters = user.getHabit();
-
-        for (Habit habit : habitsWithCounters) {
-            habitWithCounterRepository
-                    .findById(habit.getId())
-                    .orElseThrow(() -> new HabitIdNotFoundException("Couldn't load correspond Habit"));
-            getHabitSummaryList.add(new HabitSummaryResponseVo(habit));
+    public List<HabitSummaryVo> getHabitSummaryList(User user) {
+        List<HabitSummaryVo> habitSummaryList = new ArrayList<>();
+        List<Habit> habits = habitWithCounterRepository.findByUser(user);
+        for (Habit habit : habits) {
+            habitSummaryList.add(HabitSummaryVo.of((HabitWithCounter) habit));
         }
-
-        return getHabitSummaryList;
+        return habitSummaryList;
     }
 
 }

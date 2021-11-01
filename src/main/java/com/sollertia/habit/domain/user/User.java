@@ -1,7 +1,7 @@
 package com.sollertia.habit.domain.user;
 
-import com.sollertia.habit.domain.avatar.Avatar;
-import com.sollertia.habit.domain.avatar.AvatarCollection;
+import com.sollertia.habit.domain.monster.Monster;
+import com.sollertia.habit.domain.monster.MonsterCollection;
 import com.sollertia.habit.domain.habit.Habit;
 import com.sollertia.habit.domain.habit.HabitWithCounter;
 import com.sollertia.habit.domain.oauth2.userinfo.Oauth2UserInfo;
@@ -37,7 +37,7 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     private UserType type;
 
-    private String avatarName;
+    private String monsterName;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Habit> habit;
@@ -46,10 +46,10 @@ public class User {
     private List<UserTeam> userTeam;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<AvatarCollection> avatarCollections;
+    private List<MonsterCollection> monsterCollections;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Avatar avatar;
+    private Monster monster;
 
     public User() {
     }
@@ -75,12 +75,12 @@ public class User {
 
     private void setType(UserType type){this.type = type;}
 
-    private void setAvatarName(String avatarName) {
-        this.avatarName = avatarName;
+    private void setMonsterName(String monsterName) {
+        this.monsterName = monsterName;
     }
 
-    private void setAvatar(Avatar avatar) {
-        this.avatar = avatar;
+    private void setMonster(Monster monster) {
+        this.monster = monster;
     }
 
     public void updateUsername(String username) {
@@ -101,8 +101,8 @@ public class User {
         this.expPoint += this.level.getPlusPoint();
     }
 
-    public void selectAvatar(Avatar avatar, String avatarName) {
-        this.setAvatar(avatar);
-        this.setAvatarName(avatarName);
+    public void updateMonster(Monster monster, String monsterName) {
+        this.setMonster(monster);
+        this.setMonsterName(monsterName);
     }
 }
