@@ -1,4 +1,4 @@
-package com.sollertia.habit.service.habitservice;
+package com.sollertia.habit.domain.habit.habitservice;
 
 import com.sollertia.habit.domain.habit.Habit;
 import com.sollertia.habit.domain.habit.HabitWithCounter;

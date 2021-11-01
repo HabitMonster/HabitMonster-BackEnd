@@ -1,4 +1,4 @@
-package com.sollertia.habit.service.statisticsservice;
+package com.sollertia.habit.domain.completedhabbit.statisticsservice;
 
 import com.sollertia.habit.domain.completedhabbit.CompletedHabit;
 import com.sollertia.habit.domain.completedhabbit.CompletedHabitRepository;

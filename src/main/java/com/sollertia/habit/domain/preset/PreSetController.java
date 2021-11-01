@@ -6,7 +6,7 @@ import com.sollertia.habit.domain.preset.dto.PreSetResponseDto;
 import com.sollertia.habit.domain.preset.dto.PreSetVo;
 import com.sollertia.habit.domain.preset.presetservice.PreSetServiceImpl;
 import com.sollertia.habit.domain.user.UserDetailsImpl;
-import com.sollertia.habit.service.habitservice.HabitServiceImpl;
+import com.sollertia.habit.domain.habit.habitservice.HabitServiceImpl;
 import com.sollertia.habit.utils.DefaultResponseDto;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;

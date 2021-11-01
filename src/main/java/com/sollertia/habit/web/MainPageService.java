@@ -1,10 +1,10 @@
-package com.sollertia.habit.service.mainpage;
+package com.sollertia.habit.web;
 
 import com.sollertia.habit.domain.habit.dto.HabitSummaryVo;
 import com.sollertia.habit.domain.monster.MonsterService;
 import com.sollertia.habit.domain.monster.dto.MonsterVo;
 import com.sollertia.habit.domain.user.User;
-import com.sollertia.habit.service.habitservice.HabitService;
+import com.sollertia.habit.domain.habit.habitservice.HabitService;
 import com.sollertia.habit.web.dto.MainPageResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

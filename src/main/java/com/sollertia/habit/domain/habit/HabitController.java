@@ -1,9 +1,8 @@
-package com.sollertia.habit.web;
+package com.sollertia.habit.domain.habit;
 
-import com.sollertia.habit.domain.habit.Habit;
 import com.sollertia.habit.domain.habit.dto.*;
 import com.sollertia.habit.domain.user.UserDetailsImpl;
-import com.sollertia.habit.service.habitservice.HabitServiceImpl;
+import com.sollertia.habit.domain.habit.habitservice.HabitServiceImpl;
 import com.sollertia.habit.utils.DefaultResponseDto;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
