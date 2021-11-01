@@ -11,7 +11,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.Duration;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 @Getter
 @Entity
@@ -34,11 +39,12 @@ public abstract class Habit {
 
     private LocalDate durationEnd;
 
-    private Long sessionDuration;
-
     private String practiceDays;
 
+    private Long accomplishCounter = 0L;
+
     // == n일에 n번 수행하는 습관 생성용 칼럼 ==
+    private Long sessionDuration;
 
     private Long nPerDay;
 
@@ -57,10 +63,6 @@ public abstract class Habit {
 
     @Enumerated(EnumType.STRING)
     private Category category;
-
-    public Long getAchievePercentage() {
-        return null;
-    }
 
     protected void setTitle(String title) {
         this.title = title;
@@ -95,6 +97,52 @@ public abstract class Habit {
     }
 
     public abstract Long getCurrent();
+
+    public Long getAchievePercentage() {
+
+        // 분모
+        int wholeCount = 0;
+        // 총 기간 int값
+        int wholeDays = Long.valueOf(Duration.between(this.durationStart.atStartOfDay(), this.durationEnd.atStartOfDay()).toDays()).intValue();
+        // 시작일 int값(1~7)(월~일)
+        int startDay = this.durationStart.getDayOfWeek().getValue();
+        // 수행하기로 한 요일 배열
+        ArrayList<Integer> days = new ArrayList<>();
+        int[] ints = Stream.of(this.practiceDays.split("")).mapToInt(Integer::parseInt).toArray();
+        for (int anInt : ints) {
+            days.add(anInt);
+        }
+        // 7로 나눈 나머지와 값 비교를 하기 위해 7이 있다면 0을 넣어줌
+        if (days.stream().anyMatch(x -> x == 7)) {
+            days.add(0);
+        }
+        // 매일하는 습관인 경우
+        if (this.practiceDays.length() == 7) {
+            // 총 수행한 날(= accomplishCounter) / 총 기간 -> 달성율
+            return this.accomplishCounter / Long.valueOf(wholeDays);
+        }
+
+        // 매일하는 습관이 아닌경우 분모값 += (매 주 수행해야하는 요일 수 * 주(week) 수)
+        wholeCount += (wholeDays / 7) * this.practiceDays.length();
+
+        // 만약 총 기간이 week로 나누어 떨어진다면
+        if (wholeDays % 7 == 0) {
+            // whole counter == 총 수행일
+            return this.accomplishCounter / Long.valueOf(wholeCount);
+        } else {
+            // 나머지가 있다면 (시작요일 + 나머지)를 7로 나누어 해당 요일에 습관을 수행하기로 했는지 비교
+            for (int i = startDay; i <= startDay + (wholeDays % 7); i++) {
+                int i1 = i % 7;
+                boolean contains = days.stream().anyMatch(x -> x == i1);
+                // 해당 요일 있으면 값추가
+                if (contains) {
+                    wholeDays += 1;
+                }
+            }
+            return this.accomplishCounter / Long.valueOf(wholeDays);
+        }
+
+    }
 
     protected void setUser(User user) {
         this.user = user;
