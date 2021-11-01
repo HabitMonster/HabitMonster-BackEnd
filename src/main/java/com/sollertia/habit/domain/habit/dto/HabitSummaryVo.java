@@ -1,6 +1,7 @@
 package com.sollertia.habit.domain.habit.dto;
 
 import com.sollertia.habit.domain.habit.Habit;
+import com.sollertia.habit.domain.habit.HabitWithCounter;
 import com.sollertia.habit.domain.habit.enums.Category;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,21 +22,21 @@ public class HabitSummaryVo {
     private Long progressPercentage;
     private Category category;
 
-    public static List<HabitSummaryVo> listOf(List<Habit> habits) {
+    public static List<HabitSummaryVo> listOf(List<HabitWithCounter> habits) {
         List<HabitSummaryVo> summaryVoList = new ArrayList<>();
-        for (Habit habit : habits) {
+        for (HabitWithCounter habit : habits) {
             summaryVoList.add(of(habit));
         }
         return summaryVoList;
     }
 
-    public static HabitSummaryVo of(Habit habit) {
+    public static HabitSummaryVo of(HabitWithCounter habit) {
         return HabitSummaryVo.builder()
                 .habitId(habit.getId())
                 .title(habit.getTitle())
-//                .durationStart(habit.getDurationStart())
-//                .durationEnd(habit.getDurationEnd())
-                .count(habit.getCount())
+                .durationStart(habit.getDurationStart().toString())
+                .durationEnd(habit.getDurationEnd().toString())
+                .count(habit.getGoalCountInSession())
                 .current(habit.getCurrent())
                 .sessionDuration(habit.getSessionDuration())
                 .progressPercentage(habit.getAchievePercentage())

@@ -25,20 +25,4 @@ public class PreSetController {
             return PreSetResponseDto.builder().preSets(list).statusCode(200).responseMessage("PreSets 전달 완료").build();
     }
 
-    @ApiOperation(value = "선택한 PreSet Habit 테이블에 저장")
-    @GetMapping("/presets/{preset_id}")
-    public PreSetResponseDto selectPreSet(@PathVariable Long preset_id){
-        PreSetVo preSetVo = PreSet.getPreSet(preset_id);
-        assert preSetVo != null;
-
-        Calendar Startdate = Calendar.getInstance();
-        Calendar Enddate = Calendar.getInstance();
-        DateFormat form = new SimpleDateFormat("yyyy-MM-dd");
-        Enddate.add(Calendar.DATE, preSetVo.getPeriod());
-
-        HabitDtoImpl habitDto = HabitDtoImpl.builder().title(preSetVo.getTitle()).description(preSetVo.getDescription()).
-        durationStart(form.format(Startdate.getTime())).durationEnd(form.format(Enddate.getTime())).categoryType(preSetVo.getCategory()).
-        count(preSetVo.getCount()).sessionDuration(1L).practiseDays(preSetVo.getPractiseDays()).build();
-        return PreSetResponseDto.builder().habitDto(habitDto).statusCode(200).responseMessage("PreSet 저장 완료").build();
-    }
 }

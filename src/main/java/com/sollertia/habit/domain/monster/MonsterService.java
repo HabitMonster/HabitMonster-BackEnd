@@ -76,4 +76,13 @@ public class MonsterService {
         MonsterCollection monsterCollection = MonsterCollection.createMonsterCollection(user, monster);
         monsterCollectionRepository.save(monsterCollection);
     }
+
+    public MonsterVo getMonsterVo(User user) {
+        Monster monster = user.getMonster();
+        return MonsterVo.builder()
+                .monsterid(monster.getId())
+                .monsterImage(monster.getImageUrl())
+                .monsterName(user.getMonsterName())
+                .build();
+    }
 }
