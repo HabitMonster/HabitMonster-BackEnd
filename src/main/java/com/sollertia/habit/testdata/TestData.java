@@ -21,11 +21,12 @@ public class TestData implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        Monster monster = new Monster(1L, "cat", EvolutionGrade.EV1, "cat.img");
-        monsterRepository.save(monster);
+        Monster monster1 = new Monster(1L, "cat", EvolutionGrade.EV1, "cat.img");
+        Monster monster2 = new Monster(2L, "dog", EvolutionGrade.EV1, "dog.img");
+        monsterRepository.save(monster1);
+        monsterRepository.save(monster2);
 
         User testUser = User.builder().socialId("1234G").type(UserType.Google).build();
-        testUser.updateMonster(monster, "test monster");
         userRepository.save(testUser);
     }
 }

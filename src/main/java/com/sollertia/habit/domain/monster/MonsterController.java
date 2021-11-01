@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 @RestController
 @RequiredArgsConstructor
@@ -15,24 +16,24 @@ public class MonsterController {
 
     private final MonsterService monsterService;
 
-    @ApiOperation(value = "LV1 몬스터 목록 조회")
+    @ApiOperation(value = "LV1 몬스터 목록 조회", notes = "몬스터 목록 반환")
     @GetMapping("/monsters")
-    public MonsterListResponseDto getAllMonsters(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public MonsterListResponseDto getAllMonsters(@ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return monsterService.getAllMonsters(userDetails.getUser());
     }
 
-    @ApiOperation(value = "몬스터 변경")
+    @ApiOperation(value = "몬스터 변경", notes = "변경된 몬스터 데이터 반환")
     @PatchMapping("/user/monster")
     public MonsterResponseDto updateMonster(
-            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestBody MonsterSelectRequestDto requestDto) {
         return monsterService.updateMonster(userDetails.getUser(), requestDto);
     }
 
-    @ApiOperation(value = "몬스터 컬렉션 조회")
-    @PatchMapping("/user/monsters")
+    @ApiOperation(value = "몬스터 컬렉션 조회", notes = "사용자 몬스터 컬렉션 목록 반환")
+    @GetMapping("/user/monsters")
     public MonsterListResponseDto getMonsterCollection(
-            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+            @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return monsterService.getMonsterCollection(userDetails.getUser());
     }
 }
