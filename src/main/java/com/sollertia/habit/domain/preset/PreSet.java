@@ -1,12 +1,10 @@
 package com.sollertia.habit.domain.preset;
 
 import com.sollertia.habit.domain.category.enums.Category;
+import com.sollertia.habit.domain.preset.dto.PreSetVo;
 import lombok.Getter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Getter
 @Entity
@@ -14,14 +12,56 @@ public class PreSet {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long Id;
     private Long categoryId;
     private String title;
     private String description;
     private int period;
     private Long count;
+    @Enumerated(EnumType.STRING)
     private Category category;
     private String practiseDays;
 
+    public PreSet() {
+
+    }
+
+    private void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    private void setTitle(String title) {
+        this.title = title;
+    }
+
+    private void setDescription(String description) {
+        this.description = description;
+    }
+
+    private void setPeriod(int period) {
+        this.period = period;
+    }
+
+    private void setCount(Long count) {
+        this.count = count;
+    }
+
+    private void setCategory(Category category) {
+        this.category = category;
+    }
+
+    private void setPractiseDays(String practiseDays) {
+        this.practiseDays = practiseDays;
+    }
+
+    public PreSet(PreSetVo preSetVo){
+        setCategoryId(preSetVo.getCategoryId());
+        setCategory(Category.getCategory(preSetVo.getCategoryId()));
+        setCount(preSetVo.getCount());
+        setTitle(preSetVo.getTitle());
+        setDescription(preSetVo.getDescription());
+        setPeriod(preSetVo.getPeriod());
+        setPractiseDays(preSetVo.getPractiseDays());
+    }
 
 }

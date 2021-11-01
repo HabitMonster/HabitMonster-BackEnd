@@ -1,8 +1,7 @@
 package com.sollertia.habit.domain.habit.dto;
 
-import com.sollertia.habit.domain.habit.Habit;
+import com.sollertia.habit.domain.category.enums.Category;
 import com.sollertia.habit.domain.habit.HabitWithCounter;
-import com.sollertia.habit.domain.habit.enums.Category;
 import lombok.Builder;
 import lombok.Getter;
 

@@ -1,7 +1,7 @@
 package com.sollertia.habit.domain.habit;
 
+import com.sollertia.habit.domain.category.enums.Category;
 import com.sollertia.habit.domain.habit.dto.HabitDtoImpl;
-import com.sollertia.habit.domain.habit.enums.Category;
 import lombok.Getter;
 
 import javax.persistence.DiscriminatorValue;
@@ -37,7 +37,7 @@ public class HabitWithCounter extends Habit {
         habit.setDurationStart(startDay);
         habit.setDurationEnd(endUpDate);
         habit.setUser(habitDtoImpl.getUser());
-        habit.setCategory(Category.fromString(habitDtoImpl.getCategory()));
+        habit.setCategory(Category.getCategory(habitDtoImpl.getCategoryId()));
         habit.setGoalCountInSession(habitDtoImpl.getCount());
         return habit;
     }
