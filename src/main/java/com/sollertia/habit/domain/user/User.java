@@ -105,4 +105,8 @@ public class User {
         this.setMonster(monster);
         this.setMonsterName(monsterName);
     }
+
+    public void levelUp() {
+        this.level = Level.nextOf(this.getLevel());
+    }
 }
