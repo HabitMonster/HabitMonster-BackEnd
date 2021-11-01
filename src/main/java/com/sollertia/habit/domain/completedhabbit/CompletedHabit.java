@@ -1,18 +1,23 @@
 package com.sollertia.habit.domain.completedhabbit;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.sollertia.habit.domain.habit.enums.Category;
+import com.sollertia.habit.domain.category.enums.Category;
 import com.sollertia.habit.domain.habit.enums.HabitType;
 import com.sollertia.habit.domain.user.User;
+import lombok.Getter;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
+@Getter
 @Entity
-public class CompletedHabit {
+public class CompletedHabit extends TimeStamped{
 
     @Id
     @GeneratedValue
     private Long id;
+
+    private String title;
 
     private int accomplishedSessionCounter;
 
@@ -20,8 +25,6 @@ public class CompletedHabit {
     @JoinColumn(name="user_id")
     @JsonIgnore
     private User user;
-
-    private long goalPercentage;
 
     @Enumerated(EnumType.STRING)
     private Category category;
@@ -35,5 +38,12 @@ public class CompletedHabit {
     @Column(nullable = true)
     private Long goalCount;
 
-    private Long experiencePoint;
+    private Boolean isSuccess;
+
+    private LocalDate startDate;
+
+    private LocalDate endupDate;
+
+    private int achievement;
+
 }

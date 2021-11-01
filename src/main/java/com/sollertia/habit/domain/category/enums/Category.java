@@ -1,6 +1,7 @@
 package com.sollertia.habit.domain.category.enums;
 
 import com.sollertia.habit.domain.category.dto.CategoryVo;
+import com.sollertia.habit.domain.habit.enums.HabitSession;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,5 +27,14 @@ public enum Category {
             list.add(CategoryVo.builder().categoryId(p.getCategoryId()).category(p).build());
         }
         return list;
+    }
+
+    public static Category fromLong(Long category) {
+        for (Category h : Category.values()) {
+            if (h.getCategoryId().equals(category)) {
+                return h;
+            }
+        }
+        return null;
     }
 }

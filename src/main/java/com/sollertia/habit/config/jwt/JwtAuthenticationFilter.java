@@ -33,8 +33,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String refreshToken = jwtTokenProvider.requestRefreshToken(request);
         String refreshSocialId;
 
-        ServletInputStream inputStream = request.getInputStream();
-        String messageBody = StreamUtils.copyToString(inputStream, StandardCharsets.UTF_8);
+//        ServletInputStream inputStream = request.getInputStream();
+//        String messageBody = StreamUtils.copyToString(inputStream, StandardCharsets.UTF_8);
 
         if (jwtToken != null) {
 
@@ -43,15 +43,27 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 checkToken(jwtToken);
 
             } catch (ExpiredJwtException ex) {
+                ServletInputStream inputStream = request.getInputStream();
+                String messageBody = StreamUtils.copyToString(inputStream, StandardCharsets.UTF_8);
+
                 createRequest(request, "accessToken 만료", request.getRequestURI(), messageBody);
                 throw ex;
             } catch (SignatureException ex) {
+                ServletInputStream inputStream = request.getInputStream();
+                String messageBody = StreamUtils.copyToString(inputStream, StandardCharsets.UTF_8);
+
                 createRequest(request, "accessToken 인증 오류", request.getRequestURI(), messageBody);
                 throw ex;
             } catch (MalformedJwtException ex) {
+                ServletInputStream inputStream = request.getInputStream();
+                String messageBody = StreamUtils.copyToString(inputStream, StandardCharsets.UTF_8);
+
                 createRequest(request, "accessToken 손상", request.getRequestURI(), messageBody);
                 throw ex;
             } catch (UnsupportedJwtException ex) {
+                ServletInputStream inputStream = request.getInputStream();
+                String messageBody = StreamUtils.copyToString(inputStream, StandardCharsets.UTF_8);
+
                 createRequest(request, "accessToken 지원불가", request.getRequestURI(), messageBody);
                 throw ex;
             }
@@ -63,11 +75,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 try {
                     refreshSocialId = redisUtil.getData(refreshToken);
                 } catch (Exception ex) {
+                    ServletInputStream inputStream = request.getInputStream();
+                    String messageBody = StreamUtils.copyToString(inputStream, StandardCharsets.UTF_8);
+
                     createRequest(request, "Redis 연결에 문제가 있습니다.", request.getRequestURI(), messageBody);
                     throw ex;
                 }
 
                 if (!refreshSocialId.equals(jwtTokenProvider.getSocialId(refreshToken))) {
+                    ServletInputStream inputStream = request.getInputStream();
+                    String messageBody = StreamUtils.copyToString(inputStream, StandardCharsets.UTF_8);
+
                     createRequest(request, "RefreshToken 탈취 가능성이 있습니다. RefreshToken을 새롭게 발급 받으세요.", request.getRequestURI(), messageBody);
                     throw new JwtException("");
                 }
@@ -75,15 +93,27 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 checkToken(refreshToken);
 
             } catch (ExpiredJwtException ex) {
+                ServletInputStream inputStream = request.getInputStream();
+                String messageBody = StreamUtils.copyToString(inputStream, StandardCharsets.UTF_8);
+
                 createRequest(request, "refreshToken 만료", request.getRequestURI(), messageBody);
                 throw ex;
             } catch (SignatureException ex) {
+                ServletInputStream inputStream = request.getInputStream();
+                String messageBody = StreamUtils.copyToString(inputStream, StandardCharsets.UTF_8);
+
                 createRequest(request, "refreshToken 인증 오류", request.getRequestURI(), messageBody);
                 throw ex;
             } catch (MalformedJwtException ex) {
+                ServletInputStream inputStream = request.getInputStream();
+                String messageBody = StreamUtils.copyToString(inputStream, StandardCharsets.UTF_8);
+
                 createRequest(request, "refreshToken 손상", request.getRequestURI(), messageBody);
                 throw ex;
             } catch (UnsupportedJwtException ex) {
+                ServletInputStream inputStream = request.getInputStream();
+                String messageBody = StreamUtils.copyToString(inputStream, StandardCharsets.UTF_8);
+
                 createRequest(request, "refreshToken 지원불가", request.getRequestURI(), messageBody);
                 throw ex;
             }

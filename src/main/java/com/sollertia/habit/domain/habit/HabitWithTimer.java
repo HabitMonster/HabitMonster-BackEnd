@@ -1,8 +1,10 @@
 package com.sollertia.habit.domain.habit;
 
+import com.sollertia.habit.domain.category.enums.Category;
 import com.sollertia.habit.domain.habit.dto.HabitDtoImpl;
-import com.sollertia.habit.domain.habit.enums.Category;
+import com.sollertia.habit.domain.user.User;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -12,23 +14,24 @@ import java.time.format.DateTimeFormatter;
 @Getter
 @Entity
 @DiscriminatorValue("T")
+@NoArgsConstructor
 public class HabitWithTimer extends Habit {
 
 
-    private Long currentDuration = 0L;
+    private int currentDuration = 0;
 
-    private Long goalDurationTime;
+    private int goalDurationTime;
 
     @Override
-    public Long getCurrent() {
+    public int getCurrent() {
         return this.currentDuration;
     }
 
-    public void setGoalDurationTime(Long goalDurationTime) {
+    public void setGoalDurationTime(int goalDurationTime) {
         this.goalDurationTime = goalDurationTime;
     }
 
-    public static HabitWithTimer createHabitWithTimer(HabitDtoImpl habitDtoImpl) {
+    public static HabitWithTimer createHabitWithTimer(HabitDtoImpl habitDtoImpl, User user) {
         HabitWithTimer habit = new HabitWithTimer();
         LocalDate startDay = LocalDate.parse(habitDtoImpl.getDurationStart(), DateTimeFormatter.ISO_DATE);
         LocalDate endUpDate = LocalDate.parse(habitDtoImpl.getDurationEnd(), DateTimeFormatter.ISO_DATE);
@@ -36,8 +39,8 @@ public class HabitWithTimer extends Habit {
         habit.setDescription(habitDtoImpl.getDescription());
         habit.setDurationStart(startDay);
         habit.setDurationEnd(endUpDate);
-        habit.setUser(habitDtoImpl.getUser());
-        habit.setCategory(Category.fromString(habitDtoImpl.getCategory()));
+        habit.setUser(user);
+        habit.setCategory(Category.fromLong(habitDtoImpl.getCategory()));
         habit.setGoalDurationTime(habitDtoImpl.getCount());
         return habit;
     }

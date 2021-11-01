@@ -14,8 +14,10 @@ import com.sollertia.habit.utils.DefaultResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+
 
 @RequiredArgsConstructor
 @Service
@@ -30,11 +32,12 @@ public class HabitServiceImpl implements HabitService {
     private final HistoryRepository historyRepository;
 
 
+    @Transactional
     @Override
-    public DefaultResponseDto createHabit(HabitTypeDto habitTypeDto, HabitDtoImpl createHabitRequestDto) {
+    public DefaultResponseDto createHabit(HabitTypeDto habitTypeDto, HabitDtoImpl createHabitRequestDto, User user) {
 
 
-        Habit habit = Habit.createHabit(habitTypeDto.getHabitType(), createHabitRequestDto);
+        Habit habit = Habit.createHabit(habitTypeDto.getHabitType(), createHabitRequestDto, user);
 
         habitRepository.save(habit);
 
