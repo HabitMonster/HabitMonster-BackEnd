@@ -1,8 +1,8 @@
 package com.sollertia.habit.domain.habit;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sollertia.habit.domain.category.enums.Category;
 import com.sollertia.habit.domain.habit.dto.HabitDtoImpl;
-import com.sollertia.habit.domain.habit.enums.Category;
 import com.sollertia.habit.domain.habit.enums.HabitType;
 import com.sollertia.habit.domain.team.Team;
 import com.sollertia.habit.domain.user.User;

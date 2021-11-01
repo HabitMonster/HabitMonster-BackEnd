@@ -27,4 +27,8 @@ public enum Category {
         }
         return list;
     }
+
+    public static Category getCategory(){
+
+    }
 }
