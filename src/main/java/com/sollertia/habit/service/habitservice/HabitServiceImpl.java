@@ -87,28 +87,13 @@ public class HabitServiceImpl implements HabitService {
 
 
     @Override
-    public List<HabitSummaryResponseVo> getHabitSummaryList(Long userId) throws Throwable {
-
-
-        List<HabitSummaryResponseVo> habitSummaryResponseVos = makeHabitSummaryList(userId);
-        return habitSummaryResponseVos;
-    }
-
-    private List<HabitSummaryResponseVo> makeHabitSummaryList(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new UserIdNotFoundException("Couldn't load request User"));
-
-        List<HabitSummaryResponseVo> getHabitSummaryList = new ArrayList<>();
-
-        List<Habit> habitsWithCounters = user.getHabit();
-
-        for (Habit habit : habitsWithCounters) {
-            habitWithCounterRepository
-                    .findById(habit.getId())
-                    .orElseThrow(() -> new HabitIdNotFoundException("Couldn't load correspond Habit"));
-            getHabitSummaryList.add(new HabitSummaryResponseVo(habit));
+    public List<HabitSummaryVo> getHabitSummaryList(User user) {
+        List<HabitSummaryVo> habitSummaryList = new ArrayList<>();
+        List<Habit> habits = user.getHabit();
+        for (Habit habit : habits) {
+            habitSummaryList.add(HabitSummaryVo.of((HabitWithCounter) habit));
         }
-
-        return getHabitSummaryList;
+        return habitSummaryList;
     }
 
 }

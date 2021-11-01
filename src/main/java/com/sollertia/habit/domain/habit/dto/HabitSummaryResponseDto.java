@@ -11,5 +11,5 @@ import java.util.List;
 @AllArgsConstructor
 @SuperBuilder
 public class HabitSummaryResponseDto extends DefaultResponseDto {
-    List<HabitSummaryResponseVo> habits;
+    List<HabitSummaryVo> habits;
 }
