@@ -36,12 +36,7 @@ public class Oauth2UserService {
     }
 
     private User createUser(Oauth2UserInfo userInfo) {
-        switch (userInfo.getProviderType()){
-            case KAKAO: return userRepository.save(User.create(userInfo, UserType.Kakao));
-            case NAVER: return userRepository.save(User.create(userInfo, UserType.Naver));
-            case GOOGLE: return userRepository.save(User.create(userInfo, UserType.Google));
-            default: throw new InvalidSocialNameException("잘못된 소셜 로그인 타입입니다.");
-        }
+        return userRepository.save(User.create(userInfo));
     }
 
     private void checkProviderBetween(User user, Oauth2UserInfo userInfo) {
