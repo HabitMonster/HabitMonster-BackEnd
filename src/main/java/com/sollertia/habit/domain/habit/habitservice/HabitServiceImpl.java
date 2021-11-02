@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -92,7 +93,11 @@ public class HabitServiceImpl implements HabitService {
     @Override
     public List<HabitSummaryVo> getHabitSummaryList(User user) {
         List<HabitSummaryVo> habitSummaryList = new ArrayList<>();
-        List<Habit> habits = habitWithCounterRepository.findByUser(user);
+
+        int today = LocalDate.now().getDayOfWeek().getValue();
+        List<Habit> habits = habitWithCounterRepository
+                .findByUserAndPracticeDaysContains(user, today);
+
         for (Habit habit : habits) {
             habitSummaryList.add(HabitSummaryVo.of((HabitWithCounter) habit));
         }
