@@ -60,7 +60,7 @@ public class TestData implements ApplicationRunner {
             endDate.add(Calendar.DATE, preSetVo.getPeriod());
 
             HabitDtoImpl habitDto = HabitDtoImpl.builder().durationStart(form.format(startDate.getTime())).durationEnd(form.format(endDate.getTime()))
-                    .count(preSetVo.getCount()).title(preSetVo.getTitle()).description(preSetVo.getDescription()).practiceDays(preSetVo.getPractiseDays()).categoryId(preSetVo.getCategoryId()).build();
+                    .count(preSetVo.getCount()).title(preSetVo.getTitle()).description(preSetVo.getDescription()).practiceDays(preSetVo.getPracticeDays()).categoryId(preSetVo.getCategoryId()).build();
 
             HabitTypeDto habitTypeDto = new HabitTypeDto("counter", "specificDay");
 
