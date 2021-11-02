@@ -43,4 +43,9 @@ public class GlobalController {
     public ResponseEntity<ErrorResponseDto> HabitTypeNotFoundExceptionHandler(HabitTypeNotFoundException exception) {
         return new ResponseEntity<>(ErrorResponseDto.notFound(exception.getMessage()), HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponseDto> notReachedMaximumLevelExceptionHandler(NotReachedMaximumLevelException exception) {
+        return new ResponseEntity<>(ErrorResponseDto.badRequest(exception.getMessage()), HttpStatus.BAD_REQUEST);
+    }
 }
