@@ -42,8 +42,8 @@ public class PreSetController {
     @ApiOperation(value = "선택한 PreSet Habit 테이블에 저장")
     @GetMapping("/presets/{preset_id}")
     public DefaultResponseDto selectPreSet(@PathVariable Long preset_id, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        PreSetVo preSetVo = PreSet.getPreSet(preset_id);
-        //PreSetVo preSetVo = preSetService.getPreSet(preset_id);
+        //PreSetVo preSetVo = PreSet.getPreSet(preset_id);
+        PreSetVo preSetVo = preSetService.getPreSet(preset_id);
 
         Calendar startDate = Calendar.getInstance();
         Calendar endDate = Calendar.getInstance();

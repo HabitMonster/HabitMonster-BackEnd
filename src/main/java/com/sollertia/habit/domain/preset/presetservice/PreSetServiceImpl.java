@@ -24,6 +24,6 @@ public class PreSetServiceImpl implements PreSetService{
 
     @Override
     public PreSetVo getPreSet(Long preSetId) {
-        return null;
+        return preSetRepository.findById(preSetId).map(PreSetVo::new).orElseThrow(()->new IllegalArgumentException("PreSet없음"));
     }
 }
