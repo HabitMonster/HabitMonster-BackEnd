@@ -6,6 +6,7 @@ import com.sollertia.habit.domain.completedhabbit.SimpleHabitVo;
 import com.sollertia.habit.domain.completedhabbit.StatisticsResponseDto;
 import com.sollertia.habit.domain.user.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
+@Service
 public class StatisticsServiceImpl implements StatisticsService{
 
     private final CompletedHabitRepository completedHabitRepository;
