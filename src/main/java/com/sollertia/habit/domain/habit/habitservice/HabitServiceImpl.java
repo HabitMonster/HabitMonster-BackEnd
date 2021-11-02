@@ -80,9 +80,12 @@ public class HabitServiceImpl implements HabitService {
     }
 
     @Override
-    public DefaultResponseDto deleteHabit(HabitTypeDto habitTypeDto, Long habitId) {
+    public DefaultResponseDto deleteHabit(HabitTypeDto habitTypeDto, Long habitId, User user) {
 
-        habitWithCounterRepository.deleteById(habitId);
+        HabitWithCounter habitWithCounter = habitWithCounterRepository.findById(habitId).orElseThrow(() -> new HabitIdNotFoundException("can't find habit"));
+
+        user.getHabit().remove(habitWithCounter);
+        habitRepository.delete(habitWithCounter);
 
         return DefaultResponseDto.builder().statusCode(200).responseMessage("습관 삭제 성공").build();
     }

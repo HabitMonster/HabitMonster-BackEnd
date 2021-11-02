@@ -41,6 +41,7 @@ public class HabitWithCounter extends Habit {
         habit.setCategory(Category.getCategory(habitDtoImpl.getCategoryId()));
         habit.setGoalCountInSession(habitDtoImpl.getCount());
         habit.setPracticeDays(habitDtoImpl.getPracticeDays());
+        habit.setWholeDays();
         return habit;
     }
 
@@ -50,6 +51,7 @@ public class HabitWithCounter extends Habit {
         boolean isAccomplishToday = this.todayCounter >= this.goalCountInSession;
         if (isAccomplishToday) {
             this.setAccomplishInSession(true);
+            super.checkAccomplishCounter();
         }
         return isAccomplishToday;
     }
