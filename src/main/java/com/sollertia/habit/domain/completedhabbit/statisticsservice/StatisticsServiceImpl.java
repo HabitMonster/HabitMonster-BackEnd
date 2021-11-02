@@ -8,6 +8,7 @@ import com.sollertia.habit.domain.user.User;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,8 +19,9 @@ public class StatisticsServiceImpl implements StatisticsService{
     private final CompletedHabitRepository completedHabitRepository;
 
     @Override
-    public StatisticsResponseDto getStatistics(User user) {
-        LocalDate now = LocalDate.now();
+    public StatisticsResponseDto getStatistics(User user, String date) {
+        String datenow = date + "-01";
+        LocalDate now = LocalDate.parse(date, DateTimeFormatter.ISO_DATE);
 
         List<SimpleHabitVo> successVoList = new ArrayList<>();
         List<SimpleHabitVo> failedVoList = new ArrayList<>();
@@ -40,7 +42,7 @@ public class StatisticsServiceImpl implements StatisticsService{
             failedVoList.add(new SimpleHabitVo(completedHabit));
         }
 
-        StatisticsResponseDto statisticsResponseDto = new StatisticsResponseDto(successHabit, failedHabit);
+        StatisticsResponseDto statisticsResponseDto = new StatisticsResponseDto(successVoList, failedVoList);
         statisticsResponseDto.setStatusCode(200);
         statisticsResponseDto.setMsg("success");
 

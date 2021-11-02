@@ -11,6 +11,6 @@ public class SimpleHabitVo {
 
     public SimpleHabitVo(CompletedHabit completedHabit) {
         this.title = completedHabit.getTitle();
-        this.achievement = completedHabit.getAchievement();
+        this.achievement = completedHabit.getAchievementPercentage();
     }
 }

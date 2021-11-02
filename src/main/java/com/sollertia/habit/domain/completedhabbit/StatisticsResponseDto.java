@@ -13,12 +13,12 @@ public class StatisticsResponseDto {
     private int totalCount;
     private int succeededCount;
     private int failedCount;
-    private List<CompletedHabit> successList;
-    private List<CompletedHabit> failedList;
+    private List<SimpleHabitVo> successList;
+    private List<SimpleHabitVo> failedList;
     private int statusCode;
     private String msg;
 
-    public StatisticsResponseDto(List<CompletedHabit> successList, List<CompletedHabit> failedList) {
+    public StatisticsResponseDto(List<SimpleHabitVo> successList, List<SimpleHabitVo> failedList) {
         this.successList = successList;
         this.failedList = failedList;
         this.totalCount = successList.size() + failedList.size();
