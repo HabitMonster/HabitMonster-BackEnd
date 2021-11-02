@@ -18,7 +18,7 @@ public class PreSetVo {
     private int period;
     private int count;
     private Category category;
-    private String practiseDays;
+    private String practiceDays;
 
     public PreSetVo(PreSet preSet) {
         this.presetId = preSet.getId();
@@ -28,6 +28,6 @@ public class PreSetVo {
         this.period = preSet.getPeriod();
         this.count = preSet.getCount();
         this.category = preSet.getCategory();
-        this.practiseDays = preSet.getPractiseDays();
+        this.practiceDays = preSet.getPracticeDays();
     }
 }

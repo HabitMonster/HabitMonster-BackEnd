@@ -2,12 +2,11 @@ package com.sollertia.habit.domain.preset;
 
 import com.sollertia.habit.domain.habit.dto.HabitDtoImpl;
 import com.sollertia.habit.domain.habit.dto.HabitTypeDto;
+import com.sollertia.habit.domain.habit.habitservice.HabitServiceImpl;
 import com.sollertia.habit.domain.preset.dto.PreSetResponseDto;
 import com.sollertia.habit.domain.preset.dto.PreSetVo;
-import com.sollertia.habit.domain.preset.enums.PreSet;
 import com.sollertia.habit.domain.preset.presetservice.PreSetServiceImpl;
 import com.sollertia.habit.domain.user.UserDetailsImpl;
-import com.sollertia.habit.domain.habit.habitservice.HabitServiceImpl;
 import com.sollertia.habit.utils.DefaultResponseDto;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +31,7 @@ public class PreSetController {
 
     @ApiOperation(value = "선택한 Category의 PreSet 목록 조회")
     @PostMapping("/categories/{category_id}/presets")
-    public PreSetResponseDto categoryPresetList(@PathVariable Long category_id){
+    public PreSetResponseDto categoryPreSetList(@PathVariable Long category_id){
 //            List<PreSetVo> list = PreSet.getPreSetList(category_id);
 //            return PreSetResponseDto.builder().preSets(list).statusCode(200).responseMessage("PreSets 전달 완료").build();
         List<PreSetVo> list = preSetService.categoryPreSetList(category_id);
@@ -51,7 +50,7 @@ public class PreSetController {
         endDate.add(Calendar.DATE, preSetVo.getPeriod());
 
         HabitDtoImpl habitDto = HabitDtoImpl.builder().durationStart(form.format(startDate.getTime())).durationEnd(form.format(endDate.getTime()))
-                .count(preSetVo.getCount()).title(preSetVo.getTitle()).description(preSetVo.getDescription()).practiceDays(preSetVo.getPractiseDays()).categoryId(preSetVo.getCategoryId()).build();
+                .count(preSetVo.getCount()).title(preSetVo.getTitle()).description(preSetVo.getDescription()).practiceDays(preSetVo.getPracticeDays()).categoryId(preSetVo.getCategoryId()).build();
 
         HabitTypeDto habitTypeDto = new HabitTypeDto("counter", "specificDay");
 

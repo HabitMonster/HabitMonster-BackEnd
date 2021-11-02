@@ -15,5 +15,4 @@ public class HabitDetail {
     private String durationEnd;
     private int count;
     private String category;
-    private Long sessionDuration;
 }
