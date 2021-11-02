@@ -20,7 +20,7 @@ public class PreSet {
     private int count;
     @Enumerated(EnumType.STRING)
     private Category category;
-    private String practiseDays;
+    private String practiceDays;
 
     public PreSet() {
 
@@ -50,8 +50,8 @@ public class PreSet {
         this.category = category;
     }
 
-    private void setPractiseDays(String practiseDays) {
-        this.practiseDays = practiseDays;
+    private void setPracticeDays(String practiceDays) {
+        this.practiceDays = practiceDays;
     }
 
     public PreSet(PreSetVo preSetVo){
@@ -61,7 +61,7 @@ public class PreSet {
         setTitle(preSetVo.getTitle());
         setDescription(preSetVo.getDescription());
         setPeriod(preSetVo.getPeriod());
-        setPractiseDays(preSetVo.getPractiseDays());
+        setPracticeDays(preSetVo.getPracticeDays());
     }
 
 }
