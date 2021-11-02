@@ -44,6 +44,6 @@ public class CompletedHabit extends TimeStamped{
 
     private LocalDate endupDate;
 
-    private int achievement;
+    private int achievementPercentage;
 
 }

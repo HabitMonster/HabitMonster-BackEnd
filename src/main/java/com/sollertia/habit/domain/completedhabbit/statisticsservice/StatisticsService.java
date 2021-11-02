@@ -5,6 +5,6 @@ import com.sollertia.habit.domain.user.User;
 
 public interface StatisticsService {
 
-    public StatisticsResponseDto getStatistics(User user);
+    public StatisticsResponseDto getStatistics(User user, String date);
 
 }
