@@ -10,6 +10,8 @@ public enum Level {
     LV4(4,5, 6),
     LV5(5,0, 0);
 
+    public static final int MAX_LEVEL = 5;
+
     private final Integer value;
     private final Integer plusPoint;
     private final Integer minusPoint;
@@ -39,5 +41,4 @@ public enum Level {
             return null;
         }
     }
-
 }

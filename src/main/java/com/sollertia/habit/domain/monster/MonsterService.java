@@ -1,9 +1,11 @@
 package com.sollertia.habit.domain.monster;
 
 import com.sollertia.habit.domain.monster.dto.*;
+import com.sollertia.habit.domain.user.Level;
 import com.sollertia.habit.domain.user.User;
 import com.sollertia.habit.domain.user.UserRepository;
 import com.sollertia.habit.exception.MonsterNotFoundException;
+import com.sollertia.habit.exception.NotReachedMaximumLevelException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -66,8 +68,12 @@ public class MonsterService {
     }
 
     public void addMonsterCollection(User user, Monster monster) {
-        MonsterCollection monsterCollection = MonsterCollection.createMonsterCollection(user, monster);
-        monsterCollectionRepository.save(monsterCollection);
+        if (user.getLevel().getValue() == Level.MAX_LEVEL) {
+            MonsterCollection monsterCollection = MonsterCollection.createMonsterCollection(user, monster);
+            monsterCollectionRepository.save(monsterCollection);
+        } else {
+            throw new NotReachedMaximumLevelException("최대 레벨에 도달하지 못했습니다.");
+        }
     }
 
     public MonsterVo getMonsterVo(User user) {
