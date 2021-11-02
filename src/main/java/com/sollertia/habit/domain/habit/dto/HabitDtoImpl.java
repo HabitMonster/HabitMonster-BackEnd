@@ -18,5 +18,4 @@ public class HabitDtoImpl {
     private Long categoryId;
     private int count;
     private String practiceDays;
-    private Category categoryType;
 }

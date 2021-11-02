@@ -15,7 +15,7 @@ public interface HabitService {
 
     public HabitCheckResponseDto checkHabit(HabitTypeDto habitTypeDto, Long habitId);
 
-    public DefaultResponseDto deleteHabit(HabitTypeDto habitTypeDto, Long habitId);
+    public DefaultResponseDto deleteHabit(HabitTypeDto habitTypeDto, Long habitId, User user);
 
     public List<HabitSummaryVo> getHabitSummaryList(User user) throws Throwable;
 

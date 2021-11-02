@@ -42,6 +42,7 @@ public class HabitWithTimer extends Habit {
         habit.setUser(user);
         habit.setCategory(Category.getCategory(habitDtoImpl.getCategoryId()));
         habit.setGoalDurationTime(habitDtoImpl.getCount());
+        habit.setWholeDays();
         return habit;
     }
 

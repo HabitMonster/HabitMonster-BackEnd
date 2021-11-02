@@ -32,6 +32,7 @@ public class User {
 
     private Long expPoint;
 
+    @Enumerated(value = EnumType.STRING)
     private Level level;
 
     @Enumerated(value = EnumType.STRING)

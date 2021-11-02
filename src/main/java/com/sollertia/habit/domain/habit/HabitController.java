@@ -39,7 +39,7 @@ public class HabitController {
 
         HabitTypeDto habitTypeDto = new HabitTypeDto("counter", "specificDay");
 
-        return habitService.deleteHabit(habitTypeDto, habitId);
+        return habitService.deleteHabit(habitTypeDto, habitId, userDetails.getUser());
     }
     @ApiOperation(value = "습관 체크", notes = "성공 실패여부 반환")
     @GetMapping("/habits/check/{habitId}")
