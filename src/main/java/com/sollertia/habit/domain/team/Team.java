@@ -20,8 +20,8 @@ public class Team {
 
     private String name;
 
-    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
-    private List<Habit> habitsWithCounter;
+//    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
+//    private List<Habit> habitsWithCounter;
 
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
     private List<UserTeam> userTeam;

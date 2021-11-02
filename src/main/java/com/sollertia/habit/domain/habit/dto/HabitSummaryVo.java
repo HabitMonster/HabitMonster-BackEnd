@@ -17,7 +17,6 @@ public class HabitSummaryVo {
     private String durationEnd;
     private int count;
     private int current;
-    private Long sessionDuration;
     private Long achievePercentage;
     private Category category;
 
@@ -37,7 +36,6 @@ public class HabitSummaryVo {
                 .durationEnd(habit.getDurationEnd().toString())
                 .count(habit.getGoalCountInSession())
                 .current(habit.getCurrent())
-                .sessionDuration(habit.getSessionDuration())
                 .achievePercentage(habit.getAchievePercentage())
                 .category(habit.getCategory())
                 .build();

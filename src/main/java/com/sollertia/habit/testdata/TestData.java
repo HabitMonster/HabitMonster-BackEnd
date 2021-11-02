@@ -42,7 +42,7 @@ public class TestData implements ApplicationRunner {
         monsterRepository.save(monster1);
         monsterRepository.save(monster2);
 
-        User testUser = User.builder().socialId("1234G").type(UserType.Google).level(Level.LV1).build();
+        User testUser = User.builder().socialId("1234G").type(UserType.Google).level(Level.LV1).expPoint(0l).build();
         userRepository.save(testUser);
 
         User user = userRepository.findById(3L).orElseThrow(()->new NullPointerException("없음"));
