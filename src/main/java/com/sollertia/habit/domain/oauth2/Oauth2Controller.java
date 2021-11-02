@@ -39,6 +39,6 @@ public class Oauth2Controller {
         redisUtil.setDataExpire(refreshToken, user.getSocialId(), JwtTokenProvider.REFRESH_TOKEN_USETIME / 1000L);
 
         return ResponseEntity.ok().body(JwtResponseDto.builder().accesstoken(accessToken).
-                isFirstLongin(isFirstLogin).refreshtoken(refreshToken).build());
+                isFirstLongin(isFirstLogin).refreshtoken(refreshToken).statusCode(200).responseMessage("토큰 발급 완료").build());
     }
 }
