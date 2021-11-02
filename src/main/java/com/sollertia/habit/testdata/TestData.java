@@ -48,7 +48,6 @@ public class TestData implements ApplicationRunner {
         User user = userRepository.findById(3L).orElseThrow(()->new NullPointerException("없음"));
 
         Calendar startDate = Calendar.getInstance();
-        Calendar endDate = Calendar.getInstance();
         DateFormat form = new SimpleDateFormat("yyyy-MM-dd");
 
         for (int i = 1; i < 15; i++) {
@@ -57,6 +56,7 @@ public class TestData implements ApplicationRunner {
             com.sollertia.habit.domain.preset.PreSet preSet = new com.sollertia.habit.domain.preset.PreSet(preSetVo);
             preSetRepository.save(preSet);
 
+            Calendar endDate = Calendar.getInstance();
             endDate.add(Calendar.DATE, preSetVo.getPeriod());
 
             HabitDtoImpl habitDto = HabitDtoImpl.builder().durationStart(form.format(startDate.getTime())).durationEnd(form.format(endDate.getTime()))
