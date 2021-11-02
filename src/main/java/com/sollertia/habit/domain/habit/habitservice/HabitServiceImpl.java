@@ -82,7 +82,7 @@ public class HabitServiceImpl implements HabitService {
     @Override
     public DefaultResponseDto deleteHabit(HabitTypeDto habitTypeDto, Long habitId) {
 
-        habitRepository.deleteById(habitId);
+        habitWithCounterRepository.deleteById(habitId);
 
         return DefaultResponseDto.builder().statusCode(200).responseMessage("습관 삭제 성공").build();
     }
