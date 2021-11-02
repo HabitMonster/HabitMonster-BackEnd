@@ -41,7 +41,7 @@ public class HabitServiceImpl implements HabitService {
 
         habitRepository.save(habit);
 
-        return DefaultResponseDto.builder().statusCode(200).responseMessage("Save Completed").build();
+        return DefaultResponseDto.builder().statusCode(200).responseMessage("습관 생성 성공").build();
 
     }
 
@@ -57,15 +57,14 @@ public class HabitServiceImpl implements HabitService {
                 .description(foundHabit.getDescription())
                 .durationEnd(foundHabit.getDurationEnd().toString())
                 .durationStart(foundHabit.getDurationStart().toString())
-                .sessionDuration(foundHabit.getSessionDuration())
                 .title(foundHabit.getTitle())
                 .build();
 
-        return HabitDetailResponseDto.builder().habitDetail(build).responseMessage("success").statusCode(200).build();
+        return HabitDetailResponseDto.builder().habitDetail(build).responseMessage("습관 상세 조회 성공").statusCode(200).build();
     }
 
     @Override
-    public DefaultResponseDto checkHabit(HabitTypeDto habitTypeDto, Long habitId) {
+    public HabitCheckResponseDto checkHabit(HabitTypeDto habitTypeDto, Long habitId) {
 
         HabitWithCounter habitWithCounter = habitWithCounterRepository.findById(habitId).orElseThrow(() -> new HabitIdNotFoundException("Couldn't find Habit"));
         Boolean isAchieve = habitWithCounter.check(1L);
@@ -76,16 +75,16 @@ public class HabitServiceImpl implements HabitService {
         }
         userRepository.save(habitWithCounter.getUser());
         habitWithCounterRepository.save(habitWithCounter);
-        return DefaultResponseDto.builder().statusCode(200).responseMessage("success").build();
+        return HabitCheckResponseDto.builder().statusCode(200).responseMessage("성공했습니다").current(habitWithCounter.getCurrent()).isAccomplished(isAchieve).build();
 
     }
 
     @Override
     public DefaultResponseDto deleteHabit(HabitTypeDto habitTypeDto, Long habitId) {
 
-        habitWithCounterRepository.deleteById(habitId);
+        habitRepository.deleteById(habitId);
 
-        return DefaultResponseDto.builder().statusCode(200).responseMessage("success").build();
+        return DefaultResponseDto.builder().statusCode(200).responseMessage("습관 삭제 성공").build();
     }
 
 

@@ -13,7 +13,7 @@ public interface HabitService {
 
     public HabitDetailResponseDto getHabitDetail(HabitTypeDto habitTypeDto, Long habitId) throws Throwable;
 
-    public DefaultResponseDto checkHabit(HabitTypeDto habitTypeDto, Long habitId);
+    public HabitCheckResponseDto checkHabit(HabitTypeDto habitTypeDto, Long habitId);
 
     public DefaultResponseDto deleteHabit(HabitTypeDto habitTypeDto, Long habitId);
 
