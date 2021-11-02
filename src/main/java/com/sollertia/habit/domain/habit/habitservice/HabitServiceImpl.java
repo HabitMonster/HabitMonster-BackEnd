@@ -58,6 +58,8 @@ public class HabitServiceImpl implements HabitService {
                 .description(foundHabit.getDescription())
                 .durationEnd(foundHabit.getDurationEnd().toString())
                 .durationStart(foundHabit.getDurationStart().toString())
+                .achievePercentage(foundHabit.getAchievePercentage())
+                .current(foundHabit.getCurrent())
                 .title(foundHabit.getTitle())
                 .build();
 

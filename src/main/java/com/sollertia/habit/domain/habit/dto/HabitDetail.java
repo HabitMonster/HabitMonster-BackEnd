@@ -15,4 +15,6 @@ public class HabitDetail {
     private String durationEnd;
     private int count;
     private String category;
+    private int current;
+    private Long achievePercentage;
 }
