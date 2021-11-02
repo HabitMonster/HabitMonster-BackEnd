@@ -54,7 +54,7 @@ public class MonsterService {
 
         return MonsterResponseDto.builder()
                 .monster(monsterVo)
-                .responseMessage("아바타가 선택되었습니다.")
+                .responseMessage("몬스터가 선택되었습니다.")
                 .statusCode(200)
                 .build();
     }
