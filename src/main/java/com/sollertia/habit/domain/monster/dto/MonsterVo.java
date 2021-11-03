@@ -7,13 +7,13 @@ import lombok.Getter;
 @Getter
 @Builder
 public class MonsterVo {
-    private Long monsterid;
+    private Long monsterId;
     private String monsterImage;
     private String monsterName;
 
     public static MonsterVo of(Monster monster, String name) {
         return MonsterVo.builder()
-                .monsterid(monster.getId())
+                .monsterId(monster.getId())
                 .monsterImage(monster.getImageUrl())
                 .monsterName(name)
                 .build();

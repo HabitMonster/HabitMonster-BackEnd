@@ -24,16 +24,14 @@ public class Oauth2Controller {
 
     @GetMapping("/user/login/{socialName}")
     public ResponseEntity<JwtResponseDto> login(@RequestParam(value = "code") String authCode,
-                                                @Nullable @RequestParam(value = "state") String state,
                                                 @PathVariable String socialName) {
 
-        Oauth2UserInfo userInfo = socialLoginService.getUserInfo(socialName, authCode, state);
+        Oauth2UserInfo userInfo = socialLoginService.getUserInfo(socialName, authCode);
         userInfo = oauth2UserService.putUserInto(userInfo);
 
         boolean isFirstLogin = userInfo.isFirstLogin();
         User user = userInfo.getUser();
 
-        //todo 서버 access token, refresh token 생성 하고 전달
         String accessToken =  jwtTokenProvider.responseAccessToken(user);
         String refreshToken = jwtTokenProvider.responseRefreshToken(user);
         redisUtil.setDataExpire(refreshToken, user.getSocialId(), JwtTokenProvider.REFRESH_TOKEN_USETIME / 1000L);

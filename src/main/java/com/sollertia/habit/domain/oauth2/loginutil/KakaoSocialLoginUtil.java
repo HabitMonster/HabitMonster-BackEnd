@@ -29,11 +29,6 @@ public class KakaoSocialLoginUtil implements SocialLoginUtil {
     String clientId;
 
     @Override
-    public Oauth2UserInfo getUserInfoByCode(String authCode, String state) {
-        return getUserInfoByCode(authCode);
-    }
-
-    @Override
     public Oauth2UserInfo getUserInfoByCode(String authCode) {
         try {
             String accessToken = getAccessTokenByCode(authCode);
