@@ -2,9 +2,7 @@ package com.sollertia.habit.domain.monster;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sollertia.habit.config.WebSecurityConfig;
-import com.sollertia.habit.domain.monster.dto.MonsterListResponseDto;
-import com.sollertia.habit.domain.monster.dto.MonsterSelectRequestDto;
-import com.sollertia.habit.domain.monster.dto.MonsterSummaryVo;
+import com.sollertia.habit.domain.monster.dto.*;
 import com.sollertia.habit.domain.oauth2.userinfo.GoogleOauth2UserInfo;
 import com.sollertia.habit.domain.oauth2.userinfo.Oauth2UserInfo;
 import com.sollertia.habit.domain.user.User;
@@ -104,6 +102,13 @@ class MonsterControllerTest {
     void updateMonster() throws Exception {
         //given
         authenticated();
+        MonsterResponseDto responseDto = MonsterResponseDto.builder()
+                .monster(MonsterVo.builder().monsterid(1L).monsterImage("monster.img").monsterName("testmonster").build())
+                .responseMessage("몬스터가 선택되었습니다.")
+                .statusCode(200).build();
+
+        given(monsterService.updateMonster(eq(testUser), any(MonsterSelectRequestDto.class)))
+                .willReturn(responseDto);
 
         String json = "{\n" +
                 "  \"monsterId\": 1,\n" +
@@ -117,7 +122,12 @@ class MonsterControllerTest {
                         .content(json))
                 .andDo(print())
                 //then
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.monster.monsterId").value("1"))
+                .andExpect(jsonPath("$.monster.monsterImage").value("monster.img"))
+                .andExpect(jsonPath("$.monster.monsterName").value("testmonster"))
+                .andExpect(jsonPath("$.responseMessage").value("몬스터가 선택되었습니다."))
+                .andExpect(jsonPath("$.statusCode").value("200"));
 
         verify(monsterService).updateMonster(eq(testUser), any(MonsterSelectRequestDto.class));
     }
