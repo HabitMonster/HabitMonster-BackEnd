@@ -82,8 +82,8 @@ class MonsterControllerTest {
         //given
         authenticated();
         List<MonsterSummaryVo> summaryVoList = new ArrayList<>();
-        summaryVoList.add(MonsterSummaryVo.builder().monsterid(1L).monsterImage("monster.img").build());
-        MonsterListResponseDto responseDto = MonsterListResponseDto.builder().monsters(summaryVoList).responseMessage("").statusCode(200).build();
+        summaryVoList.add(MonsterSummaryVo.builder().monsterId(1L).monsterImage("monster.img").build());
+        MonsterListResponseDto responseDto = MonsterListResponseDto.builder().monsters(summaryVoList).responseMessage("LV1 몬스터를 불러오는데 성공했습니다.").statusCode(200).build();
 
         given(monsterService.getAllMonsters(testUser))
                 .willReturn(responseDto);
@@ -93,8 +93,9 @@ class MonsterControllerTest {
         //then
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.monsters[0].monsterId").value("1"))
-                .andExpect(jsonPath("$.monsters[0].monsterImage").value("monster.img"));
-
+                .andExpect(jsonPath("$.monsters[0].monsterImage").value("monster.img"))
+                .andExpect(jsonPath("$.responseMessage").value("LV1 몬스터를 불러오는데 성공했습니다."))
+                .andExpect(jsonPath("$.statusCode").value("200"));
 
         verify(monsterService).getAllMonsters(testUser);
     }
