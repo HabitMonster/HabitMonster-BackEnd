@@ -8,7 +8,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class JwtResponseDto extends DefaultResponseDto {
 
-    private String accesstoken;
-    private String refreshtoken;
-    private Boolean isFirstLongin;
+    private String accessToken;
+    private String refreshToken;
+    private Boolean isFirstLogin;
 }

@@ -23,6 +23,6 @@ public class TestToken {
         String accessToken = jwtTokenProvider.responseAccessToken(testUser);
         String refreshToken = jwtTokenProvider.responseRefreshToken(testUser);
 
-        return JwtResponseDto.builder().accesstoken(accessToken).refreshtoken(refreshToken).build();
+        return JwtResponseDto.builder().accessToken(accessToken).refreshToken(refreshToken).build();
     }
 }
