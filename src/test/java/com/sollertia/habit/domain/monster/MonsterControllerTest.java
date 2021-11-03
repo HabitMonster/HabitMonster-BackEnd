@@ -2,6 +2,9 @@ package com.sollertia.habit.domain.monster;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sollertia.habit.config.WebSecurityConfig;
+import com.sollertia.habit.domain.monster.dto.MonsterListResponseDto;
+import com.sollertia.habit.domain.monster.dto.MonsterSelectRequestDto;
+import com.sollertia.habit.domain.monster.dto.MonsterSummaryVo;
 import com.sollertia.habit.domain.oauth2.userinfo.GoogleOauth2UserInfo;
 import com.sollertia.habit.domain.oauth2.userinfo.Oauth2UserInfo;
 import com.sollertia.habit.domain.user.User;
@@ -13,14 +16,30 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = MonsterController.class,
         excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfig.class))
@@ -42,22 +61,77 @@ class MonsterControllerTest {
 
     @BeforeEach
     private void beforeEach() {
-
-
-        Oauth2UserInfo oauth2UserInfo = new GoogleOauth2UserInfo();
+        //todo mock monster
+        Map<String, Object> attributes = new HashMap<>();
+        attributes.put("sub", "123456789");
+        attributes.put("name", "tester");
+        attributes.put("email", "tester.test.com");
+        Oauth2UserInfo oauth2UserInfo = new GoogleOauth2UserInfo(attributes);
         testUser = User.create(oauth2UserInfo);
         mockUserDetails = new UserDetailsImpl(testUser);
     }
 
-    @Test
-    void getAllMonsters() {
+    private void authenticated() {
+        Authentication authentication = new UsernamePasswordAuthenticationToken(mockUserDetails, "", mockUserDetails.getAuthorities());
+        securityContext = SecurityContextHolder.getContext();
+        securityContext.setAuthentication(authentication);
     }
 
     @Test
-    void updateMonster() {
+    void getAllMonsters() throws Exception {
+        //given
+        authenticated();
+        List<MonsterSummaryVo> summaryVoList = new ArrayList<>();
+        summaryVoList.add(MonsterSummaryVo.builder().monsterid(1L).monsterImage("monster.img").build());
+        MonsterListResponseDto responseDto = MonsterListResponseDto.builder().monsters(summaryVoList).responseMessage("").statusCode(200).build();
+
+        given(monsterService.getAllMonsters(testUser))
+                .willReturn(responseDto);
+        //when
+        mvc.perform(get("/monsters"))
+                .andDo(print())
+        //then
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.monsters[0].monsterId").value("1"))
+                .andExpect(jsonPath("$.monsters[0].monsterImage").value("monster.img"));
+
+
+        verify(monsterService).getAllMonsters(testUser);
     }
 
     @Test
-    void getMonsterCollection() {
+    void updateMonster() throws Exception {
+        //given
+        authenticated();
+
+        String json = "{\n" +
+                "  \"monsterId\": 1,\n" +
+                "  \"monsterName\": \"mycat\"\n" +
+                "}";
+
+        //when
+        mvc.perform(patch("/user/monster")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andDo(print())
+                //then
+                .andExpect(status().isOk());
+
+        verify(monsterService).updateMonster(eq(testUser), any(MonsterSelectRequestDto.class));
+    }
+
+    @Test
+    void getMonsterCollection() throws Exception {
+        //given
+        authenticated();
+
+        //when
+        mvc.perform(get("/user/monsters"))
+                .andDo(print())
+                //then
+                .andExpect(status().isOk());
+
+        verify(monsterService).getMonsterCollection(testUser);
     }
 }
