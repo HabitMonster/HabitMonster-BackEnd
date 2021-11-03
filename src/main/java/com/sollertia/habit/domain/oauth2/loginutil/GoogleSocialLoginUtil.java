@@ -5,20 +5,17 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.sollertia.habit.domain.oauth2.dto.GoogleOauthRequestDto;
-import com.sollertia.habit.domain.oauth2.dto.GoogleOauthResponseDto;
 import com.sollertia.habit.domain.oauth2.userinfo.Oauth2UserInfo;
 import com.sollertia.habit.domain.oauth2.userinfo.Oauth2UserInfoFactory;
 import com.sollertia.habit.domain.user.ProviderType;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Map;
 
-@Service
+@Component
 public class GoogleSocialLoginUtil implements SocialLoginUtil {
 
     final static String GOOGLE_TOKEN_BASE_URL = "https://oauth2.googleapis.com/token";
