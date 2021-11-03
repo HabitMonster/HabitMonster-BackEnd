@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class SimpleHabitVo {
     private String title;
-    private int achievement;
+    private Long achievement;
 
     public SimpleHabitVo(CompletedHabit completedHabit) {
         this.title = completedHabit.getTitle();
