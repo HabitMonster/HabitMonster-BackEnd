@@ -22,9 +22,18 @@ public enum Category {
 
     public static List<CategoryVo> getCategories() {
         List<CategoryVo> list = new ArrayList<>();
-        for (Category p : Category.values()) {
-            list.add(CategoryVo.builder().categoryId(p.getCategoryId()).category(p).build());
+        for (Category c: Category.values()) {
+            list.add(CategoryVo.builder().categoryId(c.getCategoryId()).category(c).build());
         }
         return list;
+    }
+
+    public static Category getCategory(Long categoryId){
+        for(Category c : Category.values()){
+            if(c.getCategoryId().equals(categoryId)){
+                return c;
+            }
+        }
+        return null;
     }
 }

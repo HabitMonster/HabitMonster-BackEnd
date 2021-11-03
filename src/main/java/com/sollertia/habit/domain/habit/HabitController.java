@@ -1,9 +1,8 @@
-package com.sollertia.habit.web;
+package com.sollertia.habit.domain.habit;
 
-import com.sollertia.habit.domain.habit.Habit;
 import com.sollertia.habit.domain.habit.dto.*;
 import com.sollertia.habit.domain.user.UserDetailsImpl;
-import com.sollertia.habit.service.habitservice.HabitServiceImpl;
+import com.sollertia.habit.domain.habit.habitservice.HabitServiceImpl;
 import com.sollertia.habit.utils.DefaultResponseDto;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -22,9 +21,7 @@ public class HabitController {
 
         HabitTypeDto habitTypeDto = new HabitTypeDto("counter", "specificDay");
 
-        habitDto.setUser(userDetails.getUser());
-
-        return habitService.createHabit(habitTypeDto, habitDto);
+        return habitService.createHabit(habitTypeDto, habitDto, userDetails.getUser());
     }
     @ApiOperation(value = "습관 상세정보 요청", notes = "성공 실패여부 반환")
     @GetMapping("/habits/{habitId}")
@@ -42,7 +39,7 @@ public class HabitController {
 
         HabitTypeDto habitTypeDto = new HabitTypeDto("counter", "specificDay");
 
-        return habitService.deleteHabit(habitTypeDto, habitId);
+        return habitService.deleteHabit(habitTypeDto, habitId, userDetails.getUser());
     }
     @ApiOperation(value = "습관 체크", notes = "성공 실패여부 반환")
     @GetMapping("/habits/check/{habitId}")

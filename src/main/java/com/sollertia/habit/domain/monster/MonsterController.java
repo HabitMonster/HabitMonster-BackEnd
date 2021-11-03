@@ -22,7 +22,7 @@ public class MonsterController {
         return monsterService.getAllMonsters(userDetails.getUser());
     }
 
-    @ApiOperation(value = "몬스터 변경", notes = "변경된 몬스터 데이터 반환")
+    @ApiOperation(value = "몬스터 선택", notes = "변경된 몬스터 데이터 반환")
     @PatchMapping("/user/monster")
     public MonsterResponseDto updateMonster(
             @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails,

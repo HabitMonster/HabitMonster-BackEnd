@@ -1,12 +1,11 @@
 package com.sollertia.habit.domain.monster;
 
-import com.sollertia.habit.domain.monster.dto.MonsterListResponseDto;
-import com.sollertia.habit.domain.monster.dto.MonsterResponseDto;
-import com.sollertia.habit.domain.monster.dto.MonsterSelectRequestDto;
-import com.sollertia.habit.domain.monster.dto.MonsterVo;
+import com.sollertia.habit.domain.monster.dto.*;
+import com.sollertia.habit.domain.user.Level;
 import com.sollertia.habit.domain.user.User;
 import com.sollertia.habit.domain.user.UserRepository;
 import com.sollertia.habit.exception.MonsterNotFoundException;
+import com.sollertia.habit.exception.NotReachedMaximumLevelException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +30,7 @@ public class MonsterService {
             monsters.remove(user.getMonster());
         }
         return MonsterListResponseDto.builder()
-                .monsters(monsters)
+                .monsters(MonsterSummaryVo.listFromMonsterList(monsters))
                 .responseMessage("LV1 몬스터를 불러오는데 성공했습니다.")
                 .statusCode(200)
                 .build();
@@ -54,27 +53,27 @@ public class MonsterService {
 
         return MonsterResponseDto.builder()
                 .monster(monsterVo)
-                .responseMessage("아바타가 선택되었습니다.")
+                .responseMessage("몬스터가 선택되었습니다.")
                 .statusCode(200)
                 .build();
     }
 
     public MonsterListResponseDto getMonsterCollection(User user) {
         List<MonsterCollection> monsterCollectionList = monsterCollectionRepository.findAllByUser(user);
-        List<Monster> monsters = new ArrayList<>();
-        for (MonsterCollection monsterCollection : monsterCollectionList) {
-            monsters.add(monsterCollection.getMonster());
-        }
         return MonsterListResponseDto.builder()
-                .monsters(monsters)
+                .monsters(MonsterSummaryVo.listFromCollectionList(monsterCollectionList))
                 .responseMessage("몬스터 컬렉션 조회 성공")
                 .statusCode(200)
                 .build();
     }
 
     public void addMonsterCollection(User user, Monster monster) {
-        MonsterCollection monsterCollection = MonsterCollection.createMonsterCollection(user, monster);
-        monsterCollectionRepository.save(monsterCollection);
+        if (user.getLevel().getValue() == Level.MAX_LEVEL) {
+            MonsterCollection monsterCollection = MonsterCollection.createMonsterCollection(user, monster);
+            monsterCollectionRepository.save(monsterCollection);
+        } else {
+            throw new NotReachedMaximumLevelException("최대 레벨에 도달하지 못했습니다.");
+        }
     }
 
     public MonsterVo getMonsterVo(User user) {

@@ -1,4 +1,4 @@
-package com.sollertia.habit.service.habitservice;
+package com.sollertia.habit.domain.habit.habitservice;
 
 import com.sollertia.habit.domain.habit.Habit;
 import com.sollertia.habit.domain.habit.HabitWithCounter;
@@ -14,8 +14,11 @@ import com.sollertia.habit.utils.DefaultResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
 
 @RequiredArgsConstructor
 @Service
@@ -30,15 +33,16 @@ public class HabitServiceImpl implements HabitService {
     private final HistoryRepository historyRepository;
 
 
+    @Transactional
     @Override
-    public DefaultResponseDto createHabit(HabitTypeDto habitTypeDto, HabitDtoImpl createHabitRequestDto) {
+    public DefaultResponseDto createHabit(HabitTypeDto habitTypeDto, HabitDtoImpl createHabitRequestDto, User user) {
 
 
-        Habit habit = Habit.createHabit(habitTypeDto.getHabitType(), createHabitRequestDto);
+        Habit habit = Habit.createHabit(habitTypeDto.getHabitType(), createHabitRequestDto, user);
 
         habitRepository.save(habit);
 
-        return DefaultResponseDto.builder().statusCode(200).responseMessage("Save Completed").build();
+        return DefaultResponseDto.builder().statusCode(200).responseMessage("습관 생성 성공").build();
 
     }
 
@@ -54,15 +58,16 @@ public class HabitServiceImpl implements HabitService {
                 .description(foundHabit.getDescription())
                 .durationEnd(foundHabit.getDurationEnd().toString())
                 .durationStart(foundHabit.getDurationStart().toString())
-                .sessionDuration(foundHabit.getSessionDuration())
+                .achievePercentage(foundHabit.getAchievePercentage())
+                .current(foundHabit.getCurrent())
                 .title(foundHabit.getTitle())
                 .build();
 
-        return HabitDetailResponseDto.builder().habitDetail(build).responseMessage("success").statusCode(200).build();
+        return HabitDetailResponseDto.builder().habitDetail(build).responseMessage("습관 상세 조회 성공").statusCode(200).build();
     }
 
     @Override
-    public DefaultResponseDto checkHabit(HabitTypeDto habitTypeDto, Long habitId) {
+    public HabitCheckResponseDto checkHabit(HabitTypeDto habitTypeDto, Long habitId) {
 
         HabitWithCounter habitWithCounter = habitWithCounterRepository.findById(habitId).orElseThrow(() -> new HabitIdNotFoundException("Couldn't find Habit"));
         Boolean isAchieve = habitWithCounter.check(1L);
@@ -73,23 +78,30 @@ public class HabitServiceImpl implements HabitService {
         }
         userRepository.save(habitWithCounter.getUser());
         habitWithCounterRepository.save(habitWithCounter);
-        return DefaultResponseDto.builder().statusCode(200).responseMessage("success").build();
+        return HabitCheckResponseDto.builder().statusCode(200).responseMessage("성공했습니다").current(habitWithCounter.getCurrent()).isAccomplished(isAchieve).build();
 
     }
 
     @Override
-    public DefaultResponseDto deleteHabit(HabitTypeDto habitTypeDto, Long habitId) {
+    public DefaultResponseDto deleteHabit(HabitTypeDto habitTypeDto, Long habitId, User user) {
 
-        habitWithCounterRepository.deleteById(habitId);
+        HabitWithCounter habitWithCounter = habitWithCounterRepository.findById(habitId).orElseThrow(() -> new HabitIdNotFoundException("can't find habit"));
 
-        return DefaultResponseDto.builder().statusCode(200).responseMessage("success").build();
+        user.getHabit().remove(habitWithCounter);
+        habitRepository.delete(habitWithCounter);
+
+        return DefaultResponseDto.builder().statusCode(200).responseMessage("습관 삭제 성공").build();
     }
 
 
     @Override
     public List<HabitSummaryVo> getHabitSummaryList(User user) {
         List<HabitSummaryVo> habitSummaryList = new ArrayList<>();
-        List<Habit> habits = habitWithCounterRepository.findByUser(user);
+
+        int today = LocalDate.now().getDayOfWeek().getValue();
+        List<Habit> habits = habitWithCounterRepository
+                .findByUserAndPracticeDaysContains(user, today);
+
         for (Habit habit : habits) {
             habitSummaryList.add(HabitSummaryVo.of((HabitWithCounter) habit));
         }

@@ -1,7 +1,6 @@
 package com.sollertia.habit.web;
 
 import com.sollertia.habit.domain.user.UserDetailsImpl;
-import com.sollertia.habit.service.mainpage.MainPageService;
 import com.sollertia.habit.web.dto.MainPageResponseDto;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;

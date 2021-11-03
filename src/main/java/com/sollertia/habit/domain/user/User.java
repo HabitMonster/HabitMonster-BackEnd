@@ -1,9 +1,8 @@
 package com.sollertia.habit.domain.user;
 
+import com.sollertia.habit.domain.habit.Habit;
 import com.sollertia.habit.domain.monster.Monster;
 import com.sollertia.habit.domain.monster.MonsterCollection;
-import com.sollertia.habit.domain.habit.Habit;
-import com.sollertia.habit.domain.habit.HabitWithCounter;
 import com.sollertia.habit.domain.oauth2.userinfo.Oauth2UserInfo;
 import com.sollertia.habit.domain.userteam.UserTeam;
 import lombok.AllArgsConstructor;
@@ -12,6 +11,7 @@ import lombok.Getter;
 
 import javax.persistence.*;
 import java.util.List;
+
 @AllArgsConstructor //Test용
 @Builder //Test용
 @Entity
@@ -32,6 +32,7 @@ public class User {
 
     private Long expPoint;
 
+    @Enumerated(value = EnumType.STRING)
     private Level level;
 
     @Enumerated(value = EnumType.STRING)
@@ -39,7 +40,7 @@ public class User {
 
     private String monsterName;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Habit> habit;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
@@ -75,6 +76,10 @@ public class User {
 
     private void setType(UserType type){this.type = type;}
 
+    private void setLevel(Level level){this.level = level;}
+
+    private void setExpPoint(Long expPoint){this.expPoint = expPoint;}
+
     private void setMonsterName(String monsterName) {
         this.monsterName = monsterName;
     }
@@ -87,13 +92,15 @@ public class User {
         this.setUsername(username);
     }
 
-    public static User create(Oauth2UserInfo userInfo, UserType type) {
+    public static User create(Oauth2UserInfo userInfo) {
         User newUser = new User();
         newUser.setSocialId(userInfo.getId());
         newUser.setEmail(userInfo.getEmail());
         newUser.setUsername(userInfo.getName());
+        newUser.setLevel(Level.LV1);
+        newUser.setExpPoint(0L);
         newUser.setProviderType(userInfo.getProviderType());
-        newUser.setType(type);
+        newUser.setType(UserType.from(userInfo.getProviderType()));
         return newUser;
     }
 
@@ -104,5 +111,9 @@ public class User {
     public void updateMonster(Monster monster, String monsterName) {
         this.setMonster(monster);
         this.setMonsterName(monsterName);
+    }
+
+    public void levelUp() {
+        this.setLevel(Level.nextOf(this.getLevel()));
     }
 }

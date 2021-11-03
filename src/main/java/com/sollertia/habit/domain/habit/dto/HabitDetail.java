@@ -13,7 +13,8 @@ public class HabitDetail {
     private String description;
     private String durationStart;
     private String durationEnd;
-    private Long count;
+    private int count;
     private String category;
-    private Long sessionDuration;
+    private int current;
+    private Long achievePercentage;
 }

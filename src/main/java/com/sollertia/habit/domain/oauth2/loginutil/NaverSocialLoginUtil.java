@@ -38,6 +38,10 @@ public class NaverSocialLoginUtil implements SocialLoginUtil {
 
     @Override
     public Oauth2UserInfo getUserInfoByCode(String authCode, String state) {
+        if ( state == null ) {
+            throw new NaverOauth2Exception("네이버 로그인은 state 값이 필요합니다.");
+        }
+
         try {
             String accessToken = getAccessTokenByCode(authCode, state);
             return getUserInfoByToken(accessToken);

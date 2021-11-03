@@ -51,7 +51,7 @@ public class JwtController {
                 Optional<User> user = userRepository.findBySocialId(jwtTokenProvider.getSocialId(refreshToken));
                 if (user.isPresent()) {
                     String accessToken = jwtTokenProvider.responseAccessToken(user.get());
-                    return ResponseEntity.ok().body(JwtResponseDto.builder().responseMessage("accessToken 발급완료!").statusCode(200).accesstoken(accessToken).build());
+                    return ResponseEntity.ok().body(JwtResponseDto.builder().responseMessage("accessToken 발급완료!").statusCode(200).accessToken(accessToken).build());
                 } else {
                     throw new IllegalArgumentException("유저가 존재하지 않습니다.");
                 }
