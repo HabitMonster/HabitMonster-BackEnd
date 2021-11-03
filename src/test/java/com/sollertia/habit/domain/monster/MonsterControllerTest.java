@@ -46,14 +46,12 @@ class MonsterControllerTest {
     @MockBean
     private MonsterService monsterService;
 
-    private List<Monster> mockMonsterList = new ArrayList<>();
     User testUser;
     UserDetailsImpl mockUserDetails;
     SecurityContext securityContext;
 
     @BeforeEach
     private void beforeEach() {
-        //todo mock monster
         Map<String, Object> attributes = new HashMap<>();
         attributes.put("sub", "123456789");
         attributes.put("name", "tester");
