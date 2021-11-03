@@ -1,6 +1,5 @@
 package com.sollertia.habit.domain.monster;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sollertia.habit.config.WebSecurityConfig;
 import com.sollertia.habit.domain.monster.dto.*;
 import com.sollertia.habit.domain.oauth2.userinfo.GoogleOauth2UserInfo;
@@ -20,21 +19,19 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -45,9 +42,6 @@ class MonsterControllerTest {
 
     @Autowired
     private MockMvc mvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @MockBean
     private MonsterService monsterService;
@@ -103,7 +97,7 @@ class MonsterControllerTest {
         //given
         authenticated();
         MonsterResponseDto responseDto = MonsterResponseDto.builder()
-                .monster(MonsterVo.builder().monsterid(1L).monsterImage("monster.img").monsterName("testmonster").build())
+                .monster(MonsterVo.builder().monsterId(1L).monsterImage("monster.img").monsterName("testmonster").build())
                 .responseMessage("몬스터가 선택되었습니다.")
                 .statusCode(200).build();
 
@@ -136,12 +130,21 @@ class MonsterControllerTest {
     void getMonsterCollection() throws Exception {
         //given
         authenticated();
+        List<MonsterSummaryVo> summaryVoList = new ArrayList<>();
+        summaryVoList.add(MonsterSummaryVo.builder().monsterId(1L).monsterImage("monster.img").build());
+        MonsterListResponseDto responseDto = MonsterListResponseDto.builder().monsters(summaryVoList).responseMessage("몬스터 컬렉션 조회 성공").statusCode(200).build();
 
+        given(monsterService.getMonsterCollection(testUser))
+                .willReturn(responseDto);
         //when
         mvc.perform(get("/user/monsters"))
                 .andDo(print())
                 //then
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.monsters[0].monsterId").value("1"))
+                .andExpect(jsonPath("$.monsters[0].monsterImage").value("monster.img"))
+                .andExpect(jsonPath("$.responseMessage").value("몬스터 컬렉션 조회 성공"))
+                .andExpect(jsonPath("$.statusCode").value("200"));
 
         verify(monsterService).getMonsterCollection(testUser);
     }
