@@ -2,6 +2,7 @@ plugins {
     id 'org.springframework.boot' version '2.5.6'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
+    id 'jacoco'
 }
 
 group = 'com.sollertia'
@@ -11,6 +12,13 @@ sourceCompatibility = '1.8'
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
+    }
+}
+
+bootJar {
+    copy {
+        from "build/reports/jacoco/test/html"
+        into "src/main/resources/static/docs/jacoco"
     }
 }
 

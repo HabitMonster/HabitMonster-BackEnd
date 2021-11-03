@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.stream.Stream;
 
@@ -101,8 +102,8 @@ public abstract class Habit {
     public void setWholeDays() {
 
         int wholeCount = 0;
-
-        int wholeDays = Long.valueOf(Duration.between(this.durationStart.atStartOfDay(), this.durationEnd.atStartOfDay()).toDays()).intValue();
+        Long until = this.durationStart.until(durationEnd, ChronoUnit.DAYS);
+        int wholeDays = until.intValue();
 
         int startDay = this.durationStart.getDayOfWeek().getValue();
 
@@ -118,22 +119,25 @@ public abstract class Habit {
 
         if (this.practiceDays.length() == 7) {
             this.wholeDays = Long.valueOf(wholeDays);
+            return;
         }
 
 
         wholeCount += (wholeDays / 7) * this.practiceDays.length();
 
         if (wholeDays % 7 == 0) {
-            this.wholeDays = Long.valueOf(wholeDays);
+            this.wholeDays = Long.valueOf(wholeCount);
+            return;
         } else {
             for (int i = startDay; i <= startDay + (wholeDays % 7); i++) {
                 int leftover = i % 7;
                 boolean contains = days.stream().anyMatch(x -> x == leftover);
                 if (contains) {
-                    wholeDays += 1;
+                    wholeCount += 1;
                 }
             }
-            this.wholeDays = Long.valueOf(wholeDays);
+            this.wholeDays = Long.valueOf(wholeCount);
+            return;
         }
 
     }
