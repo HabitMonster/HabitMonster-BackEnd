@@ -33,40 +33,12 @@ public class NaverSocialLoginUtil implements SocialLoginUtil {
 
     @Override
     public Oauth2UserInfo getUserInfoByCode(String authCode) {
-        throw new NaverOauth2Exception("네이버 로그인은 state 값이 필요합니다.");
-    }
-
-    @Override
-    public Oauth2UserInfo getUserInfoByCode(String authCode, String state) {
-        if ( state == null ) {
-            throw new NaverOauth2Exception("네이버 로그인은 state 값이 필요합니다.");
-        }
-
         try {
-            String accessToken = getAccessTokenByCode(authCode, state);
-            return getUserInfoByToken(accessToken);
+            return getUserInfoByToken(authCode);
         } catch (JsonProcessingException exception) {
             System.out.println(exception.getMessage());
             return null;
         }
-    }
-
-    private String getAccessTokenByCode(String authCode, String state) throws JsonProcessingException {
-        RestTemplate restTemplate = new RestTemplate();
-        ObjectMapper mapper = new ObjectMapper();
-
-        UriComponents builder = UriComponentsBuilder.fromHttpUrl(NAVER_TOKEN_BASE_URL)
-                .queryParam("grant_type", "authorization_code")
-                .queryParam("client_id", clientId)
-                .queryParam("code", authCode)
-                .queryParam("state", state)
-                .queryParam("client_secret", clientSecret)
-                .build();
-
-        ResponseEntity<String> resultEntity = restTemplate.postForEntity(builder.toUriString(), null, String.class);
-        NaverOauthResponseDto responseDto = mapper.readValue(resultEntity.getBody(), new TypeReference<NaverOauthResponseDto>(){});
-
-        return responseDto.getAccess_token();
     }
 
     private Oauth2UserInfo getUserInfoByToken(String token) throws JsonProcessingException {

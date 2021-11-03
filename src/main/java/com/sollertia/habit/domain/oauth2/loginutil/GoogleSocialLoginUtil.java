@@ -30,39 +30,13 @@ public class GoogleSocialLoginUtil implements SocialLoginUtil {
     String clientSecret;
 
     @Override
-    public Oauth2UserInfo getUserInfoByCode(String authCode, String state) {
-        return getUserInfoByCode(authCode);
-    }
-
-    @Override
     public Oauth2UserInfo getUserInfoByCode(String authCode) {
         try {
-            String accessToken = getAccessTokenByCode(authCode);
-            return getUserInfoByToken(accessToken);
+            return getUserInfoByToken(authCode);
         } catch (JsonProcessingException exception) {
             System.out.println(exception.getMessage());
             return null;
         }
-    }
-
-    private String getAccessTokenByCode(String authCode) throws JsonProcessingException {
-        RestTemplate restTemplate = new RestTemplate();
-        ObjectMapper mapper = getObjectMapperInstance();
-
-        GoogleOauthRequestDto requestDto = GoogleOauthRequestDto
-                .builder()
-                .clientId(clientId)
-                .clientSecret(clientSecret)
-                .code(authCode)
-//                .redirectUri("http://localhost:8080/user/login/test/google")
-                .redirectUri("http://localhost:3000/login")
-                .grantType("authorization_code")
-                .build();
-
-        ResponseEntity<String> resultEntity = restTemplate.postForEntity(GOOGLE_TOKEN_BASE_URL, requestDto, String.class);
-        GoogleOauthResponseDto responseDto = mapper.readValue(resultEntity.getBody(), new TypeReference<GoogleOauthResponseDto>(){});
-
-        return responseDto.getIdToken();
     }
 
     private Oauth2UserInfo getUserInfoByToken(String token) throws JsonProcessingException {

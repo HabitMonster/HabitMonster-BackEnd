@@ -26,8 +26,8 @@ public class SocialLoginService {
         loginUtilMap.put(ProviderType.NAVER, naverSocialLoginUtil);
     }
 
-    public Oauth2UserInfo getUserInfo(String socialName, String authCode, String state) {
+    public Oauth2UserInfo getUserInfo(String socialName, String authCode) {
         ProviderType providerType = ProviderType.valueOf(socialName.toUpperCase());
-        return loginUtilMap.get(providerType).getUserInfoByCode(authCode, state);
+        return loginUtilMap.get(providerType).getUserInfoByCode(authCode);
     }
 }
