@@ -15,11 +15,13 @@ public class Monster {
     @GeneratedValue
     private Long id;
 
-    private String type;
-
     @Enumerated(EnumType.STRING)
     private EvolutionGrade grade;
 
     private String imageUrl;
 
+    public Monster(EvolutionGrade grade, String imageUrl) {
+        this.grade = grade;
+        this.imageUrl = imageUrl;
+    }
 }

@@ -37,8 +37,8 @@ public class TestData implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        Monster monster1 = new Monster(1L, "cat", EvolutionGrade.EV1, "cat.img");
-        Monster monster2 = new Monster(2L, "dog", EvolutionGrade.EV1, "dog.img");
+        Monster monster1 = new Monster(1L, EvolutionGrade.EV1, "cat.img");
+        Monster monster2 = new Monster(2L, EvolutionGrade.EV1, "dog.img");
         monsterRepository.save(monster1);
         monsterRepository.save(monster2);
 

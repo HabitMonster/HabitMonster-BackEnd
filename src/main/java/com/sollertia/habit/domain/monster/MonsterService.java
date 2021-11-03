@@ -67,7 +67,7 @@ public class MonsterService {
                 .build();
     }
 
-    public void addMonsterCollection(User user, Monster monster) {
+    private void addMonsterCollection(User user, Monster monster) {
         if (user.getLevel().getValue() == Level.MAX_LEVEL) {
             MonsterCollection monsterCollection = MonsterCollection.createMonsterCollection(user, monster);
             monsterCollectionRepository.save(monsterCollection);

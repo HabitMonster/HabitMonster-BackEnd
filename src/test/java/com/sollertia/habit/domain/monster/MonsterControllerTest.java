@@ -1,19 +1,23 @@
 package com.sollertia.habit.domain.monster;
 
 import com.sollertia.habit.config.WebSecurityConfig;
+import com.sollertia.habit.config.jwt.JwtTokenProvider;
 import com.sollertia.habit.domain.monster.dto.*;
 import com.sollertia.habit.domain.oauth2.userinfo.GoogleOauth2UserInfo;
 import com.sollertia.habit.domain.oauth2.userinfo.Oauth2UserInfo;
 import com.sollertia.habit.domain.user.User;
 import com.sollertia.habit.domain.user.UserDetailsImpl;
+import com.sollertia.habit.utils.RedisUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -36,8 +40,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = MonsterController.class,
-        excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfig.class))
+@WebMvcTest(controllers = MonsterController.class)
+@AutoConfigureMockMvc(addFilters = false)
 class MonsterControllerTest {
 
     @Autowired
@@ -45,6 +49,12 @@ class MonsterControllerTest {
 
     @MockBean
     private MonsterService monsterService;
+    @MockBean
+    private JwtTokenProvider jwtTokenProvider;
+    @MockBean
+    private RedisUtil redisUtil;
+    @MockBean
+    private AuthenticationManager authenticationManager;
 
     User testUser;
     UserDetailsImpl mockUserDetails;
