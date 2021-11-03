@@ -19,7 +19,7 @@ public class CompletedHabit extends TimeStamped{
 
     private String title;
 
-    private int accomplishedSessionCounter;
+    private int accomplishCounter;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id")
@@ -33,7 +33,7 @@ public class CompletedHabit extends TimeStamped{
     private HabitType habitType;
 
     @Column(nullable = true)
-    private Long GoalTime;
+    private Long goalTime;
 
     @Column(nullable = true)
     private Long goalCount;
@@ -44,6 +44,6 @@ public class CompletedHabit extends TimeStamped{
 
     private LocalDate endupDate;
 
-    private int achievementPercentage;
+    private Long achievementPercentage;
 
 }
