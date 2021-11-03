@@ -48,8 +48,8 @@ public enum PreSet {
             case 2:
                return "24"; // 화, 목
             case 3:
-               return "06"; // 일, 토
-            default: return "0123456";
+               return "67"; // 일, 토
+            default: return "1234567";
         }
     }
 

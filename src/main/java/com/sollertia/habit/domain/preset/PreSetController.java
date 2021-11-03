@@ -26,11 +26,10 @@ import java.util.List;
 public class PreSetController {
 
     private final PreSetServiceImpl preSetService;
-    private final HabitServiceImpl
-            habitService;
+    private final HabitServiceImpl habitService;
 
     @ApiOperation(value = "선택한 Category의 PreSet 목록 조회")
-    @PostMapping("/categories/{category_id}/presets")
+    @GetMapping("/categories/{category_id}/presets")
     public PreSetResponseDto categoryPreSetList(@PathVariable Long category_id){
 //            List<PreSetVo> list = PreSet.getPreSetList(category_id);
 //            return PreSetResponseDto.builder().preSets(list).statusCode(200).responseMessage("PreSets 전달 완료").build();
@@ -39,7 +38,7 @@ public class PreSetController {
     }
 
     @ApiOperation(value = "선택한 PreSet Habit 테이블에 저장")
-    @GetMapping("/presets/{preset_id}")
+    @PostMapping("/presets/{preset_id}")
     public DefaultResponseDto selectPreSet(@PathVariable Long preset_id, @AuthenticationPrincipal UserDetailsImpl userDetails){
         //PreSetVo preSetVo = PreSet.getPreSet(preset_id);
         PreSetVo preSetVo = preSetService.getPreSet(preset_id);
