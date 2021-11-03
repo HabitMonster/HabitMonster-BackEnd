@@ -11,12 +11,12 @@ import java.util.List;
 @Getter
 @Builder
 public class MonsterSummaryVo {
-    private Long monsterid;
+    private Long monsterId;
     private String monsterImage;
 
     public static MonsterSummaryVo of(Monster monster) {
         return MonsterSummaryVo.builder()
-                .monsterid(monster.getId())
+                .monsterId(monster.getId())
                 .monsterImage(monster.getImageUrl())
                 .build();
     }
