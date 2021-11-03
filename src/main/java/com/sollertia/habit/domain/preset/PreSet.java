@@ -12,7 +12,7 @@ public class PreSet {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    private Long id;
     private Long categoryId;
     private String title;
     private String description;
