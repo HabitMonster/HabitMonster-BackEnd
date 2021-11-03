@@ -33,7 +33,7 @@ public class CompletedHabit extends TimeStamped{
     private HabitType habitType;
 
     @Column(nullable = true)
-    private Long GoalTime;
+    private Long goalTime;
 
     @Column(nullable = true)
     private Long goalCount;
