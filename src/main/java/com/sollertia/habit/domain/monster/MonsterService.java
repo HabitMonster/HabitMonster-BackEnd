@@ -76,6 +76,10 @@ public class MonsterService {
 //        }
     }
 
+    public MonsterResponseDto getMonsterFromUser(User user) {
+        return MonsterResponseDto.builder().monster(getMonsterVo(user)).build();
+    }
+
     public MonsterVo getMonsterVo(User user) {
        Monster monster = monsterRepository.findById(user.getMonster().getId()).orElseThrow(
                 () -> new MonsterNotFoundException("올바르지 않은 몬스터 ID입니다.")
