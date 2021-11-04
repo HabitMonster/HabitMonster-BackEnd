@@ -20,7 +20,7 @@ public class HabitController {
 
     @ApiOperation(value = "습관 생성", notes = "성공 실패여부 반환")
     @PostMapping("/habits")
-    public DefaultResponseDto createHabit(@RequestBody HabitDtoImpl habitDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public HabitDetailResponseDto createHabit(@RequestBody HabitDtoImpl habitDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         HabitTypeDto habitTypeDto = new HabitTypeDto("counter", "specificDay");
 

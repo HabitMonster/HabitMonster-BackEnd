@@ -35,14 +35,26 @@ public class HabitServiceImpl implements HabitService {
 
     @Transactional
     @Override
-    public DefaultResponseDto createHabit(HabitTypeDto habitTypeDto, HabitDtoImpl createHabitRequestDto, User user) {
+    public HabitDetailResponseDto createHabit(HabitTypeDto habitTypeDto, HabitDtoImpl createHabitRequestDto, User user) {
 
-
-        Habit habit = Habit.createHabit(habitTypeDto.getHabitType(), createHabitRequestDto, user);
+        //임시 수정, getGoalCount override해서 형변환 없이 리팩토링 하기
+        HabitWithCounter habit = (HabitWithCounter) Habit.createHabit(habitTypeDto.getHabitType(), createHabitRequestDto, user);
 
         habitRepository.save(habit);
 
-        return DefaultResponseDto.builder().statusCode(200).responseMessage("습관 생성 성공").build();
+        HabitDetail build = HabitDetail.builder()
+                .habitId(habit.getId())
+                .category(habit.getCategory().toString())
+                .count(habit.getGoalCountInSession())
+                .description(habit.getDescription())
+                .durationEnd(habit.getDurationEnd().toString())
+                .durationStart(habit.getDurationStart().toString())
+                .achievePercentage(habit.getAchievePercentage())
+                .current(habit.getCurrent())
+                .title(habit.getTitle())
+                .build();
+
+        return HabitDetailResponseDto.builder().habitDetail(build).statusCode(200).responseMessage("습관 생성 성공").build();
 
     }
 
