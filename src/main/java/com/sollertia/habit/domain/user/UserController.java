@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import springfox.documentation.annotations.ApiIgnore;
 
 @RestController
 @RequiredArgsConstructor
@@ -14,9 +15,9 @@ public class UserController {
     private final UserService userService;
 
     @ApiOperation(value = "사용자 정보 조회", notes = "로그인한 사용자 정보 반환")
-    @GetMapping
+    @GetMapping("/user/info")
     public UserInfoResponseDto getUserInfo(
-            @AuthenticationPrincipal UserDetailsImpl userDetails
+            @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         return userService.getUserInfoResponseDto(userDetails.getUser());
     }
