@@ -109,6 +109,10 @@ public class HabitServiceImpl implements HabitService {
     }
 
     public HabitSummaryListResponseDto getHabitSummaryListResponseDto(User user) {
-        return HabitSummaryListResponseDto.builder().habits(getHabitSummaryList(user)).build();
+        return HabitSummaryListResponseDto.builder()
+                .habits(getHabitSummaryList(user))
+                .responseMessage("사용자 습관 목록 조회 성공")
+                .statusCode(200)
+                .build();
     }
 }

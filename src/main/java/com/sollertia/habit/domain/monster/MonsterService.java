@@ -77,7 +77,11 @@ public class MonsterService {
     }
 
     public MonsterResponseDto getMonsterFromUser(User user) {
-        return MonsterResponseDto.builder().monster(getMonsterVo(user)).build();
+        return MonsterResponseDto.builder()
+                .monster(getMonsterVo(user))
+                .statusCode(200)
+                .responseMessage("사용자 몬스터 조회 성공")
+                .build();
     }
 
     public MonsterVo getMonsterVo(User user) {
