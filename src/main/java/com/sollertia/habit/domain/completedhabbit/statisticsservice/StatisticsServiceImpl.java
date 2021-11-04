@@ -23,7 +23,7 @@ public class StatisticsServiceImpl implements StatisticsService{
     @Override
     public StatisticsResponseDto getStatistics(User user, String date) {
         String datenow = date + "-01";
-        LocalDate now = LocalDate.parse(date, DateTimeFormatter.ISO_DATE);
+        LocalDate now = LocalDate.parse(datenow, DateTimeFormatter.ISO_DATE);
 
         List<SimpleHabitVo> successVoList = new ArrayList<>();
         List<SimpleHabitVo> failedVoList = new ArrayList<>();
