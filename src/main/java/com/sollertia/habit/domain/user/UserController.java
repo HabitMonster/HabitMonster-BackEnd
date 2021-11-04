@@ -1,0 +1,23 @@
+package com.sollertia.habit.domain.user;
+
+import com.sollertia.habit.domain.user.dto.UserInfoResponseDto;
+import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequiredArgsConstructor
+public class UserController {
+
+    private final UserService userService;
+
+    @ApiOperation(value = "사용자 정보 조회", notes = "로그인한 사용자 정보 반환")
+    @GetMapping
+    public UserInfoResponseDto getUserInfo(
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        return userService.getUserInfoResponseDto(userDetails.getUser());
+    }
+}
