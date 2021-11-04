@@ -8,6 +8,7 @@ import com.sollertia.habit.domain.oauth2.userinfo.Oauth2UserInfo;
 import com.sollertia.habit.domain.oauth2.userinfo.Oauth2UserInfoFactory;
 import com.sollertia.habit.domain.user.ProviderType;
 import com.sollertia.habit.exception.NaverOauth2Exception;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -21,7 +22,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class NaverSocialLoginUtil implements SocialLoginUtil {
+
+    private final RestTemplate restTemplate;
 
     final static String NAVER_TOKEN_BASE_URL = "https://nid.naver.com/oauth2.0/token";
     final static String NAVER_TOKEN_INFO_URL = "https://openapi.naver.com/v1/nid/me";
@@ -42,7 +46,6 @@ public class NaverSocialLoginUtil implements SocialLoginUtil {
     }
 
     private Oauth2UserInfo getUserInfoByToken(String token) throws JsonProcessingException {
-        RestTemplate restTemplate = new RestTemplate();
         ObjectMapper mapper = new ObjectMapper();
 
         HttpHeaders headers = new HttpHeaders();

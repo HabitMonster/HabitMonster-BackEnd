@@ -7,6 +7,7 @@ import com.sollertia.habit.domain.oauth2.dto.KakaoOauthResponseDto;
 import com.sollertia.habit.domain.oauth2.userinfo.Oauth2UserInfo;
 import com.sollertia.habit.domain.oauth2.userinfo.Oauth2UserInfoFactory;
 import com.sollertia.habit.domain.user.ProviderType;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -20,7 +21,10 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class KakaoSocialLoginUtil implements SocialLoginUtil {
+
+    private final RestTemplate restTemplate;
 
     final static String KAKAO_TOKEN_BASE_URL = "https://kauth.kakao.com/oauth/token";
     final static String KAKAO_TOKEN_INFO_URL = "https://kapi.kakao.com/v2/user/me";
@@ -40,7 +44,6 @@ public class KakaoSocialLoginUtil implements SocialLoginUtil {
     }
 
     private String getAccessTokenByCode(String authCode) throws JsonProcessingException {
-        RestTemplate restTemplate = new RestTemplate();
         ObjectMapper mapper = new ObjectMapper();
 
         HttpHeaders headers = new HttpHeaders();
@@ -62,7 +65,6 @@ public class KakaoSocialLoginUtil implements SocialLoginUtil {
     }
 
     private Oauth2UserInfo getUserInfoByToken(String token) throws JsonProcessingException {
-        RestTemplate restTemplate = new RestTemplate();
         ObjectMapper mapper = new ObjectMapper();
 
         HttpHeaders headers = new HttpHeaders();
