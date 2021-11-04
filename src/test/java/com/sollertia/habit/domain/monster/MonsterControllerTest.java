@@ -156,4 +156,28 @@ class MonsterControllerTest {
 
         verify(monsterService).getMonsterCollection(testUser);
     }
+
+    @Test
+    void getMonsterFromUser() throws Exception {
+        //given
+        authenticated();
+        MonsterResponseDto responseDto = MonsterResponseDto.builder()
+                .monster(MonsterVo.builder().monsterId(1L).monsterImage("monster.img").monsterName("testmonster").build())
+                .responseMessage("몬스터가 선택되었습니다.")
+                .statusCode(200).build();
+
+        given(monsterService.getMonsterFromUser(testUser))
+                .willReturn(responseDto);
+
+        //when
+        mvc.perform(get("/user/monster"))
+                .andDo(print())
+                //then
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.monster.monsterId").value("1"))
+                .andExpect(jsonPath("$.monster.monsterImage").value("monster.img"))
+                .andExpect(jsonPath("$.monster.monsterName").value("testmonster"))
+                .andExpect(jsonPath("$.responseMessage").value("몬스터가 선택되었습니다."))
+                .andExpect(jsonPath("$.statusCode").value("200"));
+    }
 }

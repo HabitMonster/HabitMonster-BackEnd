@@ -171,4 +171,25 @@ class MonsterServiceTest {
 
         verify(monsterRepository).findById(any());
     }
+
+    @Test
+    void getMonsterFromUser() {
+        //given
+        testUser.updateMonster(mockMonsterList.get(0), "test");
+        given(monsterRepository.findById(any()))
+                .willReturn(Optional.of(mockMonsterList.get(0)));
+
+        //when
+        MonsterResponseDto responseDto = monsterService.getMonsterFromUser(testUser);
+
+        //then
+        assertThat(responseDto.getMonster().getMonsterImage())
+                .isEqualTo(mockMonsterList.get(0).getImageUrl());
+        assertThat(responseDto.getMonster().getMonsterName())
+                .isEqualTo(testUser.getMonsterName());
+        assertThat(responseDto.getStatusCode()).isEqualTo(200);
+        assertThat(responseDto.getResponseMessage()).isEqualTo("사용자 몬스터 조회 성공");
+
+        verify(monsterRepository).findById(any());
+    }
 }
