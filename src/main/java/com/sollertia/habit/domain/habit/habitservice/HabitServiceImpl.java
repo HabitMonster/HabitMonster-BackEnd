@@ -108,11 +108,12 @@ public class HabitServiceImpl implements HabitService {
 
     @Override
     public List<HabitSummaryVo> getHabitSummaryList(User user) {
+        LocalDate today = LocalDate.now();
+        int day = today.getDayOfWeek().getValue();
         List<HabitSummaryVo> habitSummaryList = new ArrayList<>();
 
-        int today = LocalDate.now().getDayOfWeek().getValue();
         List<Habit> habits = habitWithCounterRepository
-                .findByUserAndPracticeDaysContains(user, today);
+                .findTodayHabitListByUser(user, day, today);
 
         for (Habit habit : habits) {
             habitSummaryList.add(HabitSummaryVo.of((HabitWithCounter) habit));
