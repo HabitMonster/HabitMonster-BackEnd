@@ -24,6 +24,7 @@ public class JwtTokenProvider {
 
     @Value("${jwt.secret.key}")
     private String secretKey;
+
     SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
     // 객체 초기화, secretKey를 Base64로 인코딩
