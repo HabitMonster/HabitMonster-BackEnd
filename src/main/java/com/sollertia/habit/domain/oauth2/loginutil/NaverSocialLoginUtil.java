@@ -7,7 +7,9 @@ import com.sollertia.habit.domain.oauth2.userinfo.Oauth2UserInfo;
 import com.sollertia.habit.domain.oauth2.userinfo.Oauth2UserInfoFactory;
 import com.sollertia.habit.domain.user.ProviderType;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -18,10 +20,14 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Map;
 
 @Component
-@RequiredArgsConstructor
 public class NaverSocialLoginUtil implements SocialLoginUtil {
 
-    private final RestTemplate restTemplate;
+    protected final RestTemplate restTemplate;
+
+    @Autowired
+    public NaverSocialLoginUtil(RestTemplateBuilder restTemplateBuilder) {
+        this.restTemplate = restTemplateBuilder.build();
+    }
 
     final static String NAVER_TOKEN_BASE_URL = "https://nid.naver.com/oauth2.0/token";
     final static String NAVER_TOKEN_INFO_URL = "https://openapi.naver.com/v1/nid/me";

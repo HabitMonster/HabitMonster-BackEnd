@@ -8,7 +8,9 @@ import com.sollertia.habit.domain.oauth2.userinfo.Oauth2UserInfo;
 import com.sollertia.habit.domain.oauth2.userinfo.Oauth2UserInfoFactory;
 import com.sollertia.habit.domain.user.ProviderType;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -21,10 +23,14 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Map;
 
 @Component
-@RequiredArgsConstructor
 public class KakaoSocialLoginUtil implements SocialLoginUtil {
 
     private final RestTemplate restTemplate;
+
+    @Autowired
+    public KakaoSocialLoginUtil(RestTemplateBuilder restTemplateBuilder) {
+        this.restTemplate = restTemplateBuilder.build();
+    }
 
     final static String KAKAO_TOKEN_BASE_URL = "https://kauth.kakao.com/oauth/token";
     final static String KAKAO_TOKEN_INFO_URL = "https://kapi.kakao.com/v2/user/me";
@@ -52,7 +58,8 @@ public class KakaoSocialLoginUtil implements SocialLoginUtil {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
         body.add("client_id", clientId);
-        body.add("redirect_uri", "http://localhost:3000/login");
+//        body.add("redirect_uri", "http://localhost:3000/login");
+        body.add("redirect_uri", "http://localhost:8080/user/login/test/kakao");
         body.add("code", authCode);
 
         HttpEntity<MultiValueMap<String, String>> kakaoOauthRequestEntity =
