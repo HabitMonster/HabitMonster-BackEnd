@@ -68,12 +68,12 @@ public class MonsterService {
     }
 
     private void addMonsterCollection(User user, Monster monster) {
-        if (user.getLevel().getValue() == Level.MAX_LEVEL) {
-            MonsterCollection monsterCollection = MonsterCollection.createMonsterCollection(user, monster);
-            monsterCollectionRepository.save(monsterCollection);
-        } else {
-            throw new NotReachedMaximumLevelException("최대 레벨에 도달하지 못했습니다.");
-        }
+//        if (user.getLevel().getValue() == Level.MAX_LEVEL) {
+        MonsterCollection monsterCollection = MonsterCollection.createMonsterCollection(user, monster);
+        monsterCollectionRepository.save(monsterCollection);
+//        } else {
+//            throw new NotReachedMaximumLevelException("최대 레벨에 도달하지 못했습니다.");
+//        }
     }
 
     public MonsterVo getMonsterVo(User user) {
