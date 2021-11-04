@@ -12,7 +12,7 @@ public class KakaoOauth2UserInfo extends Oauth2UserInfo {
 
     @Override
     public String getId() {
-        return attributes.get("id").toString();
+        return attributes.get("id") + "K";
     }
 
     @Override
@@ -23,7 +23,7 @@ public class KakaoOauth2UserInfo extends Oauth2UserInfo {
             return null;
         }
 
-        return properties.get("nickname")+"K";
+        return (String) properties.get("nickname");
     }
 
     @Override
