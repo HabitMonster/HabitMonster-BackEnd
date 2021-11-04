@@ -108,4 +108,7 @@ public class HabitServiceImpl implements HabitService {
         return habitSummaryList;
     }
 
+    public HabitSummaryListResponseDto getHabitSummaryListResponseDto(User user) {
+        return HabitSummaryListResponseDto.builder().habits(getHabitSummaryList(user)).build();
+    }
 }

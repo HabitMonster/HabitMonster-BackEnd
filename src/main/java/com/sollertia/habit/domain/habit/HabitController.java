@@ -8,6 +8,9 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -49,4 +52,11 @@ public class HabitController {
 
         return habitService.checkHabit(habitTypeDto, habitId);
     }
+
+    @ApiOperation(value = "사용자 습관 목록 조회", notes = "사용자의 오늘의 습관 목록 반환")
+    @GetMapping("/user/habits")
+    public HabitSummaryListResponseDto getHabitSummaryList(@ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return habitService.getHabitSummaryListResponseDto(userDetails.getUser());
+    }
+
 }
