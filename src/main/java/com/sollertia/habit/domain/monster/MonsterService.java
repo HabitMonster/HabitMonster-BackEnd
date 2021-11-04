@@ -85,7 +85,10 @@ public class MonsterService {
     }
 
     public MonsterVo getMonsterVo(User user) {
-       Monster monster = monsterRepository.findById(user.getMonster().getId()).orElseThrow(
+        if ( user.getMonster() == null ) {
+            throw new MonsterNotFoundException("아직 몬스터가 없는 사용자입니다.");
+        }
+        Monster monster = monsterRepository.findById(user.getMonster().getId()).orElseThrow(
                 () -> new MonsterNotFoundException("올바르지 않은 몬스터 ID입니다.")
         );
         return MonsterVo.of(monster, user.getMonsterName());
