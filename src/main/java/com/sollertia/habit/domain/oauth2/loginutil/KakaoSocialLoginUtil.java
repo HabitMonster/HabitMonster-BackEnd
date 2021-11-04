@@ -58,8 +58,8 @@ public class KakaoSocialLoginUtil implements SocialLoginUtil {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
         body.add("client_id", clientId);
-//        body.add("redirect_uri", "http://localhost:3000/login");
-        body.add("redirect_uri", "http://localhost:8080/user/login/test/kakao");
+        body.add("redirect_uri", "http://localhost:3000/login");
+//        body.add("redirect_uri", "http://localhost:8080/user/login/test/kakao");
         body.add("code", authCode);
 
         HttpEntity<MultiValueMap<String, String>> kakaoOauthRequestEntity =

@@ -54,9 +54,4 @@ public class Oauth2UserService {
         }
         return userRepository.save(user);
     }
-
-    public boolean isFirstLogin(Oauth2UserInfo userInfo) {
-        Optional<User> optionalUser = userRepository.findBySocialId(userInfo.getId());
-        return !optionalUser.isPresent();
-    }
 }
