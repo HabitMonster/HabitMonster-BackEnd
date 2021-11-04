@@ -3,6 +3,7 @@ package com.sollertia.habit.domain.oauth2.dto;
 import lombok.*;
 
 @Getter
+@AllArgsConstructor
 @NoArgsConstructor
 public class KakaoOauthResponseDto {
     private String token_type;
