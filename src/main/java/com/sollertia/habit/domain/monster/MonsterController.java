@@ -36,4 +36,11 @@ public class MonsterController {
             @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return monsterService.getMonsterCollection(userDetails.getUser());
     }
+
+    @ApiOperation(value = "사용자 몬스터 조회", notes = "사용자 몬스터 정보 반환")
+    @GetMapping("/user/monster")
+    public MonsterResponseDto getMonsterFromUser(
+            @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return monsterService.getMonsterFromUser(userDetails.getUser());
+    }
 }
