@@ -5,6 +5,7 @@ import com.sollertia.habit.domain.oauth2.userinfo.Oauth2UserInfo;
 import com.sollertia.habit.domain.user.User;
 import com.sollertia.habit.domain.user.UserDetailsImpl;
 import com.sollertia.habit.domain.user.UserDetailsServiceImpl;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,14 +40,18 @@ class JwtTokenProviderTest {
     User testUser;
     private String secretKey = "test";
     private String token;
-    public static final String SignatureToken =
+    public static final String signatureToken =
             "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0RyIsInR5cGUiOiJHb29nbGUiLCJpYXQiOjE2MzYwMjQ4NzcsImV4cCI6MTYzNjAyNDg4Mn0.OAXTkojY2evdc-NsU2Za0Bv6VaWsv0FQVlhSt7QhxbY";
 
+    public static final String expiredToken =
+            "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODlHIiwidHlwZSI6Ikdvb2dsZSIsImlhdCI6MTYzNjAzNTgyNiwiZXhwIjoxNjM2MDM1ODI3fQ.zI4KZQPw_L8yEH4XdsKYMF5ZDaY5k-IzFYkWA9wEgas";
 
-
+    private static final String successToken =
+            "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODlHIiwidHlwZSI6Ikdvb2dsZSIsImlhdCI6MTYzNjAzNTgyNiwiZXhwIjoxODg2MzYyODY2fQ.qHqotXvz0vipsiQmHiS3utO-43yop98fdUK9XcMXXWQ";
     @BeforeEach
     private void beforeEach() {
-        ReflectionTestUtils.setField(jwtTokenProvider, "secretKey", "test");
+        secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
+        ReflectionTestUtils.setField(jwtTokenProvider, "secretKey", secretKey);
         Map<String, Object> attributes = new HashMap<>();
         attributes.put("sub", "123456789");
         attributes.put("name", "tester");
@@ -60,8 +65,6 @@ class JwtTokenProviderTest {
     @DisplayName("secretKey Base64 인코딩 확인")
     @Test
     void init() {
-        //given
-        secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
         //then
         assertThat(secretKey).isBase64();
     }
@@ -118,7 +121,7 @@ class JwtTokenProviderTest {
     @DisplayName("Token 유효성 SignatureException 처리 확인")
     @Test
     void validateTokenSignature() {
-        assertThrows(SignatureException.class, () -> jwtTokenProvider.validateToken(SignatureToken));
+        assertThrows(SignatureException.class, () -> jwtTokenProvider.validateToken(signatureToken));
     }
 
     @DisplayName("Token 유효성 MalformedJwtException 처리 확인")
@@ -127,5 +130,16 @@ class JwtTokenProviderTest {
         assertThrows(MalformedJwtException.class, () -> jwtTokenProvider.getAuthentication("abcd"));
     }
 
+    @DisplayName("Token 유효성 ExpiredJwtException 처리 확인")
+    @Test
+    void validateTokenExpiredJwt() {
+        assertThrows(ExpiredJwtException.class, () -> jwtTokenProvider.validateToken(expiredToken));
+    }
+
+    @DisplayName("SuccessToken 유효성 확인")
+    @Test
+    void accessTokenNotNull(){
+        jwtTokenProvider.validateToken(successToken);
+    }
 
 }

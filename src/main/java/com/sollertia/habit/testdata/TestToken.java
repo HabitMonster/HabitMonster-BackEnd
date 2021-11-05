@@ -17,7 +17,7 @@ public class TestToken {
     @GetMapping("/test/token")
     public JwtResponseDto testToken(){
 
-        User testUser = userRepository.findBySocialId("1234G").orElseThrow(()->
+        User testUser = userRepository.findBySocialId("123456789G").orElseThrow(()->
                 new IllegalArgumentException("유저 없음"));
 
         String accessToken = jwtTokenProvider.responseAccessToken(testUser);

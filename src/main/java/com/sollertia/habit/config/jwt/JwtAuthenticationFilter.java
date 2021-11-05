@@ -34,9 +34,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String refreshSocialId;
         String messageBody;
 
-
         if (jwtToken != null) {
-
             try {
 
                 checkToken(jwtToken);
@@ -53,10 +51,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 messageBody = getBody(request);
                 createRequest(request, "accessToken 손상", request.getRequestURI(), messageBody);
                 throw ex;
-            } catch (UnsupportedJwtException ex) {
-                messageBody = getBody(request);
-                createRequest(request, "accessToken 지원불가", request.getRequestURI(), messageBody);
-                throw ex;
             }
 
         } else if (refreshToken != null) {
@@ -64,7 +58,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             try {
 
                 try {
+
                     refreshSocialId = redisUtil.getData(refreshToken);
+
                 } catch (Exception ex) {
                     messageBody = getBody(request);
                     createRequest(request, "Redis 연결에 문제가 있습니다.", request.getRequestURI(), messageBody);
@@ -91,13 +87,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 messageBody = getBody(request);
                 createRequest(request, "refreshToken 손상", request.getRequestURI(), messageBody);
                 throw ex;
-            } catch (UnsupportedJwtException ex) {
-                messageBody = getBody(request);
-                createRequest(request, "refreshToken 지원불가", request.getRequestURI(), messageBody);
-                throw ex;
             }
         }
-
 
         filterChain.doFilter(request,response);
 }
