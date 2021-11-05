@@ -7,7 +7,7 @@ import com.sollertia.habit.domain.monster.dto.MonsterVo;
 import com.sollertia.habit.domain.oauth2.userinfo.GoogleOauth2UserInfo;
 import com.sollertia.habit.domain.oauth2.userinfo.Oauth2UserInfo;
 import com.sollertia.habit.domain.user.User;
-import com.sollertia.habit.domain.user.UserRepository;
+import com.sollertia.habit.domain.user.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,8 +19,8 @@ import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -32,13 +32,14 @@ class MonsterServiceTest {
     @Mock
     private MonsterRepository monsterRepository;
     @Mock
-    private MonsterCollectionRepository monsterCollectionRepository;
+    private MonsterDatabaseRepository monsterDatabaseRepository;
     @Mock
-    private UserRepository userRepository;
+    private UserService userService;
 
     User testUser;
-    List<Monster> mockMonsterList = new ArrayList<>();
-    List<MonsterCollection> mockMonsterCollectionList = new ArrayList<>();
+    Monster monster1;
+    Monster monster2;
+    List<MonsterDatabase> mockMonsterDatabaseList = new ArrayList<>();
 
     @BeforeEach
     private void beforeEach() {
@@ -49,125 +50,113 @@ class MonsterServiceTest {
         Oauth2UserInfo oauth2UserInfo = new GoogleOauth2UserInfo(attributes);
         testUser = User.create(oauth2UserInfo);
 
-        mockMonsterList.add(new Monster(EvolutionGrade.EV1, "cat.img"));
-        mockMonsterList.add(new Monster(EvolutionGrade.EV1, "dog.img"));
-        mockMonsterList.add(new Monster(EvolutionGrade.EV1, "dug.img"));
+        MonsterDatabase monsterDatabase1 = new MonsterDatabase(EvolutionGrade.EV1, "cat.img");
+        MonsterDatabase monsterDatabase2 = new MonsterDatabase(EvolutionGrade.EV1, "dog.img");
+        MonsterDatabase monsterDatabase3 = new MonsterDatabase(EvolutionGrade.EV1, "dug.img");
+        monster1 = Monster.createNewMonster("고양이", monsterDatabase1);
+        monster2 = Monster.createNewMonster("강아지", monsterDatabase2);
+        Monster monster3 = Monster.createNewMonster("오리", monsterDatabase3);
 
-        mockMonsterCollectionList.add(MonsterCollection.createMonsterCollection(testUser, mockMonsterList.get(0)));
-        mockMonsterCollectionList.add(MonsterCollection.createMonsterCollection(testUser, mockMonsterList.get(1)));
-        mockMonsterCollectionList.add(MonsterCollection.createMonsterCollection(testUser, mockMonsterList.get(2)));
+        mockMonsterDatabaseList.add(monsterDatabase1);
+        mockMonsterDatabaseList.add(monsterDatabase2);
+        mockMonsterDatabaseList.add(monsterDatabase3);
     }
 
     @Test
     void getAllMonsters() {
         //given
-        given(monsterRepository.findAllByGrade(EvolutionGrade.EV1))
-                .willReturn(mockMonsterList);
+        given(monsterDatabaseRepository.findAllByGrade(EvolutionGrade.EV1))
+                .willReturn(mockMonsterDatabaseList);
 
         //when
         MonsterListResponseDto responseDto = monsterService.getAllMonsters(testUser);
 
         //then
         assertThat(responseDto.getMonsters().get(0).getMonsterImage())
-                .isEqualTo(mockMonsterList.get(0).getImageUrl());
+                .isEqualTo(mockMonsterDatabaseList.get(0).getImageUrl());
         assertThat(responseDto.getMonsters().get(1).getMonsterImage())
-                .isEqualTo(mockMonsterList.get(1).getImageUrl());
+                .isEqualTo(mockMonsterDatabaseList.get(1).getImageUrl());
         assertThat(responseDto.getMonsters().get(2).getMonsterImage())
-                .isEqualTo(mockMonsterList.get(2).getImageUrl());
+                .isEqualTo(mockMonsterDatabaseList.get(2).getImageUrl());
         assertThat(responseDto.getStatusCode()).isEqualTo(200);
         assertThat(responseDto.getResponseMessage()).isEqualTo("LV1 몬스터를 불러오는데 성공했습니다.");
 
-        verify(monsterRepository).findAllByGrade(EvolutionGrade.EV1);
+        verify(monsterDatabaseRepository).findAllByGrade(EvolutionGrade.EV1);
     }
 
     @Test
     void updateMonster() {
         //given
-        given(monsterRepository.findById(1L))
-                .willReturn(Optional.of(mockMonsterList.get(0)));
-        MonsterSelectRequestDto mockRequestDto = new MonsterSelectRequestDto(1L, "test");
+        given(monsterDatabaseRepository.findById(1L))
+                .willReturn(Optional.of(mockMonsterDatabaseList.get(0)));
+        MonsterSelectRequestDto mockRequestDto = new MonsterSelectRequestDto(1L, monster1.getName());
+        given(userService.updateMonster(eq(testUser), any(Monster.class)))
+                .willReturn(testUser);
 
         //when
         MonsterResponseDto responseDto = monsterService.updateMonster(testUser, mockRequestDto);
 
         //then
         assertThat(responseDto.getMonster().getMonsterImage())
-                .isEqualTo(mockMonsterList.get(0).getImageUrl());
+                .isEqualTo(monster1.getMonsterDatabase().getImageUrl());
         assertThat(responseDto.getMonster().getMonsterName())
                 .isEqualTo(mockRequestDto.getMonsterName());
-        assertThat(testUser.getMonster()).isEqualTo(mockMonsterList.get(0));
+        assertThat(responseDto.getMonster().getMonsterLevel()).isEqualTo(1);
+        assertThat(responseDto.getMonster().getMonsterExpPoint()).isEqualTo(0L);
         assertThat(responseDto.getStatusCode()).isEqualTo(200);
         assertThat(responseDto.getResponseMessage()).isEqualTo("몬스터가 선택되었습니다.");
 
-        verify(monsterRepository).findById(1L);
-        verify(userRepository).save(testUser);
+        verify(monsterDatabaseRepository).findById(1L);
+        verify(userService).updateMonster(eq(testUser), any(Monster.class));
     }
 
     @Test
     void updateMonsterIfUserHasMonster() {
         //given
-        testUser.updateMonster(mockMonsterList.get(0), "before");
-        testUser.levelUp();
-        testUser.levelUp();
-        testUser.levelUp();
-        testUser.levelUp();
-        given(monsterRepository.findById(1L))
-                .willReturn(Optional.of(mockMonsterList.get(1)));
-        MonsterSelectRequestDto mockRequestDto = new MonsterSelectRequestDto(1L, "after");
+        testUser.updateMonster(monster1);
+        testUser.getMonster().levelUp();
+        testUser.getMonster().levelUp();
+        testUser.getMonster().levelUp();
+        testUser.getMonster().levelUp();
+        given(monsterDatabaseRepository.findById(1L))
+                .willReturn(Optional.of(mockMonsterDatabaseList.get(1)));
+        given(monsterRepository.findById(any(Long.class)))
+                .willReturn(Optional.of(monster1));
+        MonsterSelectRequestDto mockRequestDto = new MonsterSelectRequestDto(1L, monster2.getName());
 
         //when
         MonsterResponseDto responseDto = monsterService.updateMonster(testUser, mockRequestDto);
 
         //then
         assertThat(responseDto.getMonster().getMonsterImage())
-                .isEqualTo(mockMonsterList.get(1).getImageUrl());
+                .isEqualTo(mockMonsterDatabaseList.get(1).getImageUrl());
         assertThat(responseDto.getMonster().getMonsterName())
                 .isEqualTo(mockRequestDto.getMonsterName());
-        assertThat(testUser.getMonster()).isEqualTo(mockMonsterList.get(1));
+        assertThat(responseDto.getMonster().getMonsterName()).isEqualTo(monster2.getName());
+        assertThat(responseDto.getMonster().getMonsterLevel()).isEqualTo(1);
+        assertThat(responseDto.getMonster().getMonsterExpPoint()).isEqualTo(0L);
         assertThat(responseDto.getStatusCode()).isEqualTo(200);
         assertThat(responseDto.getResponseMessage()).isEqualTo("몬스터가 선택되었습니다.");
 
-        verify(monsterRepository).findById(1L);
-        verify(monsterCollectionRepository).save(any(MonsterCollection.class));
-        verify(userRepository).save(testUser);
-    }
-
-    @Test
-    void getMonsterCollection() {
-        //given
-        given(monsterCollectionRepository.findAllByUser(testUser))
-                .willReturn(mockMonsterCollectionList);
-
-        //when
-        MonsterListResponseDto responseDto = monsterService.getMonsterCollection(testUser);
-
-        //then
-        assertThat(responseDto.getMonsters().get(0).getMonsterImage())
-                .isEqualTo(mockMonsterList.get(0).getImageUrl());
-        assertThat(responseDto.getMonsters().get(1).getMonsterImage())
-                .isEqualTo(mockMonsterList.get(1).getImageUrl());
-        assertThat(responseDto.getMonsters().get(2).getMonsterImage())
-                .isEqualTo(mockMonsterList.get(2).getImageUrl());
-        assertThat(responseDto.getStatusCode()).isEqualTo(200);
-        assertThat(responseDto.getResponseMessage()).isEqualTo("몬스터 컬렉션 조회 성공");
-
-        verify(monsterCollectionRepository).findAllByUser(testUser);
+        verify(monsterDatabaseRepository).findById(1L);
+        verify(monsterRepository).findById(any(Long.class));
+        verify(userService).updateMonster(eq(testUser), any(Monster.class));
     }
 
     @Test
     void getMonsterVo() {
         //given
-        testUser.updateMonster(mockMonsterList.get(0), "test");
+        testUser.updateMonster(monster1);
         given(monsterRepository.findById(any()))
-                .willReturn(Optional.of(mockMonsterList.get(0)));
+                .willReturn(Optional.of(monster1));
 
         //when
         MonsterVo monsterVo = monsterService.getMonsterVo(testUser);
 
         //then
-        assertThat(monsterVo.getMonsterName()).isEqualTo(testUser.getMonsterName());
+        assertThat(monsterVo.getMonsterName()).isEqualTo(testUser.getMonster().getName());
         assertThat(monsterVo.getMonsterImage())
-                .isEqualTo(mockMonsterList.get(0).getImageUrl());
+                .isEqualTo(mockMonsterDatabaseList.get(0).getImageUrl());
 
         verify(monsterRepository).findById(any());
     }

@@ -77,8 +77,6 @@ class UserControllerTest {
                 .socialId(testUser.getSocialId())
                 .email(testUser.getEmail())
                 .username(testUser.getUsername())
-                .expPercentage(testUser.getExpPoint())
-                .level(testUser.getLevel().getValue())
                 .socialType(testUser.getType())
                 .build();
         UserInfoResponseDto responseDto = UserInfoResponseDto.builder()
