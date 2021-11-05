@@ -10,7 +10,5 @@ public class UserInfoVo {
     private String socialId;
     private String username;
     private String email;
-    private Long expPercentage;
-    private Integer level;
     private UserType socialType;
 }
