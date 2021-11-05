@@ -15,6 +15,7 @@ import springfox.documentation.annotations.ApiIgnore;
 public class MonsterController {
 
     private final MonsterService monsterService;
+    private final MonsterCollectionService monsterCollectionService;
 
     @ApiOperation(value = "LV1 몬스터 목록 조회", notes = "몬스터 목록 반환")
     @GetMapping("/monsters")
@@ -34,13 +35,13 @@ public class MonsterController {
     @GetMapping("/user/monsters")
     public MonsterListResponseDto getMonsterCollection(
             @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return monsterService.getMonsterCollection(userDetails.getUser());
+        return monsterCollectionService.getMonsterCollection(userDetails.getUser());
     }
 
     @ApiOperation(value = "사용자 몬스터 조회", notes = "사용자 몬스터 정보 반환")
     @GetMapping("/user/monster")
     public MonsterResponseDto getMonsterFromUser(
             @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return monsterService.getMonsterFromUser(userDetails.getUser());
+        return monsterService.getMonsterResponseDtoFromUser(userDetails.getUser());
     }
 }

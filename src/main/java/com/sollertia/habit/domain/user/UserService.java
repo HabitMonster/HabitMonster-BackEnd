@@ -1,9 +1,11 @@
 package com.sollertia.habit.domain.user;
 
+import com.sollertia.habit.domain.monster.Monster;
 import com.sollertia.habit.domain.user.dto.UserInfoResponseDto;
 import com.sollertia.habit.domain.user.dto.UserInfoVo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,9 +26,13 @@ public class UserService {
                 .socialId(user.getSocialId())
                 .email(user.getEmail())
                 .username(user.getUsername())
-                .expPercentage(user.getExpPoint())
-                .level(user.getLevel().getValue())
                 .socialType(user.getType())
                 .build();
+    }
+
+    @Transactional
+    public User updateMonster(User user, Monster newMonster) {
+        user.updateMonster(newMonster);
+        return userRepository.save(user);
     }
 }
