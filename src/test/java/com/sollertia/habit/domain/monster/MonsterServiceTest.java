@@ -35,8 +35,11 @@ class MonsterServiceTest {
     private MonsterDatabaseRepository monsterDatabaseRepository;
     @Mock
     private UserService userService;
+    @Mock
+    private MonsterCollectionService monsterCollectionService;
 
     User testUser;
+    User updatedTestUser;
     Monster monster1;
     Monster monster2;
     List<MonsterDatabase> mockMonsterDatabaseList = new ArrayList<>();
@@ -49,6 +52,7 @@ class MonsterServiceTest {
         attributes.put("email", "tester.test.com");
         Oauth2UserInfo oauth2UserInfo = new GoogleOauth2UserInfo(attributes);
         testUser = User.create(oauth2UserInfo);
+        updatedTestUser = User.create(oauth2UserInfo);
 
         MonsterDatabase monsterDatabase1 = new MonsterDatabase(EvolutionGrade.EV1, "cat.img");
         MonsterDatabase monsterDatabase2 = new MonsterDatabase(EvolutionGrade.EV1, "dog.img");
@@ -87,11 +91,12 @@ class MonsterServiceTest {
     @Test
     void updateMonster() {
         //given
+        updatedTestUser.updateMonster(monster1);
         given(monsterDatabaseRepository.findById(1L))
                 .willReturn(Optional.of(mockMonsterDatabaseList.get(0)));
         MonsterSelectRequestDto mockRequestDto = new MonsterSelectRequestDto(1L, monster1.getName());
         given(userService.updateMonster(eq(testUser), any(Monster.class)))
-                .willReturn(testUser);
+                .willReturn(updatedTestUser);
 
         //when
         MonsterResponseDto responseDto = monsterService.updateMonster(testUser, mockRequestDto);
@@ -118,10 +123,13 @@ class MonsterServiceTest {
         testUser.getMonster().levelUp();
         testUser.getMonster().levelUp();
         testUser.getMonster().levelUp();
+        updatedTestUser.updateMonster(monster2);
         given(monsterDatabaseRepository.findById(1L))
                 .willReturn(Optional.of(mockMonsterDatabaseList.get(1)));
-        given(monsterRepository.findById(any(Long.class)))
+        given(monsterRepository.findById(any()))
                 .willReturn(Optional.of(monster1));
+        given(userService.updateMonster(eq(testUser), any(Monster.class)))
+                .willReturn(updatedTestUser);
         MonsterSelectRequestDto mockRequestDto = new MonsterSelectRequestDto(1L, monster2.getName());
 
         //when
@@ -139,7 +147,7 @@ class MonsterServiceTest {
         assertThat(responseDto.getResponseMessage()).isEqualTo("몬스터가 선택되었습니다.");
 
         verify(monsterDatabaseRepository).findById(1L);
-        verify(monsterRepository).findById(any(Long.class));
+        verify(monsterRepository).findById(any());
         verify(userService).updateMonster(eq(testUser), any(Monster.class));
     }
 

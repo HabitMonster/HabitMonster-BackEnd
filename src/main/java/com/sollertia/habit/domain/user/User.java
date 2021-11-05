@@ -87,8 +87,9 @@ public class User {
         return newUser;
     }
 
-    public void updateMonster(Monster monster) {
+    public User updateMonster(Monster monster) {
         this.setMonster(monster);
         monster.setUser(this);
+        return this;
     }
 }
