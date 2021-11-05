@@ -23,10 +23,10 @@ public class UserService {
 
     public UserInfoVo getUserInfoVo(User user) {
         return UserInfoVo.builder()
-                .socialId(user.getSocialId())
+                .monsterCode(user.getSocialId())
                 .email(user.getEmail())
                 .username(user.getUsername())
-                .socialType(user.getType())
+                .socialType(user.getProviderType())
                 .build();
     }
 

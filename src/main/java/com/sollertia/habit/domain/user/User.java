@@ -30,9 +30,6 @@ public class User {
     @Enumerated(EnumType.STRING)
     private ProviderType providerType;
 
-    @Enumerated(value = EnumType.STRING)
-    private UserType type;
-
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Habit> habit;
 
@@ -67,8 +64,6 @@ public class User {
         this.providerType = providerType;
     }
 
-    private void setType(UserType type){this.type = type;}
-
     private void setMonster(Monster monster) {
         this.monster = monster;
     }
@@ -83,7 +78,6 @@ public class User {
         newUser.setEmail(userInfo.getEmail());
         newUser.setUsername(userInfo.getName());
         newUser.setProviderType(userInfo.getProviderType());
-        newUser.setType(UserType.from(userInfo.getProviderType()));
         return newUser;
     }
 

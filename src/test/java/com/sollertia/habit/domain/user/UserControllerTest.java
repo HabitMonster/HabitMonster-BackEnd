@@ -74,10 +74,10 @@ class UserControllerTest {
         //given
         authenticated();
         UserInfoVo infoVo = UserInfoVo.builder()
-                .socialId(testUser.getSocialId())
+                .monsterCode(testUser.getSocialId())
                 .email(testUser.getEmail())
                 .username(testUser.getUsername())
-                .socialType(testUser.getType())
+                .socialType(testUser.getProviderType())
                 .build();
         UserInfoResponseDto responseDto = UserInfoResponseDto.builder()
                 .userInfo(infoVo)
@@ -93,7 +93,8 @@ class UserControllerTest {
                 //then
                 .andExpect(jsonPath("$.userInfo.email").value(testUser.getEmail()))
                 .andExpect(jsonPath("$.userInfo.username").value(testUser.getUsername()))
-                .andExpect(jsonPath("$.userInfo.socialId").value(testUser.getSocialId()))
+                .andExpect(jsonPath("$.userInfo.monsterCode").value(testUser.getSocialId()))
+                .andExpect(jsonPath("$.userInfo.socialType").value(testUser.getProviderType().toString()))
                 .andExpect(jsonPath("$.responseMessage").value("사용자 정보 조회 성공"))
                 .andExpect(jsonPath("$.statusCode").value("200"));
 

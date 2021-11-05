@@ -7,6 +7,7 @@ import com.sollertia.habit.domain.monster.*;
 import com.sollertia.habit.domain.preset.PreSetRepository;
 import com.sollertia.habit.domain.preset.dto.PreSetVo;
 import com.sollertia.habit.domain.preset.enums.PreSet;
+import com.sollertia.habit.domain.user.ProviderType;
 import com.sollertia.habit.domain.user.User;
 import com.sollertia.habit.domain.user.UserRepository;
 import com.sollertia.habit.domain.user.UserType;
@@ -36,7 +37,7 @@ public class TestData implements ApplicationRunner {
         monsterDatabaseRepository.save(monsterDatabase1);
         monsterDatabaseRepository.save(monsterDatabase2);
 
-        User testUser = User.builder().socialId("1234G").username("tester").email("tester.test.com").type(UserType.Google).build();
+        User testUser = User.builder().socialId("1234G").username("tester").email("tester.test.com").providerType(ProviderType.GOOGLE).build();
         userRepository.save(testUser);
 
         User user = userRepository.findById(1L).orElseThrow(()->new NullPointerException("없음"));
