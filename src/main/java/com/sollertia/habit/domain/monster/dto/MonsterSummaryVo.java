@@ -1,7 +1,7 @@
 package com.sollertia.habit.domain.monster.dto;
 
-import com.sollertia.habit.domain.monster.Monster;
 import com.sollertia.habit.domain.monster.MonsterCollection;
+import com.sollertia.habit.domain.monster.MonsterDatabase;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -14,17 +14,17 @@ public class MonsterSummaryVo {
     private Long monsterId;
     private String monsterImage;
 
-    public static MonsterSummaryVo of(Monster monster) {
+    public static MonsterSummaryVo of(MonsterDatabase monsterDatabase) {
         return MonsterSummaryVo.builder()
-                .monsterId(monster.getId())
-                .monsterImage(monster.getImageUrl())
+                .monsterId(monsterDatabase.getId())
+                .monsterImage(monsterDatabase.getImageUrl())
                 .build();
     }
 
-    public static List<MonsterSummaryVo> listFromMonsterList(List<Monster> monsterList) {
+    public static List<MonsterSummaryVo> listFromMonsterList(List<MonsterDatabase> monsterList) {
         List<MonsterSummaryVo> summaryVoList = new ArrayList<>();
-        for (Monster monster : monsterList) {
-            summaryVoList.add(MonsterSummaryVo.of(monster));
+        for (MonsterDatabase monsterDatabase : monsterList) {
+            summaryVoList.add(MonsterSummaryVo.of(monsterDatabase));
         }
         return summaryVoList;
     }
@@ -32,7 +32,7 @@ public class MonsterSummaryVo {
     public static List<MonsterSummaryVo> listFromCollectionList(List<MonsterCollection> monsterCollectionList) {
         List<MonsterSummaryVo> summaryVoList = new ArrayList<>();
         for (MonsterCollection monsterCollection : monsterCollectionList) {
-            summaryVoList.add(MonsterSummaryVo.of(monsterCollection.getMonster()));
+            summaryVoList.add(MonsterSummaryVo.of(monsterCollection.getMonsterDatabase()));
         }
         return summaryVoList;
     }
