@@ -1,9 +1,10 @@
 package com.sollertia.habit.testdata;
 
-import com.sollertia.habit.config.jwt.JwtTokenProvider;
-import com.sollertia.habit.config.jwt.dto.JwtResponseDto;
-import com.sollertia.habit.domain.user.User;
-import com.sollertia.habit.domain.user.UserRepository;
+import com.sollertia.habit.domain.user.security.jwt.filter.JwtTokenProvider;
+import com.sollertia.habit.domain.user.security.jwt.dto.JwtResponseDto;
+import com.sollertia.habit.domain.user.entity.User;
+import com.sollertia.habit.domain.user.repository.UserRepository;
+import com.sollertia.habit.global.utils.RedisUtil;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class TestToken {
     private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
+    private final RedisUtil redisUtil;
+
     @ApiOperation("test 토큰 발급")
     @GetMapping("/test/token")
     public JwtResponseDto testToken(){
@@ -22,6 +25,7 @@ public class TestToken {
 
         String accessToken = jwtTokenProvider.responseAccessToken(testUser);
         String refreshToken = jwtTokenProvider.responseRefreshToken(testUser);
+        redisUtil.setDataExpire(refreshToken,testUser.getSocialId(),JwtTokenProvider.ACCESS_TOKEN_USETIME);
 
         return JwtResponseDto.builder().accessToken(accessToken).refreshToken(refreshToken).build();
     }

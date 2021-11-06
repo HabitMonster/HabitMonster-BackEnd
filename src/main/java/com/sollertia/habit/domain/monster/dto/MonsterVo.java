@@ -1,6 +1,6 @@
 package com.sollertia.habit.domain.monster.dto;
 
-import com.sollertia.habit.domain.monster.Monster;
+import com.sollertia.habit.domain.monster.entity.Monster;
 import lombok.Builder;
 import lombok.Getter;
 
