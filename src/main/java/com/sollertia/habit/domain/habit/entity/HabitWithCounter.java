@@ -25,6 +25,11 @@ public class HabitWithCounter extends Habit {
         return this.todayCounter;
     }
 
+    @Override
+    public int getGoal() {
+        return this.goalCountInSession;
+    }
+
     private void setGoalCountInSession(int goalCountInSession) {
         this.goalCountInSession = goalCountInSession;
     }

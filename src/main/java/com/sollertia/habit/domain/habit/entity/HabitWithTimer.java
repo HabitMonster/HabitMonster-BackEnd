@@ -27,6 +27,11 @@ public class HabitWithTimer extends Habit {
         return this.currentDuration;
     }
 
+    @Override
+    public int getGoal() {
+        return this.goalDurationTime;
+    }
+
     public void setGoalDurationTime(int goalDurationTime) {
         this.goalDurationTime = goalDurationTime;
     }

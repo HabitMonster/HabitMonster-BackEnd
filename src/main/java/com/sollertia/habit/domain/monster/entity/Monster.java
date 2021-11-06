@@ -60,4 +60,10 @@ public class Monster {
         return newMonster;
     }
 
+    public void minusExpPoint() {
+        this.expPoint -= this.level.getMinusPoint();
+        if (this.expPoint < 0l) {
+            this.expPoint = 0l;
+        }
+    }
 }

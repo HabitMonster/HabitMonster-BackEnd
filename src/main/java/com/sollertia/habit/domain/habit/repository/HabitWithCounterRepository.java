@@ -20,4 +20,9 @@ public interface HabitWithCounterRepository extends JpaRepository<HabitWithCount
             "and h.durationStart <= :today " +
             "and h.durationEnd >= :today")
     List<Habit> findTodayHabitListByUser(User user, int day, LocalDate today);
+    List<Habit> findAllByDurationEndLessThan(LocalDate date);
+
+    List<Habit> findByUserId(Long userId);
+
+
 }

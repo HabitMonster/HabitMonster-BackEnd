@@ -7,4 +7,5 @@ import java.util.List;
 public interface PreSetService {
     List<PreSetVo> categoryPreSetList(Long categoryId);
     PreSetVo getPreSet(Long preSetId);
+    void deletePreSet();
 }

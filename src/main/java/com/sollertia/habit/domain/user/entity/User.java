@@ -3,6 +3,7 @@ package com.sollertia.habit.domain.user.entity;
 import com.sollertia.habit.domain.habit.entity.Habit;
 import com.sollertia.habit.domain.monster.entity.Monster;
 import com.sollertia.habit.domain.monster.entity.MonsterCollection;
+import com.sollertia.habit.domain.user.enums.Level;
 import com.sollertia.habit.domain.user.oauth2.userinfo.Oauth2UserInfo;
 import com.sollertia.habit.domain.user.enums.ProviderType;
 import com.sollertia.habit.domain.userteam.entity.UserTeam;
@@ -45,9 +46,6 @@ public class User {
 
     public User() {
     }
-
-//    protected User() {  // 이유가 궁금하니다!
-//    }
 
     private void setSocialId(String socialId) {
         this.socialId = socialId;

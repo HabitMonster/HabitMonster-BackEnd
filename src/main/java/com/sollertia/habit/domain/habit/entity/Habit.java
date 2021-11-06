@@ -49,6 +49,9 @@ public abstract class Habit {
 
     private Long wholeDays;
 
+    //총 수행일 카럼추가, 달성률 계한 함수분리
+    private Long totalAchieveCount;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -96,6 +99,8 @@ public abstract class Habit {
     }
 
     public abstract int getCurrent();
+    public abstract int getGoal();
+    public abstract Boolean check(Long value);
 
     public void setWholeDays() {
 
@@ -176,8 +181,6 @@ public abstract class Habit {
     }
 
 
-
-    public abstract Boolean check(Long value);
 
 
 
