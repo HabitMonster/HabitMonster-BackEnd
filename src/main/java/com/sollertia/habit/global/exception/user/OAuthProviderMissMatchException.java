@@ -1,0 +1,7 @@
+package com.sollertia.habit.global.exception.user;
+
+public class OAuthProviderMissMatchException extends RuntimeException {
+    public OAuthProviderMissMatchException(String message) {
+        super(message);
+    }
+}

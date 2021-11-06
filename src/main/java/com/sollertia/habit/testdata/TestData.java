@@ -2,14 +2,18 @@ package com.sollertia.habit.testdata;
 
 import com.sollertia.habit.domain.habit.dto.HabitDtoImpl;
 import com.sollertia.habit.domain.habit.dto.HabitTypeDto;
-import com.sollertia.habit.domain.habit.habitservice.HabitServiceImpl;
-import com.sollertia.habit.domain.monster.*;
-import com.sollertia.habit.domain.preset.PreSetRepository;
+import com.sollertia.habit.domain.habit.service.HabitServiceImpl;
+import com.sollertia.habit.domain.monster.entity.Monster;
+import com.sollertia.habit.domain.monster.entity.MonsterDatabase;
+import com.sollertia.habit.domain.monster.enums.EvolutionGrade;
+import com.sollertia.habit.domain.monster.repository.MonsterDatabaseRepository;
+import com.sollertia.habit.domain.monster.repository.MonsterRepository;
+import com.sollertia.habit.domain.preset.repository.PreSetRepository;
 import com.sollertia.habit.domain.preset.dto.PreSetVo;
 import com.sollertia.habit.domain.preset.enums.PreSet;
-import com.sollertia.habit.domain.user.ProviderType;
-import com.sollertia.habit.domain.user.User;
-import com.sollertia.habit.domain.user.UserRepository;
+import com.sollertia.habit.domain.user.enums.ProviderType;
+import com.sollertia.habit.domain.user.entity.User;
+import com.sollertia.habit.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -51,7 +55,7 @@ public class TestData implements ApplicationRunner {
         for (int i = 1; i < 15; i++) {
             PreSetVo preSetVo = PreSet.getPreSet((long) i);
             assert preSetVo != null;
-            com.sollertia.habit.domain.preset.PreSet preSet = new com.sollertia.habit.domain.preset.PreSet(preSetVo);
+            com.sollertia.habit.domain.preset.entity.PreSet preSet = new com.sollertia.habit.domain.preset.entity.PreSet(preSetVo);
             preSetRepository.save(preSet);
 
             Calendar endDate = Calendar.getInstance();

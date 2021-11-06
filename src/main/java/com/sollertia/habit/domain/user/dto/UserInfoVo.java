@@ -1,6 +1,6 @@
 package com.sollertia.habit.domain.user.dto;
 
-import com.sollertia.habit.domain.user.ProviderType;
+import com.sollertia.habit.domain.user.enums.ProviderType;
 import lombok.Builder;
 import lombok.Getter;
 
