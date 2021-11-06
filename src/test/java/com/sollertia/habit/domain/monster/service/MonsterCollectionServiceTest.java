@@ -6,10 +6,9 @@ import com.sollertia.habit.domain.monster.entity.MonsterCollection;
 import com.sollertia.habit.domain.monster.entity.MonsterDatabase;
 import com.sollertia.habit.domain.monster.enums.EvolutionGrade;
 import com.sollertia.habit.domain.monster.repository.MonsterCollectionRepository;
-import com.sollertia.habit.domain.monster.service.MonsterCollectionService;
+import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.domain.user.oauth2.userinfo.GoogleOauth2UserInfo;
 import com.sollertia.habit.domain.user.oauth2.userinfo.Oauth2UserInfo;
-import com.sollertia.habit.domain.user.entity.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
@@ -68,6 +68,16 @@ class MonsterCollectionServiceTest {
 
     @Test
     void addMonsterCollection() {
+        //given
+        given(monsterCollectionRepository.save(any(MonsterCollection.class)))
+                .willReturn(mockMonsterCollectionList.get(0));
+
+        //when
+        MonsterCollection monsterCollection = monsterCollectionService.addMonsterCollection(monster1);
+
+        //then
+        assertThat(monsterCollection.getMonsterName()).isEqualTo(monster1.getName());
+        assertThat(monsterCollection.getMonsterDatabase()).isEqualTo(mockMonsterDatabaseList.get(0));
     }
 
     @Test
