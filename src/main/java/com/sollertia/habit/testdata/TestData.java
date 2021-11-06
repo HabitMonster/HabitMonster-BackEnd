@@ -1,6 +1,5 @@
 package com.sollertia.habit.testdata;
 
-import com.sollertia.habit.domain.habit.Repository.HabitRepository;
 import com.sollertia.habit.domain.habit.dto.HabitDtoImpl;
 import com.sollertia.habit.domain.habit.dto.HabitTypeDto;
 import com.sollertia.habit.domain.habit.habitservice.HabitServiceImpl;
@@ -11,8 +10,6 @@ import com.sollertia.habit.domain.preset.enums.PreSet;
 import com.sollertia.habit.domain.user.ProviderType;
 import com.sollertia.habit.domain.user.User;
 import com.sollertia.habit.domain.user.UserRepository;
-import com.sollertia.habit.domain.user.UserType;
-import com.sollertia.habit.utils.DefaultResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
