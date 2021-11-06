@@ -23,7 +23,7 @@ public class UserService {
                 .build();
     }
 
-    public UserInfoVo getUserInfoVo(User user) {
+    private UserInfoVo getUserInfoVo(User user) {
         return UserInfoVo.builder()
                 .monsterCode(user.getSocialId())
                 .email(user.getEmail())
