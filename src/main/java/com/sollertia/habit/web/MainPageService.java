@@ -26,7 +26,7 @@ public class MainPageService {
         return MainPageResponseDto.builder()
                 .habits(habitSummaryList)
                 .monster(monsterVo)
-                .expPercentage(user.getExpPoint())
+                .expPercentage(monsterVo.getMonsterExpPoint())
                 .responseMessage("메인페이지 조회 성공")
                 .statusCode(200)
                 .build();

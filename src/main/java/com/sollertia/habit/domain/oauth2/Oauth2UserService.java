@@ -3,8 +3,6 @@ package com.sollertia.habit.domain.oauth2;
 import com.sollertia.habit.domain.oauth2.userinfo.Oauth2UserInfo;
 import com.sollertia.habit.domain.user.User;
 import com.sollertia.habit.domain.user.UserRepository;
-import com.sollertia.habit.domain.user.UserType;
-import com.sollertia.habit.exception.InvalidSocialNameException;
 import com.sollertia.habit.exception.OAuthProviderMissMatchException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -7,6 +7,7 @@ import com.sollertia.habit.domain.habit.Repository.HabitWithCounterRepository;
 import com.sollertia.habit.domain.habit.dto.*;
 import com.sollertia.habit.domain.history.History;
 import com.sollertia.habit.domain.history.HistoryRepository;
+import com.sollertia.habit.domain.monster.MonsterService;
 import com.sollertia.habit.domain.user.User;
 import com.sollertia.habit.domain.user.UserRepository;
 import com.sollertia.habit.exception.HabitIdNotFoundException;
@@ -31,6 +32,8 @@ public class HabitServiceImpl implements HabitService {
     private final UserRepository userRepository;
 
     private final HistoryRepository historyRepository;
+
+    private final MonsterService monsterService;
 
 
     @Transactional
@@ -84,7 +87,7 @@ public class HabitServiceImpl implements HabitService {
         HabitWithCounter habitWithCounter = habitWithCounterRepository.findById(habitId).orElseThrow(() -> new HabitIdNotFoundException("Couldn't find Habit"));
         Boolean isAchieve = habitWithCounter.check(1L);
         if (isAchieve) {
-            habitWithCounter.getUser().plusExpPoint();
+            monsterService.plusExpPoint(habitWithCounter.getUser());
             History history = History.makeHistory(habitWithCounter);
             historyRepository.save(history);
         }
@@ -108,11 +111,12 @@ public class HabitServiceImpl implements HabitService {
 
     @Override
     public List<HabitSummaryVo> getHabitSummaryList(User user) {
+        LocalDate today = LocalDate.now();
+        int day = today.getDayOfWeek().getValue();
         List<HabitSummaryVo> habitSummaryList = new ArrayList<>();
 
-        int today = LocalDate.now().getDayOfWeek().getValue();
         List<Habit> habits = habitWithCounterRepository
-                .findByUserAndPracticeDaysContains(user, today);
+                .findTodayHabitListByUser(user, day, today);
 
         for (Habit habit : habits) {
             habitSummaryList.add(HabitSummaryVo.of((HabitWithCounter) habit));

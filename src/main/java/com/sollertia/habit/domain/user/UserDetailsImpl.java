@@ -50,8 +50,8 @@ public class UserDetailsImpl implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
-        UserType userType = user.getType();
-        String authority = userType.getAuthType();
+        ProviderType providerType = user.getProviderType();
+        String authority = providerType.getAuthType();
 
         SimpleGrantedAuthority simpleAuthority = new SimpleGrantedAuthority(authority);
         Collection<GrantedAuthority> authorities = new ArrayList<>();

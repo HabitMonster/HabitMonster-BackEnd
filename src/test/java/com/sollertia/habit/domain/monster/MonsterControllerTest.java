@@ -1,6 +1,5 @@
 package com.sollertia.habit.domain.monster;
 
-import com.sollertia.habit.config.WebSecurityConfig;
 import com.sollertia.habit.config.jwt.JwtTokenProvider;
 import com.sollertia.habit.domain.monster.dto.*;
 import com.sollertia.habit.domain.oauth2.userinfo.GoogleOauth2UserInfo;
@@ -14,8 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -55,6 +52,8 @@ class MonsterControllerTest {
     private RedisUtil redisUtil;
     @MockBean
     private AuthenticationManager authenticationManager;
+    @MockBean
+    private MonsterCollectionService monsterCollectionService;
 
     User testUser;
     UserDetailsImpl mockUserDetails;
@@ -105,7 +104,7 @@ class MonsterControllerTest {
         //given
         authenticated();
         MonsterResponseDto responseDto = MonsterResponseDto.builder()
-                .monster(MonsterVo.builder().monsterId(1L).monsterImage("monster.img").monsterName("testmonster").build())
+                .monster(MonsterVo.builder().monsterImage("monster.img").monsterName("testmonster").build())
                 .responseMessage("몬스터가 선택되었습니다.")
                 .statusCode(200).build();
 
@@ -125,7 +124,6 @@ class MonsterControllerTest {
                 .andDo(print())
                 //then
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.monster.monsterId").value("1"))
                 .andExpect(jsonPath("$.monster.monsterImage").value("monster.img"))
                 .andExpect(jsonPath("$.monster.monsterName").value("testmonster"))
                 .andExpect(jsonPath("$.responseMessage").value("몬스터가 선택되었습니다."))
@@ -142,7 +140,7 @@ class MonsterControllerTest {
         summaryVoList.add(MonsterSummaryVo.builder().monsterId(1L).monsterImage("monster.img").build());
         MonsterListResponseDto responseDto = MonsterListResponseDto.builder().monsters(summaryVoList).responseMessage("몬스터 컬렉션 조회 성공").statusCode(200).build();
 
-        given(monsterService.getMonsterCollection(testUser))
+        given(monsterCollectionService.getMonsterCollection(testUser))
                 .willReturn(responseDto);
         //when
         mvc.perform(get("/user/monsters"))
@@ -154,6 +152,6 @@ class MonsterControllerTest {
                 .andExpect(jsonPath("$.responseMessage").value("몬스터 컬렉션 조회 성공"))
                 .andExpect(jsonPath("$.statusCode").value("200"));
 
-        verify(monsterService).getMonsterCollection(testUser);
+        verify(monsterCollectionService).getMonsterCollection(testUser);
     }
 }

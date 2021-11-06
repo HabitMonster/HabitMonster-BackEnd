@@ -1,8 +1,8 @@
 package com.sollertia.habit.config.jwt;
 
-import com.sollertia.habit.domain.user.UserDetailsServiceImpl;
-import com.sollertia.habit.domain.user.UserType;
+import com.sollertia.habit.domain.user.ProviderType;
 import com.sollertia.habit.domain.user.User;
+import com.sollertia.habit.domain.user.UserDetailsServiceImpl;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,17 +44,17 @@ public class JwtTokenProvider {
 
     // Refresh, Access 토큰 구분
     public String responseRefreshToken(User user) {
-        return createToken(user.getSocialId(), user.getType(), REFRESH_TOKEN_USETIME);
+        return createToken(user.getSocialId(), user.getProviderType(), REFRESH_TOKEN_USETIME);
     }
 
     public String responseAccessToken(User user) {
-        return createToken(user.getSocialId(), user.getType(), ACCESS_TOKEN_USETIME);
+        return createToken(user.getSocialId(), user.getProviderType(), ACCESS_TOKEN_USETIME);
     }
 
     // JWT 토큰 생성
-    private String createToken(String socialId, UserType userType, long useTime) {
+    private String createToken(String socialId, ProviderType providerType, long useTime) {
         Claims claims = Jwts.claims().setSubject(socialId);
-        claims.put("type", userType);
+        claims.put("type", providerType);
         Date now = new Date();
         return Jwts.builder()
                 .setClaims(claims) // 정보 저장 - socialId, userType

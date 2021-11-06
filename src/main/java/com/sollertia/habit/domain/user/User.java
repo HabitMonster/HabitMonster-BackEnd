@@ -30,16 +30,6 @@ public class User {
     @Enumerated(EnumType.STRING)
     private ProviderType providerType;
 
-    private Long expPoint;
-
-    @Enumerated(value = EnumType.STRING)
-    private Level level;
-
-    @Enumerated(value = EnumType.STRING)
-    private UserType type;
-
-    private String monsterName;
-
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Habit> habit;
 
@@ -49,7 +39,7 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<MonsterCollection> monsterCollections;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, orphanRemoval = true)
     private Monster monster;
 
     public User() {
@@ -74,16 +64,6 @@ public class User {
         this.providerType = providerType;
     }
 
-    private void setType(UserType type){this.type = type;}
-
-    private void setLevel(Level level){this.level = level;}
-
-    private void setExpPoint(Long expPoint){this.expPoint = expPoint;}
-
-    private void setMonsterName(String monsterName) {
-        this.monsterName = monsterName;
-    }
-
     private void setMonster(Monster monster) {
         this.monster = monster;
     }
@@ -97,23 +77,13 @@ public class User {
         newUser.setSocialId(userInfo.getId());
         newUser.setEmail(userInfo.getEmail());
         newUser.setUsername(userInfo.getName());
-        newUser.setLevel(Level.LV1);
-        newUser.setExpPoint(0L);
         newUser.setProviderType(userInfo.getProviderType());
-        newUser.setType(UserType.from(userInfo.getProviderType()));
         return newUser;
     }
 
-    public void plusExpPoint() {
-        this.expPoint += this.level.getPlusPoint();
-    }
-
-    public void updateMonster(Monster monster, String monsterName) {
+    public User updateMonster(Monster monster) {
         this.setMonster(monster);
-        this.setMonsterName(monsterName);
-    }
-
-    public void levelUp() {
-        this.setLevel(Level.nextOf(this.getLevel()));
+        monster.setUser(this);
+        return this;
     }
 }

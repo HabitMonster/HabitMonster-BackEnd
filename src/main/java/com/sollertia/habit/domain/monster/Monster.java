@@ -1,27 +1,63 @@
 package com.sollertia.habit.domain.monster;
 
-import lombok.AllArgsConstructor;
+import com.sollertia.habit.domain.user.Level;
+import com.sollertia.habit.domain.user.User;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
-@NoArgsConstructor //test
-@AllArgsConstructor //test
 public class Monster {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Enumerated(EnumType.STRING)
-    private EvolutionGrade grade;
+    private String name;
 
-    private String imageUrl;
+    private Long expPoint;
 
-    public Monster(EvolutionGrade grade, String imageUrl) {
-        this.grade = grade;
-        this.imageUrl = imageUrl;
+    @Enumerated(value = EnumType.STRING)
+    private Level level;
+
+    @ManyToOne
+    private MonsterDatabase monsterDatabase;
+
+    @OneToOne(mappedBy = "monster", fetch = FetchType.LAZY)
+    @Setter
+    private User user;
+
+    protected Monster() {
     }
+
+    private void setLevel(Level level){this.level = level;}
+
+    private void setExpPoint(Long expPoint){this.expPoint = expPoint;}
+
+    private void setName(String name) {
+        this.name = name;
+    }
+
+    private void setMonsterDatabase(MonsterDatabase monsterDatabase) {
+        this.monsterDatabase = monsterDatabase;
+    }
+
+    public void plusExpPoint() {
+        this.expPoint += this.level.getPlusPoint();
+    }
+
+    public void levelUp() {
+        this.setLevel(Level.nextOf(this.getLevel()));
+    }
+
+    public static Monster createNewMonster(String monsterName, MonsterDatabase monsterDatabase) {
+        Monster newMonster =  new Monster();
+        newMonster.setLevel(Level.LV1);
+        newMonster.setExpPoint(0L);
+        newMonster.setName(monsterName);
+        newMonster.setMonsterDatabase(monsterDatabase);
+        return newMonster;
+    }
+
 }

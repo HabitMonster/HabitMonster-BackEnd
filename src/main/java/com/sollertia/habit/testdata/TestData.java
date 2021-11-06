@@ -4,13 +4,11 @@ import com.sollertia.habit.domain.habit.Repository.HabitRepository;
 import com.sollertia.habit.domain.habit.dto.HabitDtoImpl;
 import com.sollertia.habit.domain.habit.dto.HabitTypeDto;
 import com.sollertia.habit.domain.habit.habitservice.HabitServiceImpl;
-import com.sollertia.habit.domain.monster.EvolutionGrade;
-import com.sollertia.habit.domain.monster.Monster;
-import com.sollertia.habit.domain.monster.MonsterRepository;
+import com.sollertia.habit.domain.monster.*;
 import com.sollertia.habit.domain.preset.PreSetRepository;
 import com.sollertia.habit.domain.preset.dto.PreSetVo;
 import com.sollertia.habit.domain.preset.enums.PreSet;
-import com.sollertia.habit.domain.user.Level;
+import com.sollertia.habit.domain.user.ProviderType;
 import com.sollertia.habit.domain.user.User;
 import com.sollertia.habit.domain.user.UserRepository;
 import com.sollertia.habit.domain.user.UserType;
@@ -33,19 +31,22 @@ public class TestData implements ApplicationRunner {
     private final MonsterRepository monsterRepository;
     private final PreSetRepository preSetRepository;
     private final HabitServiceImpl habitService;
-
+    private final MonsterDatabaseRepository monsterDatabaseRepository;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        Monster monster1 = new Monster(1L, EvolutionGrade.EV1, "cat.img");
-        Monster monster2 = new Monster(2L, EvolutionGrade.EV1, "dog.img");
-        monsterRepository.save(monster1);
-        monsterRepository.save(monster2);
+        MonsterDatabase monsterDatabase1 = new MonsterDatabase(EvolutionGrade.EV1, "cat.img");
+        MonsterDatabase monsterDatabase2 = new MonsterDatabase(EvolutionGrade.EV1, "dog.img");
+        monsterDatabaseRepository.save(monsterDatabase1);
+        monsterDatabaseRepository.save(monsterDatabase2);
 
-        User testUser = User.builder().socialId("123456789G").username("tester").email("tester.test.com").type(UserType.Google).level(Level.LV1).expPoint(0l).monsterName("고양이").monster(monster1).build();
+        User testUser = User.builder().socialId("1234G").username("tester").email("tester.test.com").providerType(ProviderType.GOOGLE).build();
         userRepository.save(testUser);
 
-        User user = userRepository.findById(3L).orElseThrow(()->new NullPointerException("없음"));
+        User user = userRepository.findById(1L).orElseThrow(()->new NullPointerException("없음"));
+        Monster monster = Monster.createNewMonster("고양이", monsterDatabase1);
+        user.updateMonster(monster);
+        userRepository.save(user);
 
         Calendar startDate = Calendar.getInstance();
         DateFormat form = new SimpleDateFormat("yyyy-MM-dd");

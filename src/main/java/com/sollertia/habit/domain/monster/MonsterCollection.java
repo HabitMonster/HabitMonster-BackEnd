@@ -20,9 +20,9 @@ public class MonsterCollection {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "monster_id")
+    @JoinColumn(name = "monster_database_id")
     @JsonIgnore
-    private Monster monster;
+    private MonsterDatabase monsterDatabase;
 
     private String monsterName;
 
@@ -33,19 +33,19 @@ public class MonsterCollection {
         this.user = user;
     }
 
-    private void setMonster(Monster monster) {
-        this.monster = monster;
+    private void setMonster(MonsterDatabase monsterDatabase) {
+        this.monsterDatabase = monsterDatabase;
     }
 
     private void setMonsterName(String monsterName) {
         this.monsterName = monsterName;
     }
 
-    public static MonsterCollection createMonsterCollection(User user, Monster monster) {
+    public static MonsterCollection createMonsterCollection(Monster monster) {
         MonsterCollection monsterCollection = new MonsterCollection();
-        monsterCollection.setMonster(monster);
-        monsterCollection.setUser(user);
-        monsterCollection.setMonsterName(user.getMonsterName());
+        monsterCollection.setMonster(monster.getMonsterDatabase());
+        monsterCollection.setUser(monster.getUser());
+        monsterCollection.setMonsterName(monster.getName());
         return monsterCollection;
     }
 }
