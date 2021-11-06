@@ -19,7 +19,6 @@ public class Oauth2UserService {
     public Oauth2UserInfo putUserInto(Oauth2UserInfo userInfo) {
         Oauth2UserInfo updatedUserInfo = updateUserInfo(userInfo);
         checkProviderBetween(updatedUserInfo.getUser(), userInfo);
-        updateUserIfChanged(updatedUserInfo.getUser(), userInfo);
         return userInfo;
     }
 
@@ -45,12 +44,5 @@ public class Oauth2UserService {
                             " account. Please use your " + user.getProviderType() + " account to login."
             );
         }
-    }
-
-    private User updateUserIfChanged(User user, Oauth2UserInfo userInfo) {
-        if (userInfo.getName() != null && !user.getUsername().equals(userInfo.getName())) {
-            user.updateUsername(userInfo.getName());
-        }
-        return userRepository.save(user);
     }
 }
