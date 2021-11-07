@@ -9,6 +9,7 @@ import com.sollertia.habit.domain.user.oauth2.userinfo.KakaoOauth2UserInfo;
 import com.sollertia.habit.domain.user.oauth2.userinfo.NaverOauth2UserInfo;
 import com.sollertia.habit.domain.user.oauth2.userinfo.Oauth2UserInfo;
 import com.sollertia.habit.domain.user.enums.ProviderType;
+import com.sollertia.habit.global.exception.user.InvalidSocialNameException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,7 +21,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -119,4 +122,14 @@ class SocialLoginServiceTest {
         verify(naverSocialLoginUtil).getUserInfoByCode(authCode);
     }
 
+    @Test
+    public void getUserInfoInvalidSocialName() {
+        //when, then
+        assertThrows(InvalidSocialNameException.class,
+                () -> socialLoginService.getUserInfo("none", authCode));
+
+        verify(googleSocialLoginUtil, never()).getUserInfoByCode(authCode);
+        verify(kakaoSocialLoginUtil, never()).getUserInfoByCode(authCode);
+        verify(naverSocialLoginUtil, never()).getUserInfoByCode(authCode);
+    }
 }

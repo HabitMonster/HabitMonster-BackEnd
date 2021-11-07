@@ -8,6 +8,7 @@ import com.sollertia.habit.domain.user.oauth2.service.SocialLoginService;
 import com.sollertia.habit.domain.user.oauth2.userinfo.GoogleOauth2UserInfo;
 import com.sollertia.habit.domain.user.oauth2.userinfo.Oauth2UserInfo;
 import com.sollertia.habit.domain.user.security.jwt.filter.JwtTokenProvider;
+import com.sollertia.habit.global.exception.user.InvalidSocialNameException;
 import com.sollertia.habit.global.utils.RedisUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.mockito.BDDMockito.willThrow;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
@@ -133,5 +136,31 @@ class Oauth2ControllerTest {
         verify(oauth2UserService).putUserInto(mockUserInfo);
         verify(jwtTokenProvider).responseAccessToken(testUser);
         verify(jwtTokenProvider).responseRefreshToken(testUser);
+    }
+
+    @Test
+    void loginFailWhenInvalidSocialName() throws Exception {
+        //given
+        String code = "abcdefg1234567";
+        String socialName = "none";
+        String errorMessage = "잘못된 소셜 로그인 타입입니다.";
+
+        willThrow(new InvalidSocialNameException(errorMessage)).given(socialLoginService)
+                        .getUserInfo(socialName, code);
+
+        //when
+        mvc.perform(get("/user/login/none")
+                        .param("code", code))
+                .andDo(print())
+
+                //then
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.statusCode").value(400))
+                .andExpect(jsonPath("$.responseMessage").value(errorMessage));
+
+        verify(socialLoginService).getUserInfo(socialName, code);
+        verify(oauth2UserService, never()).putUserInto(mockUserInfo);
+        verify(jwtTokenProvider, never()).responseAccessToken(testUser);
+        verify(jwtTokenProvider, never()).responseRefreshToken(testUser);
     }
 }
