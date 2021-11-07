@@ -29,13 +29,13 @@ class NaverOauth2UserInfoTest {
     @Test
     public void getNameResponseIsNull() {
         //when, then
-        assertThat(userInfo.getId()).isNull();
+        assertThat(userInfo.getName()).isNull();
     }
 
     @Test
     public void getEmailResponseIsNull() {
         //when, then
-        assertThat(userInfo.getId()).isNull();
+        assertThat(userInfo.getEmail()).isNull();
     }
 
 }
