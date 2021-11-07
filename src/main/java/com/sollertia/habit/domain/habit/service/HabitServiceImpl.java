@@ -43,8 +43,7 @@ public class HabitServiceImpl implements HabitService {
     public HabitDetailResponseDto createHabit(HabitTypeDto habitTypeDto, HabitDtoImpl createHabitRequestDto, User user) {
 
         //임시 수정, getGoalCount override해서 형변환 없이 리팩토링 하기
-        User foundUser = userService.getUserById(user.getId());
-        HabitWithCounter habit = (HabitWithCounter) Habit.createHabit(habitTypeDto.getHabitType(), createHabitRequestDto, foundUser);
+        HabitWithCounter habit = (HabitWithCounter) Habit.createHabit(habitTypeDto.getHabitType(), createHabitRequestDto, user);
 
         habitRepository.save(habit);
 

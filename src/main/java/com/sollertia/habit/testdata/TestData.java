@@ -45,7 +45,7 @@ public class TestData implements ApplicationRunner {
         User user = userRepository.findById(1L).orElseThrow(()->new NullPointerException("없음"));
         Monster monster = Monster.createNewMonster("고양이", monsterDatabase1);
         user.updateMonster(monster);
-        userRepository.save(user);
+        user = userRepository.save(user);
 
         Calendar startDate = Calendar.getInstance();
         DateFormat form = new SimpleDateFormat("yyyy-MM-dd");
