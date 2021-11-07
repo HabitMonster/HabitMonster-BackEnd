@@ -85,8 +85,6 @@ class MonsterServiceTest {
                 .isEqualTo(mockMonsterDatabaseList.get(0).getImageUrl());
         assertThat(responseDto.getMonsters().get(1).getMonsterImage())
                 .isEqualTo(mockMonsterDatabaseList.get(1).getImageUrl());
-        assertThat(responseDto.getMonsters().get(2).getMonsterImage())
-                .isEqualTo(mockMonsterDatabaseList.get(2).getImageUrl());
         assertThat(responseDto.getStatusCode()).isEqualTo(200);
         assertThat(responseDto.getResponseMessage()).isEqualTo("LV1 몬스터를 불러오는데 성공했습니다.");
 

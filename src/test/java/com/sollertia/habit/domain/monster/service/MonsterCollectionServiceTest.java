@@ -90,8 +90,6 @@ class MonsterCollectionServiceTest {
                 .isEqualTo(mockMonsterDatabaseList.get(0).getImageUrl());
         assertThat(responseDto.getMonsters().get(1).getMonsterImage())
                 .isEqualTo(mockMonsterDatabaseList.get(1).getImageUrl());
-        assertThat(responseDto.getMonsters().get(2).getMonsterImage())
-                .isEqualTo(mockMonsterDatabaseList.get(2).getImageUrl());
         assertThat(responseDto.getStatusCode()).isEqualTo(200);
         assertThat(responseDto.getResponseMessage()).isEqualTo("몬스터 컬렉션 조회 성공");
 
