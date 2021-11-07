@@ -8,6 +8,7 @@ import com.sollertia.habit.domain.user.oauth2.userinfo.GoogleOauth2UserInfo;
 import com.sollertia.habit.domain.user.oauth2.userinfo.Oauth2UserInfo;
 import com.sollertia.habit.domain.user.security.jwt.filter.JwtTokenProvider;
 import com.sollertia.habit.domain.user.security.userdetail.UserDetailsImpl;
+import com.sollertia.habit.global.exception.monster.MonsterNotFoundException;
 import com.sollertia.habit.global.utils.RedisUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,8 +32,8 @@ import java.util.Map;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.verify;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -120,7 +121,6 @@ class MonsterControllerTest {
 
         //when
         mvc.perform(patch("/user/monster")
-                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andDo(print())
@@ -158,15 +158,15 @@ class MonsterControllerTest {
     }
 
     @Test
-    void getMonsterFromUser() throws Exception {
+    void getMonsterResponseDtoFromUser() throws Exception {
         //given
         authenticated();
         MonsterResponseDto responseDto = MonsterResponseDto.builder()
-                .monster(MonsterVo.builder().monsterId(1L).monsterImage("monster.img").monsterName("testmonster").build())
+                .monster(MonsterVo.builder().monsterImage("monster.img").monsterName("testmonster").build())
                 .responseMessage("몬스터가 선택되었습니다.")
                 .statusCode(200).build();
 
-        given(monsterService.getMonsterFromUser(testUser))
+        given(monsterService.getMonsterResponseDtoFromUser(testUser))
                 .willReturn(responseDto);
 
         //when
@@ -174,10 +174,26 @@ class MonsterControllerTest {
                 .andDo(print())
                 //then
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.monster.monsterId").value("1"))
                 .andExpect(jsonPath("$.monster.monsterImage").value("monster.img"))
                 .andExpect(jsonPath("$.monster.monsterName").value("testmonster"))
                 .andExpect(jsonPath("$.responseMessage").value("몬스터가 선택되었습니다."))
                 .andExpect(jsonPath("$.statusCode").value("200"));
+    }
+
+    @Test
+    void getMonsterResponseDtoFromUseHasNotMonster() throws Exception {
+        //given
+        authenticated();
+        String errorMessage = "아직 몬스터가 없는 사용자입니다.";
+        willThrow(new MonsterNotFoundException(errorMessage)).given(monsterService)
+                        .getMonsterResponseDtoFromUser(testUser);
+
+        //when
+        mvc.perform(get("/user/monster"))
+                .andDo(print())
+                //then
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.responseMessage").value(errorMessage))
+                .andExpect(jsonPath("$.statusCode").value("404"));
     }
 }
