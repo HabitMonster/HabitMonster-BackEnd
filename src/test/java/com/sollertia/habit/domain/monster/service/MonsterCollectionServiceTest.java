@@ -52,18 +52,14 @@ class MonsterCollectionServiceTest {
 
         MonsterDatabase monsterDatabase1 = new MonsterDatabase(EvolutionGrade.EV1, "cat.img");
         MonsterDatabase monsterDatabase2 = new MonsterDatabase(EvolutionGrade.EV1, "dog.img");
-        MonsterDatabase monsterDatabase3 = new MonsterDatabase(EvolutionGrade.EV1, "dug.img");
         monster1 = Monster.createNewMonster("고양이", monsterDatabase1);
         monster2 = Monster.createNewMonster("강아지", monsterDatabase2);
-        Monster monster3 = Monster.createNewMonster("오리", monsterDatabase3);
 
         mockMonsterDatabaseList.add(monsterDatabase1);
         mockMonsterDatabaseList.add(monsterDatabase2);
-        mockMonsterDatabaseList.add(monsterDatabase3);
 
         mockMonsterCollectionList.add(MonsterCollection.createMonsterCollection(monster1));
         mockMonsterCollectionList.add(MonsterCollection.createMonsterCollection(monster2));
-        mockMonsterCollectionList.add(MonsterCollection.createMonsterCollection(monster3));
     }
 
     @Test

@@ -7,12 +7,11 @@ import com.sollertia.habit.domain.monster.entity.Monster;
 import com.sollertia.habit.domain.monster.entity.MonsterDatabase;
 import com.sollertia.habit.domain.monster.enums.EvolutionGrade;
 import com.sollertia.habit.domain.monster.repository.MonsterDatabaseRepository;
-import com.sollertia.habit.domain.monster.repository.MonsterRepository;
-import com.sollertia.habit.domain.preset.repository.PreSetRepository;
 import com.sollertia.habit.domain.preset.dto.PreSetVo;
 import com.sollertia.habit.domain.preset.enums.PreSet;
-import com.sollertia.habit.domain.user.enums.ProviderType;
+import com.sollertia.habit.domain.preset.repository.PreSetRepository;
 import com.sollertia.habit.domain.user.entity.User;
+import com.sollertia.habit.domain.user.enums.ProviderType;
 import com.sollertia.habit.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
@@ -29,7 +28,6 @@ import java.util.Calendar;
 public class TestData implements ApplicationRunner {
 
     private final UserRepository userRepository;
-    private final MonsterRepository monsterRepository;
     private final PreSetRepository preSetRepository;
     private final HabitServiceImpl habitService;
     private final MonsterDatabaseRepository monsterDatabaseRepository;
