@@ -126,7 +126,7 @@ class SocialLoginServiceTest {
     public void getUserInfoInvalidSocialName() {
         //when, then
         assertThrows(InvalidSocialNameException.class,
-                () -> socialLoginService.getUserInfo("none", authCode));
+                () -> socialLoginService.getUserInfo("test", authCode));
 
         verify(googleSocialLoginUtil, never()).getUserInfoByCode(authCode);
         verify(kakaoSocialLoginUtil, never()).getUserInfoByCode(authCode);
