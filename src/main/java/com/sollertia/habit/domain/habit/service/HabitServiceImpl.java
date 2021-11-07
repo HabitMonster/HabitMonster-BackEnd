@@ -11,15 +11,18 @@ import com.sollertia.habit.domain.history.repository.HistoryRepository;
 import com.sollertia.habit.domain.monster.service.MonsterService;
 import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.domain.user.repository.UserRepository;
+import com.sollertia.habit.domain.user.service.UserService;
 import com.sollertia.habit.global.exception.habit.HabitIdNotFoundException;
 import com.sollertia.habit.global.utils.DefaultResponseDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -29,19 +32,19 @@ public class HabitServiceImpl implements HabitService {
 
     private final HabitWithCounterRepository habitWithCounterRepository;
 
-    private final UserRepository userRepository;
-
     private final HistoryRepository historyRepository;
 
     private final MonsterService monsterService;
 
+    private final UserService userService;
 
     @Transactional
     @Override
     public HabitDetailResponseDto createHabit(HabitTypeDto habitTypeDto, HabitDtoImpl createHabitRequestDto, User user) {
 
         //임시 수정, getGoalCount override해서 형변환 없이 리팩토링 하기
-        HabitWithCounter habit = (HabitWithCounter) Habit.createHabit(habitTypeDto.getHabitType(), createHabitRequestDto, user);
+        User foundUser = userService.getUserById(user.getId());
+        HabitWithCounter habit = (HabitWithCounter) Habit.createHabit(habitTypeDto.getHabitType(), createHabitRequestDto, foundUser);
 
         habitRepository.save(habit);
 
@@ -91,7 +94,6 @@ public class HabitServiceImpl implements HabitService {
             History history = History.makeHistory(habitWithCounter);
             historyRepository.save(history);
         }
-        userRepository.save(habitWithCounter.getUser());
         habitWithCounterRepository.save(habitWithCounter);
         return HabitCheckResponseDto.builder().statusCode(200).responseMessage("성공했습니다").current(habitWithCounter.getCurrent()).isAccomplished(isAchieve).build();
 

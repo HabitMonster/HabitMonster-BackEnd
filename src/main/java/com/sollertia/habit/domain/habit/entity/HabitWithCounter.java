@@ -48,7 +48,7 @@ public class HabitWithCounter extends Habit {
     @Override
     public Boolean check(Long value) {
         this.todayCounter += value;
-        boolean isAccomplishToday = this.todayCounter >= this.goalCountInSession;
+        boolean isAccomplishToday = this.todayCounter == this.goalCountInSession;
         if (isAccomplishToday) {
             this.setAccomplishInSession(true);
             super.checkAccomplishCounter();
