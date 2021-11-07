@@ -1,6 +1,7 @@
 package com.sollertia.habit.domain.habit.dto;
 
-import com.sollertia.habit.utils.DefaultResponseDto;
+
+import com.sollertia.habit.global.utils.DefaultResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,7 +1,8 @@
 package com.sollertia.habit.domain.preset.dto;
 
+
 import com.sollertia.habit.domain.habit.dto.HabitDtoImpl;
-import com.sollertia.habit.utils.DefaultResponseDto;
+import com.sollertia.habit.global.utils.DefaultResponseDto;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 

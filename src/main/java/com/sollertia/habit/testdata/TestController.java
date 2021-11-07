@@ -10,11 +10,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class TestController {
 
-    @GetMapping("/test")
-    public String login() {
-        return "index.html";
-    }
-
     @ResponseBody
     @GetMapping("/user/login/test/{socialName}")
     public void loginTest(@RequestParam(value = "code") String authCode,
