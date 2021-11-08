@@ -14,4 +14,7 @@ public class Oauth2UserInfoFactory {
             default: throw new InvalidSocialNameException("잘못된 소셜 로그인 타입입니다.");
         }
     }
+
+    private Oauth2UserInfoFactory() {
+    }
 }
