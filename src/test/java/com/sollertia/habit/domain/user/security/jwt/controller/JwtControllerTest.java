@@ -5,7 +5,6 @@ import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.domain.user.oauth2.userinfo.GoogleOauth2UserInfo;
 import com.sollertia.habit.domain.user.oauth2.userinfo.Oauth2UserInfo;
 import com.sollertia.habit.domain.user.repository.UserRepository;
-import com.sollertia.habit.domain.user.security.jwt.dto.JwtRequestDto;
 import com.sollertia.habit.domain.user.security.jwt.filter.JwtTokenProvider;
 import com.sollertia.habit.domain.user.security.userdetail.UserDetailsImpl;
 import com.sollertia.habit.global.utils.RedisUtil;
@@ -18,28 +17,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = JwtController.class)
-@ExtendWith(MockitoExtension.class)
+@AutoConfigureMockMvc(addFilters = false)
 class JwtControllerTest {
 
     @Autowired
@@ -54,22 +51,12 @@ class JwtControllerTest {
     private AuthenticationManager authenticationManager;
 
 
+
     User testUser;
-    JwtRequestDto requestDto;
     UserDetailsImpl mockUserDetails;
     SecurityContext securityContext;
-    Authentication authentication;
-    MockHttpServletRequest request = new MockHttpServletRequest();
-    public static final String signatureToken =
-            "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0RyIsInR5cGUiOiJHb29nbGUiLCJpYXQiOjE2MzYwMjQ4NzcsImV4cCI6MTYzNjAyNDg4Mn0.OAXTkojY2evdc-NsU2Za0Bv6VaWsv0FQVlhSt7QhxbY";
+    String refreshToken = "abcd";
 
-    public static final String expiredToken =
-            "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODlHIiwidHlwZSI6Ikdvb2dsZSIsImlhdCI6MTYzNjAzNTgyNiwiZXhwIjoxNjM2MDM1ODI3fQ.zI4KZQPw_L8yEH4XdsKYMF5ZDaY5k-IzFYkWA9wEgas";
-
-    private static final String successToken =
-            "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODlHIiwidHlwZSI6Ikdvb2dsZSIsImlhdCI6MTYzNjAzNTgyNiwiZXhwIjoxODg2MzYyODY2fQ.qHqotXvz0vipsiQmHiS3utO-43yop98fdUK9XcMXXWQ";
-
-    private static final String MalformedToken = "abcdefg";
 
     private void authenticated() {
         Authentication authentication = new UsernamePasswordAuthenticationToken(mockUserDetails, "", mockUserDetails.getAuthorities());
@@ -91,28 +78,21 @@ class JwtControllerTest {
     @Test
     void loginCheck() throws Exception {
 
-        String refreshToken = "{\n" +
-                " \"refreshToken\" : \"" + successToken + "\", \n" +
-                "}";
         //given
         authenticated();
-//        given(requestDto.getRefreshToken()).willReturn(successToken);
-//        given(jwtTokenProvider.getSocialId(successToken)).willReturn(testUser.getSocialId());
-//        given(redisUtil.getData(successToken)).willReturn(testUser.getSocialId());
-//        given(userRepository.findBySocialId(successToken)).willReturn(java.util.Optional.ofNullable(testUser));
-//        given(jwtTokenProvider.responseAccessToken(testUser)).willReturn(successToken);
+        given(jwtTokenProvider.requestRefreshToken(any())).willReturn(refreshToken);
+        given(userRepository.findBySocialId(any())).willReturn(java.util.Optional.of(testUser));
+        given(jwtTokenProvider.responseAccessToken(testUser)).willReturn(refreshToken);
 
-//        willThrow(ExpiredJwtException.class).given(jwtTokenProvider).validateToken(expiredToken);
-//        given(jwtTokenProvider.getAuthentication(successToken)).willReturn(authentication);
+
         //when
-        mvc.perform(post("/user/loginCheck")
-                        .with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(refreshToken)).andDo(print())
+        mvc.perform(get("/user/loginCheck")
+                        .header("R-AUTH-TOKEN",refreshToken)).andDo(print())
                 //then
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("responseMessage").value("accessToken 발급완료!"))
                 .andExpect(jsonPath("statusCode").value(200))
-                .andExpect(jsonPath("accessToken").value(successToken));
+                .andExpect(jsonPath("accessToken").value(refreshToken))
+                .andExpect(jsonPath("isFirstLogin").value(false));
     }
 }
