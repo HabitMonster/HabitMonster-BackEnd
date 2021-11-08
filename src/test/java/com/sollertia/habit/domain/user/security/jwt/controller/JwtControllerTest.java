@@ -87,15 +87,15 @@ class JwtControllerTest {
         testUser = User.create(oauth2UserInfo);
         mockUserDetails = new UserDetailsImpl(testUser);
     }
-    @DisplayName("accessToken 발급 완료")
-    @Test
-    void loginCheck() throws Exception {
-
-        String refreshToken = "{\n" +
-                " \"refreshToken\" : \"" + successToken + "\", \n" +
-                "}";
-        //given
-        authenticated();
+//    @DisplayName("accessToken 발급 완료")
+//    @Test
+//    void loginCheck() throws Exception {
+//
+//        String refreshToken = "{\n" +
+//                " \"refreshToken\" : \"" + successToken + "\", \n" +
+//                "}";
+//        //given
+//        authenticated();
 //        given(requestDto.getRefreshToken()).willReturn(successToken);
 //        given(jwtTokenProvider.getSocialId(successToken)).willReturn(testUser.getSocialId());
 //        given(redisUtil.getData(successToken)).willReturn(testUser.getSocialId());
@@ -105,14 +105,14 @@ class JwtControllerTest {
 //        willThrow(ExpiredJwtException.class).given(jwtTokenProvider).validateToken(expiredToken);
 //        given(jwtTokenProvider.getAuthentication(successToken)).willReturn(authentication);
         //when
-        mvc.perform(post("/user/loginCheck")
-                        .with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(refreshToken)).andDo(print())
-                //then
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("responseMessage").value("accessToken 발급완료!"))
-                .andExpect(jsonPath("statusCode").value(200))
-                .andExpect(jsonPath("accessToken").value(successToken));
-    }
+//        mvc.perform(post("/user/loginCheck")
+//                        .with(csrf())
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(refreshToken)).andDo(print())
+//                //then
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("responseMessage").value("accessToken 발급완료!"))
+//                .andExpect(jsonPath("statusCode").value(200))
+//                .andExpect(jsonPath("accessToken").value(successToken));
+//    }
 }
