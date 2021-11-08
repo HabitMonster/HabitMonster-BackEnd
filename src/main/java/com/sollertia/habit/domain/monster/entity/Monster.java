@@ -44,11 +44,17 @@ public class Monster {
     }
 
     public void plusExpPoint() {
-        this.expPoint += this.level.getPlusPoint();
+        setExpPoint(getExpPoint() + this.level.getPlusPoint());
+        long margin = getExpPoint() - Level.MAX_EXP;
+        if ( margin > 0 ) {
+            levelUp();
+            this.expPoint = margin;
+        }
     }
 
-    public void levelUp() {
+    public Level levelUp() {
         this.setLevel(Level.nextOf(this.getLevel()));
+        return this.getLevel();
     }
 
     public static Monster createNewMonster(String monsterName, MonsterDatabase monsterDatabase) {

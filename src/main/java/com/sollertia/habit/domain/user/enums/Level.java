@@ -1,5 +1,6 @@
 package com.sollertia.habit.domain.user.enums;
 
+import com.sollertia.habit.global.exception.monster.InvalidLevelException;
 import lombok.Getter;
 
 @Getter
@@ -11,6 +12,7 @@ public enum Level {
     LV5(5,0, 0);
 
     public static final int MAX_LEVEL = 5;
+    public static final int MAX_EXP = 100;
 
     private final Integer value;
     private final Integer plusPoint;
@@ -38,7 +40,7 @@ public enum Level {
         } else if ( value == 5 ) {
             return LV5;
         } else {
-            return null;
+            throw new InvalidLevelException("불가능한 레벨입니다.");
         }
     }
 }
