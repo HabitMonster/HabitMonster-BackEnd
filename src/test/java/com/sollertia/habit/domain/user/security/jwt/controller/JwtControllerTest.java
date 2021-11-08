@@ -11,13 +11,10 @@ import com.sollertia.habit.global.utils.RedisUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -94,5 +91,38 @@ class JwtControllerTest {
                 .andExpect(jsonPath("statusCode").value(200))
                 .andExpect(jsonPath("accessToken").value(refreshToken))
                 .andExpect(jsonPath("isFirstLogin").value(false));
+    }
+
+    @DisplayName("refreshToken 분실")
+    @Test
+    void notFoundRefreshToken() throws Exception {
+
+        //given
+        authenticated();
+
+        //when
+        mvc.perform(get("/user/loginCheck")
+                        .header("R-AUTH-TOKEN",refreshToken)).andDo(print())
+                //then
+                .andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("responseMessage").value("RefreshToken이 존재하지 않습니다."))
+                .andExpect(jsonPath("statusCode").value(400));
+    }
+
+    @DisplayName("User NotFound")
+    @Test
+    void notFoundUser() throws Exception {
+
+        //given
+        authenticated();
+        given(jwtTokenProvider.requestRefreshToken(any())).willReturn(refreshToken);
+
+        //when
+        mvc.perform(get("/user/loginCheck")
+                        .header("R-AUTH-TOKEN",refreshToken)).andDo(print())
+                //then
+                .andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("responseMessage").value("User가 존재하지 않습니다."))
+                .andExpect(jsonPath("statusCode").value(404));
     }
 }
