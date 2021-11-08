@@ -6,7 +6,6 @@ import com.sollertia.habit.domain.completedhabbit.repository.CompletedHabitRepos
 import com.sollertia.habit.domain.habit.entity.Habit;
 import com.sollertia.habit.domain.habit.repository.HabitRepository;
 import com.sollertia.habit.domain.habit.repository.HabitWithCounterRepository;
-import com.sollertia.habit.domain.monster.entity.Monster;
 import com.sollertia.habit.domain.monster.repository.MonsterRepository;
 import com.sollertia.habit.domain.preset.dto.PreSetVo;
 import com.sollertia.habit.domain.preset.entity.PreSet;
@@ -19,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -57,15 +57,15 @@ public class SchedulerRunner {
         expireHabit(date);
     }
 
-    private void minusExpOnLapsedHabit(LocalDateTime dateTime) {
+    @Transactional
+    public void minusExpOnLapsedHabit(LocalDateTime dateTime) {
 
         String day = String.valueOf(dateTime.minusDays(1).getDayOfWeek().getValue());
         List<Habit> habitsWithDaysAndAccomplish = habitRepository.findHabitsWithDaysAndAccomplish(day, false);
         System.out.println(habitsWithDaysAndAccomplish.size()+" 마이너스 해빗");
 
         for (Habit habit : habitsWithDaysAndAccomplish) {
-            //habit.getUser().getMonster().minusExpPoint();
-           monsterRepository.findByUser(habit.getUser()).orElseThrow(
+           monsterRepository.findById(habit.getUser().getMonster().getId()).orElseThrow(
                     () -> new MonsterNotFoundException("Not Found Monster")
             ).minusExpPoint();
         }

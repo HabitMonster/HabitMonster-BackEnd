@@ -22,8 +22,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
-
-import javax.transaction.Transactional;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -62,12 +60,8 @@ public class TestData implements ApplicationRunner {
         User user = userRepository.findById(1L).orElseThrow(()->new NullPointerException("없음"));
         Monster monster = Monster.createNewMonster("고양이", monsterDatabase1);
         monster.setUser(user);
-        monster = monsterRepository.save(monster);
-        System.out.println("============================");
-        System.out.println(monster.getUser().getId());
-//        user.updateMonster(monster);
-//
-//
+       user.updateMonster(monster);
+
         User user2 = userRepository.findById(2L).orElseThrow(()->new NullPointerException("없음"));
         Monster monster2 = Monster.createNewMonster("강아지", monsterDatabase2);
         user2.updateMonster(monster2);
@@ -76,9 +70,9 @@ public class TestData implements ApplicationRunner {
         Monster monster3 = Monster.createNewMonster("새", monsterDatabase3);
         user3.updateMonster(monster3);
 
-//        userRepository.save(user);
-//        userRepository.save(user2);
-//        userRepository.save(user3);
+        userRepository.save(user);
+        userRepository.save(user2);
+        userRepository.save(user3);
 
         Calendar startDate = Calendar.getInstance();
         DateFormat form = new SimpleDateFormat("yyyy-MM-dd");

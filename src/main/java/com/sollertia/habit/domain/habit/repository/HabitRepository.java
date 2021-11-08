@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface HabitRepository<T extends Habit> extends JpaRepository<T, Long> {
-    @Query("select h from Habit h where h.practiceDays like %:day% and h.isAccomplishInSession = :complete")
+    @Query("select h from Habit h join fetch h.user where h.practiceDays like %:day% and h.isAccomplishInSession = :complete")
     List<Habit> findHabitsWithDaysAndAccomplish(@Param("day") String day, @Param("complete") Boolean complete);
 
     @Modifying(clearAutomatically = true)
