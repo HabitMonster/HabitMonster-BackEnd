@@ -25,8 +25,11 @@ public class Monster {
     private MonsterDatabase monsterDatabase;
 
     @OneToOne(mappedBy = "monster", fetch = FetchType.LAZY)
-    @Setter
     private User user;
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     protected Monster() {
     }
