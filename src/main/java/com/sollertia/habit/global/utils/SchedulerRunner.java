@@ -41,7 +41,8 @@ public class SchedulerRunner {
     // 초 분 시 일 월 요일
     //@Scheduled(cron = "0 0 0 * * *")
     @Scheduled(cron = "0 * * * * *")
-    private void runWhenEveryMidNight() {
+    @Transactional
+    public void runWhenEveryMidNight() {
         LocalDateTime dateTime = LocalDateTime.now();
         LocalDate date = LocalDate.now();
         log.info(dateTime.toString());
@@ -57,8 +58,7 @@ public class SchedulerRunner {
         expireHabit(date);
     }
 
-    @Transactional
-    public void minusExpOnLapsedHabit(LocalDateTime dateTime) {
+    private void minusExpOnLapsedHabit(LocalDateTime dateTime) {
 
         String day = String.valueOf(dateTime.minusDays(1).getDayOfWeek().getValue());
         List<Habit> habitsWithDaysAndAccomplish = habitRepository.findHabitsWithDaysAndAccomplish(day, false);
@@ -89,7 +89,7 @@ public class SchedulerRunner {
     //@Scheduled(cron = "0 0 1 ? * SUN") // 매주 일요일 새벽 1시
     //@Scheduled(cron = "0 0 1 ? * WEN") // 매주 수요일 새벽 1시
     @Scheduled(cron = "0 * * * * *")
-    private void runWhenEveryWeek() {
+    public void runWhenEveryWeek() {
         // 매주 일요일 새벽 1시 CompletedHabit 에서 성공한 습관이 가장 많은 유저가 현재 수행 중인 습관을 등록
         // 등록 전에 이미 등록되어있는 유저의 현재 습관 삭제
         makePreset();
