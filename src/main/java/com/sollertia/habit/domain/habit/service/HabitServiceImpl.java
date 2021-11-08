@@ -59,14 +59,19 @@ public class HabitServiceImpl implements HabitService {
                 .title(habit.getTitle())
                 .build();
 
-        return HabitDetailResponseDto.builder().habitDetail(build).statusCode(200).responseMessage("습관 생성 성공").build();
+        return HabitDetailResponseDto.builder()
+                .habitDetail(build)
+                .statusCode(200)
+                .responseMessage("습관 생성 성공")
+                .build();
 
     }
 
     @Override
     public HabitDetailResponseDto getHabitDetail(HabitTypeDto habitTypeDto, Long habitId) {
 
-        HabitWithCounter foundHabit = habitWithCounterRepository.findById(habitId).orElseThrow(() -> new HabitIdNotFoundException("Couldn't found Habit"));
+        HabitWithCounter foundHabit = habitWithCounterRepository.findById(habitId).orElseThrow(
+                () -> new HabitIdNotFoundException("Couldn't found Habit"));
 
         HabitDetail build = HabitDetail.builder()
                 .habitId(foundHabit.getId())
@@ -80,13 +85,18 @@ public class HabitServiceImpl implements HabitService {
                 .title(foundHabit.getTitle())
                 .build();
 
-        return HabitDetailResponseDto.builder().habitDetail(build).responseMessage("습관 상세 조회 성공").statusCode(200).build();
+        return HabitDetailResponseDto.builder()
+                .habitDetail(build)
+                .responseMessage("습관 상세 조회 성공")
+                .statusCode(200)
+                .build();
     }
 
     @Override
     public HabitCheckResponseDto checkHabit(HabitTypeDto habitTypeDto, Long habitId) {
 
-        HabitWithCounter habitWithCounter = habitWithCounterRepository.findById(habitId).orElseThrow(() -> new HabitIdNotFoundException("Couldn't find Habit"));
+        HabitWithCounter habitWithCounter = habitWithCounterRepository.findById(habitId).orElseThrow(
+                () -> new HabitIdNotFoundException("Couldn't find Habit"));
         Boolean isAchieve = habitWithCounter.check(1L);
         if (isAchieve) {
             monsterService.plusExpPoint(habitWithCounter.getUser());
@@ -94,19 +104,28 @@ public class HabitServiceImpl implements HabitService {
             historyRepository.save(history);
         }
         habitWithCounterRepository.save(habitWithCounter);
-        return HabitCheckResponseDto.builder().statusCode(200).responseMessage("성공했습니다").current(habitWithCounter.getCurrent()).isAccomplished(isAchieve).build();
+        return HabitCheckResponseDto.builder()
+                .statusCode(200)
+                .responseMessage("성공했습니다")
+                .current(habitWithCounter.getCurrent())
+                .isAccomplished(isAchieve)
+                .build();
 
     }
 
     @Override
     public DefaultResponseDto deleteHabit(HabitTypeDto habitTypeDto, Long habitId, User user) {
 
-        HabitWithCounter habitWithCounter = habitWithCounterRepository.findById(habitId).orElseThrow(() -> new HabitIdNotFoundException("can't find habit"));
+        HabitWithCounter habitWithCounter = habitWithCounterRepository.findById(habitId).orElseThrow(
+                () -> new HabitIdNotFoundException("can't find habit"));
 
         user.getHabit().remove(habitWithCounter);
         habitRepository.delete(habitWithCounter);
 
-        return DefaultResponseDto.builder().statusCode(200).responseMessage("습관 삭제 성공").build();
+        return DefaultResponseDto.builder()
+                .statusCode(200)
+                .responseMessage("습관 삭제 성공")
+                .build();
     }
 
 
