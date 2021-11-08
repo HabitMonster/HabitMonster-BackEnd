@@ -3,6 +3,7 @@ package com.sollertia.habit.domain.user.service;
 import com.sollertia.habit.domain.monster.entity.Monster;
 import com.sollertia.habit.domain.user.dto.UserInfoResponseDto;
 import com.sollertia.habit.domain.user.dto.UserInfoVo;
+import com.sollertia.habit.domain.user.dto.UsernameUpdateRequestDto;
 import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.domain.user.repository.UserRepository;
 import com.sollertia.habit.global.exception.user.UserIdNotFoundException;
@@ -46,5 +47,15 @@ public class UserService {
     public User updateMonster(User user, Monster newMonster) {
         user.updateMonster(newMonster);
         return userRepository.save(user);
+    }
+
+    @Transactional
+    public UserInfoResponseDto updateUsername(User user, UsernameUpdateRequestDto requestDto) {
+        user.updateUsername(requestDto.getUsername());
+        return UserInfoResponseDto.builder()
+                .userInfo(getUserInfoVo(user))
+                .statusCode(200)
+                .responseMessage("사용자 이름 수정 성공")
+                .build();
     }
 }
