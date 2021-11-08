@@ -49,7 +49,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/profile").permitAll()
 //                .anyRequest().permitAll()
                 .antMatchers("/user/login/**").anonymous()
-                .antMatchers("/user/loginCheck").anonymous()
+                //.antMatchers("/user/loginCheck").anonymous()
                 .antMatchers("/test/**").anonymous()
                 .anyRequest().authenticated()
                 .and()
