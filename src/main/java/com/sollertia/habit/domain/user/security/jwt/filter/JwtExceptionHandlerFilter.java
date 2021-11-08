@@ -30,23 +30,24 @@ public class JwtExceptionHandlerFilter extends OncePerRequestFilter {
             String clientRequestUri = (String) request.getAttribute("clientRequestUri");
             String message = (String) request.getAttribute("msg");
             String body = (String) request.getAttribute("messageBody");
+            String method = (String) request.getAttribute("method");
             Map<String, Object> bodyM = null;
             if(!body.isEmpty()){
                 ObjectMapper objectMapper = new ObjectMapper();
                 bodyM = objectMapper.readValue(body, new TypeReference<Map<String, Object>>() {});
             }
-            responseExceptionMsg(response, clientRequestUri, message, bodyM);
+            responseExceptionMsg(response, clientRequestUri, message, bodyM, method);
         }
 
     }
 
-    private void responseExceptionMsg(HttpServletResponse response, String clientRequestUri, String msg, Map<String, Object> body) {
+    private void responseExceptionMsg(HttpServletResponse response, String clientRequestUri, String msg, Map<String, Object> body, String method) {
         ObjectMapper objectMapper = new ObjectMapper();
         response.setContentType("application/json");
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setCharacterEncoding("UTF-8");
         ResponseEntity<JwtExceptionDto> errorResponse =
-                ResponseEntity.ok(JwtExceptionDto.builder().responseMessage(msg).statusCode(400).clientRequestUri(clientRequestUri).body(body).build());
+                ResponseEntity.ok(JwtExceptionDto.builder().responseMessage(msg).statusCode(400).clientRequestUri(clientRequestUri).body(body).method(method).build());
         try {
             String json = objectMapper.writeValueAsString(errorResponse.getBody());
             response.getWriter().write(json);
