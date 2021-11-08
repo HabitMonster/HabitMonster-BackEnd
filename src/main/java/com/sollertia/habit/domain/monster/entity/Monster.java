@@ -46,7 +46,7 @@ public class Monster {
     public void plusExpPoint() {
         setExpPoint(getExpPoint() + this.level.getPlusPoint());
         long margin = getExpPoint() - Level.MAX_EXP;
-        if ( margin > 0 ) {
+        if ( margin >= 0 ) {
             levelUp();
             this.expPoint = margin;
         }
