@@ -3,12 +3,14 @@ package com.sollertia.habit.domain.history.entity;
 import com.sollertia.habit.domain.category.enums.Category;
 import com.sollertia.habit.domain.habit.entity.Habit;
 import com.sollertia.habit.domain.user.entity.User;
+import lombok.Getter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 
 @Entity
+@Getter
 public class History {
 
     @Id
@@ -53,9 +55,14 @@ public class History {
     }
 
     public static History makeHistory(Habit habit) {
-        LocalDateTime schedulerNow = LocalDateTime.now().minusDays(1);
+        LocalDateTime schedulerNow = LocalDateTime.now();
         History history = new History();
-
+        history.setCategory(habit.getCategory());
+        history.setSuccessToday(habit.getIsAccomplishInSession());
+        history.setEndUpDateTime(history.getIsSuccessToday() ?
+                schedulerNow : schedulerNow.minusDays(1));
+        history.setHabitTitle(habit.getTitle());
+        history.setUser(habit.getUser());
         return history;
     }
 
