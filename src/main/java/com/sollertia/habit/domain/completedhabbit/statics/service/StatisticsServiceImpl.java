@@ -27,7 +27,7 @@ public class StatisticsServiceImpl implements StatisticsService {
 
         List<SimpleHabitVo> simpleHabitVoList = new ArrayList<>();
 
-        List<CompletedHabit> habitList = completedHabitRepository.findAllByUserAndCreatedAtBetweenOrderByStartDate(user,
+        List<CompletedHabit> habitList = completedHabitRepository.findAllByUserAndStartDateBetweenOrderByStartDate(user,
                 now.with(TemporalAdjusters.firstDayOfMonth()),
                 now.with(TemporalAdjusters.lastDayOfMonth()));
         int succeededCount = (int) habitList.stream().filter(completedHabit -> completedHabit.getIsSuccess()).count();

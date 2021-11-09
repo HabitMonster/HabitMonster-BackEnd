@@ -11,7 +11,5 @@ public interface CompletedHabitRepository extends JpaRepository<CompletedHabit, 
 
     List<CompletedHabit> findAllByUserAndCreatedAtBetween(User user, LocalDate start, LocalDate end);
 
-    List<CompletedHabit> findAllByUserAndCreatedAtBetweenOrderByStartDate(User user, LocalDate start, LocalDate end);
-
-    List<CompletedHabit> findAllByUserAndIsSuccessFalseAndCreatedAtBetween(User user, LocalDate start, LocalDate end);
+    List<CompletedHabit> findAllByUserAndStartDateBetweenOrderByStartDate(User user, LocalDate start, LocalDate end);
 }
