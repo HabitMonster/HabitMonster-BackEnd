@@ -1,8 +1,7 @@
-package com.sollertia.habit.domain.user.oauth2;
+package com.sollertia.habit.domain.user.oauth2.controller;
 
 
 import com.sollertia.habit.domain.user.entity.User;
-import com.sollertia.habit.domain.user.oauth2.controller.Oauth2Controller;
 import com.sollertia.habit.domain.user.oauth2.service.Oauth2UserService;
 import com.sollertia.habit.domain.user.oauth2.service.SocialLoginService;
 import com.sollertia.habit.domain.user.oauth2.userinfo.GoogleOauth2UserInfo;
@@ -19,16 +18,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.mockito.BDDMockito.willThrow;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-
-
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willThrow;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
