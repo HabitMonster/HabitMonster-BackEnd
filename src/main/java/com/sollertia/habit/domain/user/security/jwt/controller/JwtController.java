@@ -3,18 +3,13 @@ package com.sollertia.habit.domain.user.security.jwt.controller;
 
 import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.domain.user.repository.UserRepository;
-import com.sollertia.habit.domain.user.security.jwt.dto.JwtRequestDto;
 import com.sollertia.habit.domain.user.security.jwt.dto.JwtResponseDto;
 import com.sollertia.habit.domain.user.security.jwt.filter.JwtTokenProvider;
 import com.sollertia.habit.global.exception.user.UserIdNotFoundException;
-import com.sollertia.habit.global.utils.RedisUtil;
-import io.jsonwebtoken.*;
-import io.lettuce.core.RedisConnectionException;
+import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
@@ -41,7 +36,7 @@ public class JwtController {
                 throw new UserIdNotFoundException("User가 존재하지 않습니다.");
             }
         } else {
-            throw new NullPointerException("RefreshToken이 존재하지 않습니다.");
+            throw new JwtException("RefreshToken이 존재하지 않습니다.");
         }
 
     }

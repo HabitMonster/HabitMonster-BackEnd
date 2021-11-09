@@ -25,31 +25,26 @@ public class StatisticsServiceImpl implements StatisticsService {
         String datenow = date + "-01";
         LocalDate now = LocalDate.parse(datenow, DateTimeFormatter.ISO_DATE);
 
-        List<SimpleHabitVo> successVoList = new ArrayList<>();
-        List<SimpleHabitVo> failedVoList = new ArrayList<>();
+        List<SimpleHabitVo> simpleHabitVoList = new ArrayList<>();
 
-        List<CompletedHabit> successHabit = completedHabitRepository.findAllByUserAndIsSuccessTrueAndCreatedAtBetween(user,
+        List<CompletedHabit> habitList = completedHabitRepository.findAllByUserAndStartDateBetweenOrderByStartDate(user,
                 now.with(TemporalAdjusters.firstDayOfMonth()),
                 now.with(TemporalAdjusters.lastDayOfMonth()));
+        int succeededCount = (int) habitList.stream().filter(completedHabit -> completedHabit.getIsSuccess()).count();
+        int failedCount = (int) habitList.stream().filter(completedHabit -> !completedHabit.getIsSuccess()).count();
 
-        for (CompletedHabit completedHabit : successHabit) {
-            successVoList.add(new SimpleHabitVo(completedHabit));
+        for (CompletedHabit completedHabit : habitList) {
+            simpleHabitVoList.add(new SimpleHabitVo(completedHabit));
         }
 
-        List<CompletedHabit> failedHabit = completedHabitRepository.findAllByUserAndIsSuccessFalseAndCreatedAtBetween(user,
-                now.with(TemporalAdjusters.firstDayOfMonth()),
-                now.with(TemporalAdjusters.lastDayOfMonth()));
-
-        for (CompletedHabit completedHabit : failedHabit) {
-            failedVoList.add(new SimpleHabitVo(completedHabit));
-        }
-
-        StatisticsResponseDto statisticsResponseDto = new StatisticsResponseDto(successVoList, failedVoList);
-        statisticsResponseDto.setStatusCode(200);
-        statisticsResponseDto.setMsg("success");
-
-        return statisticsResponseDto;
-
+        return StatisticsResponseDto.builder()
+                .habitList(simpleHabitVoList)
+                .succeededCount(succeededCount)
+                .failedCount(failedCount)
+                .totalCount(habitList.size())
+                .responseMessage("통계 페이지 습관 목록 조회 성공")
+                .statusCode(200)
+                .build();
     }
 
 }

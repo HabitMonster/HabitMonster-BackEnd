@@ -1,16 +1,17 @@
-package com.sollertia.habit.domain.user.security.jwt.controller;
+package com.sollertia.habit.domain.category.controller;
 
-
+import com.sollertia.habit.domain.category.dto.CategoryResponseDto;
+import com.sollertia.habit.domain.category.dto.CategoryVo;
+import com.sollertia.habit.domain.category.enums.Category;
 import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.domain.user.oauth2.userinfo.GoogleOauth2UserInfo;
 import com.sollertia.habit.domain.user.oauth2.userinfo.Oauth2UserInfo;
-import com.sollertia.habit.domain.user.repository.UserRepository;
 import com.sollertia.habit.domain.user.security.jwt.filter.JwtTokenProvider;
 import com.sollertia.habit.domain.user.security.userdetail.UserDetailsImpl;
 import com.sollertia.habit.global.utils.RedisUtil;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -20,21 +21,22 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = JwtController.class)
+@WebMvcTest(controllers = CategoryController.class)
 @AutoConfigureMockMvc(addFilters = false)
-class JwtControllerTest {
+class CategoryControllerTest {
 
     @Autowired
     private MockMvc mvc;
@@ -43,16 +45,12 @@ class JwtControllerTest {
     @MockBean
     private RedisUtil redisUtil;
     @MockBean
-    private UserRepository userRepository;
-    @MockBean
     private AuthenticationManager authenticationManager;
-
 
 
     User testUser;
     UserDetailsImpl mockUserDetails;
     SecurityContext securityContext;
-    String refreshToken = "abcd";
 
 
     private void authenticated() {
@@ -71,58 +69,24 @@ class JwtControllerTest {
         testUser = User.create(oauth2UserInfo);
         mockUserDetails = new UserDetailsImpl(testUser);
     }
-    @DisplayName("accessToken 발급 완료")
-    @Test
-    void loginCheck() throws Exception {
 
+    @Test
+    void categoryPresetList() throws Exception {
         //given
         authenticated();
-        given(jwtTokenProvider.requestRefreshToken(any())).willReturn(refreshToken);
-        given(userRepository.findBySocialId(any())).willReturn(java.util.Optional.of(testUser));
-        given(jwtTokenProvider.responseAccessToken(testUser)).willReturn(refreshToken);
-
+        List<CategoryVo> list = Category.getCategories();
+        CategoryResponseDto responseDto = CategoryResponseDto.builder().categories(list).statusCode(200).responseMessage("Category 조회 완료").build();
+        ReflectionTestUtils.setField(jwtTokenProvider, "list", list);
 
         //when
-        mvc.perform(get("/user/loginCheck")
-                        .header("R-AUTH-TOKEN",refreshToken)).andDo(print())
+        mvc.perform(get("/categories")).andDo(print())
                 //then
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("responseMessage").value("accessToken 발급완료!"))
+                .andExpect(jsonPath("responseMessage").value("Category 조회 완료"))
                 .andExpect(jsonPath("statusCode").value(200))
-                .andExpect(jsonPath("accessToken").value(refreshToken))
-                .andExpect(jsonPath("isFirstLogin").value(false));
-    }
+                .andExpect(jsonPath("$.categories[0].categoryId").value(1L))
+                .andExpect(jsonPath("$.categories[0].category").value("Health"));
 
-    @DisplayName("refreshToken 분실")
-    @Test
-    void notFoundRefreshToken() throws Exception {
 
-        //given
-        authenticated();
-
-        //when
-        mvc.perform(get("/user/loginCheck")
-                        .header("R-AUTH-TOKEN",refreshToken)).andDo(print())
-                //then
-                .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("responseMessage").value("RefreshToken이 존재하지 않습니다."))
-                .andExpect(jsonPath("statusCode").value(400));
-    }
-
-    @DisplayName("User NotFound")
-    @Test
-    void notFoundUser() throws Exception {
-
-        //given
-        authenticated();
-        given(jwtTokenProvider.requestRefreshToken(any())).willReturn(refreshToken);
-
-        //when
-        mvc.perform(get("/user/loginCheck")
-                        .header("R-AUTH-TOKEN",refreshToken)).andDo(print())
-                //then
-                .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("responseMessage").value("User가 존재하지 않습니다."))
-                .andExpect(jsonPath("statusCode").value(404));
     }
 }

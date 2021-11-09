@@ -51,7 +51,6 @@ public class CompletedHabit extends TimeStamped {
 
     private Long achievementPercentage;
 
-
     private void setTitle(String title) {
         this.title = title;
     }
