@@ -1,6 +1,8 @@
 package com.sollertia.habit.domain.habit.service;
 
 
+import com.sollertia.habit.domain.completedhabbit.entity.CompletedHabit;
+import com.sollertia.habit.domain.completedhabbit.repository.CompletedHabitRepository;
 import com.sollertia.habit.domain.habit.dto.*;
 import com.sollertia.habit.domain.habit.entity.Habit;
 import com.sollertia.habit.domain.habit.entity.HabitWithCounter;
@@ -33,6 +35,8 @@ public class HabitServiceImpl implements HabitService {
     private final HabitWithCounterRepository habitWithCounterRepository;
 
     private final HistoryRepository historyRepository;
+
+    private final CompletedHabitRepository completedHabitRepository;
 
     private final MonsterService monsterService;
 
@@ -98,12 +102,12 @@ public class HabitServiceImpl implements HabitService {
         HabitWithCounter habitWithCounter = habitWithCounterRepository.findById(habitId).orElseThrow(
                 () -> new HabitIdNotFoundException("Couldn't find Habit"));
         Boolean isAchieve = habitWithCounter.check(1L);
-        if (isAchieve) {
-            monsterService.plusExpPoint(habitWithCounter.getUser());
-            History history = History.makeHistory(habitWithCounter);
-            historyRepository.save(history);
-        }
         habitWithCounterRepository.save(habitWithCounter);
+
+        if (isAchieve) {
+            plusExpPointAndMakeHistory(habitWithCounter);
+            deleteHabitIfCompleteToday(habitWithCounter);
+        }
         return HabitCheckResponseDto.builder()
                 .statusCode(200)
                 .responseMessage("성공했습니다")
@@ -111,6 +115,20 @@ public class HabitServiceImpl implements HabitService {
                 .isAccomplished(isAchieve)
                 .build();
 
+    }
+
+    private void plusExpPointAndMakeHistory(HabitWithCounter habitWithCounter) {
+        monsterService.plusExpPoint(habitWithCounter.getUser());
+        History history = History.makeHistory(habitWithCounter);
+        historyRepository.save(history);
+    }
+
+    private void deleteHabitIfCompleteToday(HabitWithCounter habitWithCounter) {
+        if (habitWithCounter.getDurationEnd().equals(LocalDate.now())) {
+            CompletedHabit completedHabit = CompletedHabit.of(habitWithCounter);
+            completedHabitRepository.save(completedHabit);
+            habitWithCounterRepository.delete(habitWithCounter);
+        }
     }
 
     @Override
