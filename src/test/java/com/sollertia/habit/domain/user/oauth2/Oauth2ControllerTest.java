@@ -12,6 +12,9 @@ import com.sollertia.habit.global.exception.user.InvalidSocialNameException;
 import com.sollertia.habit.global.utils.RedisUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.reflect.Whitebox;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -25,6 +28,7 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,6 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(controllers = Oauth2Controller.class)
 @AutoConfigureMockMvc(addFilters = false)
+@RunWith(PowerMockRunner.class)
 class Oauth2ControllerTest {
 
     @Autowired
@@ -63,6 +68,7 @@ class Oauth2ControllerTest {
         mockUserInfo = new GoogleOauth2UserInfo(attributes);
         testUser = User.create(mockUserInfo);
         mockUserInfo.putUser(testUser);
+        Whitebox.setInternalState(testUser, "createdAt", LocalDate.now());
     }
 
     @Test
