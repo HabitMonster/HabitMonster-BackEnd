@@ -1,7 +1,11 @@
 package com.sollertia.habit.testdata;
 
+import com.sollertia.habit.domain.category.enums.Category;
+import com.sollertia.habit.domain.completedhabbit.entity.CompletedHabit;
+import com.sollertia.habit.domain.completedhabbit.repository.CompletedHabitRepository;
 import com.sollertia.habit.domain.habit.dto.HabitDtoImpl;
 import com.sollertia.habit.domain.habit.dto.HabitTypeDto;
+import com.sollertia.habit.domain.habit.entity.Habit;
 import com.sollertia.habit.domain.habit.service.HabitServiceImpl;
 import com.sollertia.habit.domain.monster.entity.Monster;
 import com.sollertia.habit.domain.monster.entity.MonsterDatabase;
@@ -31,6 +35,7 @@ public class TestData implements ApplicationRunner {
     private final PreSetRepository preSetRepository;
     private final HabitServiceImpl habitService;
     private final MonsterDatabaseRepository monsterDatabaseRepository;
+    private final CompletedHabitRepository completedHabitRepository;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
@@ -65,6 +70,16 @@ public class TestData implements ApplicationRunner {
             HabitTypeDto habitTypeDto = new HabitTypeDto("counter", "specificDay");
 
             habitService.createHabit(habitTypeDto, habitDto, user);
+        }
+
+        //CompletedHabit testData
+        for(int i = 1; i<15; i++){
+            HabitDtoImpl habitDto = HabitDtoImpl.builder().durationStart(form.format(startDate.getTime())).durationEnd(form.format(startDate.getTime()))
+                    .count(3).title("test"+i).description("test"+i).practiceDays("1234567").categoryId(Category.Etc.getCategoryId()).build();
+
+            HabitTypeDto habitTypeDto = new HabitTypeDto("counter", "specificDay");
+            CompletedHabit completedHabit = CompletedHabit.of(Habit.createHabit(habitTypeDto.getHabitType(), habitDto, user));
+            completedHabitRepository.save(completedHabit);
         }
 
     }
