@@ -71,7 +71,7 @@ class CategoryControllerTest {
         mvc.perform(get("/categories")).andDo(print())
                 //then
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("responseMessage").value("Category 조회 완료"))
+                .andExpect(jsonPath("responseMessage").value("Category Query completed"))
                 .andExpect(jsonPath("statusCode").value(200))
                 .andExpect(jsonPath("$.categories[0].categoryId").value(1L))
                 .andExpect(jsonPath("$.categories[0].category").value("Health"));
