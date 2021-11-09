@@ -11,8 +11,9 @@ import java.time.LocalDate;
 public class SimpleHabitVo {
     private String title;
     private Long achievement;
-    private int accomplishCount;
+    private Long accomplishCount;
     private Long goalCount;
+    private boolean isSuccess;
 
     private String startDate;
     private String endUPDate;
@@ -22,6 +23,7 @@ public class SimpleHabitVo {
         this.achievement = completedHabit.getAchievementPercentage();
         this.accomplishCount = completedHabit.getAccomplishCounter();
         this.goalCount = completedHabit.getGoalCount();
+        this.isSuccess = completedHabit.getIsSuccess();
         this.startDate = completedHabit.getStartDate().toString();
         this.endUPDate = completedHabit.getEndupDate().toString();
     }
