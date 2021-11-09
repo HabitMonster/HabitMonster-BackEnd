@@ -47,11 +47,11 @@ public class Monster {
     }
 
     public void plusExpPoint() {
-        setExpPoint(getExpPoint() + this.level.getPlusPoint());
+        setExpPoint(getExpPoint() + getLevel().getPlusPoint());
         long margin = getExpPoint() - Level.MAX_EXP;
         if ( margin >= 0 ) {
             levelUp();
-            this.expPoint = margin;
+            setExpPoint(margin);
         }
     }
 
@@ -70,9 +70,9 @@ public class Monster {
     }
 
     public void minusExpPoint() {
-        this.expPoint -= this.level.getMinusPoint();
-        if (this.expPoint < 0l) {
-            this.expPoint = 0l;
+        setExpPoint(getExpPoint() - getLevel().getMinusPoint());
+        if (getExpPoint() < Level.MIN_EXP) {
+            setExpPoint((long) Level.MIN_EXP);
         }
     }
 }

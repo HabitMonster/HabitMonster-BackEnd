@@ -95,10 +95,7 @@ public class MonsterService {
     }
 
     private Monster getMonsterByUser(User user) {
-        if ( user.getMonster() == null ) {
-            throw new MonsterNotFoundException("아직 몬스터가 없는 사용자입니다.");
-        }
-        return monsterRepository.findById(user.getMonster().getId()).orElseThrow(
+        return monsterRepository.findByUserId(user.getId()).orElseThrow(
                 () -> new MonsterNotFoundException("아직 몬스터가 없는 사용자입니다."));
     }
 }

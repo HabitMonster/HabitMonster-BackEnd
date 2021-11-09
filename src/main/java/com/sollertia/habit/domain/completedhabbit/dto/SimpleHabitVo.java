@@ -11,7 +11,7 @@ import java.time.LocalDate;
 public class SimpleHabitVo {
     private String title;
     private Long achievement;
-    private int accomplishCount;
+    private Long accomplishCount;
     private Long goalCount;
 
     private String startDate;

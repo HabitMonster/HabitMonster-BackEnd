@@ -6,6 +6,7 @@ import com.sollertia.habit.domain.completedhabbit.repository.CompletedHabitRepos
 import com.sollertia.habit.domain.habit.entity.Habit;
 import com.sollertia.habit.domain.habit.repository.HabitRepository;
 import com.sollertia.habit.domain.habit.repository.HabitWithCounterRepository;
+import com.sollertia.habit.domain.monster.entity.Monster;
 import com.sollertia.habit.domain.monster.repository.MonsterRepository;
 import com.sollertia.habit.domain.preset.dto.PreSetVo;
 import com.sollertia.habit.domain.preset.entity.PreSet;
@@ -20,7 +21,6 @@ import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,14 +43,11 @@ public class SchedulerRunner {
     @Scheduled(cron = "0 * * * * *")
     @Transactional
     public void runWhenEveryMidNight() {
-        LocalDateTime dateTime = LocalDateTime.now();
         LocalDate date = LocalDate.now();
-        log.info(dateTime.toString());
-        log.info(String.valueOf(dateTime.getDayOfWeek().minus(1).getValue()));
 
         //매일하는 습관 조회, 사용자 경험치 감소
         //isAccomplishInSession true => false
-        minusExpOnLapsedHabit(dateTime);
+        minusExpOnLapsedHabit(date);
 
         //history에 넣기
 
@@ -58,37 +55,39 @@ public class SchedulerRunner {
         expireHabit(date);
     }
 
-    private void minusExpOnLapsedHabit(LocalDateTime dateTime) {
+    private void minusExpOnLapsedHabit(LocalDate date) {
 
-        String day = String.valueOf(dateTime.minusDays(1).getDayOfWeek().getValue());
+        String day = String.valueOf(date.minusDays(1).getDayOfWeek().getValue());
         List<Habit> habitsWithDaysAndAccomplish = habitRepository.findHabitsWithDaysAndAccomplish(day, false);
         System.out.println(habitsWithDaysAndAccomplish.size()+" 마이너스 해빗");
 
         for (Habit habit : habitsWithDaysAndAccomplish) {
-           monsterRepository.findById(habit.getUser().getMonster().getId()).orElseThrow(
-                    () -> new MonsterNotFoundException("Not Found Monster")
-            ).minusExpPoint();
+            Monster monster = monsterRepository.findByUserId(habit.getUser().getId()).orElseThrow(
+                    () -> new MonsterNotFoundException(habit.getUser().getSocialId() + "의 몬스터를 찾을 수 없습니다."));
+            monster.minusExpPoint();
+            System.out.println(monster.getExpPoint());
+            monsterRepository.saveAndFlush(monster);
         }
         habitRepository.updateAccomplishInSession();
     }
 
     private void expireHabit(LocalDate date) {
-        List<Habit> habitListForDelete = habitWithCounterRepository.findAllByDurationEndLessThan(date);
+        List<Habit> habitListForDelete = habitRepository.findAllByDurationEndLessThan(date);
         System.out.println(habitListForDelete.size()+" habitListForDelete");
 
         //습관 이력 생성 로직
         List<CompletedHabit> completedHabitList = CompletedHabit.listOf(habitListForDelete);
         System.out.println(completedHabitList.size()+" completedHabitList");
-
         completedHabitRepository.saveAll(completedHabitList);
+
         //습관 삭제 로직
         List<Long> habitIdListForDelete = habitListForDelete.stream().map(Habit::getId).collect(Collectors.toList());
-        habitWithCounterRepository.deleteAllById(habitIdListForDelete);
+        habitRepository.deleteAllById(habitIdListForDelete);
     }
 
     //@Scheduled(cron = "0 0 1 ? * SUN") // 매주 일요일 새벽 1시
-    //@Scheduled(cron = "0 0 1 ? * WEN") // 매주 수요일 새벽 1시
-    @Scheduled(cron = "0 * * * * *")
+    //    @Scheduled(cron = "0 * * * * *")
+    @Scheduled(cron = "0 0 1 ? * WED") // 매주 수요일 새벽 1시
     public void runWhenEveryWeek() {
         // 매주 일요일 새벽 1시 CompletedHabit 에서 성공한 습관이 가장 많은 유저가 현재 수행 중인 습관을 등록
         // 등록 전에 이미 등록되어있는 유저의 현재 습관 삭제

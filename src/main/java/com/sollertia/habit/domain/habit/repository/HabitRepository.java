@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface HabitRepository<T extends Habit> extends JpaRepository<T, Long> {
@@ -16,4 +17,5 @@ public interface HabitRepository<T extends Habit> extends JpaRepository<T, Long>
     @Query("update Habit h set h.isAccomplishInSession = false")
     int updateAccomplishInSession();
 
+    List<Habit> findAllByDurationEndLessThan(LocalDate date);
 }

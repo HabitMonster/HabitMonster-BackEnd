@@ -13,6 +13,7 @@ public enum Level {
 
     public static final int MAX_LEVEL = 5;
     public static final int MAX_EXP = 100;
+    public static final int MIN_EXP = 0;
 
     private final Integer value;
     private final Integer plusPoint;
