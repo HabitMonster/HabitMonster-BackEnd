@@ -2,6 +2,7 @@ package com.sollertia.habit.domain.user.oauth2.controller;
 
 
 import com.sollertia.habit.domain.user.entity.User;
+import com.sollertia.habit.domain.user.oauth2.controller.Oauth2Controller;
 import com.sollertia.habit.domain.user.oauth2.service.Oauth2UserService;
 import com.sollertia.habit.domain.user.oauth2.service.SocialLoginService;
 import com.sollertia.habit.domain.user.oauth2.userinfo.GoogleOauth2UserInfo;
@@ -11,6 +12,9 @@ import com.sollertia.habit.global.exception.user.InvalidSocialNameException;
 import com.sollertia.habit.global.utils.RedisUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.reflect.Whitebox;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -18,20 +22,24 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+
+
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = Oauth2Controller.class)
 @AutoConfigureMockMvc(addFilters = false)
+@RunWith(PowerMockRunner.class)
 class Oauth2ControllerTest {
 
     @Autowired
@@ -60,6 +68,7 @@ class Oauth2ControllerTest {
         mockUserInfo = new GoogleOauth2UserInfo(attributes);
         testUser = User.create(mockUserInfo);
         mockUserInfo.putUser(testUser);
+        Whitebox.setInternalState(testUser, "createdAt", LocalDate.now());
     }
 
     @Test
