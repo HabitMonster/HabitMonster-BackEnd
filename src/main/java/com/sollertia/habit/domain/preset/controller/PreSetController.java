@@ -32,10 +32,8 @@ public class PreSetController {
     @ApiOperation(value = "선택한 Category의 PreSet 목록 조회")
     @GetMapping("/categories/{category_id}/presets")
     public PreSetResponseDto categoryPreSetList(@PathVariable Long category_id){
-//            List<PreSetVo> list = PreSet.getPreSetList(category_id);
-//            return PreSetResponseDto.builder().preSets(list).statusCode(200).responseMessage("PreSets 전달 완료").build();
         List<PreSetVo> list = preSetService.categoryPreSetList(category_id);
-        return PreSetResponseDto.builder().preSets(list).statusCode(200).responseMessage("PreSets 전달 완료").build();
+        return PreSetResponseDto.builder().preSets(list).statusCode(200).responseMessage("PreSets Query completed").build();
     }
 
     @ApiOperation(value = "선택한 PreSet Habit 테이블에 저장")
