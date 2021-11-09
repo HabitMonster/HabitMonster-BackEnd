@@ -6,6 +6,8 @@ import com.sollertia.habit.domain.completedhabbit.repository.CompletedHabitRepos
 import com.sollertia.habit.domain.habit.entity.Habit;
 import com.sollertia.habit.domain.habit.repository.HabitRepository;
 import com.sollertia.habit.domain.habit.repository.HabitWithCounterRepository;
+import com.sollertia.habit.domain.history.entity.History;
+import com.sollertia.habit.domain.history.repository.HistoryRepository;
 import com.sollertia.habit.domain.monster.entity.Monster;
 import com.sollertia.habit.domain.monster.repository.MonsterRepository;
 import com.sollertia.habit.domain.preset.dto.PreSetVo;
@@ -36,51 +38,53 @@ public class SchedulerRunner {
     private final PreSetServiceImpl preSetService;
     private final HabitRepository habitRepository;
     private final MonsterRepository monsterRepository;
+    private final HistoryRepository historyRepository;
 
-
-    // 초 분 시 일 월 요일
-    //@Scheduled(cron = "0 0 0 * * *")
-    @Scheduled(cron = "0 * * * * *")
+    @Scheduled(cron = "0 0 0 * * *")
     @Transactional
     public void runWhenEveryMidNight() {
         LocalDate date = LocalDate.now();
-
-        //매일하는 습관 조회, 사용자 경험치 감소
-        //isAccomplishInSession true => false
         minusExpOnLapsedHabit(date);
-
-        //history에 넣기
-
-        //만기된 습관 삭제후 CompletedHabit 으로 넘기기
         expireHabit(date);
     }
 
     private void minusExpOnLapsedHabit(LocalDate date) {
-
         String day = String.valueOf(date.minusDays(1).getDayOfWeek().getValue());
         List<Habit> habitsWithDaysAndAccomplish = habitRepository.findHabitsWithDaysAndAccomplish(day, false);
-        System.out.println(habitsWithDaysAndAccomplish.size()+" 마이너스 해빗");
 
         for (Habit habit : habitsWithDaysAndAccomplish) {
-            Monster monster = monsterRepository.findByUserId(habit.getUser().getId()).orElseThrow(
-                    () -> new MonsterNotFoundException(habit.getUser().getSocialId() + "의 몬스터를 찾을 수 없습니다."));
-            monster.minusExpPoint();
-            System.out.println(monster.getExpPoint());
-            monsterRepository.saveAndFlush(monster);
+            minusExpFromOwnerOf(habit);
+            makeHistoryOf(habit);
         }
-        habitRepository.updateAccomplishInSession();
+        habitRepository.updateAccomplishInSessionToFalse();
+    }
+
+    private void minusExpFromOwnerOf(Habit habit) {
+        Monster monster = monsterRepository.findByUserId(habit.getUser().getId()).orElseThrow(
+                () -> new MonsterNotFoundException(habit.getUser().getSocialId() + "의 몬스터를 찾을 수 없습니다."));
+        monster.minusExpPoint();
+        monsterRepository.saveAndFlush(monster);
+    }
+
+    private void makeHistoryOf(Habit habit) {
+        History history = History.makeHistory(habit);
+        historyRepository.save(history);
     }
 
     private void expireHabit(LocalDate date) {
         List<Habit> habitListForDelete = habitRepository.findAllByDurationEndLessThan(date);
-        System.out.println(habitListForDelete.size()+" habitListForDelete");
 
-        //습관 이력 생성 로직
+        moveToCompletedHabitList(habitListForDelete);
+        deleteHabitList(habitListForDelete);
+    }
+
+    private void moveToCompletedHabitList(List<Habit> habitListForDelete) {
         List<CompletedHabit> completedHabitList = CompletedHabit.listOf(habitListForDelete);
         System.out.println(completedHabitList.size()+" completedHabitList");
         completedHabitRepository.saveAll(completedHabitList);
+    }
 
-        //습관 삭제 로직
+    private void deleteHabitList(List<Habit> habitListForDelete) {
         List<Long> habitIdListForDelete = habitListForDelete.stream().map(Habit::getId).collect(Collectors.toList());
         habitRepository.deleteAllById(habitIdListForDelete);
     }

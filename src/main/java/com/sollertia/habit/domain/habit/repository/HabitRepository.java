@@ -15,7 +15,7 @@ public interface HabitRepository<T extends Habit> extends JpaRepository<T, Long>
 
     @Modifying(clearAutomatically = true)
     @Query("update Habit h set h.isAccomplishInSession = false")
-    int updateAccomplishInSession();
+    int updateAccomplishInSessionToFalse();
 
     List<Habit> findAllByDurationEndLessThan(LocalDate date);
 }
