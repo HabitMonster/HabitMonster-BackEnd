@@ -12,4 +12,5 @@ import java.util.Map;
 public class JwtExceptionDto extends DefaultResponseDto {
     private String clientRequestUri;
     private Map<String,Object> body;
+    private String method;
 }

@@ -22,7 +22,8 @@ public class HabitController {
 
     @ApiOperation(value = "습관 생성", notes = "성공 실패여부 반환")
     @PostMapping("/habits")
-    public HabitDetailResponseDto createHabit(@RequestBody HabitDtoImpl habitDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public HabitDetailResponseDto createHabit(@RequestBody HabitDtoImpl habitDto,
+                                              @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         HabitTypeDto habitTypeDto = new HabitTypeDto("counter", "specificDay");
 
@@ -30,7 +31,8 @@ public class HabitController {
     }
     @ApiOperation(value = "습관 상세정보 요청", notes = "성공 실패여부 반환")
     @GetMapping("/habits/{habitId}")
-    public HabitDetailResponseDto habitDetailResponseDto(@PathVariable Long habitId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public HabitDetailResponseDto habitDetailResponseDto(@PathVariable Long habitId,
+                                                         @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
 
         HabitTypeDto habitTypeDto = new HabitTypeDto("counter", "specificDay");
@@ -40,7 +42,8 @@ public class HabitController {
 
     @ApiOperation(value = "습관 삭제", notes = "성공 실패여부 반환")
     @DeleteMapping("/habits/{habitId}")
-    public DefaultResponseDto deleteHabit(@PathVariable Long habitId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public DefaultResponseDto deleteHabit(@PathVariable Long habitId,
+                                          @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         HabitTypeDto habitTypeDto = new HabitTypeDto("counter", "specificDay");
 
@@ -48,7 +51,8 @@ public class HabitController {
     }
     @ApiOperation(value = "습관 체크", notes = "성공 실패여부 반환")
     @GetMapping("/habits/check/{habitId}")
-    public DefaultResponseDto checkHabit(@PathVariable Long habitId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public DefaultResponseDto checkHabit(@PathVariable Long habitId,
+                                         @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         HabitTypeDto habitTypeDto = new HabitTypeDto("counter", "specificDay");
 
@@ -57,7 +61,8 @@ public class HabitController {
 
     @ApiOperation(value = "사용자 습관 목록 조회", notes = "사용자의 오늘의 습관 목록 반환")
     @GetMapping("/user/habits")
-    public HabitSummaryListResponseDto getHabitSummaryList(@ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public HabitSummaryListResponseDto getHabitSummaryList(
+            @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return habitService.getHabitSummaryListResponseDto(userDetails.getUser());
     }
 

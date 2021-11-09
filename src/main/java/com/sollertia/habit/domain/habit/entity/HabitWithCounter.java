@@ -3,6 +3,7 @@ package com.sollertia.habit.domain.habit.entity;
 import com.sollertia.habit.domain.category.enums.Category;
 import com.sollertia.habit.domain.habit.dto.HabitDtoImpl;
 import com.sollertia.habit.domain.user.entity.User;
+import com.sollertia.habit.global.exception.habit.AlreadyGoalCountException;
 import lombok.Getter;
 
 import javax.persistence.DiscriminatorValue;
@@ -52,13 +53,20 @@ public class HabitWithCounter extends Habit {
 
     @Override
     public Boolean check(Long value) {
-        this.todayCounter += value;
-        boolean isAccomplishToday = this.todayCounter >= this.goalCountInSession;
-        if (isAccomplishToday) {
-            this.setAccomplishInSession(true);
-            super.checkAccomplishCounter();
+        if ( this.todayCounter + value < this.goalCountInSession ) {
+            this.todayCounter += value;
+            return false;
+        } else if ( this.todayCounter + value == this.goalCountInSession ) {
+            this.todayCounter += value;
+            this.accomplishToday();
+            return true;
+        } else {
+            throw new AlreadyGoalCountException("이미 오늘 완료된 습관입니다.");
         }
-        return isAccomplishToday;
     }
 
+    private void accomplishToday() {
+        this.setAccomplishInSession(true);
+        super.checkAccomplishCounter();
+    }
 }

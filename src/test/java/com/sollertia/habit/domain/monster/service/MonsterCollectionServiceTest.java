@@ -6,10 +6,9 @@ import com.sollertia.habit.domain.monster.entity.MonsterCollection;
 import com.sollertia.habit.domain.monster.entity.MonsterDatabase;
 import com.sollertia.habit.domain.monster.enums.EvolutionGrade;
 import com.sollertia.habit.domain.monster.repository.MonsterCollectionRepository;
-import com.sollertia.habit.domain.monster.service.MonsterCollectionService;
+import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.domain.user.oauth2.userinfo.GoogleOauth2UserInfo;
 import com.sollertia.habit.domain.user.oauth2.userinfo.Oauth2UserInfo;
-import com.sollertia.habit.domain.user.entity.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
@@ -52,22 +52,28 @@ class MonsterCollectionServiceTest {
 
         MonsterDatabase monsterDatabase1 = new MonsterDatabase(EvolutionGrade.EV1, "cat.img");
         MonsterDatabase monsterDatabase2 = new MonsterDatabase(EvolutionGrade.EV1, "dog.img");
-        MonsterDatabase monsterDatabase3 = new MonsterDatabase(EvolutionGrade.EV1, "dug.img");
         monster1 = Monster.createNewMonster("고양이", monsterDatabase1);
         monster2 = Monster.createNewMonster("강아지", monsterDatabase2);
-        Monster monster3 = Monster.createNewMonster("오리", monsterDatabase3);
 
         mockMonsterDatabaseList.add(monsterDatabase1);
         mockMonsterDatabaseList.add(monsterDatabase2);
-        mockMonsterDatabaseList.add(monsterDatabase3);
 
         mockMonsterCollectionList.add(MonsterCollection.createMonsterCollection(monster1));
         mockMonsterCollectionList.add(MonsterCollection.createMonsterCollection(monster2));
-        mockMonsterCollectionList.add(MonsterCollection.createMonsterCollection(monster3));
     }
 
     @Test
     void addMonsterCollection() {
+        //given
+        given(monsterCollectionRepository.save(any(MonsterCollection.class)))
+                .willReturn(mockMonsterCollectionList.get(0));
+
+        //when
+        MonsterCollection monsterCollection = monsterCollectionService.addMonsterCollection(monster1);
+
+        //then
+        assertThat(monsterCollection.getMonsterName()).isEqualTo(monster1.getName());
+        assertThat(monsterCollection.getMonsterDatabase()).isEqualTo(mockMonsterDatabaseList.get(0));
     }
 
     @Test
@@ -84,8 +90,6 @@ class MonsterCollectionServiceTest {
                 .isEqualTo(mockMonsterDatabaseList.get(0).getImageUrl());
         assertThat(responseDto.getMonsters().get(1).getMonsterImage())
                 .isEqualTo(mockMonsterDatabaseList.get(1).getImageUrl());
-        assertThat(responseDto.getMonsters().get(2).getMonsterImage())
-                .isEqualTo(mockMonsterDatabaseList.get(2).getImageUrl());
         assertThat(responseDto.getStatusCode()).isEqualTo(200);
         assertThat(responseDto.getResponseMessage()).isEqualTo("몬스터 컬렉션 조회 성공");
 

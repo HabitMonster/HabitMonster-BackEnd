@@ -6,6 +6,7 @@ import com.sollertia.habit.domain.user.oauth2.loginutil.NaverSocialLoginUtil;
 import com.sollertia.habit.domain.user.oauth2.loginutil.SocialLoginUtil;
 import com.sollertia.habit.domain.user.oauth2.userinfo.Oauth2UserInfo;
 import com.sollertia.habit.domain.user.enums.ProviderType;
+import com.sollertia.habit.global.exception.user.InvalidSocialNameException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +28,12 @@ public class SocialLoginService {
     }
 
     public Oauth2UserInfo getUserInfo(String socialName, String authCode) {
-        ProviderType providerType = ProviderType.valueOf(socialName.toUpperCase());
+        ProviderType providerType;
+        try {
+            providerType = ProviderType.valueOf(socialName.toUpperCase());
+        } catch (IllegalArgumentException exception) {
+            throw new InvalidSocialNameException("잘못된 소셜 로그인 타입입니다.");
+        }
         return loginUtilMap.get(providerType).getUserInfoByCode(authCode);
     }
 }

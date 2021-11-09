@@ -69,7 +69,7 @@ public class MonsterService {
     }
 
     public MonsterResponseDto getMonsterResponseDtoFromUser(User user) {
-        Monster monster = getMonsterFromUser(user);
+        Monster monster = getMonsterByUser(user);
         return MonsterResponseDto.builder()
                 .monster(MonsterVo.of(monster))
                 .statusCode(200)
@@ -78,13 +78,13 @@ public class MonsterService {
     }
 
     public MonsterVo getMonsterVo(User user) {
-        Monster monster = getMonsterFromUser(user);
+        Monster monster = getMonsterByUser(user);
         return MonsterVo.of(monster);
     }
 
     @Transactional
     public void plusExpPoint(User user) {
-        Monster monster = getMonsterFromUser(user);
+        Monster monster = getMonsterByUser(user);
         monster.plusExpPoint();
     }
 
@@ -94,14 +94,10 @@ public class MonsterService {
         );
     }
 
-    private Monster getMonsterFromUser(User user) {
+    private Monster getMonsterByUser(User user) {
         if ( user.getMonster() == null ) {
             throw new MonsterNotFoundException("아직 몬스터가 없는 사용자입니다.");
         }
-        return getMonsterByUser(user);
-    }
-
-    private Monster getMonsterByUser(User user) {
         return monsterRepository.findById(user.getMonster().getId()).orElseThrow(
                 () -> new MonsterNotFoundException("아직 몬스터가 없는 사용자입니다."));
     }

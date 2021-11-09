@@ -32,7 +32,7 @@ public class User {
     @Enumerated(EnumType.STRING)
     private ProviderType providerType;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Habit> habit;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)

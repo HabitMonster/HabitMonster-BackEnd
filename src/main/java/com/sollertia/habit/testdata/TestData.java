@@ -12,6 +12,7 @@ import com.sollertia.habit.domain.monster.entity.MonsterDatabase;
 import com.sollertia.habit.domain.monster.enums.EvolutionGrade;
 import com.sollertia.habit.domain.monster.repository.MonsterDatabaseRepository;
 import com.sollertia.habit.domain.monster.repository.MonsterRepository;
+import com.sollertia.habit.domain.preset.repository.PreSetRepository;
 import com.sollertia.habit.domain.preset.dto.PreSetVo;
 import com.sollertia.habit.domain.preset.enums.PreSet;
 import com.sollertia.habit.domain.preset.repository.PreSetRepository;
@@ -60,7 +61,7 @@ public class TestData implements ApplicationRunner {
         User user = userRepository.findById(1L).orElseThrow(()->new NullPointerException("없음"));
         Monster monster = Monster.createNewMonster("고양이", monsterDatabase1);
         monster.setUser(user);
-       user.updateMonster(monster);
+        user.updateMonster(monster);
 
         User user2 = userRepository.findById(2L).orElseThrow(()->new NullPointerException("없음"));
         Monster monster2 = Monster.createNewMonster("강아지", monsterDatabase2);
@@ -73,6 +74,8 @@ public class TestData implements ApplicationRunner {
         userRepository.save(user);
         userRepository.save(user2);
         userRepository.save(user3);
+        user.updateMonster(monster);
+        user = userRepository.save(user);
 
         Calendar startDate = Calendar.getInstance();
         DateFormat form = new SimpleDateFormat("yyyy-MM-dd");

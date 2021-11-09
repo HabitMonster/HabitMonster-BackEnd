@@ -1,8 +1,10 @@
 package com.sollertia.habit.global.exception;
 
 
+import com.sollertia.habit.global.exception.habit.AlreadyGoalCountException;
 import com.sollertia.habit.global.exception.habit.HabitIdNotFoundException;
 import com.sollertia.habit.global.exception.habit.HabitTypeNotFoundException;
+import com.sollertia.habit.global.exception.monster.InvalidLevelException;
 import com.sollertia.habit.global.exception.monster.MonsterNotFoundException;
 import com.sollertia.habit.global.exception.monster.NotReachedMaximumLevelException;
 import com.sollertia.habit.global.exception.user.InvalidSocialNameException;
@@ -84,6 +86,16 @@ public class GlobalController {
 
     @ExceptionHandler
     public ResponseEntity<ErrorResponseDto> notReachedMaximumLevelExceptionHandler(NotReachedMaximumLevelException exception) {
+        return new ResponseEntity<>(ErrorResponseDto.badRequest(exception.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponseDto> alreadyGoalCountExceptionExceptionHandler(AlreadyGoalCountException exception) {
+        return new ResponseEntity<>(ErrorResponseDto.badRequest(exception.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponseDto> invalidLevelExceptionHandler(InvalidLevelException exception) {
         return new ResponseEntity<>(ErrorResponseDto.badRequest(exception.getMessage()), HttpStatus.BAD_REQUEST);
     }
 }

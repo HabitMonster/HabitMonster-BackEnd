@@ -86,6 +86,7 @@ class JwtAuthenticationFilterTest {
         given(jwtTokenProvider.requestAccessToken(request)).willReturn(expiredToken);
         willThrow(ExpiredJwtException.class).given(jwtTokenProvider).validateToken(expiredToken);
         request.setRequestURI("/test");
+        request.setMethod("GET");
         assertThrows(ExpiredJwtException.class,
                 () -> jwtAuthenticationFilter.doFilterInternal(request, response, chain));
 
@@ -98,6 +99,7 @@ class JwtAuthenticationFilterTest {
         given(jwtTokenProvider.requestAccessToken(request)).willReturn(signatureToken);
         willThrow(SignatureException.class).given(jwtTokenProvider).validateToken(signatureToken);
         request.setRequestURI("/test");
+        request.setMethod("GET");
         assertThrows(SignatureException.class,
                 () -> jwtAuthenticationFilter.doFilterInternal(request, response, chain));
 
@@ -110,6 +112,7 @@ class JwtAuthenticationFilterTest {
         given(jwtTokenProvider.requestAccessToken(request)).willReturn(MalformedToken);
         willThrow(MalformedJwtException.class).given(jwtTokenProvider).getAuthentication(MalformedToken);
         request.setRequestURI("/test");
+        request.setMethod("GET");
         assertThrows(MalformedJwtException.class,
                 () -> jwtAuthenticationFilter.doFilterInternal(request, response, chain));
 
@@ -135,6 +138,7 @@ class JwtAuthenticationFilterTest {
         given(jwtTokenProvider.getSocialId(successToken)).willReturn(testUser.getSocialId());
         given(redisUtil.getData(successToken)).willReturn("abc");
         request.setRequestURI("/test");
+        request.setMethod("GET");
         //when - then
         assertThrows(JwtException.class, () ->
                 jwtAuthenticationFilter.doFilterInternal(request, response, chain));
@@ -147,6 +151,7 @@ class JwtAuthenticationFilterTest {
         given(jwtTokenProvider.requestRefreshToken(request)).willReturn(expiredToken);
         given(redisUtil.getData(successToken)).willReturn(testUser.getSocialId());
         request.setRequestURI("/test");
+        request.setMethod("GET");
         assertThrows(Exception.class,
                 () -> jwtAuthenticationFilter.doFilterInternal(request, response, chain));
     }
@@ -159,6 +164,7 @@ class JwtAuthenticationFilterTest {
         given(jwtTokenProvider.getSocialId(expiredToken)).willReturn(testUser.getSocialId());
         given(redisUtil.getData(expiredToken)).willReturn(testUser.getSocialId());
         request.setRequestURI("/test");
+        request.setMethod("GET");
         willThrow(ExpiredJwtException.class).given(jwtTokenProvider).validateToken(expiredToken);
         assertThrows(ExpiredJwtException.class,
                 () -> jwtAuthenticationFilter.doFilterInternal(request, response, chain));
@@ -173,6 +179,7 @@ class JwtAuthenticationFilterTest {
         given(jwtTokenProvider.getSocialId(signatureToken)).willReturn(testUser.getSocialId());
         willThrow(SignatureException.class).given(jwtTokenProvider).validateToken(signatureToken);
         request.setRequestURI("/test");
+        request.setMethod("GET");
         assertThrows(SignatureException.class,
                 () -> jwtAuthenticationFilter.doFilterInternal(request, response, chain));
     }
@@ -186,6 +193,7 @@ class JwtAuthenticationFilterTest {
         given(jwtTokenProvider.getSocialId(MalformedToken)).willReturn(testUser.getSocialId());
         willThrow(MalformedJwtException.class).given(jwtTokenProvider).getAuthentication(MalformedToken);
         request.setRequestURI("/test");
+        request.setMethod("GET");
         assertThrows(MalformedJwtException.class,
                 () -> jwtAuthenticationFilter.doFilterInternal(request, response, chain));
     }

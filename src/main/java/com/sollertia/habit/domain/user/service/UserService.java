@@ -3,17 +3,28 @@ package com.sollertia.habit.domain.user.service;
 import com.sollertia.habit.domain.monster.entity.Monster;
 import com.sollertia.habit.domain.user.dto.UserInfoResponseDto;
 import com.sollertia.habit.domain.user.dto.UserInfoVo;
+import com.sollertia.habit.domain.user.dto.UsernameUpdateRequestDto;
 import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.domain.user.repository.UserRepository;
+import com.sollertia.habit.global.exception.user.UserIdNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
+
+    @Transactional
+    public User getUserById(Long id) {
+        return userRepository.findById(id).orElseThrow(
+                () -> new UserIdNotFoundException("유저가 존재하지 않습니다.")
+        );
+    }
 
     public UserInfoResponseDto getUserInfoResponseDto(User user) {
         return UserInfoResponseDto.builder()
@@ -23,7 +34,7 @@ public class UserService {
                 .build();
     }
 
-    public UserInfoVo getUserInfoVo(User user) {
+    private UserInfoVo getUserInfoVo(User user) {
         return UserInfoVo.builder()
                 .monsterCode(user.getSocialId())
                 .email(user.getEmail())
@@ -36,5 +47,15 @@ public class UserService {
     public User updateMonster(User user, Monster newMonster) {
         user.updateMonster(newMonster);
         return userRepository.save(user);
+    }
+
+    @Transactional
+    public UserInfoResponseDto updateUsername(User user, UsernameUpdateRequestDto requestDto) {
+        user.updateUsername(requestDto.getUsername());
+        return UserInfoResponseDto.builder()
+                .userInfo(getUserInfoVo(user))
+                .statusCode(200)
+                .responseMessage("사용자 이름 수정 성공")
+                .build();
     }
 }
