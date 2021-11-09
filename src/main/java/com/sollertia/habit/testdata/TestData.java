@@ -104,6 +104,20 @@ public class TestData implements ApplicationRunner {
             habitService.createHabit(habitTypeDto, habitDto, user);
         }
 
+        for (int i = 1; i < 11; i++) {
+            PreSetVo preSetVo = PreSet.getPreSet((long) i);
+            assert preSetVo != null;
+            com.sollertia.habit.domain.preset.entity.PreSet preSet = new com.sollertia.habit.domain.preset.entity.PreSet(preSetVo);
+            preSetRepository.save(preSet);
+
+            HabitDtoImpl habitDto = HabitDtoImpl.builder().durationStart("2021-11-01").durationEnd("2021-11-08")
+                    .count(preSetVo.getCount()).title(preSetVo.getTitle()).description(preSetVo.getDescription()).practiceDays(preSetVo.getPracticeDays()).categoryId(preSetVo.getCategoryId()).build();
+
+            HabitTypeDto habitTypeDto = new HabitTypeDto("counter", "specificDay");
+
+            habitService.createHabit(habitTypeDto, habitDto, user);
+        }
+
         for (int i = 0; i < 3; i++) {
             HabitTypeDto habitTypeDto = new HabitTypeDto("counter", "specificDay");
             habitService.checkHabit(habitTypeDto, 1L);
