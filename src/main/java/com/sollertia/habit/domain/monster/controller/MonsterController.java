@@ -12,6 +12,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.validation.Valid;
+
 @RestController
 @RequiredArgsConstructor
 public class MonsterController {
@@ -29,8 +31,16 @@ public class MonsterController {
     @PatchMapping("/user/monster")
     public MonsterResponseDto updateMonster(
             @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @RequestBody MonsterSelectRequestDto requestDto) {
+            @Valid @RequestBody MonsterSelectRequestDto requestDto) {
         return monsterService.updateMonster(userDetails.getUser(), requestDto);
+    }
+
+    @ApiOperation(value = "몬스터 이름 수정", notes = "변경된 몬스터 데이터 반환")
+    @PatchMapping("/monster/nameChange")
+    public MonsterResponseDto updateMonsterName(
+            @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @Valid @RequestBody MonsterSelectRequestDto requestDto) {
+        return monsterService.updateMonsterName(userDetails.getUser(), requestDto);
     }
 
     @ApiOperation(value = "몬스터 컬렉션 조회", notes = "사용자 몬스터 컬렉션 목록 반환")

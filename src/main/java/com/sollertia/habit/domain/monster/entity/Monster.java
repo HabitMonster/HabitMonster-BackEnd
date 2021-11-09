@@ -66,4 +66,9 @@ public class Monster {
         return newMonster;
     }
 
+    public Monster updateName(String name){
+        setName(name);
+        return this;
+    }
+
 }
