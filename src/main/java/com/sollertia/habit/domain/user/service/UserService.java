@@ -40,6 +40,7 @@ public class UserService {
                 .email(user.getEmail())
                 .username(user.getUsername())
                 .socialType(user.getProviderType())
+                .monsterName(user.getMonster().getName())
                 .build();
     }
 
