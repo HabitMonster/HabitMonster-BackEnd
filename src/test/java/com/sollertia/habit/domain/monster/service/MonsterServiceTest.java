@@ -119,6 +119,26 @@ class MonsterServiceTest {
     }
 
     @Test
+    void updateMonsterName() {
+        //given
+        updatedTestUser.updateMonster(monster1);
+        MonsterSelectRequestDto mockRequestDto = new MonsterSelectRequestDto(1L, monster1.getName());
+        given(monsterRepository.findByUserId(any()))
+                .willReturn(Optional.ofNullable(monster1));
+
+        //when
+        MonsterResponseDto responseDto = monsterService.updateMonsterName(testUser, mockRequestDto);
+
+        //then
+        assertThat(responseDto.getMonster().getMonsterName())
+                .isEqualTo(mockRequestDto.getMonsterName());
+        assertThat(responseDto.getStatusCode()).isEqualTo(200);
+        assertThat(responseDto.getResponseMessage()).isEqualTo("changeMonsterName");
+
+        verify(monsterRepository).findByUserId(any());
+    }
+
+    @Test
     void updateMonsterIfUserHasMonster() {
         //given
         testUser.updateMonster(monster1);

@@ -75,7 +75,7 @@ public class MonsterService {
 
         return MonsterResponseDto.builder()
                 .monster(monsterVo)
-                .responseMessage("몬스터가 선택되었습니다.")
+                .responseMessage("changeMonsterName")
                 .statusCode(200)
                 .build();
     }

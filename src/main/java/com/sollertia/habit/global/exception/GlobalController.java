@@ -45,10 +45,10 @@ public class GlobalController {
         return new ResponseEntity<>(ErrorResponseDto.badRequest(exception.getMessage()), HttpStatus.UNAUTHORIZED);
     }
 
-    @ExceptionHandler
-    public ResponseEntity<ErrorResponseDto> globalNullPointerExceptionHandler(NullPointerException exception) {
-        return new ResponseEntity<>(ErrorResponseDto.badRequest("NotFound Data"), HttpStatus.BAD_REQUEST);
-    }
+//    @ExceptionHandler
+//    public ResponseEntity<ErrorResponseDto> globalNullPointerExceptionHandler(NullPointerException exception) {
+//        return new ResponseEntity<>(ErrorResponseDto.badRequest("NotFound Data"), HttpStatus.BAD_REQUEST);
+//    }
 
     @ExceptionHandler
     public ResponseEntity<ErrorResponseDto> globalIllegalArgumentExceptionHandler(IllegalArgumentException exception) {
