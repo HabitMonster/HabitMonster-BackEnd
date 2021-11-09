@@ -53,6 +53,7 @@ class JwtControllerTest {
     UserDetailsImpl mockUserDetails;
     SecurityContext securityContext;
     String refreshToken = "abcd";
+    String accessToken = "abcd";
 
 
     private void authenticated() {
@@ -87,7 +88,7 @@ class JwtControllerTest {
                         .header("R-AUTH-TOKEN",refreshToken)).andDo(print())
                 //then
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("responseMessage").value("accessToken 발급완료!"))
+                .andExpect(jsonPath("responseMessage").value("Issuance completed accessToken"))
                 .andExpect(jsonPath("statusCode").value(200))
                 .andExpect(jsonPath("accessToken").value(refreshToken))
                 .andExpect(jsonPath("isFirstLogin").value(false));
@@ -105,7 +106,7 @@ class JwtControllerTest {
                         .header("R-AUTH-TOKEN",refreshToken)).andDo(print())
                 //then
                 .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("responseMessage").value("RefreshToken이 존재하지 않습니다."))
+                .andExpect(jsonPath("responseMessage").value("NotFound RefreshToken"))
                 .andExpect(jsonPath("statusCode").value(400));
     }
 
@@ -122,7 +123,42 @@ class JwtControllerTest {
                         .header("R-AUTH-TOKEN",refreshToken)).andDo(print())
                 //then
                 .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("responseMessage").value("User가 존재하지 않습니다."))
+                .andExpect(jsonPath("responseMessage").value("NotFound User"))
                 .andExpect(jsonPath("statusCode").value(404));
+    }
+
+    @DisplayName("User LoginCheck")
+    @Test
+    void userLoginCheck() throws Exception {
+
+        //given
+        authenticated();
+        given(jwtTokenProvider.requestAccessToken(any())).willReturn(accessToken);
+
+        //when
+        mvc.perform(get("/user/check")
+                        .header("A-AUTH-TOKEN",accessToken)).andDo(print())
+                //then
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("responseMessage").value("IsLogin True"))
+                .andExpect(jsonPath("isFirstLogin").value(false))
+                .andExpect(jsonPath("isLogin").value(true))
+                .andExpect(jsonPath("statusCode").value(200));
+    }
+
+    @DisplayName("NotFound AccessToken")
+    @Test
+    void userLoginCheckNotFoundAccessToken() throws Exception {
+
+        //given
+        authenticated();
+
+        //when
+        mvc.perform(get("/user/check")
+                        .header("A-AUTH-TOKEN",accessToken)).andDo(print())
+                //then
+                .andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("responseMessage").value("NotFound AccessToken"))
+                .andExpect(jsonPath("statusCode").value(400));
     }
 }
