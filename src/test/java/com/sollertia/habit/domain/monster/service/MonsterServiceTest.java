@@ -149,7 +149,7 @@ class MonsterServiceTest {
         updatedTestUser.updateMonster(monster2);
         given(monsterDatabaseRepository.findById(1L))
                 .willReturn(Optional.of(mockMonsterDatabaseList.get(1)));
-        given(monsterRepository.findById(any()))
+        given(monsterRepository.findByUserId(any()))
                 .willReturn(Optional.of(monster1));
         given(userService.updateMonster(eq(testUser), any(Monster.class)))
                 .willReturn(updatedTestUser);
@@ -170,7 +170,7 @@ class MonsterServiceTest {
         assertThat(responseDto.getResponseMessage()).isEqualTo("Selected Monster");
 
         verify(monsterDatabaseRepository).findById(1L);
-        verify(monsterRepository).findById(any());
+        verify(monsterRepository).findByUserId(any());
         verify(userService).updateMonster(eq(testUser), any(Monster.class));
     }
 
@@ -194,7 +194,7 @@ class MonsterServiceTest {
     void getMonsterVo() {
         //given
         testUser.updateMonster(monster1);
-        given(monsterRepository.findById(any()))
+        given(monsterRepository.findByUserId(any()))
                 .willReturn(Optional.of(monster1));
 
         //when
@@ -205,14 +205,14 @@ class MonsterServiceTest {
         assertThat(monsterVo.getMonsterImage())
                 .isEqualTo(mockMonsterDatabaseList.get(0).getImageUrl());
 
-        verify(monsterRepository).findById(any());
+        verify(monsterRepository).findByUserId(any());
     }
 
     @Test
     void plusExpPoint() {
         //given
         testUser.updateMonster(monster1);
-        given(monsterRepository.findById(any()))
+        given(monsterRepository.findByUserId(any()))
                 .willReturn(Optional.of(monster1));
 
         //when
@@ -220,14 +220,14 @@ class MonsterServiceTest {
 
         //then
         assertThat(monster1.getExpPoint()).isEqualTo(monster1.getLevel().getPlusPoint().intValue());
-        verify(monsterRepository).findById(any());
+        verify(monsterRepository).findByUserId(any());
     }
 
     @Test
     void getMonsterResponseDtoFromUser() {
         //given
         testUser.updateMonster(monster1);
-        given(monsterRepository.findById(any()))
+        given(monsterRepository.findByUserId(any()))
                 .willReturn(Optional.of(monster1));
 
         //when
@@ -240,7 +240,7 @@ class MonsterServiceTest {
         assertThat(responseDto.getMonster().getMonsterExpPoint()).isEqualTo(0L);
         assertThat(responseDto.getStatusCode()).isEqualTo(200);
         assertThat(responseDto.getResponseMessage()).isEqualTo("User Monster Query Completed");
-        verify(monsterRepository).findById(any());
+        verify(monsterRepository).findByUserId(any());
     }
 
     @Test
@@ -255,13 +255,13 @@ class MonsterServiceTest {
     void getMonsterResponseDtoFromUserHasNotMonsterInDatabase() {
         //given
         testUser.updateMonster(monster1);
-        given(monsterRepository.findById(any()))
+        given(monsterRepository.findByUserId(any()))
                 .willReturn(Optional.empty());
 
         //when, then
         assertThrows(MonsterNotFoundException.class,
                 () -> monsterService.getMonsterResponseDtoFromUser(testUser));
-        verify(monsterRepository).findById(any());
+        verify(monsterRepository).findByUserId(any());
     }
 
 }
