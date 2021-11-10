@@ -114,10 +114,7 @@ public class MonsterService {
     }
 
     private Monster getMonsterByUser(User user) {
-        if ( user.getMonster() == null ) {
-            throw new MonsterNotFoundException("NotFound User of Selected Monster");
-        }
-        return monsterRepository.findById(user.getMonster().getId()).orElseThrow(
-                () -> new MonsterNotFoundException("NotFound User of Selected Monster"));
+        return monsterRepository.findByUserId(user.getId()).orElseThrow(
+                () -> new MonsterNotFoundException("NotFound Selected Monster from User"));
     }
 }
