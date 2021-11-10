@@ -1,8 +1,10 @@
 package com.sollertia.habit.domain.preset.presetservice;
 
 
-import com.sollertia.habit.domain.preset.repository.PreSetRepository;
 import com.sollertia.habit.domain.preset.dto.PreSetVo;
+import com.sollertia.habit.domain.preset.entity.PreSet;
+import com.sollertia.habit.domain.preset.repository.PreSetRepository;
+import com.sollertia.habit.global.exception.preset.PreSetNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +26,6 @@ public class PreSetServiceImpl implements PreSetService{
 
     @Override
     public PreSetVo getPreSet(Long preSetId) {
-        return preSetRepository.findById(preSetId).map(PreSetVo::new).orElseThrow(()->new IllegalArgumentException("PreSet없음"));
+        return preSetRepository.findById(preSetId).map(PreSetVo::new).orElseThrow(()->new PreSetNotFoundException("NotFound PreSet"));
     }
 }

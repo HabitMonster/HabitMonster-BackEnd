@@ -1,7 +1,9 @@
 package com.sollertia.habit.domain.preset.controller;
 
 import com.sollertia.habit.domain.category.enums.Category;
+import com.sollertia.habit.domain.habit.dto.HabitDetailResponseDto;
 import com.sollertia.habit.domain.habit.dto.HabitDtoImpl;
+import com.sollertia.habit.domain.habit.dto.HabitTypeDto;
 import com.sollertia.habit.domain.habit.service.HabitServiceImpl;
 import com.sollertia.habit.domain.preset.dto.PreSetResponseDto;
 import com.sollertia.habit.domain.preset.dto.PreSetVo;
@@ -34,6 +36,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -61,6 +64,7 @@ class PreSetControllerTest {
     UserDetailsImpl mockUserDetails;
     SecurityContext securityContext;
 
+
     @BeforeEach
     private void beforeEach() {
         Map<String, Object> attributes = new HashMap<>();
@@ -87,7 +91,7 @@ class PreSetControllerTest {
         list.add(PreSetVo.builder().presetId(1L).categoryId(1L).title("title").description("description").
                 period(30).count(3).category(Category.Health).practiceDays("12345").build());
 
-        given(preSetService.categoryPreSetList(anyLong())).willReturn(list);
+        given(preSetService.categoryPreSetList(1L)).willReturn(list);
         //when
         mvc.perform(get("/categories/1/presets"))
                 .andDo(print())
@@ -104,7 +108,27 @@ class PreSetControllerTest {
                 .andExpect(jsonPath("$.responseMessage").value("PreSets Query completed"))
                 .andExpect(jsonPath("$.statusCode").value(200));
 
-        verify(preSetService).categoryPreSetList(anyLong());
+        verify(preSetService).categoryPreSetList(1L);
+    }
+
+    @DisplayName("PreSet 선택")
+    @Test
+    void selectPreSet() throws Exception {
+        //given
+        authenticated();
+       PreSetVo preSetVo = PreSetVo.builder().presetId(1L).categoryId(1L).title("title").description("description").
+                period(30).count(3).category(Category.Health).practiceDays("12345").build();
+        given(preSetService.getPreSet(1L)).willReturn(preSetVo);
+
+        //when
+        mvc.perform(post("/presets/1"))
+                .andDo(print())
+                //then
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.responseMessage").value("Habit registered compeleted"))
+                .andExpect(jsonPath("$.statusCode").value(200));
+
+        verify(preSetService).getPreSet(1L);
     }
 
 }

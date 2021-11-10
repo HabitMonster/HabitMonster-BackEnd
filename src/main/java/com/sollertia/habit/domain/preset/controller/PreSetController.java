@@ -54,6 +54,6 @@ public class PreSetController {
 
         habitService.createHabit(habitTypeDto, habitDto, userDetails.getUser());
 
-        return DefaultResponseDto.builder().responseMessage("습관 등록 완료").statusCode(200).build();
+        return DefaultResponseDto.builder().responseMessage("Habit registered compeleted").statusCode(200).build();
     }
 }
