@@ -15,6 +15,6 @@ public class CategoryController {
     @GetMapping("/categories")
     public CategoryResponseDto categoryPresetList(){
         List<CategoryVo> list = Category.getCategories();
-        return CategoryResponseDto.builder().categories(list).statusCode(200).responseMessage("Category 조회 완료").build();
+        return CategoryResponseDto.builder().categories(list).statusCode(200).responseMessage("Category Query completed").build();
     }
 }

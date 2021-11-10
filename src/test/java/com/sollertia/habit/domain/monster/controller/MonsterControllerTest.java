@@ -135,6 +135,38 @@ class MonsterControllerTest {
     }
 
     @Test
+    void updateMonsterName() throws Exception {
+        //given
+        authenticated();
+        MonsterResponseDto responseDto = MonsterResponseDto.builder()
+                .monster(MonsterVo.builder().monsterImage("monster.img").monsterName("testmonster").build())
+                .responseMessage("changeMonsterName")
+                .statusCode(200).build();
+
+        given(monsterService.updateMonsterName(eq(testUser), any(MonsterSelectRequestDto.class)))
+                .willReturn(responseDto);
+
+        String json = "{\n" +
+                "  \"monsterId\": 1,\n" +
+                "  \"monsterName\": \"mycat\"\n" +
+                "}";
+
+        //when
+        mvc.perform(patch("/monster/nameChange")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andDo(print())
+                //then
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.monster.monsterImage").value("monster.img"))
+                .andExpect(jsonPath("$.monster.monsterName").value("testmonster"))
+                .andExpect(jsonPath("$.responseMessage").value("changeMonsterName"))
+                .andExpect(jsonPath("$.statusCode").value("200"));
+
+        verify(monsterService).updateMonsterName(eq(testUser), any(MonsterSelectRequestDto.class));
+    }
+
+    @Test
     void getMonsterCollection() throws Exception {
         //given
         authenticated();
