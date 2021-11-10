@@ -7,6 +7,7 @@ import com.sollertia.habit.global.exception.habit.HabitTypeNotFoundException;
 import com.sollertia.habit.global.exception.monster.InvalidLevelException;
 import com.sollertia.habit.global.exception.monster.MonsterNotFoundException;
 import com.sollertia.habit.global.exception.monster.NotReachedMaximumLevelException;
+import com.sollertia.habit.global.exception.preset.PreSetNotFoundException;
 import com.sollertia.habit.global.exception.user.InvalidSocialNameException;
 import com.sollertia.habit.global.exception.user.NaverOauth2Exception;
 import com.sollertia.habit.global.exception.user.OAuthProviderMissMatchException;
@@ -24,6 +25,11 @@ import java.time.format.DateTimeParseException;
 
 @RestControllerAdvice
 public class GlobalController {
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponseDto> PreSetNotFoundExceptionHandler(PreSetNotFoundException exception) {
+        return new ResponseEntity<>(ErrorResponseDto.badRequest(exception.getMessage()), HttpStatus.BAD_REQUEST);
+    }
 
     @ExceptionHandler
     public ResponseEntity<ErrorResponseDto> MethodArgumentNotValidExceptionHandler(MethodArgumentNotValidException exception) {
