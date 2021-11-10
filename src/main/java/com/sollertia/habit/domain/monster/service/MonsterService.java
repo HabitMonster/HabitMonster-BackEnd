@@ -39,7 +39,7 @@ public class MonsterService {
 //        }
         return MonsterListResponseDto.builder()
                 .monsters(MonsterSummaryVo.listFromMonsterList(monsterDatabases))
-                .responseMessage("LV1 몬스터를 불러오는데 성공했습니다.")
+                .responseMessage("LV1 Monster Query Completed")
                 .statusCode(200)
                 .build();
     }
@@ -58,7 +58,7 @@ public class MonsterService {
 
         return MonsterResponseDto.builder()
                 .monster(monsterVo)
-                .responseMessage("몬스터가 선택되었습니다.")
+                .responseMessage("Selected Monster")
                 .statusCode(200)
                 .build();
     }
@@ -75,7 +75,7 @@ public class MonsterService {
 
         return MonsterResponseDto.builder()
                 .monster(monsterVo)
-                .responseMessage("changeMonsterName")
+                .responseMessage("Change Monster Name")
                 .statusCode(200)
                 .build();
     }
@@ -92,7 +92,7 @@ public class MonsterService {
         return MonsterResponseDto.builder()
                 .monster(MonsterVo.of(monster))
                 .statusCode(200)
-                .responseMessage("사용자 몬스터 조회 성공")
+                .responseMessage("User Monster Query Completed")
                 .build();
     }
 
@@ -109,15 +109,15 @@ public class MonsterService {
 
     private MonsterDatabase getMonsterDatabaseById(Long id) {
         return monsterDatabaseRepository.findById(id).orElseThrow(
-                () -> new MonsterNotFoundException("올바르지 않은 몬스터 ID입니다.")
+                () -> new MonsterNotFoundException("NotFound Monster Id")
         );
     }
 
     private Monster getMonsterByUser(User user) {
         if ( user.getMonster() == null ) {
-            throw new MonsterNotFoundException("아직 몬스터가 없는 사용자입니다.");
+            throw new MonsterNotFoundException("NotFound User of Selected Monster");
         }
         return monsterRepository.findById(user.getMonster().getId()).orElseThrow(
-                () -> new MonsterNotFoundException("아직 몬스터가 없는 사용자입니다."));
+                () -> new MonsterNotFoundException("NotFound User of Selected Monster"));
     }
 }

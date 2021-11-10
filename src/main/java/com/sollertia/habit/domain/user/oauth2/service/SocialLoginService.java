@@ -32,7 +32,7 @@ public class SocialLoginService {
         try {
             providerType = ProviderType.valueOf(socialName.toUpperCase());
         } catch (IllegalArgumentException exception) {
-            throw new InvalidSocialNameException("잘못된 소셜 로그인 타입입니다.");
+            throw new InvalidSocialNameException("Wrong Social Provide Type");
         }
         return loginUtilMap.get(providerType).getUserInfoByCode(authCode);
     }

@@ -85,7 +85,7 @@ class MonsterControllerTest {
         authenticated();
         List<MonsterSummaryVo> summaryVoList = new ArrayList<>();
         summaryVoList.add(MonsterSummaryVo.builder().monsterId(1L).monsterImage("monster.img").build());
-        MonsterListResponseDto responseDto = MonsterListResponseDto.builder().monsters(summaryVoList).responseMessage("LV1 몬스터를 불러오는데 성공했습니다.").statusCode(200).build();
+        MonsterListResponseDto responseDto = MonsterListResponseDto.builder().monsters(summaryVoList).responseMessage("LV1 Monster Query Completed").statusCode(200).build();
 
         given(monsterService.getAllMonsters(testUser))
                 .willReturn(responseDto);
@@ -96,7 +96,7 @@ class MonsterControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.monsters[0].monsterId").value("1"))
                 .andExpect(jsonPath("$.monsters[0].monsterImage").value("monster.img"))
-                .andExpect(jsonPath("$.responseMessage").value("LV1 몬스터를 불러오는데 성공했습니다."))
+                .andExpect(jsonPath("$.responseMessage").value("LV1 Monster Query Completed"))
                 .andExpect(jsonPath("$.statusCode").value("200"));
 
         verify(monsterService).getAllMonsters(testUser);
@@ -108,7 +108,7 @@ class MonsterControllerTest {
         authenticated();
         MonsterResponseDto responseDto = MonsterResponseDto.builder()
                 .monster(MonsterVo.builder().monsterImage("monster.img").monsterName("testmonster").build())
-                .responseMessage("몬스터가 선택되었습니다.")
+                .responseMessage("Selected Monster")
                 .statusCode(200).build();
 
         given(monsterService.updateMonster(eq(testUser), any(MonsterSelectRequestDto.class)))
@@ -128,7 +128,7 @@ class MonsterControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.monster.monsterImage").value("monster.img"))
                 .andExpect(jsonPath("$.monster.monsterName").value("testmonster"))
-                .andExpect(jsonPath("$.responseMessage").value("몬스터가 선택되었습니다."))
+                .andExpect(jsonPath("$.responseMessage").value("Selected Monster"))
                 .andExpect(jsonPath("$.statusCode").value("200"));
 
         verify(monsterService).updateMonster(eq(testUser), any(MonsterSelectRequestDto.class));
@@ -140,7 +140,7 @@ class MonsterControllerTest {
         authenticated();
         MonsterResponseDto responseDto = MonsterResponseDto.builder()
                 .monster(MonsterVo.builder().monsterImage("monster.img").monsterName("testmonster").build())
-                .responseMessage("changeMonsterName")
+                .responseMessage("Change Monster Name")
                 .statusCode(200).build();
 
         given(monsterService.updateMonsterName(eq(testUser), any(MonsterSelectRequestDto.class)))
@@ -160,7 +160,7 @@ class MonsterControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.monster.monsterImage").value("monster.img"))
                 .andExpect(jsonPath("$.monster.monsterName").value("testmonster"))
-                .andExpect(jsonPath("$.responseMessage").value("changeMonsterName"))
+                .andExpect(jsonPath("$.responseMessage").value("Change Monster Name"))
                 .andExpect(jsonPath("$.statusCode").value("200"));
 
         verify(monsterService).updateMonsterName(eq(testUser), any(MonsterSelectRequestDto.class));
@@ -172,7 +172,7 @@ class MonsterControllerTest {
         authenticated();
         List<MonsterSummaryVo> summaryVoList = new ArrayList<>();
         summaryVoList.add(MonsterSummaryVo.builder().monsterId(1L).monsterImage("monster.img").build());
-        MonsterListResponseDto responseDto = MonsterListResponseDto.builder().monsters(summaryVoList).responseMessage("몬스터 컬렉션 조회 성공").statusCode(200).build();
+        MonsterListResponseDto responseDto = MonsterListResponseDto.builder().monsters(summaryVoList).responseMessage("Monster Collection Query Completed").statusCode(200).build();
 
         given(monsterCollectionService.getMonsterCollection(testUser))
                 .willReturn(responseDto);
@@ -183,7 +183,7 @@ class MonsterControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.monsters[0].monsterId").value("1"))
                 .andExpect(jsonPath("$.monsters[0].monsterImage").value("monster.img"))
-                .andExpect(jsonPath("$.responseMessage").value("몬스터 컬렉션 조회 성공"))
+                .andExpect(jsonPath("$.responseMessage").value("Monster Collection Query Completed"))
                 .andExpect(jsonPath("$.statusCode").value("200"));
 
         verify(monsterCollectionService).getMonsterCollection(testUser);
@@ -195,7 +195,7 @@ class MonsterControllerTest {
         authenticated();
         MonsterResponseDto responseDto = MonsterResponseDto.builder()
                 .monster(MonsterVo.builder().monsterImage("monster.img").monsterName("testmonster").build())
-                .responseMessage("몬스터가 선택되었습니다.")
+                .responseMessage("Selected Monster")
                 .statusCode(200).build();
 
         given(monsterService.getMonsterResponseDtoFromUser(testUser))
@@ -208,7 +208,7 @@ class MonsterControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.monster.monsterImage").value("monster.img"))
                 .andExpect(jsonPath("$.monster.monsterName").value("testmonster"))
-                .andExpect(jsonPath("$.responseMessage").value("몬스터가 선택되었습니다."))
+                .andExpect(jsonPath("$.responseMessage").value("Selected Monster"))
                 .andExpect(jsonPath("$.statusCode").value("200"));
     }
 
@@ -216,7 +216,7 @@ class MonsterControllerTest {
     void getMonsterResponseDtoFromUseHasNotMonster() throws Exception {
         //given
         authenticated();
-        String errorMessage = "아직 몬스터가 없는 사용자입니다.";
+        String errorMessage = "NotFound User of Selected Monster";
         willThrow(new MonsterNotFoundException(errorMessage)).given(monsterService)
                         .getMonsterResponseDtoFromUser(testUser);
 

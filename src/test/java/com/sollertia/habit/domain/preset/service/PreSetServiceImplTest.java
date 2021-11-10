@@ -1,10 +1,9 @@
-package com.sollertia.habit.domain.preset.presetservice;
+package com.sollertia.habit.domain.preset.service;
 
 import com.sollertia.habit.domain.category.enums.Category;
 import com.sollertia.habit.domain.preset.dto.PreSetVo;
 import com.sollertia.habit.domain.preset.entity.PreSet;
 import com.sollertia.habit.domain.preset.repository.PreSetRepository;
-import com.sollertia.habit.global.exception.preset.PreSetNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,7 +16,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 

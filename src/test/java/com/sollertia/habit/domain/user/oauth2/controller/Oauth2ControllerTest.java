@@ -99,7 +99,7 @@ class Oauth2ControllerTest {
                 .andExpect(jsonPath("$.refreshToken").value(mockRefreshToken))
                 .andExpect(jsonPath("$.accessToken").value(mockAccessToken))
                 .andExpect(jsonPath("$.statusCode").value(200))
-                .andExpect(jsonPath("$.responseMessage").value("토큰 발급 완료"));
+                .andExpect(jsonPath("$.responseMessage").value("Issuance completed Token"));
 
         verify(socialLoginService).getUserInfo(socialName, code);
         verify(oauth2UserService).putUserInto(mockUserInfo);
@@ -136,7 +136,7 @@ class Oauth2ControllerTest {
                 .andExpect(jsonPath("$.refreshToken").value(mockRefreshToken))
                 .andExpect(jsonPath("$.accessToken").value(mockAccessToken))
                 .andExpect(jsonPath("$.statusCode").value(200))
-                .andExpect(jsonPath("$.responseMessage").value("토큰 발급 완료"));
+                .andExpect(jsonPath("$.responseMessage").value("Issuance completed Token"));
 
         verify(socialLoginService).getUserInfo(socialName, code);
         verify(oauth2UserService).putUserInto(mockUserInfo);
@@ -149,7 +149,7 @@ class Oauth2ControllerTest {
         //given
         String code = "abcdefg1234567";
         String socialName = "none";
-        String errorMessage = "잘못된 소셜 로그인 타입입니다.";
+        String errorMessage = "Wrong Social Provide Type";
 
         willThrow(new InvalidSocialNameException(errorMessage)).given(socialLoginService)
                         .getUserInfo(socialName, code);

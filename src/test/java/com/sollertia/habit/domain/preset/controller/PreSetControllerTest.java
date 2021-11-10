@@ -1,13 +1,9 @@
 package com.sollertia.habit.domain.preset.controller;
 
 import com.sollertia.habit.domain.category.enums.Category;
-import com.sollertia.habit.domain.habit.dto.HabitDetailResponseDto;
-import com.sollertia.habit.domain.habit.dto.HabitDtoImpl;
-import com.sollertia.habit.domain.habit.dto.HabitTypeDto;
 import com.sollertia.habit.domain.habit.service.HabitServiceImpl;
-import com.sollertia.habit.domain.preset.dto.PreSetResponseDto;
 import com.sollertia.habit.domain.preset.dto.PreSetVo;
-import com.sollertia.habit.domain.preset.presetservice.PreSetServiceImpl;
+import com.sollertia.habit.domain.preset.service.PreSetServiceImpl;
 import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.domain.user.oauth2.userinfo.GoogleOauth2UserInfo;
 import com.sollertia.habit.domain.user.oauth2.userinfo.Oauth2UserInfo;
@@ -32,7 +28,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import static org.mockito.ArgumentMatchers.anyLong;
+
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -105,7 +101,7 @@ class PreSetControllerTest {
                 .andExpect(jsonPath("$.preSets[0].count").value(3))
                 .andExpect(jsonPath("$.preSets[0].category").value("Health"))
                 .andExpect(jsonPath("$.preSets[0].practiceDays").value("12345"))
-                .andExpect(jsonPath("$.responseMessage").value("PreSets Query completed"))
+                .andExpect(jsonPath("$.responseMessage").value("PreSets Query Completed"))
                 .andExpect(jsonPath("$.statusCode").value(200));
 
         verify(preSetService).categoryPreSetList(1L);
@@ -125,7 +121,7 @@ class PreSetControllerTest {
                 .andDo(print())
                 //then
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.responseMessage").value("Habit registered compeleted"))
+                .andExpect(jsonPath("$.responseMessage").value("Habit registered Completed"))
                 .andExpect(jsonPath("$.statusCode").value(200));
 
         verify(preSetService).getPreSet(1L);

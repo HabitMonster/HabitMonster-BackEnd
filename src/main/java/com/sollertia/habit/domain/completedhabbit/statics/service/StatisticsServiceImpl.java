@@ -42,7 +42,7 @@ public class StatisticsServiceImpl implements StatisticsService {
                 .succeededCount(succeededCount)
                 .failedCount(failedCount)
                 .totalCount(habitList.size())
-                .responseMessage("통계 페이지 습관 목록 조회 성공")
+                .responseMessage("Statistics Query Completed")
                 .statusCode(200)
                 .build();
     }

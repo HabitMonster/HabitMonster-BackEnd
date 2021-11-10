@@ -1,4 +1,4 @@
-package com.sollertia.habit.domain.preset.presetservice;
+package com.sollertia.habit.domain.preset.service;
 
 import com.sollertia.habit.domain.preset.dto.PreSetVo;
 

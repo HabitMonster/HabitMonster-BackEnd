@@ -12,19 +12,16 @@ import com.sollertia.habit.domain.history.entity.History;
 import com.sollertia.habit.domain.history.repository.HistoryRepository;
 import com.sollertia.habit.domain.monster.service.MonsterService;
 import com.sollertia.habit.domain.user.entity.User;
-import com.sollertia.habit.domain.user.repository.UserRepository;
 import com.sollertia.habit.domain.user.service.UserService;
 import com.sollertia.habit.global.exception.habit.HabitIdNotFoundException;
 import com.sollertia.habit.global.utils.DefaultResponseDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -66,7 +63,7 @@ public class HabitServiceImpl implements HabitService {
         return HabitDetailResponseDto.builder()
                 .habitDetail(build)
                 .statusCode(200)
-                .responseMessage("습관 생성 성공")
+                .responseMessage("Habit registered Completed")
                 .build();
 
     }
@@ -75,7 +72,7 @@ public class HabitServiceImpl implements HabitService {
     public HabitDetailResponseDto getHabitDetail(HabitTypeDto habitTypeDto, Long habitId) {
 
         HabitWithCounter foundHabit = habitWithCounterRepository.findById(habitId).orElseThrow(
-                () -> new HabitIdNotFoundException("Couldn't found Habit"));
+                () -> new HabitIdNotFoundException("NotFound Habit"));
 
         HabitDetail build = HabitDetail.builder()
                 .habitId(foundHabit.getId())
@@ -91,7 +88,7 @@ public class HabitServiceImpl implements HabitService {
 
         return HabitDetailResponseDto.builder()
                 .habitDetail(build)
-                .responseMessage("습관 상세 조회 성공")
+                .responseMessage("Habit Detail Query Completed")
                 .statusCode(200)
                 .build();
     }
@@ -100,7 +97,7 @@ public class HabitServiceImpl implements HabitService {
     public HabitCheckResponseDto checkHabit(HabitTypeDto habitTypeDto, Long habitId) {
 
         HabitWithCounter habitWithCounter = habitWithCounterRepository.findById(habitId).orElseThrow(
-                () -> new HabitIdNotFoundException("Couldn't find Habit"));
+                () -> new HabitIdNotFoundException("NotFound Habit"));
         Boolean isAchieve = habitWithCounter.check(1L);
         habitWithCounterRepository.save(habitWithCounter);
 
@@ -110,7 +107,7 @@ public class HabitServiceImpl implements HabitService {
         }
         return HabitCheckResponseDto.builder()
                 .statusCode(200)
-                .responseMessage("성공했습니다")
+                .responseMessage("Success")
                 .current(habitWithCounter.getCurrent())
                 .isAccomplished(isAchieve)
                 .build();
@@ -135,14 +132,14 @@ public class HabitServiceImpl implements HabitService {
     public DefaultResponseDto deleteHabit(HabitTypeDto habitTypeDto, Long habitId, User user) {
 
         HabitWithCounter habitWithCounter = habitWithCounterRepository.findById(habitId).orElseThrow(
-                () -> new HabitIdNotFoundException("can't find habit"));
+                () -> new HabitIdNotFoundException("NotFound habit"));
 
         user.getHabit().remove(habitWithCounter);
         habitRepository.delete(habitWithCounter);
 
         return DefaultResponseDto.builder()
                 .statusCode(200)
-                .responseMessage("습관 삭제 성공")
+                .responseMessage("Habit Delete Completed")
                 .build();
     }
 
@@ -165,7 +162,7 @@ public class HabitServiceImpl implements HabitService {
     public HabitSummaryListResponseDto getHabitSummaryListResponseDto(User user) {
         return HabitSummaryListResponseDto.builder()
                 .habits(getHabitSummaryList(user))
-                .responseMessage("사용자 습관 목록 조회 성공")
+                .responseMessage("Habit Detail List Query Completed")
                 .statusCode(200)
                 .build();
     }
