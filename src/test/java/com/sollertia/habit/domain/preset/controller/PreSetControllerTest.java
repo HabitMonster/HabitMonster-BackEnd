@@ -1,6 +1,8 @@
 package com.sollertia.habit.domain.preset.controller;
 
 import com.sollertia.habit.domain.category.enums.Category;
+import com.sollertia.habit.domain.habit.dto.HabitDtoImpl;
+import com.sollertia.habit.domain.habit.service.HabitServiceImpl;
 import com.sollertia.habit.domain.preset.dto.PreSetResponseDto;
 import com.sollertia.habit.domain.preset.dto.PreSetVo;
 import com.sollertia.habit.domain.preset.presetservice.PreSetServiceImpl;
@@ -52,6 +54,8 @@ class PreSetControllerTest {
     private AuthenticationManager authenticationManager;
     @MockBean
     private PreSetServiceImpl preSetService;
+    @MockBean
+    private HabitServiceImpl habitService;
 
     User testUser;
     UserDetailsImpl mockUserDetails;
@@ -82,7 +86,6 @@ class PreSetControllerTest {
         List<PreSetVo> list = new ArrayList<>();
         list.add(PreSetVo.builder().presetId(1L).categoryId(1L).title("title").description("description").
                 period(30).count(3).category(Category.Health).practiceDays("12345").build());
-        PreSetResponseDto responseDto = PreSetResponseDto.builder().preSets(list).responseMessage("PreSets Query completed").statusCode(200).build();
 
         given(preSetService.categoryPreSetList(anyLong())).willReturn(list);
         //when
@@ -96,7 +99,7 @@ class PreSetControllerTest {
                 .andExpect(jsonPath("$.preSets[0].description").value("description"))
                 .andExpect(jsonPath("$.preSets[0].period").value(30))
                 .andExpect(jsonPath("$.preSets[0].count").value(3))
-                .andExpect(jsonPath("$.preSets[0].category").value(Category.Health))
+                .andExpect(jsonPath("$.preSets[0].category").value("Health"))
                 .andExpect(jsonPath("$.preSets[0].practiceDays").value("12345"))
                 .andExpect(jsonPath("$.responseMessage").value("PreSets Query completed"))
                 .andExpect(jsonPath("$.statusCode").value(200));

@@ -18,7 +18,7 @@ public class PreSetServiceImpl implements PreSetService{
 
     @Override
     public  List<PreSetVo> categoryPreSetList(Long categoryId) {
-        return preSetRepository.findAllByCategoryId(categoryId).stream().map(PreSetVo::new)
+            return preSetRepository.findAllByCategoryId(categoryId).stream().map(PreSetVo::new)
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
