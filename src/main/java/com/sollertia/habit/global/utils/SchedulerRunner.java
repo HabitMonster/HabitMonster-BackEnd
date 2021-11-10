@@ -89,38 +89,34 @@ public class SchedulerRunner {
         habitRepository.deleteAllById(habitIdListForDelete);
     }
 
-    //@Scheduled(cron = "0 0 1 ? * SUN") // 매주 일요일 새벽 1시
-    //    @Scheduled(cron = "0 * * * * *")
-    @Scheduled(cron = "0 0 1 ? * WED") // 매주 수요일 새벽 1시
+    @Scheduled(cron = "0 0 1 ? * SUN")
     public void runWhenEveryWeek() {
-        // 매주 일요일 새벽 1시 CompletedHabit 에서 성공한 습관이 가장 많은 유저가 현재 수행 중인 습관을 등록
-        // 등록 전에 이미 등록되어있는 유저의 현재 습관 삭제
         makePreset();
     }
 
-    // 매주 일요일 새벽 1시 마다 현재
     private void makePreset() {
-        // 이미 등록되어진 유저의 습관을 삭제
+
         preSetService.deletePreSet();
 
-        // CompletedHabit에서 isSuccess=true 즉 습관 성공이 가장 많은 유저 가져오기
         Long userId = completedHabitRepository.maxIsSuccessTrueUser(PageRequest.of(0, 1));
         if (userId == null) {
             userId = 1L;
-        } // 회원탈퇴 유저일 수도 있기 때문에 admin id 1번 부여
-        // 위에서 가져온 유저의 현재 진행 중인 습관을 가져와서 PreSet에 넣기
+        }
+
         List<PreSetVo> habits = habitWithCounterRepository.findByUserId(userId).stream()
                 .map(PreSetVo::new).collect(Collectors.toCollection(ArrayList::new));
-        // 해당 유저의 현재 진행 중인 습관의 총 개수가 15개 미만이라면 admin 유저 사용
+
         if (habits.size() < 15) {
             habits.clear();
             habits = habitWithCounterRepository.findByUserId(1L).stream()
                     .map(PreSetVo::new).collect(Collectors.toCollection(ArrayList::new));
         }
+
         List<PreSet> preSets = new ArrayList<>();
         for (PreSetVo h : habits) {
             preSets.add(new PreSet(h));
         }
+
         preSetRepository.saveAll(preSets);
     }
 
