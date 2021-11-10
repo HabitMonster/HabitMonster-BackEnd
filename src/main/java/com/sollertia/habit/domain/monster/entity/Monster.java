@@ -75,4 +75,9 @@ public class Monster {
             setExpPoint((long) Level.MIN_EXP);
         }
     }
+    public Monster updateName(String name){
+        setName(name);
+        return this;
+    }
+
 }

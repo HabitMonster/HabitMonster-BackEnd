@@ -8,6 +8,7 @@ import com.sollertia.habit.domain.monster.enums.EvolutionGrade;
 import com.sollertia.habit.domain.monster.repository.MonsterDatabaseRepository;
 import com.sollertia.habit.domain.monster.repository.MonsterRepository;
 import com.sollertia.habit.domain.user.entity.User;
+import com.sollertia.habit.domain.user.repository.UserRepository;
 import com.sollertia.habit.domain.user.service.UserService;
 import com.sollertia.habit.global.exception.monster.MonsterNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ public class MonsterService {
 
     private final MonsterRepository monsterRepository;
     private final MonsterDatabaseRepository monsterDatabaseRepository;
+    private final UserRepository userRepository;
     private final UserService userService;
     private final MonsterCollectionService monsterCollectionService;
 
@@ -37,7 +39,7 @@ public class MonsterService {
 //        }
         return MonsterListResponseDto.builder()
                 .monsters(MonsterSummaryVo.listFromMonsterList(monsterDatabases))
-                .responseMessage("LV1 몬스터를 불러오는데 성공했습니다.")
+                .responseMessage("LV1 Monster Query Completed")
                 .statusCode(200)
                 .build();
     }
@@ -56,7 +58,24 @@ public class MonsterService {
 
         return MonsterResponseDto.builder()
                 .monster(monsterVo)
-                .responseMessage("몬스터가 선택되었습니다.")
+                .responseMessage("Selected Monster")
+                .statusCode(200)
+                .build();
+    }
+
+    @Transactional
+    public MonsterResponseDto updateMonsterName(User user,
+                                            MonsterSelectRequestDto requestDto) {
+        Monster monster = monsterRepository.findByUserId(user.getId()).orElseThrow(
+                () -> new MonsterNotFoundException("NotFound Monster")
+        );
+        monster = monster.updateName(requestDto.getMonsterName());
+
+        MonsterVo monsterVo = MonsterVo.of(monster);
+
+        return MonsterResponseDto.builder()
+                .monster(monsterVo)
+                .responseMessage("Change Monster Name")
                 .statusCode(200)
                 .build();
     }
@@ -73,7 +92,7 @@ public class MonsterService {
         return MonsterResponseDto.builder()
                 .monster(MonsterVo.of(monster))
                 .statusCode(200)
-                .responseMessage("사용자 몬스터 조회 성공")
+                .responseMessage("User Monster Query Completed")
                 .build();
     }
 
@@ -90,12 +109,15 @@ public class MonsterService {
 
     private MonsterDatabase getMonsterDatabaseById(Long id) {
         return monsterDatabaseRepository.findById(id).orElseThrow(
-                () -> new MonsterNotFoundException("올바르지 않은 몬스터 ID입니다.")
+                () -> new MonsterNotFoundException("NotFound Monster Id")
         );
     }
 
     private Monster getMonsterByUser(User user) {
-        return monsterRepository.findByUserId(user.getId()).orElseThrow(
-                () -> new MonsterNotFoundException("아직 몬스터가 없는 사용자입니다."));
+        if ( user.getMonster() == null ) {
+            throw new MonsterNotFoundException("NotFound User of Selected Monster");
+        }
+        return monsterRepository.findById(user.getMonster().getId()).orElseThrow(
+                () -> new MonsterNotFoundException("NotFound User of Selected Monster"));
     }
 }

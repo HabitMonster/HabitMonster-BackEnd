@@ -1,8 +1,9 @@
-package com.sollertia.habit.domain.preset.presetservice;
+package com.sollertia.habit.domain.preset.service;
 
 
-import com.sollertia.habit.domain.preset.repository.PreSetRepository;
 import com.sollertia.habit.domain.preset.dto.PreSetVo;
+import com.sollertia.habit.domain.preset.repository.PreSetRepository;
+import com.sollertia.habit.global.exception.preset.PreSetNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,13 +20,13 @@ public class PreSetServiceImpl implements PreSetService{
 
     @Override
     public  List<PreSetVo> categoryPreSetList(Long categoryId) {
-        return preSetRepository.findAllByCategoryId(categoryId).stream().map(PreSetVo::new)
+            return preSetRepository.findAllByCategoryId(categoryId).stream().map(PreSetVo::new)
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
     @Override
     public PreSetVo getPreSet(Long preSetId) {
-        return preSetRepository.findById(preSetId).map(PreSetVo::new).orElseThrow(()->new IllegalArgumentException("PreSet없음"));
+        return preSetRepository.findById(preSetId).map(PreSetVo::new).orElseThrow(()->new PreSetNotFoundException("NotFound PreSet"));
     }
 
     @Transactional

@@ -31,13 +31,27 @@ public class JwtController {
             Optional<User> user = userRepository.findBySocialId(jwtTokenProvider.getSocialId(refreshToken));
             if (user.isPresent()) {
                 String accessToken = jwtTokenProvider.responseAccessToken(user.get());
-                return ResponseEntity.ok().body(JwtResponseDto.builder().responseMessage("accessToken 발급완료!").statusCode(200).accessToken(accessToken).isFirstLogin(false).build());
+                return ResponseEntity.ok().body(JwtResponseDto.builder().responseMessage("Issuance completed accessToken").
+                        statusCode(200).accessToken(accessToken).isFirstLogin(false).build());
             } else {
-                throw new UserIdNotFoundException("User가 존재하지 않습니다.");
+                throw new UserIdNotFoundException("NotFound User");
             }
         } else {
-            throw new JwtException("RefreshToken이 존재하지 않습니다.");
+            throw new JwtException("NotFound RefreshToken");
         }
 
     }
+
+    @GetMapping("/user/check")
+    public ResponseEntity<JwtResponseDto> userCheck(HttpServletRequest request) {
+        String accessToken = jwtTokenProvider.requestAccessToken(request);
+
+        if (accessToken != null) {
+            return ResponseEntity.ok().body(JwtResponseDto.builder().responseMessage("IsLogin True").
+                    statusCode(200).isFirstLogin(false).isLogin(true).build());
+        } else {
+            throw new JwtException("NotFound AccessToken");
+        }
+    }
+
 }

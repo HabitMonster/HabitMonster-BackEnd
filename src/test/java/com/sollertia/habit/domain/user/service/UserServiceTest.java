@@ -63,7 +63,7 @@ class UserServiceTest {
 
         //then
         assertThat(responseDto.getStatusCode()).isEqualTo(200);
-        assertThat(responseDto.getResponseMessage()).isEqualTo("사용자 정보 조회 성공");
+        assertThat(responseDto.getResponseMessage()).isEqualTo("User Info Query Completed");
         assertThat(responseDto.getUserInfo().getEmail()).isEqualTo(testUser.getEmail());
         assertThat(responseDto.getUserInfo().getUsername()).isEqualTo(testUser.getUsername());
         assertThat(responseDto.getUserInfo().getMonsterCode()).isEqualTo(testUser.getSocialId());

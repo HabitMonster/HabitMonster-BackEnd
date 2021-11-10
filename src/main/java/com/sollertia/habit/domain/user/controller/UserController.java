@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.validation.Valid;
+
 @RestController
 @RequiredArgsConstructor
 public class UserController {
@@ -31,7 +33,7 @@ public class UserController {
     @PatchMapping("/user/name")
     public UserInfoResponseDto updateUsername(
             @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @RequestBody UsernameUpdateRequestDto requestDto
+            @Valid @RequestBody UsernameUpdateRequestDto requestDto
     ) {
         return userService.updateUsername(userDetails.getUser(), requestDto);
     }

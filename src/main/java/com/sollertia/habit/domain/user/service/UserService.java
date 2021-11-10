@@ -22,7 +22,7 @@ public class UserService {
     @Transactional
     public User getUserById(Long id) {
         return userRepository.findById(id).orElseThrow(
-                () -> new UserIdNotFoundException("유저가 존재하지 않습니다.")
+                () -> new UserIdNotFoundException("NotFound User")
         );
     }
 
@@ -30,7 +30,7 @@ public class UserService {
         return UserInfoResponseDto.builder()
                 .userInfo(getUserInfoVo(user))
                 .statusCode(200)
-                .responseMessage("사용자 정보 조회 성공")
+                .responseMessage("User Info Query Completed")
                 .build();
     }
 
@@ -40,6 +40,7 @@ public class UserService {
                 .email(user.getEmail())
                 .username(user.getUsername())
                 .socialType(user.getProviderType())
+                .monsterName(user.getMonster().getName())
                 .build();
     }
 
@@ -55,7 +56,7 @@ public class UserService {
         return UserInfoResponseDto.builder()
                 .userInfo(getUserInfoVo(user))
                 .statusCode(200)
-                .responseMessage("사용자 이름 수정 성공")
+                .responseMessage("User Name Updated Completed")
                 .build();
     }
 }

@@ -1,4 +1,4 @@
-package com.sollertia.habit.domain.user.oauth2;
+package com.sollertia.habit.domain.user.oauth2.controller;
 
 
 import com.sollertia.habit.domain.user.entity.User;
@@ -12,6 +12,9 @@ import com.sollertia.habit.global.exception.user.InvalidSocialNameException;
 import com.sollertia.habit.global.utils.RedisUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.reflect.Whitebox;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -25,6 +28,7 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,6 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(controllers = Oauth2Controller.class)
 @AutoConfigureMockMvc(addFilters = false)
+@RunWith(PowerMockRunner.class)
 class Oauth2ControllerTest {
 
     @Autowired
@@ -63,6 +68,7 @@ class Oauth2ControllerTest {
         mockUserInfo = new GoogleOauth2UserInfo(attributes);
         testUser = User.create(mockUserInfo);
         mockUserInfo.putUser(testUser);
+        Whitebox.setInternalState(testUser, "createdAt", LocalDate.now());
     }
 
     @Test
@@ -93,7 +99,7 @@ class Oauth2ControllerTest {
                 .andExpect(jsonPath("$.refreshToken").value(mockRefreshToken))
                 .andExpect(jsonPath("$.accessToken").value(mockAccessToken))
                 .andExpect(jsonPath("$.statusCode").value(200))
-                .andExpect(jsonPath("$.responseMessage").value("토큰 발급 완료"));
+                .andExpect(jsonPath("$.responseMessage").value("Issuance completed Token"));
 
         verify(socialLoginService).getUserInfo(socialName, code);
         verify(oauth2UserService).putUserInto(mockUserInfo);
@@ -130,7 +136,7 @@ class Oauth2ControllerTest {
                 .andExpect(jsonPath("$.refreshToken").value(mockRefreshToken))
                 .andExpect(jsonPath("$.accessToken").value(mockAccessToken))
                 .andExpect(jsonPath("$.statusCode").value(200))
-                .andExpect(jsonPath("$.responseMessage").value("토큰 발급 완료"));
+                .andExpect(jsonPath("$.responseMessage").value("Issuance completed Token"));
 
         verify(socialLoginService).getUserInfo(socialName, code);
         verify(oauth2UserService).putUserInto(mockUserInfo);
@@ -143,7 +149,7 @@ class Oauth2ControllerTest {
         //given
         String code = "abcdefg1234567";
         String socialName = "none";
-        String errorMessage = "잘못된 소셜 로그인 타입입니다.";
+        String errorMessage = "Wrong Social Provide Type";
 
         willThrow(new InvalidSocialNameException(errorMessage)).given(socialLoginService)
                         .getUserInfo(socialName, code);

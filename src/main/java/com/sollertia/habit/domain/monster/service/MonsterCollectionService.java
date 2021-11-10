@@ -33,7 +33,7 @@ public class MonsterCollectionService {
         List<MonsterCollection> monsterCollectionList = monsterCollectionRepository.findAllByUser(user);
         return MonsterListResponseDto.builder()
                 .monsters(MonsterSummaryVo.listFromCollectionList(monsterCollectionList))
-                .responseMessage("몬스터 컬렉션 조회 성공")
+                .responseMessage("Monster Collection Query Completed")
                 .statusCode(200)
                 .build();
     }

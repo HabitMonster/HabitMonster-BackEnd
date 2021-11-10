@@ -6,6 +6,7 @@ import com.sollertia.habit.domain.monster.entity.MonsterCollection;
 import com.sollertia.habit.domain.user.enums.ProviderType;
 import com.sollertia.habit.domain.user.oauth2.userinfo.Oauth2UserInfo;
 import com.sollertia.habit.domain.userteam.entity.UserTeam;
+import com.sollertia.habit.global.utils.TimeStamped;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,7 +18,7 @@ import java.util.List;
 @Builder //Test용
 @Entity
 @Getter
-public class User {
+public class User extends TimeStamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

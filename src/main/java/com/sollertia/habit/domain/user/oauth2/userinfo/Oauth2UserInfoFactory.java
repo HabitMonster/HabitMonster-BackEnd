@@ -11,7 +11,7 @@ public class Oauth2UserInfoFactory {
             case GOOGLE: return new GoogleOauth2UserInfo(attributes);
             case NAVER: return new NaverOauth2UserInfo(attributes);
             case KAKAO: return new KakaoOauth2UserInfo(attributes);
-            default: throw new InvalidSocialNameException("잘못된 소셜 로그인 타입입니다.");
+            default: throw new InvalidSocialNameException("Wrong Social Provide Type");
         }
     }
 

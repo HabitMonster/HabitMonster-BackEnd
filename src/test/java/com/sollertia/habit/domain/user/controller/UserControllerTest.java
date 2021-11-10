@@ -83,7 +83,7 @@ class UserControllerTest {
         UserInfoResponseDto responseDto = UserInfoResponseDto.builder()
                 .userInfo(infoVo)
                 .statusCode(200)
-                .responseMessage("사용자 정보 조회 성공")
+                .responseMessage("User Info Query Completed")
                 .build();
         given(userService.getUserInfoResponseDto(testUser))
                 .willReturn(responseDto);
@@ -96,7 +96,7 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.userInfo.username").value(testUser.getUsername()))
                 .andExpect(jsonPath("$.userInfo.monsterCode").value(testUser.getSocialId()))
                 .andExpect(jsonPath("$.userInfo.socialType").value(testUser.getProviderType().toString()))
-                .andExpect(jsonPath("$.responseMessage").value("사용자 정보 조회 성공"))
+                .andExpect(jsonPath("$.responseMessage").value("User Info Query Completed"))
                 .andExpect(jsonPath("$.statusCode").value("200"));
 
         verify(userService).getUserInfoResponseDto(testUser);

@@ -11,4 +11,5 @@ public class UserInfoVo {
     private String username;
     private String email;
     private ProviderType socialType;
+    private String monsterName;
 }

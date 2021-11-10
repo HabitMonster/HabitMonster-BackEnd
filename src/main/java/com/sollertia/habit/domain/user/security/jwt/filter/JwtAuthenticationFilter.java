@@ -46,15 +46,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             } catch (ExpiredJwtException ex) {
                 messageBody = getBody(request);
-                createRequest(request, "accessToken 만료", request.getRequestURI(), messageBody, method);
+                createRequest(request, "accessToken Expired", request.getRequestURI(), messageBody, method, 400);
                 throw ex;
             } catch (SignatureException ex) {
                 messageBody = getBody(request);
-                createRequest(request, "accessToken 인증 오류", request.getRequestURI(), messageBody, method);
+                createRequest(request, "accessToken SignatureException", request.getRequestURI(), messageBody, method, 401);
                 throw ex;
             } catch (MalformedJwtException ex) {
                 messageBody = getBody(request);
-                createRequest(request, "accessToken 손상", request.getRequestURI(), messageBody, method);
+                createRequest(request, "accessToken Malformed", request.getRequestURI(), messageBody, method, 401);
                 throw ex;
             }
 
@@ -68,13 +68,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 } catch (Exception ex) {
                     messageBody = getBody(request);
-                    createRequest(request, "Redis 연결에 문제가 있습니다.", request.getRequestURI(), messageBody, method);
+                    createRequest(request, "UnConnected Redis", request.getRequestURI(), messageBody, method, 401);
                     throw ex;
                 }
 
                 if (!refreshSocialId.equals(jwtTokenProvider.getSocialId(refreshToken))) {
                     messageBody = getBody(request);
-                    createRequest(request, "RefreshToken 탈취 가능성이 있습니다. RefreshToken을 새롭게 발급 받으세요.", request.getRequestURI(), messageBody, method);
+                    createRequest(request, "refreshToken Error! Please Issuance New Token", request.getRequestURI(), messageBody, method, 401);
                     throw new JwtException("");
                 }
 
@@ -82,26 +82,27 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             } catch (ExpiredJwtException ex) {
                 messageBody = getBody(request);
-                createRequest(request, "refreshToken 만료", request.getRequestURI(), messageBody, method);
+                createRequest(request, "refreshToken Expired", request.getRequestURI(), messageBody, method, 400);
                 throw ex;
             } catch (SignatureException ex) {
                 messageBody = getBody(request);
-                createRequest(request, "refreshToken 인증 오류", request.getRequestURI(), messageBody, method);
+                createRequest(request, "refreshToken SignatureException", request.getRequestURI(), messageBody, method, 401);
                 throw ex;
             } catch (MalformedJwtException ex) {
                 messageBody = getBody(request);
-                createRequest(request, "refreshToken 손상", request.getRequestURI(), messageBody, method);
+                createRequest(request, "refreshToken Malformed", request.getRequestURI(), messageBody, method, 401);
                 throw ex;
             }
         }
 
         filterChain.doFilter(request,response);
 }
-    private void createRequest(HttpServletRequest request, String message, String clientRequestUri, String messageBody, String method) {
+    private void createRequest(HttpServletRequest request, String message, String clientRequestUri, String messageBody, String method, int code) {
         request.setAttribute("msg", message);
         request.setAttribute("clientRequestUri", clientRequestUri);
         request.setAttribute("messageBody", messageBody);
         request.setAttribute("method",method);
+        request.setAttribute("code",code);
     }
 
     private void checkToken(String token) {

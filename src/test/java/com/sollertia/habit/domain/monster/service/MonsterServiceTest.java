@@ -86,7 +86,7 @@ class MonsterServiceTest {
         assertThat(responseDto.getMonsters().get(1).getMonsterImage())
                 .isEqualTo(mockMonsterDatabaseList.get(1).getImageUrl());
         assertThat(responseDto.getStatusCode()).isEqualTo(200);
-        assertThat(responseDto.getResponseMessage()).isEqualTo("LV1 몬스터를 불러오는데 성공했습니다.");
+        assertThat(responseDto.getResponseMessage()).isEqualTo("LV1 Monster Query Completed");
 
         verify(monsterDatabaseRepository).findAllByGrade(EvolutionGrade.EV1);
     }
@@ -112,10 +112,30 @@ class MonsterServiceTest {
         assertThat(responseDto.getMonster().getMonsterLevel()).isEqualTo(1);
         assertThat(responseDto.getMonster().getMonsterExpPoint()).isEqualTo(0L);
         assertThat(responseDto.getStatusCode()).isEqualTo(200);
-        assertThat(responseDto.getResponseMessage()).isEqualTo("몬스터가 선택되었습니다.");
+        assertThat(responseDto.getResponseMessage()).isEqualTo("Selected Monster");
 
         verify(monsterDatabaseRepository).findById(1L);
         verify(userService).updateMonster(eq(testUser), any(Monster.class));
+    }
+
+    @Test
+    void updateMonsterName() {
+        //given
+        updatedTestUser.updateMonster(monster1);
+        MonsterSelectRequestDto mockRequestDto = new MonsterSelectRequestDto(1L, monster1.getName());
+        given(monsterRepository.findByUserId(any()))
+                .willReturn(Optional.ofNullable(monster1));
+
+        //when
+        MonsterResponseDto responseDto = monsterService.updateMonsterName(testUser, mockRequestDto);
+
+        //then
+        assertThat(responseDto.getMonster().getMonsterName())
+                .isEqualTo(mockRequestDto.getMonsterName());
+        assertThat(responseDto.getStatusCode()).isEqualTo(200);
+        assertThat(responseDto.getResponseMessage()).isEqualTo("Change Monster Name");
+
+        verify(monsterRepository).findByUserId(any());
     }
 
     @Test
@@ -147,7 +167,7 @@ class MonsterServiceTest {
         assertThat(responseDto.getMonster().getMonsterLevel()).isEqualTo(1);
         assertThat(responseDto.getMonster().getMonsterExpPoint()).isEqualTo(0L);
         assertThat(responseDto.getStatusCode()).isEqualTo(200);
-        assertThat(responseDto.getResponseMessage()).isEqualTo("몬스터가 선택되었습니다.");
+        assertThat(responseDto.getResponseMessage()).isEqualTo("Selected Monster");
 
         verify(monsterDatabaseRepository).findById(1L);
         verify(monsterRepository).findById(any());
@@ -219,7 +239,7 @@ class MonsterServiceTest {
         assertThat(responseDto.getMonster().getMonsterLevel()).isEqualTo(1);
         assertThat(responseDto.getMonster().getMonsterExpPoint()).isEqualTo(0L);
         assertThat(responseDto.getStatusCode()).isEqualTo(200);
-        assertThat(responseDto.getResponseMessage()).isEqualTo("사용자 몬스터 조회 성공");
+        assertThat(responseDto.getResponseMessage()).isEqualTo("User Monster Query Completed");
         verify(monsterRepository).findById(any());
     }
 

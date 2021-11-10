@@ -1,4 +1,4 @@
-package com.sollertia.habit.domain.user.oauth2;
+package com.sollertia.habit.domain.user.oauth2.service;
 
 import com.sollertia.habit.domain.user.oauth2.loginutil.GoogleSocialLoginUtil;
 import com.sollertia.habit.domain.user.oauth2.loginutil.KakaoSocialLoginUtil;

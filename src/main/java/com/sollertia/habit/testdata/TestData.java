@@ -43,15 +43,22 @@ public class TestData implements ApplicationRunner {
     private final HabitWithCounterRepository habitWithCounterRepository;
     private final HabitServiceImpl habitService;
     private final MonsterDatabaseRepository monsterDatabaseRepository;
+    private final CompletedHabitRepository completedHabitRepository;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        MonsterDatabase monsterDatabase1 = new MonsterDatabase(EvolutionGrade.EV1, "cat.img");
-        MonsterDatabase monsterDatabase2 = new MonsterDatabase(EvolutionGrade.EV1, "dog.img");
-        MonsterDatabase monsterDatabase3 = new MonsterDatabase(EvolutionGrade.EV1, "bird.img");
+        MonsterDatabase monsterDatabase1 = new MonsterDatabase(EvolutionGrade.EV1, "https://sollertia.s3.ap-northeast-2.amazonaws.com/image/Lv1_green.png");
+        MonsterDatabase monsterDatabase2 = new MonsterDatabase(EvolutionGrade.EV1, "https://sollertia.s3.ap-northeast-2.amazonaws.com/image/Lv1_pink.png");
+        MonsterDatabase monsterDatabase3 = new MonsterDatabase(EvolutionGrade.EV1, "https://sollertia.s3.ap-northeast-2.amazonaws.com/image/Lv1_blue.png");
+        MonsterDatabase monsterDatabase4 = new MonsterDatabase(EvolutionGrade.EV1, "https://sollertia.s3.ap-northeast-2.amazonaws.com/image/Lv1_yellow.png");
+        MonsterDatabase monsterDatabase5 = new MonsterDatabase(EvolutionGrade.EV1, "https://sollertia.s3.ap-northeast-2.amazonaws.com/image/Lv1_orange.png");
+        MonsterDatabase monsterDatabase6 = new MonsterDatabase(EvolutionGrade.EV1, "https://sollertia.s3.ap-northeast-2.amazonaws.com/image/Lv1_red.png");
         monsterDatabaseRepository.save(monsterDatabase1);
         monsterDatabaseRepository.save(monsterDatabase2);
         monsterDatabaseRepository.save(monsterDatabase3);
+        monsterDatabaseRepository.save(monsterDatabase4);
+        monsterDatabaseRepository.save(monsterDatabase5);
+        monsterDatabaseRepository.save(monsterDatabase6);
 
         User testUser = User.builder().socialId("1234G").username("tester").email("tester.test.com").providerType(ProviderType.GOOGLE).build();
         User testUser2 = User.builder().socialId("123456789G").username("tes").email("tester").providerType(ProviderType.GOOGLE).build();
