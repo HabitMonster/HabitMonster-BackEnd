@@ -43,7 +43,6 @@ public class TestData implements ApplicationRunner {
     private final HabitWithCounterRepository habitWithCounterRepository;
     private final HabitServiceImpl habitService;
     private final MonsterDatabaseRepository monsterDatabaseRepository;
-    private final CompletedHabitRepository completedHabitRepository;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {

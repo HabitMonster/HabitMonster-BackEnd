@@ -94,7 +94,7 @@ public class CompletedHabit extends TimeStamped {
         this.achievementPercentage = achievementPercentage;
     }
 
-    private static CompletedHabit of(Habit habit) {
+    public static CompletedHabit of(Habit habit) {
         CompletedHabit completedHabit = new CompletedHabit();
         completedHabit.setTitle(habit.getTitle());
         completedHabit.setAccomplishCounter(habit.getAccomplishCounter());
