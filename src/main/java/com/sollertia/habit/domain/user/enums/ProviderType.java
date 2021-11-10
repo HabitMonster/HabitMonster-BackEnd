@@ -4,7 +4,8 @@ public enum ProviderType {
 
     GOOGLE(AuthType.GOOGLE),
     KAKAO(AuthType.KAKAO),
-    NAVER(AuthType.NAVER);
+    NAVER(AuthType.NAVER),
+    NONE(null);
 
     private final String type;
 

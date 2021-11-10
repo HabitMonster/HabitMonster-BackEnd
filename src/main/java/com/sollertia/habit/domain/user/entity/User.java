@@ -12,6 +12,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor //Test용
@@ -77,6 +78,7 @@ public class User extends TimeStamped {
         newUser.setEmail(userInfo.getEmail());
         newUser.setUsername(userInfo.getName());
         newUser.setProviderType(userInfo.getProviderType());
+        newUser.habit = new ArrayList<>(); //builder 빼면 제거
         return newUser;
     }
 
