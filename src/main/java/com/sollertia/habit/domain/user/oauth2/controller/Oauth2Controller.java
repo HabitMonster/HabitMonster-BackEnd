@@ -24,20 +24,24 @@ public class Oauth2Controller {
     private final RedisUtil redisUtil;
 
     @GetMapping("/user/login/{socialName}")
-    public ResponseEntity<JwtResponseDto> login(@RequestParam(value = "code") String authCode,
+    public JwtResponseDto login(@RequestParam(value = "code") String authCode,
                                                 @PathVariable String socialName) {
 
         Oauth2UserInfo userInfo = socialLoginService.getUserInfo(socialName, authCode);
         userInfo = oauth2UserService.putUserInto(userInfo);
-
-        boolean isFirstLogin = userInfo.isFirstLogin();
         User user = userInfo.getUser();
 
         String accessToken =  jwtTokenProvider.responseAccessToken(user);
         String refreshToken = jwtTokenProvider.responseRefreshToken(user);
         redisUtil.setDataExpire(refreshToken, user.getSocialId(), JwtTokenProvider.REFRESH_TOKEN_USETIME / 1000L);
 
-        return ResponseEntity.ok().body(JwtResponseDto.builder().accessToken(accessToken).
-                createdAt(user.getCreatedAt().toString()).isFirstLogin(isFirstLogin).refreshToken(refreshToken).statusCode(200).responseMessage("Issuance completed Token").build());
+        return JwtResponseDto.builder()
+                .accessToken(accessToken)
+                .createdAt(user.getCreatedAt().toString())
+                .isFirstLogin(userInfo.isFirstLogin())
+                .refreshToken(refreshToken)
+                .statusCode(200)
+                .responseMessage("Issuance completed Token")
+                .build();
     }
 }
