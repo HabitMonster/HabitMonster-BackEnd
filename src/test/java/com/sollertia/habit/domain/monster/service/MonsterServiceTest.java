@@ -189,24 +189,6 @@ class MonsterServiceTest {
     }
 
     @Test
-    void getMonsterVo() {
-        //given
-        testUser.updateMonster(monster1);
-        given(monsterRepository.findByUserId(any()))
-                .willReturn(Optional.of(monster1));
-
-        //when
-        MonsterVo monsterVo = monsterService.getMonsterVo(testUser);
-
-        //then
-        assertThat(monsterVo.getMonsterName()).isEqualTo(testUser.getMonster().getName());
-        assertThat(monsterVo.getMonsterImage())
-                .isEqualTo(mockMonsterDatabaseList.get(0).getImageUrl());
-
-        verify(monsterRepository).findByUserId(any());
-    }
-
-    @Test
     void plusExpPoint() {
         //given
         testUser.updateMonster(monster1);

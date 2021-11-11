@@ -8,7 +8,6 @@ import com.sollertia.habit.domain.monster.enums.EvolutionGrade;
 import com.sollertia.habit.domain.monster.repository.MonsterDatabaseRepository;
 import com.sollertia.habit.domain.monster.repository.MonsterRepository;
 import com.sollertia.habit.domain.user.entity.User;
-import com.sollertia.habit.domain.user.repository.UserRepository;
 import com.sollertia.habit.domain.user.service.UserService;
 import com.sollertia.habit.global.exception.monster.MonsterNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -23,20 +22,11 @@ public class MonsterService {
 
     private final MonsterRepository monsterRepository;
     private final MonsterDatabaseRepository monsterDatabaseRepository;
-    private final UserRepository userRepository;
     private final UserService userService;
     private final MonsterCollectionService monsterCollectionService;
 
     public MonsterListResponseDto getAllMonsters(User user) {
         List<MonsterDatabase> monsterDatabases = monsterDatabaseRepository.findAllByGrade(EvolutionGrade.EV1);
-//        몬스터 빼는 로직
-//        if ( user.getMonster() != null ) {
-//            List<MonsterCollection> monsterCollectionList = monsterCollectionRepository.findAllByUser(user);
-//            for (MonsterCollection monsterCollection : monsterCollectionList) {
-//                monsterDatabases.remove(monsterCollection.getMonster().getMonsterDatabase());
-//            }
-//            monsterDatabases.remove(user.getMonster().getMonsterDatabase());
-//        }
         return MonsterListResponseDto.builder()
                 .monsters(MonsterSummaryVo.listFromMonsterList(monsterDatabases))
                 .responseMessage("LV1 Monster Query Completed")
@@ -66,11 +56,8 @@ public class MonsterService {
     @Transactional
     public MonsterResponseDto updateMonsterName(User user,
                                             MonsterSelectRequestDto requestDto) {
-        Monster monster = monsterRepository.findByUserId(user.getId()).orElseThrow(
-                () -> new MonsterNotFoundException("NotFound Monster")
-        );
+        Monster monster = getMonsterByUser(user);
         monster = monster.updateName(requestDto.getMonsterName());
-
         MonsterVo monsterVo = MonsterVo.of(monster);
 
         return MonsterResponseDto.builder()
@@ -81,15 +68,14 @@ public class MonsterService {
     }
 
     public MonsterResponseDto getMonsterResponseDtoFromUser(User user) {
-        Monster monster = getMonsterByUser(user);
         return MonsterResponseDto.builder()
-                .monster(MonsterVo.of(monster))
+                .monster(getMonsterVo(user))
                 .statusCode(200)
                 .responseMessage("User Monster Query Completed")
                 .build();
     }
 
-    public MonsterVo getMonsterVo(User user) {
+    private MonsterVo getMonsterVo(User user) {
         Monster monster = getMonsterByUser(user);
         return MonsterVo.of(monster);
     }
