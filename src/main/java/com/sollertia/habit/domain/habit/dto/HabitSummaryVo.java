@@ -14,6 +14,7 @@ import java.util.List;
 public class HabitSummaryVo {
     private Long habitId;
     private String title;
+    private String description;
     private String durationStart;
     private String durationEnd;
     private int count;
@@ -35,6 +36,7 @@ public class HabitSummaryVo {
         return HabitSummaryVo.builder()
                 .habitId(habit.getId())
                 .title(habit.getTitle())
+                .description(habit.getDescription())
                 .durationStart(habit.getDurationStart().toString())
                 .durationEnd(habit.getDurationEnd().toString())
                 .count(habit.getGoalCountInSession())
