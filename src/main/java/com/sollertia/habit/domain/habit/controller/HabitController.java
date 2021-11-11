@@ -1,10 +1,7 @@
 package com.sollertia.habit.domain.habit.controller;
 
 
-import com.sollertia.habit.domain.habit.dto.HabitDetailResponseDto;
-import com.sollertia.habit.domain.habit.dto.HabitDtoImpl;
-import com.sollertia.habit.domain.habit.dto.HabitSummaryListResponseDto;
-import com.sollertia.habit.domain.habit.dto.HabitTypeDto;
+import com.sollertia.habit.domain.habit.dto.*;
 import com.sollertia.habit.domain.habit.service.HabitServiceImpl;
 import com.sollertia.habit.domain.user.security.userdetail.UserDetailsImpl;
 import com.sollertia.habit.global.utils.DefaultResponseDto;
@@ -38,6 +35,15 @@ public class HabitController {
         HabitTypeDto habitTypeDto = new HabitTypeDto("counter", "specificDay");
 
         return habitService.getHabitDetail(habitTypeDto, habitId);
+    }
+
+    @ApiOperation(value = "습관 변경", notes = "title, description, count 변경 가능")
+    @PatchMapping("/habits/{habitId}")
+    public HabitDetailResponseDto updateHabit(@PathVariable Long habitId,
+                                              @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails,
+                                              @RequestBody HabitUpdateRequestDto habitUpdateRequestDto) {
+
+        return habitService.updateHabit(habitId, habitUpdateRequestDto);
     }
 
     @ApiOperation(value = "습관 삭제", notes = "성공 실패여부 반환")

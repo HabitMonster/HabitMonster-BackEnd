@@ -2,6 +2,7 @@ package com.sollertia.habit.domain.habit.entity;
 
 import com.sollertia.habit.domain.category.enums.Category;
 import com.sollertia.habit.domain.habit.dto.HabitDtoImpl;
+import com.sollertia.habit.domain.habit.dto.HabitUpdateRequestDto;
 import lombok.Getter;
 import com.sollertia.habit.domain.user.entity.User;
 import lombok.NoArgsConstructor;
@@ -25,6 +26,13 @@ public class HabitWithTimer extends Habit {
     @Override
     public int getCurrent() {
         return this.currentDuration;
+    }
+
+    @Override
+    public void updateHabit(HabitUpdateRequestDto habitUpdateRequestDto) {
+        this.updateTitle(habitUpdateRequestDto.getTitle());
+        this.updateDescription(habitUpdateRequestDto.getDescription());
+        this.goalDurationTime = habitUpdateRequestDto.getCount();
     }
 
     public void setGoalDurationTime(int goalDurationTime) {
