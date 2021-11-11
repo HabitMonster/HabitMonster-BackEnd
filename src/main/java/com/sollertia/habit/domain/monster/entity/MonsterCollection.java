@@ -40,7 +40,7 @@ public class MonsterCollection {
         this.level = level;
     }
 
-    private void setMonster(MonsterDatabase monsterDatabase) {
+    private void setMonsterDatabase(MonsterDatabase monsterDatabase) {
         this.monsterDatabase = monsterDatabase;
     }
 
@@ -50,7 +50,7 @@ public class MonsterCollection {
 
     public static MonsterCollection createMonsterCollection(Monster monster) {
         MonsterCollection monsterCollection = new MonsterCollection();
-        monsterCollection.setMonster(monster.getMonsterDatabase());
+        monsterCollection.setMonsterDatabase(monster.getMonsterDatabase());
         monsterCollection.setUser(monster.getUser());
         monsterCollection.setLevel(monster.getLevel());
         monsterCollection.setMonsterName(monster.getName());

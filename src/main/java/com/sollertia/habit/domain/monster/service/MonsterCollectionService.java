@@ -30,6 +30,9 @@ public class MonsterCollectionService {
 
     public MonsterCollectionResponseDto getMonsterCollection(User user) {
         List<MonsterCollection> monsterCollectionList = monsterCollectionRepository.findAllByUser(user);
+        if ( monsterCollectionList.size() <= 1 ) {
+            monsterCollectionList.clear();
+        }
         return MonsterCollectionResponseDto.builder()
                 .monsters(MonsterVo.listOf(monsterCollectionList))
                 .responseMessage("Monster Collection Query Completed")

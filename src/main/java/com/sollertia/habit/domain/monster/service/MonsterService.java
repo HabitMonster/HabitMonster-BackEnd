@@ -50,9 +50,9 @@ public class MonsterService {
         String monsterName = requestDto.getMonsterName();
         MonsterDatabase monsterDatabase = getMonsterDatabaseById(requestDto.getMonsterId());
 
-        monsterToCollectionIfExist(user);
         Monster newMonster = Monster.createNewMonster(monsterName, monsterDatabase);
         User updatedUser = userService.updateMonster(user, newMonster);
+        monsterCollectionService.addMonsterCollection(newMonster);
 
         MonsterVo monsterVo = MonsterVo.of(updatedUser.getMonster());
 
@@ -78,13 +78,6 @@ public class MonsterService {
                 .responseMessage("Change Monster Name")
                 .statusCode(200)
                 .build();
-    }
-
-    private void monsterToCollectionIfExist(User user) {
-        if ( user.getMonster() != null ) {
-            Monster monster = getMonsterByUser(user);
-            monsterCollectionService.addMonsterCollection(monster);
-        }
     }
 
     public MonsterResponseDto getMonsterResponseDtoFromUser(User user) {
