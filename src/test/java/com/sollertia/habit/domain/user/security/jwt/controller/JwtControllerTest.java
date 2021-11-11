@@ -91,7 +91,7 @@ class JwtControllerTest {
                 .andExpect(jsonPath("responseMessage").value("Issuance completed accessToken"))
                 .andExpect(jsonPath("statusCode").value(200))
                 .andExpect(jsonPath("accessToken").value(refreshToken))
-                .andExpect(jsonPath("isFirstLogin").value(false));
+                .andExpect(jsonPath("isFirstLogin").value(true));
     }
 
     @DisplayName("refreshToken 분실")
@@ -100,6 +100,8 @@ class JwtControllerTest {
 
         //given
         authenticated();
+        given(jwtTokenProvider.requestRefreshToken(any()))
+                .willReturn(null);
 
         //when
         mvc.perform(get("/user/loginCheck")
@@ -107,7 +109,7 @@ class JwtControllerTest {
                 //then
                 .andExpect(status().is4xxClientError())
                 .andExpect(jsonPath("responseMessage").value("NotFound RefreshToken"))
-                .andExpect(jsonPath("statusCode").value(400));
+                .andExpect(jsonPath("statusCode").value(401));
     }
 
     @DisplayName("User NotFound")
@@ -141,24 +143,8 @@ class JwtControllerTest {
                 //then
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("responseMessage").value("IsLogin True"))
-                .andExpect(jsonPath("isFirstLogin").value(false))
+                .andExpect(jsonPath("isFirstLogin").value(true))
                 .andExpect(jsonPath("isLogin").value(true))
                 .andExpect(jsonPath("statusCode").value(200));
-    }
-
-    @DisplayName("NotFound AccessToken")
-    @Test
-    void userLoginCheckNotFoundAccessToken() throws Exception {
-
-        //given
-        authenticated();
-
-        //when
-        mvc.perform(get("/user/check")
-                        .header("A-AUTH-TOKEN",accessToken)).andDo(print())
-                //then
-                .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("responseMessage").value("NotFound AccessToken"))
-                .andExpect(jsonPath("statusCode").value(400));
     }
 }

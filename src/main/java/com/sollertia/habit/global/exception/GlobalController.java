@@ -48,7 +48,7 @@ public class GlobalController {
 
     @ExceptionHandler
     public ResponseEntity<ErrorResponseDto> globalJwtExceptionHandler(JwtException exception) {
-        return new ResponseEntity<>(ErrorResponseDto.badRequest(exception.getMessage()), HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(ErrorResponseDto.unauthorized(exception.getMessage()), HttpStatus.UNAUTHORIZED);
     }
 
 //    @ExceptionHandler

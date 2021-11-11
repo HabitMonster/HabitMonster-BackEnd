@@ -25,7 +25,11 @@ public class Oauth2UserService {
     private Oauth2UserInfo updateUserInfo(Oauth2UserInfo userInfo) {
         Optional<User> optionalUser = userRepository.findBySocialId(userInfo.getId());
         if ( optionalUser.isPresent() ) {
-            userInfo.putUser(optionalUser.get());
+            User user = optionalUser.get();
+            if ( user.getMonster() == null ) {
+                userInfo.toFirstLogin();
+            }
+            userInfo.putUser(user);
         } else {
             userInfo.putUser(createUser(userInfo));
             userInfo.toFirstLogin();

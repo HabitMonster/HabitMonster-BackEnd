@@ -74,7 +74,7 @@ class Oauth2UserServiceTest {
         assertThat(oauth2UserInfo.getName()).isEqualTo(googleUserInfo.getName());
         assertThat(oauth2UserInfo.getId()).isEqualTo(googleUserInfo.getId());
         assertThat(oauth2UserInfo.getProviderType()).isEqualTo(ProviderType.GOOGLE);
-        assertThat(oauth2UserInfo.isFirstLogin()).isFalse();
+        assertThat(oauth2UserInfo.isFirstLogin()).isTrue();
 
         verify(userRepository).findBySocialId(googleUser.getSocialId());
         verify(userRepository, never()).save(any(User.class));
