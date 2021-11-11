@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -99,17 +98,18 @@ public class HabitServiceImpl implements HabitService {
         HabitWithCounter habitWithCounter = habitWithCounterRepository.findById(habitId).orElseThrow(
                 () -> new HabitIdNotFoundException("NotFound Habit"));
         Boolean isAchieve = habitWithCounter.check(1L);
-        habitWithCounterRepository.save(habitWithCounter);
+        HabitWithCounter checkedHabit = habitWithCounterRepository.save(habitWithCounter);
+        HabitSummaryVo habitSummaryVo = HabitSummaryVo.of(checkedHabit);
 
         if (isAchieve) {
             plusExpPointAndMakeHistory(habitWithCounter);
             deleteHabitIfCompleteToday(habitWithCounter);
         }
+
         return HabitCheckResponseDto.builder()
                 .statusCode(200)
-                .responseMessage("Success")
-                .current(habitWithCounter.getCurrent())
-                .isAccomplished(isAchieve)
+                .responseMessage("Check Habit Completed")
+                .habit(habitSummaryVo)
                 .build();
 
     }
@@ -148,15 +148,9 @@ public class HabitServiceImpl implements HabitService {
     public List<HabitSummaryVo> getHabitSummaryList(User user) {
         LocalDate today = LocalDate.now();
         int day = today.getDayOfWeek().getValue();
-        List<HabitSummaryVo> habitSummaryList = new ArrayList<>();
 
-        List<Habit> habits = habitWithCounterRepository
-                .findTodayHabitListByUser(user, day, today);
-
-        for (Habit habit : habits) {
-            habitSummaryList.add(HabitSummaryVo.of((HabitWithCounter) habit));
-        }
-        return habitSummaryList;
+        List<Habit> habits = habitRepository.findTodayHabitListByUser(user, day, today);
+        return HabitSummaryVo.listOf(habits);
     }
 
     public HabitSummaryListResponseDto getHabitSummaryListResponseDto(User user) {

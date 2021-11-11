@@ -9,11 +9,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 @Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @SuperBuilder
 public class HabitCheckResponseDto extends DefaultResponseDto {
-    private int current;
-    private Boolean isAccomplished;
+    private HabitSummaryVo habit;
 }
