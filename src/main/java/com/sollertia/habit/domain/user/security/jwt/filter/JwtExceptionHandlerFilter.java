@@ -31,7 +31,7 @@ public class JwtExceptionHandlerFilter extends OncePerRequestFilter {
             String message = (String) request.getAttribute("msg");
             String body = (String) request.getAttribute("messageBody");
             String method = (String) request.getAttribute("method");
-            int code = (int) request.getAttribute("code");
+            Integer code = (Integer) request.getAttribute("code");
             Map<String, Object> bodyM = null;
             if(body != null && !body.isEmpty()){
                 ObjectMapper objectMapper = new ObjectMapper();
@@ -42,7 +42,7 @@ public class JwtExceptionHandlerFilter extends OncePerRequestFilter {
 
     }
 
-    private void responseExceptionMsg(HttpServletResponse response, String clientRequestUri, String msg, Map<String, Object> body, String method, int code) {
+    private void responseExceptionMsg(HttpServletResponse response, String clientRequestUri, String msg, Map<String, Object> body, String method, Integer code) {
         ObjectMapper objectMapper = new ObjectMapper();
         response.setContentType("application/json");
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
