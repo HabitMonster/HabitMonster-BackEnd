@@ -31,8 +31,12 @@ public class JwtController {
             Optional<User> user = userRepository.findBySocialId(jwtTokenProvider.getSocialId(refreshToken));
             if (user.isPresent()) {
                 String accessToken = jwtTokenProvider.responseAccessToken(user.get());
-                return ResponseEntity.ok().body(JwtResponseDto.builder().responseMessage("Issuance completed accessToken").
-                        statusCode(200).accessToken(accessToken).isFirstLogin(false).build());
+                return ResponseEntity.ok().body(JwtResponseDto.builder()
+                        .responseMessage("Issuance completed accessToken")
+                        .statusCode(200)
+                        .accessToken(accessToken)
+                        .isFirstLogin(false)
+                        .build());
             } else {
                 throw new UserIdNotFoundException("NotFound User");
             }
