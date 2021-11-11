@@ -3,6 +3,7 @@ package com.sollertia.habit.domain.habit.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sollertia.habit.domain.category.enums.Category;
 import com.sollertia.habit.domain.habit.dto.HabitDtoImpl;
+import com.sollertia.habit.domain.habit.dto.HabitUpdateRequestDto;
 import com.sollertia.habit.domain.habit.enums.HabitType;
 import com.sollertia.habit.domain.user.entity.User;
 import lombok.AccessLevel;
@@ -175,8 +176,15 @@ public abstract class Habit {
         return null;
     }
 
+    public abstract void updateHabit(HabitUpdateRequestDto habitUpdateRequestDto);
 
+    protected void updateTitle(String title) {
+        this.title = title;
+    }
 
+    protected void updateDescription(String description) {
+        this.description = description;
+    }
     public abstract Boolean check(Long value);
 
 

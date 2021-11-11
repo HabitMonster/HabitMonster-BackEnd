@@ -154,6 +154,36 @@ public class HabitServiceImpl implements HabitService {
         return HabitSummaryVo.listOf(habits);
     }
 
+    @Override
+    public HabitDetailResponseDto updateHabit(Long habitId, HabitUpdateRequestDto habitUpdateRequestDto) {
+
+        HabitWithCounter habit = habitWithCounterRepository.findById(habitId)
+                .orElseThrow(() -> new HabitIdNotFoundException("NotFound Habit"));
+
+        habit.updateHabit(habitUpdateRequestDto);
+
+        habitRepository.save(habit);
+
+        HabitDetail build = HabitDetail.builder()
+                .habitId(habit.getId())
+                .category(habit.getCategory().toString())
+                .count(habit.getGoalCountInSession())
+                .description(habit.getDescription())
+                .durationEnd(habit.getDurationEnd().toString())
+                .durationStart(habit.getDurationStart().toString())
+                .achievePercentage(habit.getAchievePercentage())
+                .current(habit.getCurrent())
+                .title(habit.getTitle())
+                .build();
+
+        return HabitDetailResponseDto.builder()
+                .habitDetail(build)
+                .statusCode(200)
+                .responseMessage("Habit updated")
+                .build();
+
+    }
+
     public HabitSummaryListResponseDto getHabitSummaryListResponseDto(User user) {
         return HabitSummaryListResponseDto.builder()
                 .habits(getHabitSummaryList(user))
