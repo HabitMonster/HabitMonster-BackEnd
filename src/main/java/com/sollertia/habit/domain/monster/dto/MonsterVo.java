@@ -1,8 +1,12 @@
 package com.sollertia.habit.domain.monster.dto;
 
 import com.sollertia.habit.domain.monster.entity.Monster;
+import com.sollertia.habit.domain.monster.entity.MonsterCollection;
 import lombok.Builder;
 import lombok.Getter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Builder
@@ -19,5 +23,21 @@ public class MonsterVo {
                 .monsterLevel(monster.getLevel().getValue())
                 .monsterExpPoint(monster.getExpPoint())
                 .build();
+    }
+
+    public static MonsterVo of(MonsterCollection monsterCollection) {
+        return MonsterVo.builder()
+                .monsterImage(monsterCollection.getMonsterDatabase().getImageUrl())
+                .monsterName(monsterCollection.getMonsterName())
+                .monsterLevel(monsterCollection.getLevel().getValue())
+                .build();
+    }
+
+    public static List<MonsterVo> listOf(List<MonsterCollection> monsterCollections) {
+        List<MonsterVo> monsterVoList = new ArrayList<>();
+        for (MonsterCollection monsterCollection : monsterCollections) {
+            monsterVoList.add(MonsterVo.of(monsterCollection));
+        }
+        return monsterVoList;
     }
 }

@@ -1,5 +1,6 @@
 package com.sollertia.habit.domain.monster.controller;
 
+import com.sollertia.habit.domain.monster.dto.MonsterCollectionResponseDto;
 import com.sollertia.habit.domain.monster.dto.MonsterListResponseDto;
 import com.sollertia.habit.domain.monster.dto.MonsterResponseDto;
 import com.sollertia.habit.domain.monster.dto.MonsterSelectRequestDto;
@@ -45,7 +46,7 @@ public class MonsterController {
 
     @ApiOperation(value = "몬스터 컬렉션 조회", notes = "사용자 몬스터 컬렉션 목록 반환")
     @GetMapping("/user/monsters")
-    public MonsterListResponseDto getMonsterCollection(
+    public MonsterCollectionResponseDto getMonsterCollection(
             @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return monsterCollectionService.getMonsterCollection(userDetails.getUser());
     }

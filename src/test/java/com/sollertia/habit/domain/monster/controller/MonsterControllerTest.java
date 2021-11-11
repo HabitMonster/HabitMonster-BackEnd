@@ -170,9 +170,12 @@ class MonsterControllerTest {
     void getMonsterCollection() throws Exception {
         //given
         authenticated();
-        List<MonsterSummaryVo> summaryVoList = new ArrayList<>();
-        summaryVoList.add(MonsterSummaryVo.builder().monsterId(1L).monsterImage("monster.img").build());
-        MonsterListResponseDto responseDto = MonsterListResponseDto.builder().monsters(summaryVoList).responseMessage("Monster Collection Query Completed").statusCode(200).build();
+        List<MonsterVo> monsterVoList = new ArrayList<>();
+        monsterVoList.add(MonsterVo.builder().monsterImage("monster.img").monsterLevel(1).monsterName("test").build());
+        MonsterCollectionResponseDto responseDto = MonsterCollectionResponseDto.builder()
+                .monsters(monsterVoList)
+                .responseMessage("Monster Collection Query Completed")
+                .statusCode(200).build();
 
         given(monsterCollectionService.getMonsterCollection(testUser))
                 .willReturn(responseDto);
@@ -181,10 +184,10 @@ class MonsterControllerTest {
                 .andDo(print())
                 //then
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.monsters[0].monsterId").value("1"))
-                .andExpect(jsonPath("$.monsters[0].monsterImage").value("monster.img"))
-                .andExpect(jsonPath("$.responseMessage").value("Monster Collection Query Completed"))
-                .andExpect(jsonPath("$.statusCode").value("200"));
+                .andExpect(jsonPath("$.monsters[0].monsterName").value(monsterVoList.get(0).getMonsterName()))
+                .andExpect(jsonPath("$.monsters[0].monsterImage").value(monsterVoList.get(0).getMonsterImage()))
+                .andExpect(jsonPath("$.responseMessage").value(responseDto.getResponseMessage()))
+                .andExpect(jsonPath("$.statusCode").value(responseDto.getStatusCode()));
 
         verify(monsterCollectionService).getMonsterCollection(testUser);
     }
