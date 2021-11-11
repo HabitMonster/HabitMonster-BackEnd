@@ -1,5 +1,6 @@
 package com.sollertia.habit.domain.user.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sollertia.habit.domain.habit.entity.Habit;
 import com.sollertia.habit.domain.monster.entity.Monster;
 import com.sollertia.habit.domain.monster.entity.MonsterCollection;
@@ -43,6 +44,8 @@ public class User extends TimeStamped {
     private List<MonsterCollection> monsterCollections;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @JoinColumn(name = "monster_id")
+    @JsonIgnore
     private Monster monster;
 
     public User() {
