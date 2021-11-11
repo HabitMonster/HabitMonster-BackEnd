@@ -57,7 +57,7 @@ public class HabitController {
     }
     @ApiOperation(value = "습관 체크", notes = "성공 실패여부 반환")
     @GetMapping("/habits/check/{habitId}")
-    public DefaultResponseDto checkHabit(@PathVariable Long habitId,
+    public HabitCheckResponseDto checkHabit(@PathVariable Long habitId,
                                          @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         HabitTypeDto habitTypeDto = new HabitTypeDto("counter", "specificDay");

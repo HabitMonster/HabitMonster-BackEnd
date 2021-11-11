@@ -60,7 +60,7 @@ public class HabitServiceImpl implements HabitService {
                 .build();
 
         return HabitDetailResponseDto.builder()
-                .habitDetail(build)
+                .habit(build)
                 .statusCode(200)
                 .responseMessage("Habit registered Completed")
                 .build();
@@ -87,7 +87,7 @@ public class HabitServiceImpl implements HabitService {
                 .build();
 
         return HabitDetailResponseDto.builder()
-                .habitDetail(build)
+                .habit(build)
                 .responseMessage("Habit Detail Query Completed")
                 .statusCode(200)
                 .build();
@@ -178,7 +178,7 @@ public class HabitServiceImpl implements HabitService {
                 .build();
 
         return HabitDetailResponseDto.builder()
-                .habitDetail(build)
+                .habit(build)
                 .statusCode(200)
                 .responseMessage("Habit updated")
                 .build();
