@@ -55,11 +55,11 @@ public class TestData implements ApplicationRunner {
         MonsterDatabase monsterDatabase9 = new MonsterDatabase(EvolutionGrade.EV4, "https://sollertia.s3.ap-northeast-2.amazonaws.com/image/banana_elephant_4.png");
         MonsterDatabase monsterDatabase10 = new MonsterDatabase(EvolutionGrade.EV5, "https://sollertia.s3.ap-northeast-2.amazonaws.com/image/banana_elephant_5.png");
 
-        Monster monster1 = Monster.createNewMonster("돼지1", monsterDatabase4);
-        Monster monster2 = Monster.createNewMonster("돼지2", monsterDatabase7);
-        Monster monster3 = Monster.createNewMonster("돼지3", monsterDatabase8);
-        Monster monster4 = Monster.createNewMonster("돼지4", monsterDatabase9);
-        Monster monster5 = Monster.createNewMonster("돼지5", monsterDatabase10);
+        Monster monster1 = Monster.createNewMonster("돼지", monsterDatabase4);
+        Monster monster2 = Monster.createNewMonster("돼지", monsterDatabase7);
+        Monster monster3 = Monster.createNewMonster("돼지", monsterDatabase8);
+        Monster monster4 = Monster.createNewMonster("돼지", monsterDatabase9);
+        Monster monster5 = Monster.createNewMonster("돼지", monsterDatabase10);
 
 
 
