@@ -44,20 +44,19 @@ public class HabitServiceImpl implements HabitService {
 
         //임시 수정, getGoalCount override해서 형변환 없이 리팩토링 하기
         HabitWithCounter habit = (HabitWithCounter) Habit.createHabit(habitTypeDto.getHabitType(), createHabitRequestDto, user);
-
-        habitRepository.save(habit);
+        HabitWithCounter savedHabit = (HabitWithCounter) habitRepository.save(habit);
 
         HabitDetail build = HabitDetail.builder()
-                .habitId(habit.getId())
-                .category(habit.getCategory().toString())
-                .count(habit.getGoalCountInSession())
-                .description(habit.getDescription())
-                .durationEnd(habit.getDurationEnd().toString())
-                .durationStart(habit.getDurationStart().toString())
-                .achievePercentage(habit.getAchievePercentage())
-                .practiceDays(habit.getPracticeDays())
-                .current(habit.getCurrent())
-                .title(habit.getTitle())
+                .habitId(savedHabit.getId())
+                .category(savedHabit.getCategory().toString())
+                .count(savedHabit.getGoalCountInSession())
+                .description(savedHabit.getDescription())
+                .durationEnd(savedHabit.getDurationEnd().toString())
+                .durationStart(savedHabit.getDurationStart().toString())
+                .achievePercentage(savedHabit.getAchievePercentage())
+                .practiceDays(savedHabit.getPracticeDays())
+                .current(savedHabit.getCurrent())
+                .title(savedHabit.getTitle())
                 .build();
 
         return HabitDetailResponseDto.builder()
