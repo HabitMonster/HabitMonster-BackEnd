@@ -1,5 +1,6 @@
 package com.sollertia.habit.domain.monster.service;
 
+import com.sollertia.habit.domain.monster.dto.MonsterCollectionResponseDto;
 import com.sollertia.habit.domain.monster.dto.MonsterListResponseDto;
 import com.sollertia.habit.domain.monster.entity.Monster;
 import com.sollertia.habit.domain.monster.entity.MonsterCollection;
@@ -83,7 +84,7 @@ class MonsterCollectionServiceTest {
                 .willReturn(mockMonsterCollectionList);
 
         //when
-        MonsterListResponseDto responseDto = monsterCollectionService.getMonsterCollection(testUser);
+        MonsterCollectionResponseDto responseDto = monsterCollectionService.getMonsterCollection(testUser);
 
         //then
         assertThat(responseDto.getMonsters().get(0).getMonsterImage())

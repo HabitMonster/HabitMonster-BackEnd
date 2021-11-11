@@ -1,8 +1,7 @@
 package com.sollertia.habit.domain.monster.service;
 
 
-import com.sollertia.habit.domain.monster.dto.MonsterListResponseDto;
-import com.sollertia.habit.domain.monster.dto.MonsterSummaryVo;
+import com.sollertia.habit.domain.monster.dto.*;
 import com.sollertia.habit.domain.monster.entity.Monster;
 import com.sollertia.habit.domain.monster.entity.MonsterCollection;
 import com.sollertia.habit.domain.monster.repository.MonsterCollectionRepository;
@@ -29,10 +28,10 @@ public class MonsterCollectionService {
 //        }
     }
 
-    public MonsterListResponseDto getMonsterCollection(User user) {
+    public MonsterCollectionResponseDto getMonsterCollection(User user) {
         List<MonsterCollection> monsterCollectionList = monsterCollectionRepository.findAllByUser(user);
-        return MonsterListResponseDto.builder()
-                .monsters(MonsterSummaryVo.listFromCollectionList(monsterCollectionList))
+        return MonsterCollectionResponseDto.builder()
+                .monsters(MonsterVo.listOf(monsterCollectionList))
                 .responseMessage("Monster Collection Query Completed")
                 .statusCode(200)
                 .build();
