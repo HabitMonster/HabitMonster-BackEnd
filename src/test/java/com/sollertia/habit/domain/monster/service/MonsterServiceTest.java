@@ -149,8 +149,6 @@ class MonsterServiceTest {
         updatedTestUser.updateMonster(monster2);
         given(monsterDatabaseRepository.findById(1L))
                 .willReturn(Optional.of(mockMonsterDatabaseList.get(1)));
-        given(monsterRepository.findByUserId(any()))
-                .willReturn(Optional.of(monster1));
         given(userService.updateMonster(eq(testUser), any(Monster.class)))
                 .willReturn(updatedTestUser);
         MonsterSelectRequestDto mockRequestDto = new MonsterSelectRequestDto(1L, monster2.getName());
@@ -170,7 +168,7 @@ class MonsterServiceTest {
         assertThat(responseDto.getResponseMessage()).isEqualTo("Selected Monster");
 
         verify(monsterDatabaseRepository).findById(1L);
-        verify(monsterRepository).findByUserId(any());
+        verify(monsterCollectionService).addMonsterCollection(any(Monster.class));
         verify(userService).updateMonster(eq(testUser), any(Monster.class));
     }
 
