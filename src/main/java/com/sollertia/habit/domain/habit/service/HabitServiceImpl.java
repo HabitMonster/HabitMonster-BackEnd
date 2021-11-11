@@ -173,6 +173,7 @@ public class HabitServiceImpl implements HabitService {
                 .durationStart(habit.getDurationStart().toString())
                 .achievePercentage(habit.getAchievePercentage())
                 .current(habit.getCurrent())
+                .practiceDays(habit.getPracticeDays())
                 .title(habit.getTitle())
                 .build();
 
