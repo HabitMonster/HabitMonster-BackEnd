@@ -8,9 +8,12 @@ import com.sollertia.habit.domain.habit.dto.HabitTypeDto;
 import com.sollertia.habit.domain.habit.entity.Habit;
 import com.sollertia.habit.domain.habit.service.HabitServiceImpl;
 import com.sollertia.habit.domain.monster.entity.Monster;
+import com.sollertia.habit.domain.monster.entity.MonsterCollection;
 import com.sollertia.habit.domain.monster.entity.MonsterDatabase;
 import com.sollertia.habit.domain.monster.enums.EvolutionGrade;
+import com.sollertia.habit.domain.monster.repository.MonsterCollectionRepository;
 import com.sollertia.habit.domain.monster.repository.MonsterDatabaseRepository;
+import com.sollertia.habit.domain.monster.repository.MonsterRepository;
 import com.sollertia.habit.domain.preset.dto.PreSetVo;
 import com.sollertia.habit.domain.preset.enums.PreSet;
 import com.sollertia.habit.domain.preset.repository.PreSetRepository;
@@ -36,6 +39,8 @@ public class TestData implements ApplicationRunner {
     private final HabitServiceImpl habitService;
     private final MonsterDatabaseRepository monsterDatabaseRepository;
     private final CompletedHabitRepository completedHabitRepository;
+    private final MonsterCollectionRepository monsterCollectionRepository;
+    private final MonsterRepository monsterRepository;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
@@ -45,12 +50,33 @@ public class TestData implements ApplicationRunner {
         MonsterDatabase monsterDatabase4 = new MonsterDatabase(EvolutionGrade.EV1, "https://sollertia.s3.ap-northeast-2.amazonaws.com/image/Lv1_yellow.png");
         MonsterDatabase monsterDatabase5 = new MonsterDatabase(EvolutionGrade.EV1, "https://sollertia.s3.ap-northeast-2.amazonaws.com/image/Lv1_orange.png");
         MonsterDatabase monsterDatabase6 = new MonsterDatabase(EvolutionGrade.EV1, "https://sollertia.s3.ap-northeast-2.amazonaws.com/image/Lv1_red.png");
+        MonsterDatabase monsterDatabase7 = new MonsterDatabase(EvolutionGrade.EV2, "https://sollertia.s3.ap-northeast-2.amazonaws.com/image/banana_elephant_2.png");
+        MonsterDatabase monsterDatabase8 = new MonsterDatabase(EvolutionGrade.EV3, "https://sollertia.s3.ap-northeast-2.amazonaws.com/image/banana_elephant_3.png");
+        MonsterDatabase monsterDatabase9 = new MonsterDatabase(EvolutionGrade.EV4, "https://sollertia.s3.ap-northeast-2.amazonaws.com/image/banana_elephant_4.png");
+        MonsterDatabase monsterDatabase10 = new MonsterDatabase(EvolutionGrade.EV5, "https://sollertia.s3.ap-northeast-2.amazonaws.com/image/banana_elephant_5.png");
+
+        Monster monster1 = Monster.createNewMonster("돼지1", monsterDatabase4);
+        Monster monster2 = Monster.createNewMonster("돼지2", monsterDatabase7);
+        Monster monster3 = Monster.createNewMonster("돼지3", monsterDatabase8);
+        Monster monster4 = Monster.createNewMonster("돼지4", monsterDatabase9);
+        Monster monster5 = Monster.createNewMonster("돼지5", monsterDatabase10);
+
+
+
         monsterDatabaseRepository.save(monsterDatabase1);
         monsterDatabaseRepository.save(monsterDatabase2);
         monsterDatabaseRepository.save(monsterDatabase3);
         monsterDatabaseRepository.save(monsterDatabase4);
         monsterDatabaseRepository.save(monsterDatabase5);
         monsterDatabaseRepository.save(monsterDatabase6);
+        monsterDatabaseRepository.save(monsterDatabase7);
+        monsterDatabaseRepository.save(monsterDatabase8);
+        monsterDatabaseRepository.save(monsterDatabase9);
+        monsterDatabaseRepository.save(monsterDatabase10);
+
+        MonsterCollection monsterCollection;
+
+
 
         User testUser = User.builder().socialId("1234G").username("tester").email("tester.test.com").providerType(ProviderType.GOOGLE).build();
         userRepository.save(testUser);
@@ -59,6 +85,33 @@ public class TestData implements ApplicationRunner {
         Monster monster = Monster.createNewMonster("초록이", monsterDatabase1);
         user.updateMonster(monster);
         user = userRepository.save(user);
+        user.updateMonster(monster1);
+        user = userRepository.save(user);
+        monsterRepository.save(monster1);
+        monsterCollection = MonsterCollection.createMonsterCollection(monster1);
+        monsterCollectionRepository.save(monsterCollection);
+        user.updateMonster(monster2);
+        user = userRepository.save(user);
+        monsterRepository.save(monster2);
+        monsterCollection = MonsterCollection.createMonsterCollection(monster2);
+        monsterCollectionRepository.save(monsterCollection);
+        user.updateMonster(monster3);
+        user = userRepository.save(user);
+        monsterRepository.save(monster3);
+        monsterCollection = MonsterCollection.createMonsterCollection(monster3);
+        monsterCollectionRepository.save(monsterCollection);
+        user.updateMonster(monster4);
+        user = userRepository.save(user);
+        monsterRepository.save(monster4);
+        monsterCollection = MonsterCollection.createMonsterCollection(monster4);
+        monsterCollectionRepository.save(monsterCollection);
+        user.updateMonster(monster5);
+        user = userRepository.save(user);
+        monsterRepository.save(monster5);
+        monsterCollection = MonsterCollection.createMonsterCollection(monster5);
+        monsterCollectionRepository.save(monsterCollection);
+
+
 
         Calendar startDate = Calendar.getInstance();
         DateFormat form = new SimpleDateFormat("yyyy-MM-dd");
