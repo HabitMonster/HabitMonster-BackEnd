@@ -15,6 +15,6 @@ public interface HabitRepository<T extends Habit> extends JpaRepository<T, Long>
             "and h.durationStart <= :today " +
             "and h.durationEnd >= :today " +
             "and h.isAccomplishInSession = false " +
-            "order by h.durationStart desc")
+            "order by h.createdAt desc")
     List<Habit> findTodayHabitListByUser(User user, int day, LocalDate today);
 }

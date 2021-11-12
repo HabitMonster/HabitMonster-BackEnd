@@ -6,11 +6,13 @@ import com.sollertia.habit.domain.habit.dto.HabitDtoImpl;
 import com.sollertia.habit.domain.habit.dto.HabitUpdateRequestDto;
 import com.sollertia.habit.domain.habit.enums.HabitType;
 import com.sollertia.habit.domain.user.entity.User;
+import com.sollertia.habit.global.utils.TimeStamped;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -21,7 +23,7 @@ import java.util.stream.Stream;
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "DTYPE")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public abstract class Habit {
+public abstract class Habit extends TimeStamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
