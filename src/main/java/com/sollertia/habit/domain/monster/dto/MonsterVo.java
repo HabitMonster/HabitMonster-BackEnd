@@ -15,6 +15,7 @@ public class MonsterVo {
     private String monsterName;
     private Integer monsterLevel;
     private Long monsterExpPoint;
+    private String createAt;
 
     public static MonsterVo of(Monster monster) {
         return MonsterVo.builder()
@@ -30,6 +31,7 @@ public class MonsterVo {
                 .monsterImage(monsterCollection.getMonsterDatabase().getImageUrl())
                 .monsterName(monsterCollection.getMonsterName())
                 .monsterLevel(monsterCollection.getLevel().getValue())
+                .createAt(monsterCollection.getCreateAt())
                 .build();
     }
 

@@ -29,6 +29,8 @@ public class MonsterCollection {
 
     private String monsterName;
 
+    private String createAt;
+
     protected MonsterCollection() {
     }
 
@@ -36,9 +38,11 @@ public class MonsterCollection {
         this.user = user;
     }
 
-    public void setLevel(Level level) {
+    private void setLevel(Level level) {
         this.level = level;
     }
+
+    private void setCreateAt(String createAt){this.createAt=createAt;}
 
     private void setMonsterDatabase(MonsterDatabase monsterDatabase) {
         this.monsterDatabase = monsterDatabase;
@@ -54,6 +58,7 @@ public class MonsterCollection {
         monsterCollection.setUser(monster.getUser());
         monsterCollection.setLevel(monster.getLevel());
         monsterCollection.setMonsterName(monster.getName());
+        monsterCollection.setCreateAt(monster.getModifiedAt().toString());
         return monsterCollection;
     }
 }

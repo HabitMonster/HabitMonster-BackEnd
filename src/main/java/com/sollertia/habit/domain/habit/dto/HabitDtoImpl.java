@@ -1,6 +1,5 @@
 package com.sollertia.habit.domain.habit.dto;
 
-import com.sollertia.habit.domain.category.enums.Category;
 import lombok.*;
 
 @Getter
@@ -9,8 +8,6 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class HabitDtoImpl {
-
-
     private String title;
     private String description;
     private String durationStart;

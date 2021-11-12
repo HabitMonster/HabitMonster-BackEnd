@@ -2,6 +2,7 @@ package com.sollertia.habit.domain.monster.entity;
 
 import com.sollertia.habit.domain.user.enums.Level;
 import com.sollertia.habit.domain.user.entity.User;
+import com.sollertia.habit.global.utils.TimeStamped;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,7 +10,7 @@ import javax.persistence.*;
 
 @Entity
 @Getter
-public class Monster {
+public class Monster extends TimeStamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
