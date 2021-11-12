@@ -44,16 +44,16 @@ public class TestData implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        MonsterDatabase monsterDatabase1 = new MonsterDatabase(EvolutionGrade.EV1, "https://sollertia.s3.ap-northeast-2.amazonaws.com/image/Lv1_green.png");
-        MonsterDatabase monsterDatabase2 = new MonsterDatabase(EvolutionGrade.EV1, "https://sollertia.s3.ap-northeast-2.amazonaws.com/image/Lv1_pink.png");
-        MonsterDatabase monsterDatabase3 = new MonsterDatabase(EvolutionGrade.EV1, "https://sollertia.s3.ap-northeast-2.amazonaws.com/image/Lv1_blue.png");
-        MonsterDatabase monsterDatabase4 = new MonsterDatabase(EvolutionGrade.EV1, "https://sollertia.s3.ap-northeast-2.amazonaws.com/image/Lv1_yellow.png");
-        MonsterDatabase monsterDatabase5 = new MonsterDatabase(EvolutionGrade.EV1, "https://sollertia.s3.ap-northeast-2.amazonaws.com/image/Lv1_orange.png");
-        MonsterDatabase monsterDatabase6 = new MonsterDatabase(EvolutionGrade.EV1, "https://sollertia.s3.ap-northeast-2.amazonaws.com/image/Lv1_red.png");
-        MonsterDatabase monsterDatabase7 = new MonsterDatabase(EvolutionGrade.EV2, "https://sollertia.s3.ap-northeast-2.amazonaws.com/image/banana_elephant_2.png");
-        MonsterDatabase monsterDatabase8 = new MonsterDatabase(EvolutionGrade.EV3, "https://sollertia.s3.ap-northeast-2.amazonaws.com/image/banana_elephant_3.png");
-        MonsterDatabase monsterDatabase9 = new MonsterDatabase(EvolutionGrade.EV4, "https://sollertia.s3.ap-northeast-2.amazonaws.com/image/banana_elephant_4.png");
-        MonsterDatabase monsterDatabase10 = new MonsterDatabase(EvolutionGrade.EV5, "https://sollertia.s3.ap-northeast-2.amazonaws.com/image/banana_elephant_5.png");
+        MonsterDatabase monsterDatabase1 = new MonsterDatabase(EvolutionGrade.EV1, "https://imagedelivery.net/jUjG58o6h5HnOZzG5_k-ng/4d9d87f2-d9cd-40e6-a24d-6eb1f7f66c00/public");
+        MonsterDatabase monsterDatabase2 = new MonsterDatabase(EvolutionGrade.EV1, "https://imagedelivery.net/jUjG58o6h5HnOZzG5_k-ng/9172ee88-5731-447c-4bf6-a18e6af3f500/public");
+        MonsterDatabase monsterDatabase3 = new MonsterDatabase(EvolutionGrade.EV1, "https://imagedelivery.net/jUjG58o6h5HnOZzG5_k-ng/ac0ffaf5-4f0a-48d6-b2f3-81e30ef66600/public");
+        MonsterDatabase monsterDatabase4 = new MonsterDatabase(EvolutionGrade.EV1, "https://imagedelivery.net/jUjG58o6h5HnOZzG5_k-ng/63cbfc9c-6330-4dbe-189c-b8ed524d3600/public");
+        MonsterDatabase monsterDatabase5 = new MonsterDatabase(EvolutionGrade.EV1, "https://imagedelivery.net/jUjG58o6h5HnOZzG5_k-ng/586e5899-007e-4f72-c609-bf374fa6e400/public");
+        MonsterDatabase monsterDatabase6 = new MonsterDatabase(EvolutionGrade.EV1, "https://imagedelivery.net/jUjG58o6h5HnOZzG5_k-ng/0d835d6d-aa79-44ab-17ef-f8f6e1afd200/public");
+        MonsterDatabase monsterDatabase7 = new MonsterDatabase(EvolutionGrade.EV2, "https://imagedelivery.net/jUjG58o6h5HnOZzG5_k-ng/b905774e-cf05-47ab-0ea2-02347b7f9000/public");
+        MonsterDatabase monsterDatabase8 = new MonsterDatabase(EvolutionGrade.EV3, "https://imagedelivery.net/jUjG58o6h5HnOZzG5_k-ng/f57d212a-5321-45ae-2626-da36f0244a00/public");
+        MonsterDatabase monsterDatabase9 = new MonsterDatabase(EvolutionGrade.EV4, "https://imagedelivery.net/jUjG58o6h5HnOZzG5_k-ng/bcf97df5-0a07-4873-4fa9-4d3b2a1f7a00/public");
+        MonsterDatabase monsterDatabase10 = new MonsterDatabase(EvolutionGrade.EV5, "https://imagedelivery.net/jUjG58o6h5HnOZzG5_k-ng/ea39b10c-f522-4e6b-a754-28f17fa83d00/public");
 
         Monster monster1 = Monster.createNewMonster("돼지", monsterDatabase4);
         Monster monster2 = Monster.createNewMonster("돼지", monsterDatabase7);
