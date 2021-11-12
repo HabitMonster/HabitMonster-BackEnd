@@ -32,7 +32,7 @@ public class MonsterController {
     @PatchMapping("/user/monster")
     public MonsterResponseDto updateMonster(
             @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @Valid @RequestBody MonsterSelectRequestDto requestDto) {
+            @RequestBody MonsterSelectRequestDto requestDto) {
         return monsterService.updateMonster(userDetails.getUser(), requestDto);
     }
 
@@ -40,7 +40,7 @@ public class MonsterController {
     @PatchMapping("/monster/nameChange")
     public MonsterResponseDto updateMonsterName(
             @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @Valid @RequestBody MonsterSelectRequestDto requestDto) {
+            @RequestBody MonsterSelectRequestDto requestDto) {
         return monsterService.updateMonsterName(userDetails.getUser(), requestDto);
     }
 
