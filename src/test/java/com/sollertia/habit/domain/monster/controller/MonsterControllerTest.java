@@ -32,6 +32,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -183,7 +184,7 @@ class MonsterControllerTest {
         List<MonsterCollectionVo> monsterCollectionVoList = new ArrayList<>();
         List<MonsterDatabaseVo> monsterDatabases = new ArrayList<>();
         Monster mockMonster = mock(Monster.class);
-        given(mockMonster.getCreatedAt()).willReturn(LocalDate.now());
+        given(mockMonster.getCreatedAt()).willReturn(LocalDateTime.now());
         given(mockMonster.getLevel()).willReturn(Level.LV1);
         MonsterDatabase mockMonsterDatabase = mock(MonsterDatabase.class);
         given(mockMonsterDatabase.getMonsterType()).willReturn(MonsterType.BLUE);

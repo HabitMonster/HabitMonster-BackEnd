@@ -19,6 +19,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -58,8 +59,8 @@ class MonsterCollectionServiceTest {
         monster1 = Monster.createNewMonster("고양이", monsterDatabase1);
         monster2 = Monster.createNewMonster("강아지", monsterDatabase2);
 
-        Whitebox.setInternalState(monster1, "createdAt", LocalDate.now());
-        Whitebox.setInternalState(monster2, "createdAt", LocalDate.now());
+        Whitebox.setInternalState(monster1, "createdAt", LocalDateTime.now());
+        Whitebox.setInternalState(monster2, "createdAt", LocalDateTime.now());
 
         mockMonsterDatabaseList.add(monsterDatabase1);
         mockMonsterDatabaseList.add(monsterDatabase2);

@@ -67,7 +67,7 @@ public class MonsterCollection {
         monsterCollection.setMaxLevel(monster.getLevel());
         monsterCollection.setMonsterType(monster.getMonsterDatabase().getMonsterType());
         monsterCollection.setMonsterName(monster.getName());
-        monsterCollection.setCreateAt(monster.getCreatedAt().toString());
+        monsterCollection.setCreateAt(monster.getCreatedAt().toLocalDate().toString());
         return monsterCollection;
     }
 }

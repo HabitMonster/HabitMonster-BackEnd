@@ -1,6 +1,9 @@
 package com.sollertia.habit.domain.preset.controller;
 
 import com.sollertia.habit.domain.category.enums.Category;
+import com.sollertia.habit.domain.habit.dto.HabitDetail;
+import com.sollertia.habit.domain.habit.dto.HabitDetailResponseDto;
+import com.sollertia.habit.domain.habit.dto.HabitTypeDto;
 import com.sollertia.habit.domain.habit.service.HabitServiceImpl;
 import com.sollertia.habit.domain.preset.dto.PreSetVo;
 import com.sollertia.habit.domain.preset.service.PreSetServiceImpl;
@@ -29,6 +32,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -112,9 +117,24 @@ class PreSetControllerTest {
     void selectPreSet() throws Exception {
         //given
         authenticated();
-       PreSetVo preSetVo = PreSetVo.builder().presetId(1L).categoryId(1L).title("title").description("description").
+        PreSetVo preSetVo = PreSetVo.builder().presetId(1L).categoryId(1L).title("title").description("description").
                 period(30).count(3).category(Category.Health).practiceDays("12345").build();
+        HabitDetail habitDetail = HabitDetail.builder()
+                .habitId(1L)
+                .title(preSetVo.getTitle())
+                .description(preSetVo.getDescription())
+                .durationStart("2021-11-01")
+                .durationEnd("2021-11-30")
+                .count(preSetVo.getCount())
+                .category(preSetVo.getCategory().toString())
+                .practiceDays(preSetVo.getPracticeDays())
+                .current(0)
+                .achievePercentage(0L)
+                .build();
+        HabitDetailResponseDto responseDto = HabitDetailResponseDto.builder()
+                .habit(habitDetail).statusCode(200).responseMessage("Habit registered Completed").build();
         given(preSetService.getPreSet(1L)).willReturn(preSetVo);
+        given(habitService.createHabit(any(), any(), eq(testUser))).willReturn(responseDto);
 
         //when
         mvc.perform(post("/presets/1"))

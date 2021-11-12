@@ -17,6 +17,6 @@ import java.time.LocalDateTime;
 public abstract class TimeStamped {
 
     @CreatedDate
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 
 }

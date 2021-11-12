@@ -37,7 +37,7 @@ public class Oauth2Controller {
 
         return JwtResponseDto.builder()
                 .accessToken(accessToken)
-                .createdAt(user.getCreatedAt().toString())
+                .createdAt(user.getCreatedAt().toLocalDate().toString())
                 .isFirstLogin(userInfo.isFirstLogin())
                 .refreshToken(refreshToken)
                 .statusCode(200)
