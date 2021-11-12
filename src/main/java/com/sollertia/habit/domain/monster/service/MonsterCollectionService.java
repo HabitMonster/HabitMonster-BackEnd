@@ -46,6 +46,7 @@ public class MonsterCollectionService {
     public MonsterCollection addEvolutedMonster(User user) {
         MonsterType monsterType = user.getMonster().getMonsterDatabase().getMonsterType();
         MonsterCollection monsterCollection = monsterCollectionRepository.findByUserAndMonsterType(user, monsterType);
+        monsterCollection.updateMaxLevel(user.getMonster().getLevel());
         MonsterCollectionDatabase monsterCollectionDatabase =
                 MonsterCollectionDatabase.from(user.getMonster().getMonsterDatabase(), monsterCollection);
         monsterCollectionDatabaseRepository.save(monsterCollectionDatabase);

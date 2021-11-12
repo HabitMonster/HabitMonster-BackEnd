@@ -61,6 +61,10 @@ public class MonsterCollection {
         this.monsterName = monsterName;
     }
 
+    public void updateMaxLevel(Level level) {
+        setMaxLevel(level);
+    }
+
     public static MonsterCollection createMonsterCollection(Monster monster) {
         MonsterCollection monsterCollection = new MonsterCollection();
         monsterCollection.setUser(monster.getUser());
