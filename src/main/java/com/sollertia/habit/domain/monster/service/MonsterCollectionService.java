@@ -32,6 +32,7 @@ public class MonsterCollectionService {
     public MonsterCollection addMonsterCollection(Monster monster) {
         //        if (user.getLevel().getValue() == Level.MAX_LEVEL) {
         MonsterCollection monsterCollection = MonsterCollection.createMonsterCollection(monster);
+        monsterCollection = monsterCollectionRepository.save(monsterCollection);
         MonsterCollectionDatabase monsterCollectionDatabase =
                 MonsterCollectionDatabase.from(monster.getMonsterDatabase(), monsterCollection);
         monsterCollectionDatabaseRepository.save(monsterCollectionDatabase);

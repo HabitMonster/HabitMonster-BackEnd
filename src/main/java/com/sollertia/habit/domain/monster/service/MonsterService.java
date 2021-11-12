@@ -43,9 +43,9 @@ public class MonsterService {
         MonsterDatabase monsterDatabase = getMonsterDatabaseById(requestDto.getMonsterId());
 
         Monster monster = Monster.createNewMonster(monsterName, monsterDatabase);
-        Monster newMonster = monsterRepository.save(monster);
-        User updatedUser = userService.updateMonster(user, newMonster);
-        monsterCollectionService.addMonsterCollection(updatedUser.getMonster());
+        Monster savedMonster = monsterRepository.save(monster);
+        User updatedUser = userService.updateMonster(user, savedMonster);
+        monsterCollectionService.addMonsterCollection(savedMonster);
 
         MonsterVo monsterVo = MonsterVo.of(updatedUser.getMonster());
 
