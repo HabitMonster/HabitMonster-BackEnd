@@ -1,6 +1,7 @@
 package com.sollertia.habit.domain.preset.controller;
 
 
+import com.sollertia.habit.domain.habit.dto.HabitDetailResponseDto;
 import com.sollertia.habit.domain.habit.dto.HabitDtoImpl;
 import com.sollertia.habit.domain.habit.dto.HabitTypeDto;
 import com.sollertia.habit.domain.habit.service.HabitServiceImpl;
@@ -52,7 +53,8 @@ public class PreSetController {
 
         HabitTypeDto habitTypeDto = new HabitTypeDto("counter", "specificDay");
 
-        habitService.createHabit(habitTypeDto, habitDto, userDetails.getUser());
+        HabitDetailResponseDto responseDto = habitService.createHabit(habitTypeDto, habitDto, userDetails.getUser());
+        habitDto.setHabitId(responseDto.getHabit().getHabitId());
 
         return PreSetSelectResponseDto.builder().habitDto(habitDto).statusCode(200).responseMessage("Habit registered Completed").build();
     }

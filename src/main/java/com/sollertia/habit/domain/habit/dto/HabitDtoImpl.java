@@ -8,6 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class HabitDtoImpl {
+    private Long habitId;
     private String title;
     private String description;
     private String durationStart;
