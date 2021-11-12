@@ -2,9 +2,9 @@ package com.sollertia.habit.domain.user.service;
 
 import com.sollertia.habit.domain.monster.entity.Monster;
 import com.sollertia.habit.domain.monster.entity.MonsterDatabase;
-import com.sollertia.habit.domain.monster.enums.EvolutionGrade;
+import com.sollertia.habit.domain.monster.entity.MonsterType;
+import com.sollertia.habit.domain.monster.enums.Level;
 import com.sollertia.habit.domain.user.dto.UserInfoResponseDto;
-import com.sollertia.habit.domain.user.dto.UserInfoVo;
 import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.domain.user.oauth2.userinfo.GoogleOauth2UserInfo;
 import com.sollertia.habit.domain.user.oauth2.userinfo.Oauth2UserInfo;
@@ -16,13 +16,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -49,8 +46,8 @@ class UserServiceTest {
         testUser = User.create(oauth2UserInfo);
         updatedTestUser = User.create(oauth2UserInfo);
 
-        MonsterDatabase monsterDatabase1 = new MonsterDatabase(EvolutionGrade.EV1, "cat.img");
-        MonsterDatabase monsterDatabase2 = new MonsterDatabase(EvolutionGrade.EV1, "dog.img");
+        MonsterDatabase monsterDatabase1 = new MonsterDatabase(Level.LV1, MonsterType.BLUE, "cat.img");
+        MonsterDatabase monsterDatabase2 = new MonsterDatabase(Level.LV1,MonsterType.RED, "dog.img");
         monster1 = Monster.createNewMonster("고양이", monsterDatabase1);
         monster2 = Monster.createNewMonster("강아지", monsterDatabase2);
         testUser.updateMonster(monster1);

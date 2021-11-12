@@ -1,9 +1,14 @@
 package com.sollertia.habit.domain.monster.controller;
 
 import com.sollertia.habit.domain.monster.dto.*;
+import com.sollertia.habit.domain.monster.entity.Monster;
+import com.sollertia.habit.domain.monster.entity.MonsterCollection;
+import com.sollertia.habit.domain.monster.entity.MonsterDatabase;
+import com.sollertia.habit.domain.monster.entity.MonsterType;
 import com.sollertia.habit.domain.monster.service.MonsterCollectionService;
 import com.sollertia.habit.domain.monster.service.MonsterService;
 import com.sollertia.habit.domain.user.entity.User;
+import com.sollertia.habit.domain.monster.enums.Level;
 import com.sollertia.habit.domain.user.oauth2.userinfo.GoogleOauth2UserInfo;
 import com.sollertia.habit.domain.user.oauth2.userinfo.Oauth2UserInfo;
 import com.sollertia.habit.domain.user.security.jwt.filter.JwtTokenProvider;
@@ -12,6 +17,8 @@ import com.sollertia.habit.global.exception.monster.MonsterNotFoundException;
 import com.sollertia.habit.global.utils.RedisUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -24,6 +31,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +41,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willThrow;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -42,6 +51,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(controllers = MonsterController.class)
 @AutoConfigureMockMvc(addFilters = false)
+@RunWith(PowerMockRunner.class)
 class MonsterControllerTest {
 
     @Autowired
@@ -170,10 +180,18 @@ class MonsterControllerTest {
     void getMonsterCollection() throws Exception {
         //given
         authenticated();
-        List<MonsterVo> monsterVoList = new ArrayList<>();
-        monsterVoList.add(MonsterVo.builder().monsterImage("monster.img").monsterLevel(1).monsterName("test").build());
+        List<MonsterCollectionVo> monsterCollectionVoList = new ArrayList<>();
+        List<MonsterDatabaseVo> monsterDatabases = new ArrayList<>();
+        Monster mockMonster = mock(Monster.class);
+        given(mockMonster.getCreatedAt()).willReturn(LocalDate.now());
+        given(mockMonster.getLevel()).willReturn(Level.LV1);
+        MonsterDatabase mockMonsterDatabase = mock(MonsterDatabase.class);
+        given(mockMonsterDatabase.getMonsterType()).willReturn(MonsterType.BLUE);
+        given(mockMonster.getMonsterDatabase()).willReturn(mockMonsterDatabase);
+        MonsterCollection monsterCollection = MonsterCollection.createMonsterCollection(mockMonster);
+        monsterCollectionVoList.add(MonsterCollectionVo.of(monsterCollection, monsterDatabases));
         MonsterCollectionResponseDto responseDto = MonsterCollectionResponseDto.builder()
-                .monsters(monsterVoList)
+                .monsters(monsterCollectionVoList)
                 .responseMessage("Monster Collection Query Completed")
                 .statusCode(200).build();
 
@@ -184,8 +202,6 @@ class MonsterControllerTest {
                 .andDo(print())
                 //then
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.monsters[0].monsterName").value(monsterVoList.get(0).getMonsterName()))
-                .andExpect(jsonPath("$.monsters[0].monsterImage").value(monsterVoList.get(0).getMonsterImage()))
                 .andExpect(jsonPath("$.responseMessage").value(responseDto.getResponseMessage()))
                 .andExpect(jsonPath("$.statusCode").value(responseDto.getStatusCode()));
 

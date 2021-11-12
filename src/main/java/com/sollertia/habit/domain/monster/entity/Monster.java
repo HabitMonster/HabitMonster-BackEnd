@@ -1,18 +1,16 @@
 package com.sollertia.habit.domain.monster.entity;
 
-import com.sollertia.habit.domain.user.enums.Level;
+import com.sollertia.habit.domain.monster.enums.Level;
 import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.global.utils.TimeStamped;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.util.Date;
 
 @Entity
 @Getter
-public class Monster {
+public class Monster extends TimeStamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -31,8 +29,6 @@ public class Monster {
     @Setter
     private User user;
 
-    private LocalDate createAt;
-
     protected Monster() {
     }
 
@@ -44,21 +40,17 @@ public class Monster {
         this.name = name;
     }
 
-    private void setCreateAt(LocalDate createAt) {
-        this.createAt = createAt;
-    }
-
     private void setMonsterDatabase(MonsterDatabase monsterDatabase) {
         this.monsterDatabase = monsterDatabase;
     }
 
-    public void plusExpPoint() {
-        setExpPoint(getExpPoint() + this.level.getPlusPoint());
-        long margin = getExpPoint() - Level.MAX_EXP;
-        if ( margin >= 0 ) {
-            levelUp();
-            this.expPoint = margin;
+    public boolean plusExpPoint() {
+        setExpPoint(getExpPoint() + getLevel().getPlusPoint());
+        if ( getExpPoint() >= Level.MAX_EXP ) {
+            setExpPoint(getExpPoint() - Level.MAX_EXP);
+            return true;
         }
+        return false;
     }
 
     public Level levelUp() {
@@ -72,7 +64,6 @@ public class Monster {
         newMonster.setExpPoint(0L);
         newMonster.setName(monsterName);
         newMonster.setMonsterDatabase(monsterDatabase);
-        newMonster.setCreateAt(LocalDate.now());
         return newMonster;
     }
 
@@ -81,4 +72,7 @@ public class Monster {
         return this;
     }
 
+    public void updateMonsterDatabase(MonsterDatabase monsterDatabase) {
+        setMonsterDatabase(monsterDatabase);
+    }
 }

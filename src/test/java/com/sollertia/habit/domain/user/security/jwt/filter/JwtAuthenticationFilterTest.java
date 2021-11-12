@@ -1,10 +1,8 @@
 package com.sollertia.habit.domain.user.security.jwt.filter;
 
+import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.domain.user.oauth2.userinfo.GoogleOauth2UserInfo;
 import com.sollertia.habit.domain.user.oauth2.userinfo.Oauth2UserInfo;
-import com.sollertia.habit.domain.user.entity.User;
-import com.sollertia.habit.domain.user.security.jwt.filter.JwtAuthenticationFilter;
-import com.sollertia.habit.domain.user.security.jwt.filter.JwtTokenProvider;
 import com.sollertia.habit.global.utils.RedisUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
