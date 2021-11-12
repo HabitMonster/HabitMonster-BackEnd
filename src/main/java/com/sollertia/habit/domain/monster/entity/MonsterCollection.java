@@ -58,7 +58,7 @@ public class MonsterCollection {
         monsterCollection.setUser(monster.getUser());
         monsterCollection.setLevel(monster.getLevel());
         monsterCollection.setMonsterName(monster.getName());
-        monsterCollection.setCreateAt(monster.getModifiedAt().toString());
+        monsterCollection.setCreateAt(monster.getCreateAt().toString());
         return monsterCollection;
     }
 }

@@ -7,10 +7,12 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.util.Date;
 
 @Entity
 @Getter
-public class Monster extends TimeStamped {
+public class Monster {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,6 +31,8 @@ public class Monster extends TimeStamped {
     @Setter
     private User user;
 
+    private LocalDate createAt;
+
     protected Monster() {
     }
 
@@ -38,6 +42,10 @@ public class Monster extends TimeStamped {
 
     private void setName(String name) {
         this.name = name;
+    }
+
+    private void setCreateAt(LocalDate createAt) {
+        this.createAt = createAt;
     }
 
     private void setMonsterDatabase(MonsterDatabase monsterDatabase) {
@@ -64,6 +72,7 @@ public class Monster extends TimeStamped {
         newMonster.setExpPoint(0L);
         newMonster.setName(monsterName);
         newMonster.setMonsterDatabase(monsterDatabase);
+        newMonster.setCreateAt(LocalDate.now());
         return newMonster;
     }
 
