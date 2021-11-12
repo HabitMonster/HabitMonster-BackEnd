@@ -44,7 +44,7 @@ public class MonsterService {
 
         Monster newMonster = Monster.createNewMonster(monsterName, monsterDatabase);
         User updatedUser = userService.updateMonster(user, newMonster);
-        monsterCollectionService.addMonsterCollection(newMonster);
+        monsterCollectionService.addMonsterCollection(updatedUser.getMonster());
 
         MonsterVo monsterVo = MonsterVo.of(updatedUser.getMonster());
 
