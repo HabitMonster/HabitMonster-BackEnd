@@ -8,8 +8,10 @@ import com.sollertia.habit.domain.monster.dto.MonsterVo;
 import com.sollertia.habit.domain.monster.entity.Monster;
 import com.sollertia.habit.domain.monster.entity.MonsterCollection;
 import com.sollertia.habit.domain.monster.entity.MonsterCollectionDatabase;
+import com.sollertia.habit.domain.monster.entity.MonsterType;
 import com.sollertia.habit.domain.monster.repository.MonsterCollectionDatabaseRepository;
 import com.sollertia.habit.domain.monster.repository.MonsterCollectionRepository;
+import com.sollertia.habit.domain.monster.repository.MonsterDatabaseRepository;
 import com.sollertia.habit.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,7 @@ public class MonsterCollectionService {
 
     private final MonsterCollectionDatabaseRepository monsterCollectionDatabaseRepository;
     private final MonsterCollectionRepository monsterCollectionRepository;
+    private final MonsterDatabaseRepository monsterDatabaseRepository;
 
     @Transactional
     public MonsterCollection addMonsterCollection(Monster monster) {
@@ -36,6 +39,16 @@ public class MonsterCollectionService {
 //        } else {
 //            throw new NotReachedMaximumLevelException("최대 레벨에 도달하지 못했습니다.");
 //        }
+    }
+
+    @Transactional
+    public MonsterCollection addEvolutedMonster(User user) {
+        MonsterType monsterType = user.getMonster().getMonsterDatabase().getMonsterType();
+        MonsterCollection monsterCollection = monsterCollectionRepository.findByUserAndMonsterType(user, monsterType);
+        MonsterCollectionDatabase monsterCollectionDatabase =
+                MonsterCollectionDatabase.from(user.getMonster().getMonsterDatabase(), monsterCollection);
+        monsterCollectionDatabaseRepository.save(monsterCollectionDatabase);
+        return monsterCollection;
     }
 
     @Transactional

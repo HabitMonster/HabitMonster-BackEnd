@@ -22,7 +22,11 @@ public class MonsterCollection {
     @JsonIgnore
     private User user;
 
+    @Enumerated(EnumType.STRING)
     private Level maxLevel;
+
+    @Enumerated(EnumType.STRING)
+    private MonsterType monsterType;
 
     @OneToMany(mappedBy = "monsterCollection")
     @JsonIgnore
@@ -49,6 +53,10 @@ public class MonsterCollection {
         this.monsterCollectionDatabaseList.add(monsterCollectionDatabase);
     }
 
+    private void setMonsterType(MonsterType monsterType) {
+        this.monsterType = monsterType;
+    }
+
     private void setMonsterName(String monsterName) {
         this.monsterName = monsterName;
     }
@@ -57,6 +65,7 @@ public class MonsterCollection {
         MonsterCollection monsterCollection = new MonsterCollection();
         monsterCollection.setUser(monster.getUser());
         monsterCollection.setMaxLevel(monster.getLevel());
+        monsterCollection.setMonsterType(monster.getMonsterDatabase().getMonsterType());
         monsterCollection.setMonsterName(monster.getName());
         monsterCollection.setCreateAt(monster.getCreatedAt().toString());
         return monsterCollection;

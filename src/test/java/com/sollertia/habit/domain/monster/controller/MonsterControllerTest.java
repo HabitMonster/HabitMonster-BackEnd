@@ -3,6 +3,8 @@ package com.sollertia.habit.domain.monster.controller;
 import com.sollertia.habit.domain.monster.dto.*;
 import com.sollertia.habit.domain.monster.entity.Monster;
 import com.sollertia.habit.domain.monster.entity.MonsterCollection;
+import com.sollertia.habit.domain.monster.entity.MonsterDatabase;
+import com.sollertia.habit.domain.monster.entity.MonsterType;
 import com.sollertia.habit.domain.monster.service.MonsterCollectionService;
 import com.sollertia.habit.domain.monster.service.MonsterService;
 import com.sollertia.habit.domain.user.entity.User;
@@ -183,6 +185,9 @@ class MonsterControllerTest {
         Monster mockMonster = mock(Monster.class);
         given(mockMonster.getCreatedAt()).willReturn(LocalDate.now());
         given(mockMonster.getLevel()).willReturn(Level.LV1);
+        MonsterDatabase mockMonsterDatabase = mock(MonsterDatabase.class);
+        given(mockMonsterDatabase.getMonsterType()).willReturn(MonsterType.BLUE);
+        given(mockMonster.getMonsterDatabase()).willReturn(mockMonsterDatabase);
         MonsterCollection monsterCollection = MonsterCollection.createMonsterCollection(mockMonster);
         monsterCollectionVoList.add(MonsterCollectionVo.of(monsterCollection, monsterDatabases));
         MonsterCollectionResponseDto responseDto = MonsterCollectionResponseDto.builder()

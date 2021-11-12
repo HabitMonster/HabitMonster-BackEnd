@@ -56,7 +56,7 @@ public class TestData implements ApplicationRunner {
         MonsterDatabase monsterDatabase9 = new MonsterDatabase(Level.LV4, MonsterType.YELLOW,"https://sollertia.s3.ap-northeast-2.amazonaws.com/image/banana_elephant_4.png");
         MonsterDatabase monsterDatabase10 = new MonsterDatabase(Level.LV5, MonsterType.YELLOW,"https://sollertia.s3.ap-northeast-2.amazonaws.com/image/banana_elephant_5.png");
 
-        Monster monster5 = Monster.createNewMonster("돼지", monsterDatabase10);
+        Monster monster = Monster.createNewMonster("돼지", monsterDatabase4);
 
         monsterDatabaseRepository.save(monsterDatabase1);
         monsterDatabaseRepository.save(monsterDatabase2);
@@ -78,26 +78,13 @@ public class TestData implements ApplicationRunner {
 
         User user = userRepository.findById(1L).orElseThrow(()->new NullPointerException("없음"));
 
-        user.updateMonster(monster5);
-        monster5 = monsterRepostory.save(monster5);
+        user.updateMonster(monster);
+        monster = monsterRepostory.save(monster);
         user = userRepository.save(user);
-        monsterCollection = MonsterCollection.createMonsterCollection(monster5);
+        monsterCollection = MonsterCollection.createMonsterCollection(monster);
         monsterCollection = monsterCollectionRepository.save(monsterCollection);
         monsterCollectionDatabase = MonsterCollectionDatabase.from(monsterDatabase4, monsterCollection);
         monsterCollectionDatabaseRepository.save(monsterCollectionDatabase);
-
-        monsterCollectionDatabase = MonsterCollectionDatabase.from(monsterDatabase7, monsterCollection);
-        monsterCollectionDatabaseRepository.save(monsterCollectionDatabase);
-
-        monsterCollectionDatabase = MonsterCollectionDatabase.from(monsterDatabase8, monsterCollection);
-        monsterCollectionDatabaseRepository.save(monsterCollectionDatabase);
-
-        monsterCollectionDatabase = MonsterCollectionDatabase.from(monsterDatabase9, monsterCollection);
-        monsterCollectionDatabaseRepository.save(monsterCollectionDatabase);
-
-        monsterCollectionDatabase = MonsterCollectionDatabase.from(monsterDatabase10, monsterCollection);
-        monsterCollectionDatabaseRepository.save(monsterCollectionDatabase);
-
 
 
         Calendar startDate = Calendar.getInstance();

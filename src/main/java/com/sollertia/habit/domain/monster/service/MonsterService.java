@@ -89,6 +89,7 @@ public class MonsterService {
         if ( isLevelUp ) {
             Level level = monster.levelUp();
             evoluteMonster(monster, level);
+            monsterCollectionService.addEvolutedMonster(user);
         }
     }
 
