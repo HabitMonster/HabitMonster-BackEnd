@@ -26,21 +26,4 @@ public class MonsterVo {
                 .createAt(monster.getCreateAt().toString())
                 .build();
     }
-
-    public static MonsterVo of(MonsterCollection monsterCollection) {
-        return MonsterVo.builder()
-                .monsterImage(monsterCollection.getMonsterDatabase().getImageUrl())
-                .monsterName(monsterCollection.getMonsterName())
-                .monsterLevel(monsterCollection.getLevel().getValue())
-                .createAt(monsterCollection.getCreateAt())
-                .build();
-    }
-
-    public static List<MonsterVo> listOf(List<MonsterCollection> monsterCollections) {
-        List<MonsterVo> monsterVoList = new ArrayList<>();
-        for (MonsterCollection monsterCollection : monsterCollections) {
-            monsterVoList.add(MonsterVo.of(monsterCollection));
-        }
-        return monsterVoList;
-    }
 }

@@ -6,6 +6,7 @@ import com.sollertia.habit.domain.user.enums.Level;
 import lombok.Getter;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Getter
@@ -20,12 +21,11 @@ public class MonsterCollection {
     @JsonIgnore
     private User user;
 
-    private Level level;
+    private Level maxLevel;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "monster_database_id")
+    @OneToMany(mappedBy = "monsterCollection")
     @JsonIgnore
-    private MonsterDatabase monsterDatabase;
+    private List<MonsterCollectionDatabase> monsterCollectionDatabaseList;
 
     private String monsterName;
 
@@ -38,14 +38,14 @@ public class MonsterCollection {
         this.user = user;
     }
 
-    private void setLevel(Level level) {
-        this.level = level;
+    private void setMaxLevel(Level maxLevel) {
+        this.maxLevel = maxLevel;
     }
 
     private void setCreateAt(String createAt){this.createAt=createAt;}
 
-    private void setMonsterDatabase(MonsterDatabase monsterDatabase) {
-        this.monsterDatabase = monsterDatabase;
+    public void addMonsterCollectionDatabase(MonsterCollectionDatabase monsterCollectionDatabase) {
+        this.monsterCollectionDatabaseList.add(monsterCollectionDatabase);
     }
 
     private void setMonsterName(String monsterName) {
@@ -54,9 +54,8 @@ public class MonsterCollection {
 
     public static MonsterCollection createMonsterCollection(Monster monster) {
         MonsterCollection monsterCollection = new MonsterCollection();
-        monsterCollection.setMonsterDatabase(monster.getMonsterDatabase());
         monsterCollection.setUser(monster.getUser());
-        monsterCollection.setLevel(monster.getLevel());
+        monsterCollection.setMaxLevel(monster.getLevel());
         monsterCollection.setMonsterName(monster.getName());
         monsterCollection.setCreateAt(monster.getCreateAt().toString());
         return monsterCollection;

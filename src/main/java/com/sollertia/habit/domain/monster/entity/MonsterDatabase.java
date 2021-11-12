@@ -1,9 +1,11 @@
 package com.sollertia.habit.domain.monster.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sollertia.habit.domain.monster.enums.EvolutionGrade;
 import lombok.Getter;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Getter

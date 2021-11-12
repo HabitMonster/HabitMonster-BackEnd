@@ -5,6 +5,8 @@ import com.sollertia.habit.domain.monster.dto.MonsterCollectionResponseDto;
 import com.sollertia.habit.domain.monster.dto.MonsterVo;
 import com.sollertia.habit.domain.monster.entity.Monster;
 import com.sollertia.habit.domain.monster.entity.MonsterCollection;
+import com.sollertia.habit.domain.monster.entity.MonsterCollectionDatabase;
+import com.sollertia.habit.domain.monster.repository.MonsterCollectionDatabaseRepository;
 import com.sollertia.habit.domain.monster.repository.MonsterCollectionRepository;
 import com.sollertia.habit.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -17,13 +19,17 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MonsterCollectionService {
 
+    private final MonsterCollectionDatabaseRepository monsterCollectionDatabaseRepository;
     private final MonsterCollectionRepository monsterCollectionRepository;
 
     @Transactional
     public MonsterCollection addMonsterCollection(Monster monster) {
         //        if (user.getLevel().getValue() == Level.MAX_LEVEL) {
         MonsterCollection monsterCollection = MonsterCollection.createMonsterCollection(monster);
-        return monsterCollectionRepository.save(monsterCollection);
+        MonsterCollectionDatabase monsterCollectionDatabase =
+                new MonsterCollectionDatabase(monster.getMonsterDatabase(), monsterCollection);
+        monsterCollectionDatabaseRepository.save(monsterCollectionDatabase);
+        return monsterCollection;
 //        } else {
 //            throw new NotReachedMaximumLevelException("최대 레벨에 도달하지 못했습니다.");
 //        }
