@@ -5,6 +5,7 @@ import com.sollertia.habit.domain.habit.dto.HabitDtoImpl;
 import com.sollertia.habit.domain.habit.dto.HabitTypeDto;
 import com.sollertia.habit.domain.habit.service.HabitServiceImpl;
 import com.sollertia.habit.domain.preset.dto.PreSetResponseDto;
+import com.sollertia.habit.domain.preset.dto.PreSetSelectResponseDto;
 import com.sollertia.habit.domain.preset.dto.PreSetVo;
 import com.sollertia.habit.domain.preset.service.PreSetServiceImpl;
 import com.sollertia.habit.domain.user.security.userdetail.UserDetailsImpl;
@@ -38,8 +39,7 @@ public class PreSetController {
 
     @ApiOperation(value = "선택한 PreSet Habit 테이블에 저장")
     @PostMapping("/presets/{preset_id}")
-    public DefaultResponseDto selectPreSet(@PathVariable Long preset_id, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        //PreSetVo preSetVo = PreSet.getPreSet(preset_id);
+    public PreSetSelectResponseDto selectPreSet(@PathVariable Long preset_id, @AuthenticationPrincipal UserDetailsImpl userDetails){
         PreSetVo preSetVo = preSetService.getPreSet(preset_id);
 
         Calendar startDate = Calendar.getInstance();
@@ -54,6 +54,6 @@ public class PreSetController {
 
         habitService.createHabit(habitTypeDto, habitDto, userDetails.getUser());
 
-        return DefaultResponseDto.builder().responseMessage("Habit registered Completed").statusCode(200).build();
+        return PreSetSelectResponseDto.builder().habitDto(habitDto).statusCode(200).responseMessage("Habit registered Completed").build();
     }
 }
