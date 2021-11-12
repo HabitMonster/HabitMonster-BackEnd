@@ -19,6 +19,4 @@ public abstract class TimeStamped {
     @CreatedDate
     private LocalDate createdAt;
 
-    @LastModifiedDate
-    private LocalDateTime modifiedAt;
 }
