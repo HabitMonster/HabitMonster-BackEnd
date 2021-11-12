@@ -2,6 +2,8 @@ package com.sollertia.habit.domain.monster.service;
 
 
 import com.sollertia.habit.domain.monster.dto.MonsterCollectionResponseDto;
+import com.sollertia.habit.domain.monster.dto.MonsterCollectionVo;
+import com.sollertia.habit.domain.monster.dto.MonsterDatabaseVo;
 import com.sollertia.habit.domain.monster.dto.MonsterVo;
 import com.sollertia.habit.domain.monster.entity.Monster;
 import com.sollertia.habit.domain.monster.entity.MonsterCollection;
@@ -13,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -27,7 +30,7 @@ public class MonsterCollectionService {
         //        if (user.getLevel().getValue() == Level.MAX_LEVEL) {
         MonsterCollection monsterCollection = MonsterCollection.createMonsterCollection(monster);
         MonsterCollectionDatabase monsterCollectionDatabase =
-                new MonsterCollectionDatabase(monster.getMonsterDatabase(), monsterCollection);
+                MonsterCollectionDatabase.from(monster.getMonsterDatabase(), monsterCollection);
         monsterCollectionDatabaseRepository.save(monsterCollectionDatabase);
         return monsterCollection;
 //        } else {
@@ -35,15 +38,33 @@ public class MonsterCollectionService {
 //        }
     }
 
+    @Transactional
     public MonsterCollectionResponseDto getMonsterCollection(User user) {
         List<MonsterCollection> monsterCollectionList = monsterCollectionRepository.findAllByUser(user);
-        if ( monsterCollectionList.size() <= 1 ) {
-            monsterCollectionList.clear();
+        List<MonsterCollectionVo> monsterCollectionVoList = new ArrayList<>();
+
+        for (MonsterCollection monsterCollection : monsterCollectionList) {
+            List<MonsterDatabaseVo> monsterDatabaseVoList = new ArrayList<>();
+            List<MonsterCollectionDatabase> monsterCollectionDatabaseList =
+                    monsterCollection.getMonsterCollectionDatabaseList();
+            for (MonsterCollectionDatabase monsterCollectionDatabase : monsterCollectionDatabaseList) {
+                monsterDatabaseVoList.add(MonsterDatabaseVo.of(monsterCollectionDatabase.getMonsterDatabase()));
+            }
+            monsterCollectionVoList.add(MonsterCollectionVo.of(monsterCollection, monsterDatabaseVoList));
         }
+
+        if ( monsterCollectionVoList.size() == 1 ) {
+            if ( monsterCollectionVoList.get(0).getMonsterDatabases().size() == 1 ) {
+                monsterCollectionVoList = null;
+            }
+        }
+
         return MonsterCollectionResponseDto.builder()
-                .monsters(MonsterVo.listOf(monsterCollectionList))
+                .monsters(monsterCollectionVoList)
                 .responseMessage("Monster Collection Query Completed")
                 .statusCode(200)
                 .build();
     }
+
+
 }

@@ -2,10 +2,11 @@ package com.sollertia.habit.domain.monster.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sollertia.habit.domain.user.entity.User;
-import com.sollertia.habit.domain.user.enums.Level;
+import com.sollertia.habit.domain.monster.enums.Level;
 import lombok.Getter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -25,7 +26,7 @@ public class MonsterCollection {
 
     @OneToMany(mappedBy = "monsterCollection")
     @JsonIgnore
-    private List<MonsterCollectionDatabase> monsterCollectionDatabaseList;
+    private List<MonsterCollectionDatabase> monsterCollectionDatabaseList = new ArrayList<>();
 
     private String monsterName;
 
@@ -57,7 +58,7 @@ public class MonsterCollection {
         monsterCollection.setUser(monster.getUser());
         monsterCollection.setMaxLevel(monster.getLevel());
         monsterCollection.setMonsterName(monster.getName());
-        monsterCollection.setCreateAt(monster.getCreateAt().toString());
+        monsterCollection.setCreateAt(monster.getCreatedAt().toString());
         return monsterCollection;
     }
 }

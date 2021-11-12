@@ -23,7 +23,7 @@ public class MonsterVo {
                 .monsterName(monster.getName())
                 .monsterLevel(monster.getLevel().getValue())
                 .monsterExpPoint(monster.getExpPoint())
-                .createAt(monster.getCreateAt().toString())
+                .createAt(monster.getCreatedAt().toString())
                 .build();
     }
 }

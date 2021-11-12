@@ -28,12 +28,4 @@ public class MonsterSummaryVo {
         }
         return summaryVoList;
     }
-
-    public static List<MonsterSummaryVo> listFromCollectionList(List<MonsterCollection> monsterCollectionList) {
-        List<MonsterSummaryVo> summaryVoList = new ArrayList<>();
-        for (MonsterCollection monsterCollection : monsterCollectionList) {
-            summaryVoList.add(MonsterSummaryVo.of(monsterCollection.getMonsterDatabase()));
-        }
-        return summaryVoList;
-    }
 }

@@ -4,7 +4,8 @@ package com.sollertia.habit.domain.monster.service;
 import com.sollertia.habit.domain.monster.dto.*;
 import com.sollertia.habit.domain.monster.entity.Monster;
 import com.sollertia.habit.domain.monster.entity.MonsterDatabase;
-import com.sollertia.habit.domain.monster.enums.EvolutionGrade;
+import com.sollertia.habit.domain.monster.entity.MonsterType;
+import com.sollertia.habit.domain.monster.enums.Level;
 import com.sollertia.habit.domain.monster.repository.MonsterDatabaseRepository;
 import com.sollertia.habit.domain.monster.repository.MonsterRepository;
 import com.sollertia.habit.domain.user.entity.User;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +28,7 @@ public class MonsterService {
     private final MonsterCollectionService monsterCollectionService;
 
     public MonsterListResponseDto getAllMonsters(User user) {
-        List<MonsterDatabase> monsterDatabases = monsterDatabaseRepository.findAllByGrade(EvolutionGrade.EV1);
+        List<MonsterDatabase> monsterDatabases = monsterDatabaseRepository.findAllByLevel(Level.LV1);
         return MonsterListResponseDto.builder()
                 .monsters(MonsterSummaryVo.listFromMonsterList(monsterDatabases))
                 .responseMessage("LV1 Monster Query Completed")
@@ -83,7 +85,18 @@ public class MonsterService {
     @Transactional
     public void plusExpPoint(User user) {
         Monster monster = getMonsterByUser(user);
-        monster.plusExpPoint();
+        boolean isLevelUp = monster.plusExpPoint();
+        if ( isLevelUp ) {
+            Level level = monster.levelUp();
+            evoluteMonster(monster, level);
+        }
+    }
+
+    private void evoluteMonster(Monster monster, Level level) {
+        MonsterType monsterType = monster.getMonsterDatabase().getMonsterType();
+        MonsterDatabase monsterDatabase = monsterDatabaseRepository.findByMonsterTypeAndLevel(monsterType, level)
+                .orElseThrow( () -> new MonsterNotFoundException("NotFound Monster Database"));
+        monster.updateMonsterDatabase(monsterDatabase);
     }
 
     private MonsterDatabase getMonsterDatabaseById(Long id) {

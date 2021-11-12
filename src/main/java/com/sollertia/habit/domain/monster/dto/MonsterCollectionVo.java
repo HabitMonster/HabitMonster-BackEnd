@@ -2,7 +2,6 @@ package com.sollertia.habit.domain.monster.dto;
 
 import com.sollertia.habit.domain.monster.entity.MonsterCollection;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -20,7 +19,7 @@ public class MonsterCollectionVo {
         this.monsterDatabases = monsterDatabases;
     }
 
-    public MonsterCollectionVo of(MonsterCollection monsterCollection, List<MonsterDatabaseVo> monsterDatabases) {
+    public static MonsterCollectionVo of(MonsterCollection monsterCollection, List<MonsterDatabaseVo> monsterDatabases) {
         return new MonsterCollectionVo(
                 monsterCollection.getMonsterName(),
                 monsterCollection.getCreateAt(),

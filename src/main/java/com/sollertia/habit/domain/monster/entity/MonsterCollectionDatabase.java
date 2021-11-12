@@ -20,10 +20,15 @@ public class MonsterCollectionDatabase {
     @JoinColumn(name = "monster_collection_id")
     private MonsterCollection monsterCollection;
 
-    public MonsterCollectionDatabase(MonsterDatabase monsterDatabase, MonsterCollection monsterCollection) {
+    private MonsterCollectionDatabase(MonsterDatabase monsterDatabase, MonsterCollection monsterCollection) {
         this.monsterDatabase = monsterDatabase;
         this.monsterCollection = monsterCollection;
-        monsterCollection.addMonsterCollectionDatabase(this);
+    }
+
+    public static MonsterCollectionDatabase from(MonsterDatabase monsterDatabase, MonsterCollection monsterCollection) {
+        MonsterCollectionDatabase monsterCollectionDatabase = new MonsterCollectionDatabase(monsterDatabase, monsterCollection);
+        monsterCollection.addMonsterCollectionDatabase(monsterCollectionDatabase);
+        return monsterCollectionDatabase;
     }
 
     protected MonsterCollectionDatabase() {}

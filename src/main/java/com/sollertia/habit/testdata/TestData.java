@@ -7,10 +7,9 @@ import com.sollertia.habit.domain.habit.dto.HabitDtoImpl;
 import com.sollertia.habit.domain.habit.dto.HabitTypeDto;
 import com.sollertia.habit.domain.habit.entity.Habit;
 import com.sollertia.habit.domain.habit.service.HabitServiceImpl;
-import com.sollertia.habit.domain.monster.entity.Monster;
-import com.sollertia.habit.domain.monster.entity.MonsterCollection;
-import com.sollertia.habit.domain.monster.entity.MonsterDatabase;
-import com.sollertia.habit.domain.monster.enums.EvolutionGrade;
+import com.sollertia.habit.domain.monster.entity.*;
+import com.sollertia.habit.domain.monster.enums.Level;
+import com.sollertia.habit.domain.monster.repository.MonsterCollectionDatabaseRepository;
 import com.sollertia.habit.domain.monster.repository.MonsterCollectionRepository;
 import com.sollertia.habit.domain.monster.repository.MonsterDatabaseRepository;
 import com.sollertia.habit.domain.monster.repository.MonsterRepository;
@@ -40,42 +39,38 @@ public class TestData implements ApplicationRunner {
     private final MonsterDatabaseRepository monsterDatabaseRepository;
     private final CompletedHabitRepository completedHabitRepository;
     private final MonsterCollectionRepository monsterCollectionRepository;
-    private final MonsterRepository monsterRepository;
+    private final MonsterCollectionDatabaseRepository monsterCollectionDatabaseRepository;
+    private final MonsterRepository monsterRepostory;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        MonsterDatabase monsterDatabase1 = new MonsterDatabase(EvolutionGrade.EV1, "https://sollertia.s3.ap-northeast-2.amazonaws.com/image/Lv1_green.png");
-        MonsterDatabase monsterDatabase2 = new MonsterDatabase(EvolutionGrade.EV1, "https://sollertia.s3.ap-northeast-2.amazonaws.com/image/Lv1_pink.png");
-        MonsterDatabase monsterDatabase3 = new MonsterDatabase(EvolutionGrade.EV1, "https://sollertia.s3.ap-northeast-2.amazonaws.com/image/Lv1_blue.png");
-        MonsterDatabase monsterDatabase4 = new MonsterDatabase(EvolutionGrade.EV1, "https://sollertia.s3.ap-northeast-2.amazonaws.com/image/Lv1_yellow.png");
-        MonsterDatabase monsterDatabase5 = new MonsterDatabase(EvolutionGrade.EV1, "https://sollertia.s3.ap-northeast-2.amazonaws.com/image/Lv1_orange.png");
-        MonsterDatabase monsterDatabase6 = new MonsterDatabase(EvolutionGrade.EV1, "https://sollertia.s3.ap-northeast-2.amazonaws.com/image/Lv1_red.png");
-        MonsterDatabase monsterDatabase7 = new MonsterDatabase(EvolutionGrade.EV2, "https://sollertia.s3.ap-northeast-2.amazonaws.com/image/banana_elephant_2.png");
-        MonsterDatabase monsterDatabase8 = new MonsterDatabase(EvolutionGrade.EV3, "https://sollertia.s3.ap-northeast-2.amazonaws.com/image/banana_elephant_3.png");
-        MonsterDatabase monsterDatabase9 = new MonsterDatabase(EvolutionGrade.EV4, "https://sollertia.s3.ap-northeast-2.amazonaws.com/image/banana_elephant_4.png");
-        MonsterDatabase monsterDatabase10 = new MonsterDatabase(EvolutionGrade.EV5, "https://sollertia.s3.ap-northeast-2.amazonaws.com/image/banana_elephant_5.png");
+        MonsterDatabase monsterDatabase1 = new MonsterDatabase(Level.LV1, MonsterType.BLUE,"https://sollertia.s3.ap-northeast-2.amazonaws.com/image/Lv1_green.png");
+        MonsterDatabase monsterDatabase2 = new MonsterDatabase(Level.LV1, MonsterType.PINK,"https://sollertia.s3.ap-northeast-2.amazonaws.com/image/Lv1_pink.png");
+        MonsterDatabase monsterDatabase3 = new MonsterDatabase(Level.LV1, MonsterType.BLUE,"https://sollertia.s3.ap-northeast-2.amazonaws.com/image/Lv1_blue.png");
+        MonsterDatabase monsterDatabase4 = new MonsterDatabase(Level.LV1, MonsterType.YELLOW,"https://sollertia.s3.ap-northeast-2.amazonaws.com/image/Lv1_yellow.png");
+        MonsterDatabase monsterDatabase5 = new MonsterDatabase(Level.LV1, MonsterType.ORANGE, "https://sollertia.s3.ap-northeast-2.amazonaws.com/image/Lv1_orange.png");
+        MonsterDatabase monsterDatabase6 = new MonsterDatabase(Level.LV1, MonsterType.RED,"https://sollertia.s3.ap-northeast-2.amazonaws.com/image/Lv1_red.png");
 
-        Monster monster1 = Monster.createNewMonster("돼지", monsterDatabase4);
-        Monster monster2 = Monster.createNewMonster("돼지", monsterDatabase7);
-        Monster monster3 = Monster.createNewMonster("돼지", monsterDatabase8);
-        Monster monster4 = Monster.createNewMonster("돼지", monsterDatabase9);
+        MonsterDatabase monsterDatabase7 = new MonsterDatabase(Level.LV2, MonsterType.YELLOW,"https://sollertia.s3.ap-northeast-2.amazonaws.com/image/banana_elephant_2.png");
+        MonsterDatabase monsterDatabase8 = new MonsterDatabase(Level.LV3, MonsterType.YELLOW,"https://sollertia.s3.ap-northeast-2.amazonaws.com/image/banana_elephant_3.png");
+        MonsterDatabase monsterDatabase9 = new MonsterDatabase(Level.LV4, MonsterType.YELLOW,"https://sollertia.s3.ap-northeast-2.amazonaws.com/image/banana_elephant_4.png");
+        MonsterDatabase monsterDatabase10 = new MonsterDatabase(Level.LV5, MonsterType.YELLOW,"https://sollertia.s3.ap-northeast-2.amazonaws.com/image/banana_elephant_5.png");
+
         Monster monster5 = Monster.createNewMonster("돼지", monsterDatabase10);
-
-
 
         monsterDatabaseRepository.save(monsterDatabase1);
         monsterDatabaseRepository.save(monsterDatabase2);
         monsterDatabaseRepository.save(monsterDatabase3);
-        monsterDatabaseRepository.save(monsterDatabase4);
+        monsterDatabase4 = monsterDatabaseRepository.save(monsterDatabase4);
         monsterDatabaseRepository.save(monsterDatabase5);
         monsterDatabaseRepository.save(monsterDatabase6);
-        monsterDatabaseRepository.save(monsterDatabase7);
-        monsterDatabaseRepository.save(monsterDatabase8);
-        monsterDatabaseRepository.save(monsterDatabase9);
-        monsterDatabaseRepository.save(monsterDatabase10);
+        monsterDatabase7 = monsterDatabaseRepository.save(monsterDatabase7);
+        monsterDatabase8 = monsterDatabaseRepository.save(monsterDatabase8);
+        monsterDatabase9 = monsterDatabaseRepository.save(monsterDatabase9);
+        monsterDatabase10 = monsterDatabaseRepository.save(monsterDatabase10);
 
         MonsterCollection monsterCollection;
-
+        MonsterCollectionDatabase monsterCollectionDatabase;
 
 
         User testUser = User.builder().socialId("1234G").username("tester").email("tester.test.com").providerType(ProviderType.GOOGLE).build();
@@ -83,35 +78,25 @@ public class TestData implements ApplicationRunner {
 
         User user = userRepository.findById(1L).orElseThrow(()->new NullPointerException("없음"));
 
-        user.updateMonster(monster1);
-        user = userRepository.save(user);
-        monster1 = monsterRepository.save(monster1);
-        monsterCollection = MonsterCollection.createMonsterCollection(monster1);
-        monsterCollectionRepository.save(monsterCollection);
-        user.updateMonster(monster2);
-        user = userRepository.save(user);
-        monster2.levelUp();
-        monster2 = monsterRepository.save(monster2);
-        monsterCollection = MonsterCollection.createMonsterCollection(monster2);
-        monsterCollectionRepository.save(monsterCollection);
-        user.updateMonster(monster3);
-        user = userRepository.save(user);
-        monster3.levelUp();monster3.levelUp();
-        monster3 = monsterRepository.save(monster3);
-        monsterCollection = MonsterCollection.createMonsterCollection(monster3);
-        monsterCollectionRepository.save(monsterCollection);
-        user.updateMonster(monster4);
-        user = userRepository.save(user);
-        monster4.levelUp();monster4.levelUp();monster4.levelUp();
-        monster4 = monsterRepository.save(monster4);
-        monsterCollection = MonsterCollection.createMonsterCollection(monster4);
-        monsterCollectionRepository.save(monsterCollection);
         user.updateMonster(monster5);
+        monster5 = monsterRepostory.save(monster5);
         user = userRepository.save(user);
-        monster5.levelUp();monster5.levelUp();monster5.levelUp();monster5.levelUp();
-        monster5 = monsterRepository.save(monster5);
         monsterCollection = MonsterCollection.createMonsterCollection(monster5);
-        monsterCollectionRepository.save(monsterCollection);
+        monsterCollection = monsterCollectionRepository.save(monsterCollection);
+        monsterCollectionDatabase = MonsterCollectionDatabase.from(monsterDatabase4, monsterCollection);
+        monsterCollectionDatabaseRepository.save(monsterCollectionDatabase);
+
+        monsterCollectionDatabase = MonsterCollectionDatabase.from(monsterDatabase7, monsterCollection);
+        monsterCollectionDatabaseRepository.save(monsterCollectionDatabase);
+
+        monsterCollectionDatabase = MonsterCollectionDatabase.from(monsterDatabase8, monsterCollection);
+        monsterCollectionDatabaseRepository.save(monsterCollectionDatabase);
+
+        monsterCollectionDatabase = MonsterCollectionDatabase.from(monsterDatabase9, monsterCollection);
+        monsterCollectionDatabaseRepository.save(monsterCollectionDatabase);
+
+        monsterCollectionDatabase = MonsterCollectionDatabase.from(monsterDatabase10, monsterCollection);
+        monsterCollectionDatabaseRepository.save(monsterCollectionDatabase);
 
 
 

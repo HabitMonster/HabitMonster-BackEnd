@@ -1,4 +1,4 @@
-package com.sollertia.habit.domain.user.enums;
+package com.sollertia.habit.domain.monster.enums;
 
 import com.sollertia.habit.global.exception.monster.InvalidLevelException;
 import lombok.Getter;
@@ -13,6 +13,7 @@ public enum Level {
 
     public static final int MAX_LEVEL = 5;
     public static final int MAX_EXP = 100;
+    public static final int MIN_EXP = 0;
 
     private final Integer value;
     private final Integer plusPoint;
