@@ -72,6 +72,8 @@ class MonsterCollectionServiceTest {
     @Test
     void addMonsterCollection() {
         //given
+        given(monsterCollectionRepository.save(any(MonsterCollection.class)))
+                .willReturn(mockMonsterCollectionList.get(0));
         given(monsterCollectionDatabaseRepository.save(any(MonsterCollectionDatabase.class)))
                 .willReturn(MonsterCollectionDatabase.from(mockMonsterDatabaseList.get(0),mockMonsterCollectionList.get(0)));
 
@@ -80,6 +82,9 @@ class MonsterCollectionServiceTest {
 
         //then
         assertThat(monsterCollection.getMonsterName()).isEqualTo(monster1.getName());
+
+        verify(monsterCollectionRepository).save(any(MonsterCollection.class));
+        verify(monsterCollectionDatabaseRepository).save(any(MonsterCollectionDatabase.class));
     }
 
     @Test
