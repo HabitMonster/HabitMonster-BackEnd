@@ -82,32 +82,34 @@ public class TestData implements ApplicationRunner {
         userRepository.save(testUser);
 
         User user = userRepository.findById(1L).orElseThrow(()->new NullPointerException("없음"));
-        Monster monster = Monster.createNewMonster("초록이", monsterDatabase1);
-        user.updateMonster(monster);
-        user = userRepository.save(user);
+
         user.updateMonster(monster1);
         user = userRepository.save(user);
-        monsterRepository.save(monster1);
+        monster1 = monsterRepository.save(monster1);
         monsterCollection = MonsterCollection.createMonsterCollection(monster1);
         monsterCollectionRepository.save(monsterCollection);
         user.updateMonster(monster2);
         user = userRepository.save(user);
-        monsterRepository.save(monster2);
+        monster2.levelUp();
+        monster2 = monsterRepository.save(monster2);
         monsterCollection = MonsterCollection.createMonsterCollection(monster2);
         monsterCollectionRepository.save(monsterCollection);
         user.updateMonster(monster3);
         user = userRepository.save(user);
-        monsterRepository.save(monster3);
+        monster3.levelUp();monster3.levelUp();
+        monster3 = monsterRepository.save(monster3);
         monsterCollection = MonsterCollection.createMonsterCollection(monster3);
         monsterCollectionRepository.save(monsterCollection);
         user.updateMonster(monster4);
         user = userRepository.save(user);
-        monsterRepository.save(monster4);
+        monster4.levelUp();monster4.levelUp();monster4.levelUp();
+        monster4 = monsterRepository.save(monster4);
         monsterCollection = MonsterCollection.createMonsterCollection(monster4);
         monsterCollectionRepository.save(monsterCollection);
         user.updateMonster(monster5);
         user = userRepository.save(user);
-        monsterRepository.save(monster5);
+        monster5.levelUp();monster5.levelUp();monster5.levelUp();monster5.levelUp();
+        monster5 = monsterRepository.save(monster5);
         monsterCollection = MonsterCollection.createMonsterCollection(monster5);
         monsterCollectionRepository.save(monsterCollection);
 
