@@ -57,6 +57,7 @@ public class JwtController {
                         .statusCode(200)
                         .isFirstLogin(userDetails.getUser().getMonster() == null)
                         .isLogin(true)
+                        .createdAt(userDetails.getUser().getCreatedAt().toLocalDate().toString())
                         .build());
     }
 }
