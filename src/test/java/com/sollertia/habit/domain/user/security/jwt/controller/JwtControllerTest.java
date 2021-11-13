@@ -11,6 +11,9 @@ import com.sollertia.habit.global.utils.RedisUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.reflect.Whitebox;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -22,6 +25,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,6 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(controllers = JwtController.class)
 @AutoConfigureMockMvc(addFilters = false)
+@RunWith(PowerMockRunner.class)
 class JwtControllerTest {
 
     @Autowired
@@ -70,6 +75,7 @@ class JwtControllerTest {
         attributes.put("email", "tester.test.com");
         Oauth2UserInfo oauth2UserInfo = new GoogleOauth2UserInfo(attributes);
         testUser = User.create(oauth2UserInfo);
+        Whitebox.setInternalState(testUser, "createdAt", LocalDateTime.now());
         mockUserDetails = new UserDetailsImpl(testUser);
     }
     @DisplayName("accessToken 발급 완료")
