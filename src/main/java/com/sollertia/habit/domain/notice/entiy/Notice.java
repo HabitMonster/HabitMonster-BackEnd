@@ -29,9 +29,11 @@ public class Notice extends TimeStamped {
         this.content = content;
     }
 
-    public Notice(NoticeVo noticeVo){
-        setTitle(noticeVo.getTitle());
-        setContent(noticeVo.getContent());
+    public static Notice create (NoticeVo noticeVo){
+        Notice notice = new Notice();
+        notice.setTitle(noticeVo.getTitle());
+        notice.setContent(noticeVo.getContent());
+        return notice;
     }
 
 }

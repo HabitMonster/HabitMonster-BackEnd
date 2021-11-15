@@ -21,6 +21,8 @@ import com.sollertia.habit.domain.preset.enums.PreSet;
 import com.sollertia.habit.domain.preset.repository.PreSetRepository;
 import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.domain.user.enums.ProviderType;
+import com.sollertia.habit.domain.user.follow.entity.Follow;
+import com.sollertia.habit.domain.user.follow.repository.FollowRepository;
 import com.sollertia.habit.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
@@ -45,6 +47,7 @@ public class TestData implements ApplicationRunner {
     private final MonsterCollectionDatabaseRepository monsterCollectionDatabaseRepository;
     private final MonsterRepository monsterRepostory;
     private final NoticeRepository noticeRepository;
+    private final FollowRepository followRepository;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
@@ -60,18 +63,22 @@ public class TestData implements ApplicationRunner {
         MonsterDatabase monsterDatabase9 = new MonsterDatabase(Level.LV4, MonsterType.YELLOW, "https://imagedelivery.net/jUjG58o6h5HnOZzG5_k-ng/bcf97df5-0a07-4873-4fa9-4d3b2a1f7a00/public");
         MonsterDatabase monsterDatabase10 = new MonsterDatabase(Level.LV5, MonsterType.YELLOW, "https://imagedelivery.net/jUjG58o6h5HnOZzG5_k-ng/ea39b10c-f522-4e6b-a754-28f17fa83d00/public");
 
-        Monster monster = Monster.createNewMonster("돼지", monsterDatabase4);
-
         monsterDatabaseRepository.save(monsterDatabase1);
         monsterDatabaseRepository.save(monsterDatabase2);
         monsterDatabaseRepository.save(monsterDatabase3);
         monsterDatabase4 = monsterDatabaseRepository.save(monsterDatabase4);
         monsterDatabaseRepository.save(monsterDatabase5);
         monsterDatabaseRepository.save(monsterDatabase6);
-        monsterDatabaseRepository.save(monsterDatabase7);
-        monsterDatabaseRepository.save(monsterDatabase8);
-        monsterDatabaseRepository.save(monsterDatabase9);
-        monsterDatabaseRepository.save(monsterDatabase10);
+        monsterDatabase7 =monsterDatabaseRepository.save(monsterDatabase7);
+        monsterDatabase8 =monsterDatabaseRepository.save(monsterDatabase8);
+        monsterDatabase9 =monsterDatabaseRepository.save(monsterDatabase9);
+        monsterDatabase10 =monsterDatabaseRepository.save(monsterDatabase10);
+
+        Monster monster = Monster.createNewMonster("돼지", monsterDatabase4);
+        Monster monster2 = Monster.createNewMonster("test1", monsterDatabase7);
+        Monster monster3 = Monster.createNewMonster("test2", monsterDatabase8);
+        Monster monster4 = Monster.createNewMonster("test3", monsterDatabase9);
+        Monster monster5 = Monster.createNewMonster("test4", monsterDatabase10);
 
         MonsterCollection monsterCollection;
         MonsterCollectionDatabase monsterCollectionDatabase;
@@ -121,50 +128,73 @@ public class TestData implements ApplicationRunner {
             completedHabitRepository.save(completedHabit);
         }
 
+        // follow
+        User testUser2 = User.builder().socialId("123456G").username("tester2").email("tester2.test.com").providerType(ProviderType.GOOGLE).build();
+        User testUser3 = User.builder().socialId("1234k").username("tester3").email("tester3.test.com").providerType(ProviderType.KAKAO).build();
+        User testUser4 = User.builder().socialId("1234N").username("tester4").email("tester4.test.com").providerType(ProviderType.NAVER).build();
+        User testUser5 = User.builder().socialId("123456789G").username("tester5NickName").providerType(ProviderType.GOOGLE).build();
+        testUser2.updateMonster(monster2);
+        testUser2 = userRepository.save(testUser2);
+        testUser3.updateMonster(monster3);
+        testUser3 = userRepository.save(testUser3);
+        testUser4.updateMonster(monster4);
+        testUser4 = userRepository.save(testUser4);
+        testUser5.updateMonster(monster5);
+        testUser5 = userRepository.save(testUser5);
+
+
+        followRepository.save(Follow.create(user,testUser2));
+        followRepository.save(Follow.create(user,testUser3));
+        followRepository.save(Follow.create(user,testUser4));
+
+        followRepository.save(Follow.create(testUser2,user));
+        followRepository.save(Follow.create(testUser3,user));
+        followRepository.save(Follow.create(testUser5,user));
+
         //Notice Board
-        NoticeVo noticeVo1 =  NoticeVo.builder().title("정식런칭 소개").content("반갑습니다, HabitMonster입니다!\n" +
-                "\n" +
-                "저희 팀은 많은 분들이 좋은 습관을 생성하고 유지하여 성장하는 습관을 기를 수 \n" +
-                "있게 도와주는 서비스를 만들기위해 지난 한달간 달려왔습니다.   \n" +
-                "\n" +
-                "우리들의 삶은 습관으로 이루어져 있다고 생각합니다. \n" +
-                "오늘 하루 우리들은 습관대로 생각하고, 말하고 행동해왔을 겁니다. \n" +
-                "이렇게 습관은 항상 우리 곁에 있으며 우리의 정체성을 결정하며 삶의 방향에 영향을 미칩니다.\n" +
-                "\n" +
-                "HabitMonster와 함께 좋은 습관을 생성하고 유지하는 일상이 하루하루 쌓이다 보면 매일 성장하고 발전하는 여러분들을 보실 수 있을 거라 확신합니다.\n" +
-                "\n" +
-                "저희팀은 HabitMonster를 사용해 주시는 많은 분들이 좋은 습관을 지속적으로 유지할 수 있게 도와주는 서비스를 만들기 위해 남은 기간 열심히 노력하겠습니다. \n" +
-                "\n" +
-                "아직 부족한 점이 많겠지만 앞으로 보내주시는 소중한 의견들을 모아 더 나은 서비스를 제공하기 위해 노력하겠습니다.\n" +
-                "\n" +
-                "HabitMonster 많은 사랑 부탁드리겠습니다! 감사합니다.").build();
-
-        Notice notice = new Notice(noticeVo1);
-        noticeRepository.save(notice);
-
-        NoticeVo noticeVo2 =  NoticeVo.builder().title("피드백 이벤트").content("다들 습관 잘 지키고 계신가요?\n" +
-                "\n" +
-                "저희 팀이 더 나은 서비스를 제공하기 위해 현재 피드백을 받고있지만 피드백 작성이 손이 많이 가는 일인 것 같아요.\n" +
-                "\n" +
-                "그래서 저희가 작은 이벤트를 준비했습니다." +
-                "\n" +
-                "피드백을 작성해주신 분들께 추첨을 통해 저희의 마음이 담긴 선물을 드리려고해요!\n" +
-                "\n" +
-                "참여방법은 아래 글을 참고해주세요.\n" +
-                "\n" +
-                " 참여방법 첫번째!\n" +
-                "1. HabitMonster 페이지에서 서비스 이용 후\n" +
-                "메인페이지의 “FeedBack” 아이콘을 누른 후 구글 폼을 사용해 피드백을 제출한다.\n" +
-                "2. 0월 0일 추첨을 통해 스타벅스 기프티콘을 받아 맛있게 마신다.\n" +
-                "\n" +
-                "참여방법 두번째!\n" +
-                "1. HabitMonster 페이지에서 서비스 이용 후 인스타그램에 접속한다.\n" +
-                "2. HabitMonster를 이용하며 느끼신 장점과 불편한 점을\n" +
-                "#HabitMonster #습관 #몬스터  태그와 함께 게시글을 작성한다.\n" +
-                "3. 0월 0일 추첨을 통해 베스킨라빈스 파인트 기프티콘을 받아 맛있게 먹는다.").build();
-
-        Notice notice2 = new Notice(noticeVo2);
-        noticeRepository.save(notice2);
+//        NoticeVo noticeVo1 =  NoticeVo.builder().title("정식런칭 소개").content("반갑습니다, HabitMonster입니다!\n" +
+//                "\n" +
+//                "저희 팀은 많은 분들이 좋은 습관을 생성하고 유지하여 성장하는 습관을 기를 수 \n" +
+//                "있게 도와주는 서비스를 만들기위해 지난 한달간 달려왔습니다.   \n" +
+//                "\n" +
+//                "우리들의 삶은 습관으로 이루어져 있다고 생각합니다. \n" +
+//                "오늘 하루 우리들은 습관대로 생각하고, 말하고 행동해왔을 겁니다. \n" +
+//                "이렇게 습관은 항상 우리 곁에 있으며 우리의 정체성을 결정하며 삶의 방향에 영향을 미칩니다.\n" +
+//                "\n" +
+//                "HabitMonster와 함께 좋은 습관을 생성하고 유지하는 일상이 하루하루 쌓이다 보면 매일 성장하고 발전하는 여러분들을 보실 수 있을 거라 확신합니다.\n" +
+//                "\n" +
+//                "저희팀은 HabitMonster를 사용해 주시는 많은 분들이 좋은 습관을 지속적으로 유지할 수 있게 도와주는 서비스를 만들기 위해 남은 기간 열심히 노력하겠습니다. \n" +
+//                "\n" +
+//                "아직 부족한 점이 많겠지만 앞으로 보내주시는 소중한 의견들을 모아 더 나은 서비스를 제공하기 위해 노력하겠습니다.\n" +
+//                "\n" +
+//                "HabitMonster 많은 사랑 부탁드리겠습니다! 감사합니다.").build();
+//
+//        Notice notice = Notice.create(noticeVo1);
+//        noticeRepository.save(notice);
+//
+//        NoticeVo noticeVo2 =  NoticeVo.builder().title("피드백 이벤트").content("다들 습관 잘 지키고 계신가요?\n" +
+//                "\n" +
+//                "저희 팀이 더 나은 서비스를 제공하기 위해 현재 피드백을 받고있지만 피드백 작성이 손이 많이 가는 일인 것 같아요.\n" +
+//                "\n" +
+//                "그래서 저희가 작은 이벤트를 준비했습니다." +
+//                "\n" +
+//                "피드백을 작성해주신 분들께 추첨을 통해 저희의 마음이 담긴 선물을 드리려고해요!\n" +
+//                "\n" +
+//                "참여방법은 아래 글을 참고해주세요.\n" +
+//                "\n" +
+//                " 참여방법 첫번째!\n" +
+//                "1. HabitMonster 페이지에서 서비스 이용 후\n" +
+//                "메인페이지의 “FeedBack” 아이콘을 누른 후 구글 폼을 사용해 피드백을 제출한다.\n" +
+//                "2. 0월 0일 추첨을 통해 스타벅스 기프티콘을 받아 맛있게 마신다.\n" +
+//                "\n" +
+//                "참여방법 두번째!\n" +
+//                "1. HabitMonster 페이지에서 서비스 이용 후 인스타그램에 접속한다.\n" +
+//                "2. HabitMonster를 이용하며 느끼신 장점과 불편한 점을\n" +
+//                "#HabitMonster #습관 #몬스터  태그와 함께 게시글을 작성한다.\n" +
+//                "3. 0월 0일 추첨을 통해 베스킨라빈스 파인트 기프티콘을 받아 맛있게 먹는다.").build();
+//
+//        Notice notice2 =  Notice.create(noticeVo2);
+//        noticeRepository.save(notice2);
 
 
     }
