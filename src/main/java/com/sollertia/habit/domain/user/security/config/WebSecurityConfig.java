@@ -47,6 +47,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/").permitAll()
                 .antMatchers(HttpMethod.GET, "/actuator/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/profile").permitAll()
+                .antMatchers(HttpMethod.GET, "/notice").permitAll()
 //                .anyRequest().permitAll()
                 .antMatchers("/user/login/**").anonymous()
                 //.antMatchers("/user/loginCheck").anonymous()

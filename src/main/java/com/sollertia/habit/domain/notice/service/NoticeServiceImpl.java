@@ -20,6 +20,6 @@ public class NoticeServiceImpl implements NoticeService{
     public NoticeResponseDto getNoticeList() {
         List<NoticeVo> noticeVoList = noticeRepository.findAll().stream().map(NoticeVo::of)
                 .collect(Collectors.toCollection(ArrayList::new));
-        return NoticeResponseDto.builder().noticeVoList(noticeVoList).build();
+        return NoticeResponseDto.builder().noticeVoList(noticeVoList).responseMessage("Notice Query Completed").statusCode(200).build();
     }
 }

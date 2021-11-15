@@ -139,30 +139,32 @@ public class TestData implements ApplicationRunner {
                 "\n" +
                 "HabitMonster 많은 사랑 부탁드리겠습니다! 감사합니다.").build();
 
-        noticeRepository.save(new Notice(noticeVo1));
+        Notice notice = new Notice(noticeVo1);
+        noticeRepository.save(notice);
 
         NoticeVo noticeVo2 =  NoticeVo.builder().title("피드백 이벤트").content("다들 습관 잘 지키고 계신가요?\n" +
                 "\n" +
                 "저희 팀이 더 나은 서비스를 제공하기 위해 현재 피드백을 받고있지만 피드백 작성이 손이 많이 가는 일인 것 같아요.\n" +
                 "\n" +
-                "그래서 저희가 작은 이벤트를 준비했습니다.\uD83C\uDF89\n" +
+                "그래서 저희가 작은 이벤트를 준비했습니다." +
                 "\n" +
                 "피드백을 작성해주신 분들께 추첨을 통해 저희의 마음이 담긴 선물을 드리려고해요!\n" +
                 "\n" +
                 "참여방법은 아래 글을 참고해주세요.\n" +
                 "\n" +
-                "\uD83C\uDFAF 참여방법 첫번째!\n" +
+                " 참여방법 첫번째!\n" +
                 "1. HabitMonster 페이지에서 서비스 이용 후\n" +
                 "메인페이지의 “FeedBack” 아이콘을 누른 후 구글 폼을 사용해 피드백을 제출한다.\n" +
                 "2. 0월 0일 추첨을 통해 스타벅스 기프티콘을 받아 맛있게 마신다.\n" +
                 "\n" +
-                "\uD83C\uDFAF 참여방법 두번째!\n" +
+                "참여방법 두번째!\n" +
                 "1. HabitMonster 페이지에서 서비스 이용 후 인스타그램에 접속한다.\n" +
                 "2. HabitMonster를 이용하며 느끼신 장점과 불편한 점을\n" +
                 "#HabitMonster #습관 #몬스터  태그와 함께 게시글을 작성한다.\n" +
                 "3. 0월 0일 추첨을 통해 베스킨라빈스 파인트 기프티콘을 받아 맛있게 먹는다.").build();
 
-        noticeRepository.save(new Notice(noticeVo2));
+        Notice notice2 = new Notice(noticeVo2);
+        noticeRepository.save(notice2);
 
 
     }
