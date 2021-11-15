@@ -7,10 +7,7 @@ import com.sollertia.habit.domain.user.dto.UserInfoResponseDto;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
@@ -36,5 +33,13 @@ public class UserController {
             @Valid @RequestBody UsernameUpdateRequestDto requestDto
     ) {
         return userService.updateUsername(userDetails.getUser(), requestDto);
+    }
+
+    @ApiOperation(value = "회원 탈퇴", notes = "회원 탈퇴 정보 응답")
+    @DeleteMapping("/user/quit")
+    public UserInfoResponseDto disableUser(
+            @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        return userService.disableUser(userDetails.getUser());
     }
 }
