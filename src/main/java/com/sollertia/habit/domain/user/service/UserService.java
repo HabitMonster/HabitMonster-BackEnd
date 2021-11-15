@@ -59,4 +59,20 @@ public class UserService {
                 .responseMessage("User Name Updated Completed")
                 .build();
     }
+
+    public UserInfoResponseDto disableUser(User user) {
+        user.toDisabled();
+        UserInfoVo infoVo = UserInfoVo.builder()
+                .socialType(user.getProviderType())
+                .email(user.getEmail())
+                .username(user.getUsername())
+                .monsterCode(user.getSocialId())
+                .build();
+
+        return UserInfoResponseDto.builder()
+                .userInfo(infoVo)
+                .statusCode(200)
+                .responseMessage("User Droped")
+                .build();
+    }
 }

@@ -31,6 +31,8 @@ public class User extends TimeStamped {
 
     private String email;
 
+    private boolean disabled;
+
     @Enumerated(EnumType.STRING)
     private ProviderType providerType;
 
@@ -74,6 +76,10 @@ public class User extends TimeStamped {
         this.monster = monster;
     }
 
+    private void setDisabled (boolean disabled) {
+        this.disabled = disabled;
+    }
+
     public void updateUsername(String username) {
         this.setUsername(username);
     }
@@ -92,5 +98,9 @@ public class User extends TimeStamped {
         this.setMonster(monster);
         monster.setUser(this);
         return this;
+    }
+
+    public void toDisabled() {
+        this.setDisabled(true);
     }
 }
