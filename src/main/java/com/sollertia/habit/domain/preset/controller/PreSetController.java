@@ -1,6 +1,7 @@
 package com.sollertia.habit.domain.preset.controller;
 
 
+import com.sollertia.habit.domain.habit.dto.HabitDetail;
 import com.sollertia.habit.domain.habit.dto.HabitDetailResponseDto;
 import com.sollertia.habit.domain.habit.dto.HabitDtoImpl;
 import com.sollertia.habit.domain.habit.dto.HabitTypeDto;
@@ -23,6 +24,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @RequiredArgsConstructor
 @RestController
@@ -47,9 +49,19 @@ public class PreSetController {
         Calendar endDate = Calendar.getInstance();
         DateFormat form = new SimpleDateFormat("yyyy-MM-dd");
         endDate.add(Calendar.DATE, preSetVo.getPeriod());
+        long diffInMillies = Math.abs(endDate.getTime().getTime() - startDate.getTime().getTime());
+        long wholeDays = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
 
-        HabitDtoImpl habitDto = HabitDtoImpl.builder().durationStart(form.format(startDate.getTime())).durationEnd(form.format(endDate.getTime()))
-                .count(preSetVo.getCount()).title(preSetVo.getTitle()).description(preSetVo.getDescription()).practiceDays(preSetVo.getPracticeDays()).categoryId(preSetVo.getCategoryId()).build();
+        HabitDtoImpl habitDto = HabitDtoImpl.builder()
+                .durationStart(form.format(startDate.getTime()))
+                .durationEnd(form.format(endDate.getTime()))
+                .count(preSetVo.getCount())
+                .totalCount(Math.toIntExact(preSetVo.getCount() * wholeDays))
+                .title(preSetVo.getTitle())
+                .description(preSetVo.getDescription())
+                .practiceDays(preSetVo.getPracticeDays())
+                .categoryId(preSetVo.getCategoryId())
+                .build();
 
         HabitTypeDto habitTypeDto = new HabitTypeDto("counter", "specificDay");
 
