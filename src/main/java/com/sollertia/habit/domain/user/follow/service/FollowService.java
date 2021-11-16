@@ -5,9 +5,14 @@ import com.sollertia.habit.domain.user.follow.dto.FollowResponseDto;
 import com.sollertia.habit.global.utils.DefaultResponseDto;
 
 public interface FollowService {
-    FollowResponseDto getFollowList(User user);
+
+    FollowResponseDto getFollowerList(User user);
+
+    FollowResponseDto getFollowingList(User user);
 
     DefaultResponseDto requestFollow(String followingId, User user);
 
     DefaultResponseDto requestUnFollow(String followingId, User user);
+
+
 }
