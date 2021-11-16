@@ -6,9 +6,9 @@ import com.sollertia.habit.global.utils.DefaultResponseDto;
 
 public interface FollowService {
 
-    FollowResponseDto getFollowerList(User user);
+    FollowResponseDto getFollowers(User user);
 
-    FollowResponseDto getFollowingList(User user);
+    FollowResponseDto getFollowings(User user);
 
     DefaultResponseDto requestFollow(String followingId, User user);
 
