@@ -22,11 +22,11 @@ public class Follow {
     @JoinColumn(name = "following_id")
     private User following;
 
-    public void setFollower(User follower) {
+    private void setFollower(User follower) {
         this.follower = follower;
     }
 
-    public void setFollowing(User following) {
+    private void setFollowing(User following) {
         this.following = following;
     }
 
