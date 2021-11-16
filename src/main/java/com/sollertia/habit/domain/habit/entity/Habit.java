@@ -147,7 +147,8 @@ public abstract class Habit extends TimeStamped {
         if (wholeDays == 0) {
             return 0l;
         }
-        return this.accomplishCounter / this.wholeDays;
+        double percentage = ((double)this.accomplishCounter / (double)this.wholeDays) * 100;
+        return Math.round(percentage);
     }
     protected void checkAccomplishCounter() {
         this.accomplishCounter += 1;
