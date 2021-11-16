@@ -6,6 +6,7 @@ import com.sollertia.habit.global.exception.habit.HabitIdNotFoundException;
 import com.sollertia.habit.global.exception.monster.InvalidLevelException;
 import com.sollertia.habit.global.exception.monster.MonsterNotFoundException;
 import com.sollertia.habit.global.exception.preset.PreSetNotFoundException;
+import com.sollertia.habit.global.exception.user.FollowException;
 import com.sollertia.habit.global.exception.user.InvalidSocialNameException;
 import com.sollertia.habit.global.exception.user.OAuthProviderMissMatchException;
 import com.sollertia.habit.global.exception.user.UserIdNotFoundException;
@@ -23,6 +24,11 @@ import java.time.format.DateTimeParseException;
 
 @RestControllerAdvice
 public class GlobalController {
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponseDto> FollowExceptionHandler(FollowException exception) {
+        return new ResponseEntity<>(ErrorResponseDto.badRequest(exception.getMessage()), HttpStatus.BAD_REQUEST);
+    }
 
     @ExceptionHandler
     public ResponseEntity<ErrorResponseDto> SQLExceptionHandler(SQLException exception) {
