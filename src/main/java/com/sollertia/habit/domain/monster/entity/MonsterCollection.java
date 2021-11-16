@@ -74,4 +74,8 @@ public class MonsterCollection {
         monsterCollection.setCreateAt(monster.getCreatedAt().toLocalDate().toString());
         return monsterCollection;
     }
+
+    public void updateMonsterName(String monsterName) {
+        this.setMonsterName(monsterName);
+    }
 }

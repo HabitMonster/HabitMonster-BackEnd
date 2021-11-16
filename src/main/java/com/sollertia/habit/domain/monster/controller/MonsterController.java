@@ -39,6 +39,7 @@ public class MonsterController {
     public MonsterResponseDto updateMonsterName(
             @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestBody MonsterSelectRequestDto requestDto) {
+        monsterCollectionService.updateMonsterName(userDetails.getUser(), requestDto.getMonsterName());
         return monsterService.updateMonsterName(userDetails.getUser(), requestDto);
     }
 
