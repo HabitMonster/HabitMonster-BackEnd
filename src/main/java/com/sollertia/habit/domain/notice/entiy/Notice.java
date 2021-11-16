@@ -2,13 +2,14 @@ package com.sollertia.habit.domain.notice.entiy;
 
 import com.sollertia.habit.domain.notice.dto.NoticeVo;
 import com.sollertia.habit.global.utils.TimeStamped;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class Notice extends TimeStamped {
 
