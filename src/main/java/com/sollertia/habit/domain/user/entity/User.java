@@ -46,7 +46,7 @@ public class User extends TimeStamped {
     private List<MonsterCollection> monsterCollections;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, orphanRemoval = true)
-    @JoinColumn(name = "monster_id")
+    @JoinColumn(name = "monster_id", unique = true)
     @JsonIgnore
     private Monster monster;
 

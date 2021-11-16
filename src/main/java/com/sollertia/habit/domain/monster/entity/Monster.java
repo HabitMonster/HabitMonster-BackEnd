@@ -22,7 +22,7 @@ public class Monster extends TimeStamped {
     @Enumerated(value = EnumType.STRING)
     private Level level;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private MonsterDatabase monsterDatabase;
 
     @OneToOne(mappedBy = "monster", fetch = FetchType.LAZY)

@@ -1,16 +1,13 @@
 package com.sollertia.habit.domain.monster.dto;
 
 import com.sollertia.habit.domain.monster.entity.Monster;
-import com.sollertia.habit.domain.monster.entity.MonsterCollection;
 import lombok.Builder;
 import lombok.Getter;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Builder
 public class MonsterVo {
+    private Long levelOneId;
     private String monsterImage;
     private String monsterName;
     private Integer monsterLevel;
@@ -19,6 +16,7 @@ public class MonsterVo {
 
     public static MonsterVo of(Monster monster) {
         return MonsterVo.builder()
+                .levelOneId(monster.getMonsterDatabase().getMonsterType().getLv1Id())
                 .monsterImage(monster.getMonsterDatabase().getImageUrl())
                 .monsterName(monster.getName())
                 .monsterLevel(monster.getLevel().getValue())
