@@ -64,7 +64,7 @@ public class HabitWithCounter extends Habit {
             this.accomplishToday();
             return true;
         } else {
-            throw new AlreadyGoalCountException("Habit is complated today already");
+            throw new AlreadyGoalCountException("Habit is completed today already");
         }
     }
 
