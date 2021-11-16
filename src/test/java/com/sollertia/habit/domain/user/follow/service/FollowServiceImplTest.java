@@ -5,14 +5,16 @@ import com.sollertia.habit.domain.monster.entity.MonsterDatabase;
 import com.sollertia.habit.domain.monster.entity.MonsterType;
 import com.sollertia.habit.domain.monster.enums.Level;
 import com.sollertia.habit.domain.user.entity.User;
+import com.sollertia.habit.domain.user.follow.dto.FollowCheckDto;
 import com.sollertia.habit.domain.user.follow.dto.FollowResponseDto;
+import com.sollertia.habit.domain.user.follow.dto.FollowSearchResponseDto;
 import com.sollertia.habit.domain.user.follow.entity.Follow;
 import com.sollertia.habit.domain.user.follow.repository.FollowRepository;
 import com.sollertia.habit.domain.user.oauth2.userinfo.GoogleOauth2UserInfo;
 import com.sollertia.habit.domain.user.oauth2.userinfo.Oauth2UserInfo;
 import com.sollertia.habit.domain.user.repository.UserRepository;
+import com.sollertia.habit.global.exception.user.FollowException;
 import com.sollertia.habit.global.exception.user.UserIdNotFoundException;
-import com.sollertia.habit.global.utils.DefaultResponseDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,6 +35,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willThrow;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @RunWith(PowerMockRunner.class)
@@ -76,17 +80,20 @@ class FollowServiceImplTest {
 
     @DisplayName("Followers 가져오기")
     @Test
-    void getFollowers(){
+    void getFollowers() {
         //given
-        Follow follow = Follow.create(testUser2,testUser);
+        Follow follow = Follow.create(testUser2, testUser);
         List<Follow> follows = new ArrayList<>();
         follows.add(follow);
         given(followRepository.findAllByFollowingId(testUser.getId())).willReturn(follows);
+        given(userRepository.findBySocialId(testUser2.getSocialId())).willReturn(java.util.Optional.ofNullable(testUser2));
+        lenient().when(followRepository.findByFollowerIdAndFollowingId(testUser2.getId(), testUser.getId())).thenReturn(follow);
 
         //when
         FollowResponseDto followResponseDto = followService.getFollowers(testUser);
 
         //then
+        assertThat(followResponseDto.getFollowers().get(0).getIsFollowed()).isEqualTo(false);
         assertThat(followResponseDto.getFollowers().get(0).getEmail()).isEqualTo(testUser2.getEmail());
         assertThat(followResponseDto.getFollowers().get(0).getMonsterName()).isEqualTo(testUser2.getMonster().getName());
         assertThat(followResponseDto.getFollowers().get(0).getMonsterImg()).isEqualTo(testUser2.getMonster().getMonsterDatabase().getImageUrl());
@@ -97,9 +104,9 @@ class FollowServiceImplTest {
 
     @DisplayName("Followeings 가져오기")
     @Test
-    void getFollowings(){
+    void getFollowings() {
         //given
-        Follow follow = Follow.create(testUser,testUser2);
+        Follow follow = Follow.create(testUser, testUser2);
         List<Follow> follows = new ArrayList<>();
         follows.add(follow);
         given(followRepository.findAllByFollowerId(testUser.getId())).willReturn(follows);
@@ -118,45 +125,98 @@ class FollowServiceImplTest {
 
     @DisplayName("Follow 하기")
     @Test
-    void requestFollow(){
+    void requestFollow() {
         //given
+        Follow follow = Follow.create(testUser, testUser2);
         given(userRepository.findBySocialId(testUser2.getSocialId())).willReturn(java.util.Optional.ofNullable(testUser2));
 
         //when
-        DefaultResponseDto responseDto = followService.requestFollow("1234G",testUser);
+        FollowCheckDto responseDto = followService.requestFollow("1234G", testUser);
 
         //then
+        assertThat(responseDto.getIsFollowed()).isEqualTo(true);
         assertThat(responseDto.getStatusCode()).isEqualTo(200);
         assertThat(responseDto.getResponseMessage()).isEqualTo("Success Follow");
     }
 
+    @DisplayName("Already Follow")
+    @Test
+    void alreadyFollow() {
+        //given
+        Follow follow = Follow.create(testUser, testUser2);
+        given(userRepository.findBySocialId(testUser2.getSocialId())).willReturn(java.util.Optional.ofNullable(testUser2));
+        given(followRepository.findByFollowerIdAndFollowingId(testUser.getId(), testUser2.getId())).willReturn(follow);
+
+        //when - then
+        assertThrows(FollowException.class,
+                () -> followService.requestFollow("1234G", testUser));
+    }
+
     @DisplayName("UnFollow 하기")
     @Test
-    void requestUnFollow(){
+    void requestUnFollow() {
         //given
         given(userRepository.findBySocialId(testUser2.getSocialId())).willReturn(java.util.Optional.ofNullable(testUser2));
 
         //when
-        DefaultResponseDto responseDto = followService.requestUnFollow("1234G",testUser);
+        FollowCheckDto responseDto = followService.requestUnFollow("1234G", testUser);
 
         //then
+        assertThat(responseDto.getIsFollowed()).isEqualTo(false);
         assertThat(responseDto.getStatusCode()).isEqualTo(200);
         assertThat(responseDto.getResponseMessage()).isEqualTo("Success UnFollow");
     }
 
+    @DisplayName("searchFollowing")
+    @Test
+    void searchFollowing() {
+        //given
+        Follow follow = Follow.create(testUser2, testUser);
+        given(userRepository.findBySocialId(testUser2.getSocialId())).willReturn(java.util.Optional.ofNullable(testUser2));
+        lenient().when(followRepository.findByFollowerIdAndFollowingId(testUser2.getId(), testUser.getId())).thenReturn(follow);
+
+        //when
+        FollowSearchResponseDto responseDto = followService.searchFollowing("1234G", testUser);
+
+        //then
+        assertThat(responseDto.getSearchResult().getEmail()).isEqualTo(testUser2.getEmail());
+        assertThat(responseDto.getSearchResult().getIsFollowed()).isEqualTo(false);
+        assertThat(responseDto.getSearchResult().getMonsterCode()).isEqualTo(testUser2.getSocialId());
+        assertThat(responseDto.getSearchResult().getMonsterImg()).isEqualTo(testUser2.getMonster().getMonsterDatabase().getImageUrl());
+        assertThat(responseDto.getSearchResult().getMonsterName()).isEqualTo(testUser2.getMonster().getName());
+        assertThat(responseDto.getStatusCode()).isEqualTo(200);
+        assertThat(responseDto.getResponseMessage()).isEqualTo("Search Completed");
+    }
+
     @DisplayName("Follow UserNoFound")
     @Test
-    void followUserNotFound(){
+    void followUserNotFound() {
         willThrow(UserIdNotFoundException.class).given(userRepository).findBySocialId("1234G");
         assertThrows(UserIdNotFoundException.class,
-                () -> followService.requestFollow("1234G",testUser));
+                () -> followService.requestFollow("1234G", testUser));
     }
 
     @DisplayName("UnFollow UserNoFound")
     @Test
-    void unFollowUserNotFound(){
+    void unFollowUserNotFound() {
         willThrow(UserIdNotFoundException.class).given(userRepository).findBySocialId("1234G");
         assertThrows(UserIdNotFoundException.class,
-                () -> followService.requestUnFollow("1234G",testUser));
+                () -> followService.requestUnFollow("1234G", testUser));
+    }
+
+    @DisplayName("searchFollowing UserNoFound")
+    @Test
+    void searchFollowingUserNotFound() {
+        willThrow(UserIdNotFoundException.class).given(userRepository).findBySocialId("1234G");
+        assertThrows(UserIdNotFoundException.class,
+                () -> followService.searchFollowing("1234G", testUser));
+    }
+
+    @DisplayName("checkFollow UserNoFound")
+    @Test
+    void checkFollowUserNotFound() {
+        willThrow(UserIdNotFoundException.class).given(userRepository).findBySocialId("1234G");
+        assertThrows(UserIdNotFoundException.class,
+                () -> followService.checkFollow("1234G", testUser));
     }
 }

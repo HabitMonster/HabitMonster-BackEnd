@@ -1,8 +1,9 @@
 package com.sollertia.habit.domain.user.follow.service;
 
 import com.sollertia.habit.domain.user.entity.User;
+import com.sollertia.habit.domain.user.follow.dto.FollowCheckDto;
 import com.sollertia.habit.domain.user.follow.dto.FollowResponseDto;
-import com.sollertia.habit.global.utils.DefaultResponseDto;
+import com.sollertia.habit.domain.user.follow.dto.FollowSearchResponseDto;
 
 public interface FollowService {
 
@@ -10,9 +11,11 @@ public interface FollowService {
 
     FollowResponseDto getFollowings(User user);
 
-    DefaultResponseDto requestFollow(String followingId, User user);
+    FollowCheckDto requestFollow(String followingId, User user);
 
-    DefaultResponseDto requestUnFollow(String followingId, User user);
+    FollowCheckDto requestUnFollow(String followingId, User user);
 
+    FollowSearchResponseDto searchFollowing(String followingId, User user);
 
+    FollowCheckDto checkFollow(String followingId, User user);
 }
