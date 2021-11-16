@@ -3,6 +3,7 @@ package com.sollertia.habit.domain.monster.service;
 
 import com.sollertia.habit.domain.monster.dto.*;
 import com.sollertia.habit.domain.monster.entity.Monster;
+import com.sollertia.habit.domain.monster.entity.MonsterCollection;
 import com.sollertia.habit.domain.monster.entity.MonsterDatabase;
 import com.sollertia.habit.domain.monster.entity.MonsterType;
 import com.sollertia.habit.domain.monster.enums.Level;
@@ -16,7 +17,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,9 +29,11 @@ public class MonsterService {
     private final MonsterCollectionService monsterCollectionService;
 
     public MonsterListResponseDto getAllMonsters(User user) {
-        List<MonsterDatabase> monsterDatabases = monsterDatabaseRepository.findAllByLevel(Level.LV1);
+        List<MonsterCollection> monsterCollectionList = monsterCollectionService.getMonsterCollectionListByUser(user);
+        List<MonsterType> collect = monsterCollectionList.stream().map(MonsterCollection::getMonsterType).collect(Collectors.toList());
+        List<MonsterDatabase> monsterDatabaseList = monsterDatabaseRepository.findAllByLevel(Level.LV1);
         return MonsterListResponseDto.builder()
-                .monsters(MonsterSummaryVo.listFromMonsterList(monsterDatabases))
+                .monsters(MonsterSummaryVo.listFromMonsterDatabasesDisabledIfNotIn(monsterDatabaseList, collect))
                 .responseMessage("LV1 Monster Query Completed")
                 .statusCode(200)
                 .build();

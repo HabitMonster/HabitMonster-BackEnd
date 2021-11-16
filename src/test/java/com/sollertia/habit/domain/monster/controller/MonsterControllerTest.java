@@ -31,7 +31,6 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -95,7 +94,7 @@ class MonsterControllerTest {
         //given
         authenticated();
         List<MonsterSummaryVo> summaryVoList = new ArrayList<>();
-        summaryVoList.add(MonsterSummaryVo.builder().monsterId(1L).monsterImage("monster.img").build());
+        summaryVoList.add(new MonsterSummaryVo(1L,"monster.img"));
         MonsterListResponseDto responseDto = MonsterListResponseDto.builder().monsters(summaryVoList).responseMessage("LV1 Monster Query Completed").statusCode(200).build();
 
         given(monsterService.getAllMonsters(testUser))
@@ -196,7 +195,7 @@ class MonsterControllerTest {
                 .responseMessage("Monster Collection Query Completed")
                 .statusCode(200).build();
 
-        given(monsterCollectionService.getMonsterCollection(testUser))
+        given(monsterCollectionService.getMonsterCollectionResponseDto(testUser))
                 .willReturn(responseDto);
         //when
         mvc.perform(get("/user/monsters"))
@@ -206,7 +205,7 @@ class MonsterControllerTest {
                 .andExpect(jsonPath("$.responseMessage").value(responseDto.getResponseMessage()))
                 .andExpect(jsonPath("$.statusCode").value(responseDto.getStatusCode()));
 
-        verify(monsterCollectionService).getMonsterCollection(testUser);
+        verify(monsterCollectionService).getMonsterCollectionResponseDto(testUser);
     }
 
     @Test
