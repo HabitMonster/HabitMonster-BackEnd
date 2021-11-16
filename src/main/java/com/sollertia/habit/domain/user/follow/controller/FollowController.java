@@ -15,16 +15,16 @@ public class FollowController {
 
     private final FollowServiceImpl followService;
 
-    @ApiOperation(value = "follower 리스트", notes = "follower list")
-    @GetMapping("/followerList")
-    public FollowResponseDto getFollowerList(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return followService.getFollowerList(userDetails.getUser());
+    @ApiOperation(value = "follower 목록", notes = "follower list")
+    @GetMapping("/followers")
+    public FollowResponseDto getFollowers(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return followService.getFollowers(userDetails.getUser());
     }
 
-    @ApiOperation(value = "following 리스트", notes = "following list")
-    @GetMapping("/followingList")
-    public FollowResponseDto getFollowingList(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return followService.getFollowingList(userDetails.getUser());
+    @ApiOperation(value = "following 목록", notes = "following list")
+    @GetMapping("/followings")
+    public FollowResponseDto getFollowings(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return followService.getFollowings(userDetails.getUser());
     }
 
     @ApiOperation(value = "follow 요청", notes = "로그인 중인 User와 follo 대상자 매핑")

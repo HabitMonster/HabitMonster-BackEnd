@@ -25,23 +25,23 @@ public class FollowServiceImpl implements FollowService{
     private final UserRepository userRepository;
 
     @Override
-    public FollowResponseDto getFollowerList(User user) {
+    public FollowResponseDto getFollowers(User user) {
 
-        List<FollowVo> followerList = followRepository.findAllByFollowingId(user.getId()).stream()
+        List<FollowVo> followers = followRepository.findAllByFollowingId(user.getId()).stream()
                 .map(FollowVo::followerOf).collect(Collectors.toCollection(ArrayList::new));
 
-        return FollowResponseDto.builder().followerList(followerList)
-                .statusCode(200).responseMessage("FollowerList Query Completed").build();
+        return FollowResponseDto.builder().followers(followers)
+                .statusCode(200).responseMessage("Followers Query Completed").build();
     }
 
     @Override
-    public FollowResponseDto getFollowingList(User user) {
+    public FollowResponseDto getFollowings(User user) {
 
-        List<FollowVo> followingList = followRepository.findAllByFollowerId(user.getId()).stream()
+        List<FollowVo> followings = followRepository.findAllByFollowerId(user.getId()).stream()
                 .map(FollowVo::followingOf).collect(Collectors.toCollection(ArrayList::new));
 
-        return FollowResponseDto.builder().followingList(followingList)
-                .statusCode(200).responseMessage("FollowingList Query Completed").build();
+        return FollowResponseDto.builder().followings(followings)
+                .statusCode(200).responseMessage("Followings Query Completed").build();
     }
 
     @Transactional

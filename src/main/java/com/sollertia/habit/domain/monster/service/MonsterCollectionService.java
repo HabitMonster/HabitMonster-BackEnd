@@ -44,8 +44,7 @@ public class MonsterCollectionService {
 
     @Transactional
     public MonsterCollection addEvolutedMonster(User user) {
-        MonsterType monsterType = user.getMonster().getMonsterDatabase().getMonsterType();
-        MonsterCollection monsterCollection = monsterCollectionRepository.findByUserAndMonsterType(user, monsterType);
+        MonsterCollection monsterCollection = getCurrentMonsterCollectionByUser(user);
         monsterCollection.updateMaxLevel(user.getMonster().getLevel());
         MonsterCollectionDatabase monsterCollectionDatabase =
                 MonsterCollectionDatabase.from(user.getMonster().getMonsterDatabase(), monsterCollection);
@@ -81,9 +80,18 @@ public class MonsterCollectionService {
                 .build();
     }
 
+    @Transactional
+    public void updateMonsterName(User user, String monsterName) {
+        MonsterCollection monsterCollection = getCurrentMonsterCollectionByUser(user);
+        monsterCollection.updateMonsterName(monsterName);
+    }
+
     public List<MonsterCollection> getMonsterCollectionListByUser(User user) {
         return monsterCollectionRepository.findAllByUser(user);
     }
 
-
+    public MonsterCollection getCurrentMonsterCollectionByUser(User user) {
+        MonsterType monsterType = user.getMonster().getMonsterDatabase().getMonsterType();
+        return monsterCollectionRepository.findByUserAndMonsterType(user, monsterType);
+    }
 }
