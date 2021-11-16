@@ -54,8 +54,8 @@ public class MonsterCollectionService {
     }
 
     @Transactional
-    public MonsterCollectionResponseDto getMonsterCollection(User user) {
-        List<MonsterCollection> monsterCollectionList = monsterCollectionRepository.findAllByUser(user);
+    public MonsterCollectionResponseDto getMonsterCollectionResponseDto(User user) {
+        List<MonsterCollection> monsterCollectionList = getMonsterCollectionListByUser(user);
         List<MonsterCollectionVo> monsterCollectionVoList = new ArrayList<>();
 
         for (MonsterCollection monsterCollection : monsterCollectionList) {
@@ -79,6 +79,10 @@ public class MonsterCollectionService {
                 .responseMessage("Monster Collection Query Completed")
                 .statusCode(200)
                 .build();
+    }
+
+    public List<MonsterCollection> getMonsterCollectionListByUser(User user) {
+        return monsterCollectionRepository.findAllByUser(user);
     }
 
 

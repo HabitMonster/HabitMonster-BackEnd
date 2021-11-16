@@ -18,7 +18,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -94,7 +93,7 @@ class MonsterCollectionServiceTest {
                 .willReturn(mockMonsterCollectionList);
 
         //when
-        MonsterCollectionResponseDto responseDto = monsterCollectionService.getMonsterCollection(testUser);
+        MonsterCollectionResponseDto responseDto = monsterCollectionService.getMonsterCollectionResponseDto(testUser);
 
         //then
         assertThat(responseDto.getStatusCode()).isEqualTo(200);

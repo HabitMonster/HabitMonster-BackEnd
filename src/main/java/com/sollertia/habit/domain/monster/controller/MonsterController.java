@@ -13,8 +13,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
-import javax.validation.Valid;
-
 @RestController
 @RequiredArgsConstructor
 public class MonsterController {
@@ -48,7 +46,7 @@ public class MonsterController {
     @GetMapping("/user/monsters")
     public MonsterCollectionResponseDto getMonsterCollection(
             @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return monsterCollectionService.getMonsterCollection(userDetails.getUser());
+        return monsterCollectionService.getMonsterCollectionResponseDto(userDetails.getUser());
     }
 
     @ApiOperation(value = "사용자 몬스터 조회", notes = "사용자 몬스터 정보 반환")
