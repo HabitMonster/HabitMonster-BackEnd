@@ -12,7 +12,7 @@ import com.sollertia.habit.domain.monster.repository.MonsterRepository;
 import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.domain.user.oauth2.userinfo.GoogleOauth2UserInfo;
 import com.sollertia.habit.domain.user.oauth2.userinfo.Oauth2UserInfo;
-import com.sollertia.habit.domain.user.service.UserService;
+import com.sollertia.habit.domain.user.repository.UserRepository;
 import com.sollertia.habit.global.exception.monster.MonsterNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,7 +24,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -48,9 +47,9 @@ class MonsterServiceTest {
     @Mock
     private MonsterDatabaseRepository monsterDatabaseRepository;
     @Mock
-    private UserService userService;
-    @Mock
     private MonsterCollectionService monsterCollectionService;
+    @Mock
+    private UserRepository userRepository;
 
     User testUser;
     User updatedTestUser;
@@ -109,7 +108,7 @@ class MonsterServiceTest {
         MonsterSelectRequestDto mockRequestDto = new MonsterSelectRequestDto(1L, monster1.getName());
         given(monsterRepository.save(any(Monster.class)))
                 .willReturn(monster1);
-        given(userService.updateMonster(eq(testUser), any(Monster.class)))
+        given(userRepository.save(eq(testUser)))
                 .willReturn(updatedTestUser);
 
         //when
@@ -127,7 +126,7 @@ class MonsterServiceTest {
 
         verify(monsterDatabaseRepository).findById(1L);
         verify(monsterRepository).save(any(Monster.class));
-        verify(userService).updateMonster(eq(testUser), any(Monster.class));
+        verify(userRepository).save(eq(testUser));
     }
 
     @Test
@@ -163,7 +162,7 @@ class MonsterServiceTest {
                 .willReturn(Optional.of(mockMonsterDatabaseList.get(1)));
         given(monsterRepository.save(any(Monster.class)))
                 .willReturn(monster1);
-        given(userService.updateMonster(eq(testUser), any(Monster.class)))
+        given(userRepository.save(eq(testUser)))
                 .willReturn(updatedTestUser);
         MonsterSelectRequestDto mockRequestDto = new MonsterSelectRequestDto(1L, monster2.getName());
 
@@ -184,7 +183,7 @@ class MonsterServiceTest {
         verify(monsterDatabaseRepository).findById(1L);
         verify(monsterCollectionService).addMonsterCollection(any(Monster.class));
         verify(monsterRepository).save(any(Monster.class));
-        verify(userService).updateMonster(eq(testUser), any(Monster.class));
+        verify(userRepository).save(eq(testUser));
     }
 
     @Test
@@ -200,7 +199,7 @@ class MonsterServiceTest {
                 () -> monsterService.updateMonster(testUser, mockRequestDto));
 
         verify(monsterDatabaseRepository).findById(1L);
-        verify(userService, never()).updateMonster(any(), any());
+        verify(userRepository, never()).save(any());
     }
 
     @Test

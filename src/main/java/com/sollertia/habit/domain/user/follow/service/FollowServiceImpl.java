@@ -9,8 +9,8 @@ import com.sollertia.habit.global.exception.user.FollowException;
 import com.sollertia.habit.global.exception.user.UserIdNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -49,10 +49,10 @@ public class FollowServiceImpl implements FollowService {
     public FollowCheckDto requestFollow(String followingId, User user) {
 
         User followingUser = userRepository.findBySocialId(followingId).orElseThrow(
-                () -> new UserIdNotFoundException("NotFound MonsterCode")
+                () -> new UserIdNotFoundException("Not Found MonsterCode")
         );
 
-        if (followRepository.findByFollowerIdAndFollowingId(user.getId(), followingUser.getId()) != null) {
+        if (isFollowBetween(user, followingUser)) {
             throw new FollowException("Already Follow");
         }
 
@@ -67,7 +67,7 @@ public class FollowServiceImpl implements FollowService {
     public FollowCheckDto requestUnFollow(String followingId, User user) {
 
         User followingUser = userRepository.findBySocialId(followingId).orElseThrow(
-                () -> new UserIdNotFoundException("NotFound MonsterCode")
+                () -> new UserIdNotFoundException("Not Found MonsterCode")
         );
 
         followRepository.deleteByFollowerIdAndFollowingId(user.getId(), followingUser.getId());
@@ -79,7 +79,7 @@ public class FollowServiceImpl implements FollowService {
     public FollowSearchResponseDto searchFollowing(String followingId, User user) {
 
         User searchUser = userRepository.findBySocialId(followingId).orElseThrow(
-                () -> new UserIdNotFoundException("NotFound MonsterCode")
+                () -> new UserIdNotFoundException("Not Found MonsterCode")
         );
 
         FollowSearchResponseVo followSearchResponseVo = FollowSearchResponseVo.of(searchUser, checkFollow(followingId, user).getIsFollowed());
@@ -91,12 +91,21 @@ public class FollowServiceImpl implements FollowService {
     public FollowCheckDto checkFollow(String followingId, User user) {
 
         User checkUser = userRepository.findBySocialId(followingId).orElseThrow(
-                () -> new UserIdNotFoundException("NotFound MonsterCode")
+                () -> new UserIdNotFoundException("Not Found MonsterCode")
         );
 
-        return followRepository.findByFollowerIdAndFollowingId(user.getId(), checkUser.getId()) != null ?
+        return isFollowBetween(user, checkUser) ?
                 FollowCheckDto.builder().isFollowed(true).statusCode(200).responseMessage("isFollowedTrue").build() :
                 FollowCheckDto.builder().isFollowed(false).statusCode(200).responseMessage("isFollowedFalse").build();
     }
 
+    public boolean isFollowBetween(User user, User checkUser) {
+        return followRepository.findByFollowerIdAndFollowingId(user.getId(), checkUser.getId()) != null;
+    }
+
+    public FollowCount getCountByUser(User targetUser) {
+        Integer followersCount = followRepository.findCountByFollowing(targetUser);
+        Integer followingsCount = followRepository.findCountByFollower(targetUser);
+        return new FollowCount(followersCount, followingsCount);
+    }
 }

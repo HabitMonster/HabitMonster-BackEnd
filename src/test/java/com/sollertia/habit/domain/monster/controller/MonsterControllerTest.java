@@ -235,7 +235,7 @@ class MonsterControllerTest {
     void getMonsterResponseDtoFromUseHasNotMonster() throws Exception {
         //given
         authenticated();
-        String errorMessage = "NotFound User of Selected Monster";
+        String errorMessage = "Not Found User of Selected Monster";
         willThrow(new MonsterNotFoundException(errorMessage)).given(monsterService)
                         .getMonsterResponseDtoFromUser(testUser);
 

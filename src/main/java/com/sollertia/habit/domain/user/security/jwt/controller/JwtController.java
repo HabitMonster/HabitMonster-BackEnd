@@ -41,10 +41,10 @@ public class JwtController {
                         .isFirstLogin(user.getMonster() == null)
                         .build());
             } else {
-                throw new UserIdNotFoundException("NotFound User");
+                throw new UserIdNotFoundException("Not Found User");
             }
         } else {
-            throw new JwtException("NotFound RefreshToken");
+            throw new JwtException("Not Found RefreshToken");
         }
 
     }

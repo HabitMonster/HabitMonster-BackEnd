@@ -29,7 +29,7 @@ public class FollowController {
         return followService.getFollowings(userDetails.getUser());
     }
 
-    @ApiOperation(value = "follow 요청", notes = "로그인 중인 User와 follo 대상자 매핑")
+    @ApiOperation(value = "follow 요청", notes = "로그인 중인 User와 follow 대상자 매핑")
     @PatchMapping("/follow/{monsterCode}")
     public FollowCheckDto requestFollow(@PathVariable(name = "monsterCode") String followingId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return followService.requestFollow(followingId, userDetails.getUser());
