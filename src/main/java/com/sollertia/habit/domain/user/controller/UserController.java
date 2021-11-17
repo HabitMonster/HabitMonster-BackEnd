@@ -36,7 +36,7 @@ public class UserController {
     }
 
     @ApiOperation(value = "회원 탈퇴", notes = "회원 탈퇴 정보 응답")
-    @DeleteMapping("/user/quit")
+    @DeleteMapping("/user")
     public UserInfoResponseDto disableUser(
             @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
