@@ -28,14 +28,17 @@ jobs:
       run: chmod +x gradlew
 
     - name: Build with Gradle
-      run: ./gradlew build --info test
+      run: ./gradlew build -x test
+
+    - name: Test with Gradle
+      run: SPRING_PROFILES_ACTIVE=[test] ./gradlew test
 
     - name: Publish Unit Test Results
       uses: EnricoMi/publish-unit-test-result-action@v1
-      if: always()
+      if: ${{ always() }}
       with:
-        files: test-results/**/*.xml
-      
+        files: build/test-results/**/*.xml
+
     - name: Get current time
       uses: 1466587594/get-current-time@v2
       id: current-time
