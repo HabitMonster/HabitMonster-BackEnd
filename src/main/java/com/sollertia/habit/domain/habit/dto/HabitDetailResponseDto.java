@@ -14,5 +14,5 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 public class HabitDetailResponseDto extends DefaultResponseDto {
-    private HabitDetail habitDetail;
+    private HabitDetail habit;
 }

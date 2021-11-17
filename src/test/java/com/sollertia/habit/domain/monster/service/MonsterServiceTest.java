@@ -3,10 +3,10 @@ package com.sollertia.habit.domain.monster.service;
 import com.sollertia.habit.domain.monster.dto.MonsterListResponseDto;
 import com.sollertia.habit.domain.monster.dto.MonsterResponseDto;
 import com.sollertia.habit.domain.monster.dto.MonsterSelectRequestDto;
-import com.sollertia.habit.domain.monster.dto.MonsterVo;
 import com.sollertia.habit.domain.monster.entity.Monster;
 import com.sollertia.habit.domain.monster.entity.MonsterDatabase;
-import com.sollertia.habit.domain.monster.enums.EvolutionGrade;
+import com.sollertia.habit.domain.monster.entity.MonsterType;
+import com.sollertia.habit.domain.monster.enums.Level;
 import com.sollertia.habit.domain.monster.repository.MonsterDatabaseRepository;
 import com.sollertia.habit.domain.monster.repository.MonsterRepository;
 import com.sollertia.habit.domain.user.entity.User;
@@ -17,10 +17,15 @@ import com.sollertia.habit.global.exception.monster.MonsterNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.reflect.Whitebox;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,6 +37,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
+@RunWith(PowerMockRunner.class)
 class MonsterServiceTest {
 
     @InjectMocks
@@ -62,10 +68,13 @@ class MonsterServiceTest {
         testUser = User.create(oauth2UserInfo);
         updatedTestUser = User.create(oauth2UserInfo);
 
-        MonsterDatabase monsterDatabase1 = new MonsterDatabase(EvolutionGrade.EV1, "cat.img");
-        MonsterDatabase monsterDatabase2 = new MonsterDatabase(EvolutionGrade.EV1, "dog.img");
+        MonsterDatabase monsterDatabase1 = new MonsterDatabase(Level.LV1, MonsterType.BLUE, "cat.img");
+        MonsterDatabase monsterDatabase2 = new MonsterDatabase(Level.LV1, MonsterType.RED, "dog.img");
         monster1 = Monster.createNewMonster("고양이", monsterDatabase1);
         monster2 = Monster.createNewMonster("강아지", monsterDatabase2);
+
+        Whitebox.setInternalState(monster1, "createdAt", LocalDateTime.now());
+        Whitebox.setInternalState(monster2, "createdAt", LocalDateTime.now());
 
         mockMonsterDatabaseList.add(monsterDatabase1);
         mockMonsterDatabaseList.add(monsterDatabase2);
@@ -74,7 +83,7 @@ class MonsterServiceTest {
     @Test
     void getAllMonsters() {
         //given
-        given(monsterDatabaseRepository.findAllByGrade(EvolutionGrade.EV1))
+        given(monsterDatabaseRepository.findAllByLevel(Level.LV1))
                 .willReturn(mockMonsterDatabaseList);
 
         //when
@@ -88,7 +97,7 @@ class MonsterServiceTest {
         assertThat(responseDto.getStatusCode()).isEqualTo(200);
         assertThat(responseDto.getResponseMessage()).isEqualTo("LV1 Monster Query Completed");
 
-        verify(monsterDatabaseRepository).findAllByGrade(EvolutionGrade.EV1);
+        verify(monsterDatabaseRepository).findAllByLevel(Level.LV1);
     }
 
     @Test
@@ -98,6 +107,8 @@ class MonsterServiceTest {
         given(monsterDatabaseRepository.findById(1L))
                 .willReturn(Optional.of(mockMonsterDatabaseList.get(0)));
         MonsterSelectRequestDto mockRequestDto = new MonsterSelectRequestDto(1L, monster1.getName());
+        given(monsterRepository.save(any(Monster.class)))
+                .willReturn(monster1);
         given(userService.updateMonster(eq(testUser), any(Monster.class)))
                 .willReturn(updatedTestUser);
 
@@ -115,6 +126,7 @@ class MonsterServiceTest {
         assertThat(responseDto.getResponseMessage()).isEqualTo("Selected Monster");
 
         verify(monsterDatabaseRepository).findById(1L);
+        verify(monsterRepository).save(any(Monster.class));
         verify(userService).updateMonster(eq(testUser), any(Monster.class));
     }
 
@@ -149,8 +161,8 @@ class MonsterServiceTest {
         updatedTestUser.updateMonster(monster2);
         given(monsterDatabaseRepository.findById(1L))
                 .willReturn(Optional.of(mockMonsterDatabaseList.get(1)));
-        given(monsterRepository.findByUserId(any()))
-                .willReturn(Optional.of(monster1));
+        given(monsterRepository.save(any(Monster.class)))
+                .willReturn(monster1);
         given(userService.updateMonster(eq(testUser), any(Monster.class)))
                 .willReturn(updatedTestUser);
         MonsterSelectRequestDto mockRequestDto = new MonsterSelectRequestDto(1L, monster2.getName());
@@ -170,7 +182,8 @@ class MonsterServiceTest {
         assertThat(responseDto.getResponseMessage()).isEqualTo("Selected Monster");
 
         verify(monsterDatabaseRepository).findById(1L);
-        verify(monsterRepository).findByUserId(any());
+        verify(monsterCollectionService).addMonsterCollection(any(Monster.class));
+        verify(monsterRepository).save(any(Monster.class));
         verify(userService).updateMonster(eq(testUser), any(Monster.class));
     }
 
@@ -188,24 +201,6 @@ class MonsterServiceTest {
 
         verify(monsterDatabaseRepository).findById(1L);
         verify(userService, never()).updateMonster(any(), any());
-    }
-
-    @Test
-    void getMonsterVo() {
-        //given
-        testUser.updateMonster(monster1);
-        given(monsterRepository.findByUserId(any()))
-                .willReturn(Optional.of(monster1));
-
-        //when
-        MonsterVo monsterVo = monsterService.getMonsterVo(testUser);
-
-        //then
-        assertThat(monsterVo.getMonsterName()).isEqualTo(testUser.getMonster().getName());
-        assertThat(monsterVo.getMonsterImage())
-                .isEqualTo(mockMonsterDatabaseList.get(0).getImageUrl());
-
-        verify(monsterRepository).findByUserId(any());
     }
 
     @Test

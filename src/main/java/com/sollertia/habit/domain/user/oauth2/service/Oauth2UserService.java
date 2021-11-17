@@ -24,13 +24,25 @@ public class Oauth2UserService {
 
     private Oauth2UserInfo updateUserInfo(Oauth2UserInfo userInfo) {
         Optional<User> optionalUser = userRepository.findBySocialId(userInfo.getId());
-        if ( optionalUser.isPresent() ) {
-            userInfo.putUser(optionalUser.get());
+        if ( optionalUser.isPresent() && !optionalUser.get().isDisabled() ) {
+            User user = optionalUser.get();
+            if ( user.getMonster() == null ) {
+                userInfo.toFirstLogin();
+            }
+            userInfo.putUser(user);
+        } else if ( optionalUser.isPresent() && optionalUser.get().isDisabled() ) {
+            deleteUser(optionalUser.get());
+            userInfo.putUser(createUser(userInfo));
+            userInfo.toFirstLogin();
         } else {
             userInfo.putUser(createUser(userInfo));
             userInfo.toFirstLogin();
         }
         return userInfo;
+    }
+
+    private void deleteUser(User user) {
+        userRepository.delete(user);
     }
 
     private User createUser(Oauth2UserInfo userInfo) {

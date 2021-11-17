@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -45,23 +44,24 @@ public class HabitServiceImpl implements HabitService {
 
         //임시 수정, getGoalCount override해서 형변환 없이 리팩토링 하기
         HabitWithCounter habit = (HabitWithCounter) Habit.createHabit(habitTypeDto.getHabitType(), createHabitRequestDto, user);
-
-        habitRepository.save(habit);
+        HabitWithCounter savedHabit = (HabitWithCounter) habitRepository.save(habit);
 
         HabitDetail build = HabitDetail.builder()
-                .habitId(habit.getId())
-                .category(habit.getCategory().toString())
-                .count(habit.getGoalCountInSession())
-                .description(habit.getDescription())
-                .durationEnd(habit.getDurationEnd().toString())
-                .durationStart(habit.getDurationStart().toString())
-                .achievePercentage(habit.getAchievePercentage())
-                .current(habit.getCurrent())
-                .title(habit.getTitle())
+                .habitId(savedHabit.getId())
+                .category(savedHabit.getCategory().toString())
+                .count(savedHabit.getGoalCountInSession())
+                .totalCount(Math.toIntExact(savedHabit.getGoalCountInSession() * savedHabit.getWholeDays()))
+                .description(savedHabit.getDescription())
+                .durationEnd(savedHabit.getDurationEnd().toString())
+                .durationStart(savedHabit.getDurationStart().toString())
+                .achievePercentage(savedHabit.getAchievePercentage())
+                .practiceDays(savedHabit.getPracticeDays())
+                .current(savedHabit.getCurrent())
+                .title(savedHabit.getTitle())
                 .build();
 
         return HabitDetailResponseDto.builder()
-                .habitDetail(build)
+                .habit(build)
                 .statusCode(200)
                 .responseMessage("Habit registered Completed")
                 .build();
@@ -78,16 +78,18 @@ public class HabitServiceImpl implements HabitService {
                 .habitId(foundHabit.getId())
                 .category(foundHabit.getCategory().toString())
                 .count(foundHabit.getGoalCountInSession())
+                .totalCount(Math.toIntExact(foundHabit.getGoalCountInSession() * foundHabit.getWholeDays()))
                 .description(foundHabit.getDescription())
                 .durationEnd(foundHabit.getDurationEnd().toString())
                 .durationStart(foundHabit.getDurationStart().toString())
                 .achievePercentage(foundHabit.getAchievePercentage())
+                .practiceDays(foundHabit.getPracticeDays())
                 .current(foundHabit.getCurrent())
                 .title(foundHabit.getTitle())
                 .build();
 
         return HabitDetailResponseDto.builder()
-                .habitDetail(build)
+                .habit(build)
                 .responseMessage("Habit Detail Query Completed")
                 .statusCode(200)
                 .build();
@@ -99,17 +101,18 @@ public class HabitServiceImpl implements HabitService {
         HabitWithCounter habitWithCounter = habitWithCounterRepository.findById(habitId).orElseThrow(
                 () -> new HabitIdNotFoundException("NotFound Habit"));
         Boolean isAchieve = habitWithCounter.check(1L);
-        habitWithCounterRepository.save(habitWithCounter);
+        HabitWithCounter checkedHabit = habitWithCounterRepository.save(habitWithCounter);
+        HabitSummaryVo habitSummaryVo = HabitSummaryVo.of(checkedHabit);
 
         if (isAchieve) {
             plusExpPointAndMakeHistory(habitWithCounter);
             deleteHabitIfCompleteToday(habitWithCounter);
         }
+
         return HabitCheckResponseDto.builder()
                 .statusCode(200)
-                .responseMessage("Success")
-                .current(habitWithCounter.getCurrent())
-                .isAccomplished(isAchieve)
+                .responseMessage("Check Habit Completed")
+                .habit(habitSummaryVo)
                 .build();
 
     }
@@ -148,15 +151,41 @@ public class HabitServiceImpl implements HabitService {
     public List<HabitSummaryVo> getHabitSummaryList(User user) {
         LocalDate today = LocalDate.now();
         int day = today.getDayOfWeek().getValue();
-        List<HabitSummaryVo> habitSummaryList = new ArrayList<>();
 
-        List<Habit> habits = habitWithCounterRepository
-                .findTodayHabitListByUser(user, day, today);
+        List<Habit> habits = habitRepository.findTodayHabitListByUser(user, day, today);
+        return HabitSummaryVo.listOf(habits);
+    }
 
-        for (Habit habit : habits) {
-            habitSummaryList.add(HabitSummaryVo.of((HabitWithCounter) habit));
-        }
-        return habitSummaryList;
+    @Override
+    public HabitDetailResponseDto updateHabit(Long habitId, HabitUpdateRequestDto habitUpdateRequestDto) {
+
+        HabitWithCounter habit = habitWithCounterRepository.findById(habitId)
+                .orElseThrow(() -> new HabitIdNotFoundException("NotFound Habit"));
+
+        habit.updateHabit(habitUpdateRequestDto);
+
+        habitRepository.save(habit);
+
+        HabitDetail build = HabitDetail.builder()
+                .habitId(habit.getId())
+                .category(habit.getCategory().toString())
+                .count(habit.getGoalCountInSession())
+                .totalCount(Math.toIntExact(habit.getGoalCountInSession() * habit.getWholeDays()))
+                .description(habit.getDescription())
+                .durationEnd(habit.getDurationEnd().toString())
+                .durationStart(habit.getDurationStart().toString())
+                .achievePercentage(habit.getAchievePercentage())
+                .current(habit.getCurrent())
+                .practiceDays(habit.getPracticeDays())
+                .title(habit.getTitle())
+                .build();
+
+        return HabitDetailResponseDto.builder()
+                .habit(build)
+                .statusCode(200)
+                .responseMessage("Habit updated")
+                .build();
+
     }
 
     public HabitSummaryListResponseDto getHabitSummaryListResponseDto(User user) {

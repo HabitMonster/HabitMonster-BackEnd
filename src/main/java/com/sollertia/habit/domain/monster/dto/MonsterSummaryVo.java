@@ -1,38 +1,49 @@
 package com.sollertia.habit.domain.monster.dto;
 
-import com.sollertia.habit.domain.monster.entity.MonsterCollection;
 import com.sollertia.habit.domain.monster.entity.MonsterDatabase;
-import lombok.Builder;
+import com.sollertia.habit.domain.monster.entity.MonsterType;
 import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-@Builder
 public class MonsterSummaryVo {
     private Long monsterId;
     private String monsterImage;
+    private boolean enable = true;
+
+    public MonsterSummaryVo(Long monsterId, String monsterImage) {
+        this.monsterId = monsterId;
+        this.monsterImage = monsterImage;
+    }
+
+    private void setEnable(boolean enable) {
+        this.enable = enable;
+    }
+
+    public void toDisable() {
+        this.enable = false;
+    }
 
     public static MonsterSummaryVo of(MonsterDatabase monsterDatabase) {
-        return MonsterSummaryVo.builder()
-                .monsterId(monsterDatabase.getId())
-                .monsterImage(monsterDatabase.getImageUrl())
-                .build();
+        return new MonsterSummaryVo(monsterDatabase.getId(), monsterDatabase.getImageUrl());
     }
 
-    public static List<MonsterSummaryVo> listFromMonsterList(List<MonsterDatabase> monsterList) {
+    public static MonsterSummaryVo disabledOf(MonsterDatabase monsterDatabase) {
+        MonsterSummaryVo summaryVo = new MonsterSummaryVo(monsterDatabase.getId(), monsterDatabase.getImageUrl());
+        summaryVo.toDisable();
+        return summaryVo;
+    }
+
+    public static List<MonsterSummaryVo> listFromMonsterDatabasesDisabledIfNotIn(List<MonsterDatabase> monsterList, List<MonsterType> monsterTypeList) {
         List<MonsterSummaryVo> summaryVoList = new ArrayList<>();
         for (MonsterDatabase monsterDatabase : monsterList) {
-            summaryVoList.add(MonsterSummaryVo.of(monsterDatabase));
-        }
-        return summaryVoList;
-    }
-
-    public static List<MonsterSummaryVo> listFromCollectionList(List<MonsterCollection> monsterCollectionList) {
-        List<MonsterSummaryVo> summaryVoList = new ArrayList<>();
-        for (MonsterCollection monsterCollection : monsterCollectionList) {
-            summaryVoList.add(MonsterSummaryVo.of(monsterCollection.getMonsterDatabase()));
+            if ( monsterTypeList.contains(monsterDatabase.getMonsterType()) ) {
+                summaryVoList.add(MonsterSummaryVo.disabledOf(monsterDatabase));
+            } else {
+                summaryVoList.add(MonsterSummaryVo.of(monsterDatabase));
+            }
         }
         return summaryVoList;
     }

@@ -6,10 +6,10 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @SuperBuilder
 public class DefaultResponseDto {
-    private int statusCode;
+    private Integer statusCode;
     private String responseMessage;
 
-    protected DefaultResponseDto(int statusCode, String responseMessage) {
+    protected DefaultResponseDto(Integer statusCode, String responseMessage) {
         this.statusCode = statusCode;
         this.responseMessage = responseMessage;
     }

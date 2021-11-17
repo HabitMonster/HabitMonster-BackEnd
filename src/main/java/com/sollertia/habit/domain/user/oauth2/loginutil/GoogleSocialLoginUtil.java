@@ -30,11 +30,6 @@ public class GoogleSocialLoginUtil implements SocialLoginUtil {
     final static String GOOGLE_TOKEN_BASE_URL = "https://oauth2.googleapis.com/token";
     final static String GOOGLE_TOKEN_INFO_URL = "https://oauth2.googleapis.com/tokeninfo";
 
-    @Value("${oauth2.google.client_id}")
-    String clientId;
-    @Value("${oauth2.google.client_secret}")
-    String clientSecret;
-
     @Override
     public Oauth2UserInfo getUserInfoByCode(String authCode) {
         try {

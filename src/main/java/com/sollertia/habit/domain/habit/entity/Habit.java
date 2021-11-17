@@ -3,13 +3,16 @@ package com.sollertia.habit.domain.habit.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sollertia.habit.domain.category.enums.Category;
 import com.sollertia.habit.domain.habit.dto.HabitDtoImpl;
+import com.sollertia.habit.domain.habit.dto.HabitUpdateRequestDto;
 import com.sollertia.habit.domain.habit.enums.HabitType;
 import com.sollertia.habit.domain.user.entity.User;
+import com.sollertia.habit.global.utils.TimeStamped;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -20,7 +23,7 @@ import java.util.stream.Stream;
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "DTYPE")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public abstract class Habit {
+public abstract class Habit extends TimeStamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,9 +51,6 @@ public abstract class Habit {
     private LocalDate nextPracticeDay;
 
     private Long wholeDays;
-
-    //총 수행일 카럼추가, 달성률 계한 함수분리
-    private Long totalAchieveCount;
 
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -99,8 +99,6 @@ public abstract class Habit {
     }
 
     public abstract int getCurrent();
-    public abstract int getGoal();
-    public abstract Boolean check(Long value);
 
     public void setWholeDays() {
 
@@ -149,7 +147,8 @@ public abstract class Habit {
         if (wholeDays == 0) {
             return 0l;
         }
-        return this.accomplishCounter / this.wholeDays;
+        double percentage = ((double)this.accomplishCounter / (double)this.wholeDays) * 100;
+        return Math.round(percentage);
     }
     protected void checkAccomplishCounter() {
         this.accomplishCounter += 1;
@@ -180,7 +179,16 @@ public abstract class Habit {
         return null;
     }
 
+    public abstract void updateHabit(HabitUpdateRequestDto habitUpdateRequestDto);
 
+    protected void updateTitle(String title) {
+        this.title = title;
+    }
+
+    protected void updateDescription(String description) {
+        this.description = description;
+    }
+    public abstract Boolean check(Long value);
 
 
 

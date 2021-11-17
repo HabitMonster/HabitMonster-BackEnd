@@ -1,4 +1,4 @@
-package com.sollertia.habit.domain.user.enums;
+package com.sollertia.habit.domain.monster.enums;
 
 import com.sollertia.habit.global.exception.monster.InvalidLevelException;
 import lombok.Getter;

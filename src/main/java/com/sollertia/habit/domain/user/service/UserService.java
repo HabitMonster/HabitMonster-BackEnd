@@ -40,7 +40,7 @@ public class UserService {
                 .email(user.getEmail())
                 .username(user.getUsername())
                 .socialType(user.getProviderType())
-                .monsterName(user.getMonster().getName())
+                .monsterName(user.getMonster()==null ? null : user.getMonster().getName())
                 .build();
     }
 
@@ -57,6 +57,22 @@ public class UserService {
                 .userInfo(getUserInfoVo(user))
                 .statusCode(200)
                 .responseMessage("User Name Updated Completed")
+                .build();
+    }
+
+    public UserInfoResponseDto disableUser(User user) {
+        user.toDisabled();
+        UserInfoVo infoVo = UserInfoVo.builder()
+                .socialType(user.getProviderType())
+                .email(user.getEmail())
+                .username(user.getUsername())
+                .monsterCode(user.getSocialId())
+                .build();
+
+        return UserInfoResponseDto.builder()
+                .userInfo(infoVo)
+                .statusCode(200)
+                .responseMessage("User Droped")
                 .build();
     }
 }

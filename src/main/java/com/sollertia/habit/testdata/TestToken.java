@@ -25,7 +25,7 @@ public class TestToken {
 
         String accessToken = jwtTokenProvider.responseAccessToken(testUser);
         String refreshToken = jwtTokenProvider.responseRefreshToken(testUser);
-        redisUtil.setDataExpire(refreshToken,testUser.getSocialId(),JwtTokenProvider.ACCESS_TOKEN_USETIME);
+        redisUtil.setDataExpire(refreshToken,testUser.getSocialId(),JwtTokenProvider.REFRESH_TOKEN_USETIME / 1000L);
 
         return JwtResponseDto.builder().accessToken(accessToken).refreshToken(refreshToken).build();
     }

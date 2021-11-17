@@ -1,5 +1,6 @@
 package com.sollertia.habit.domain.monster.controller;
 
+import com.sollertia.habit.domain.monster.dto.MonsterCollectionResponseDto;
 import com.sollertia.habit.domain.monster.dto.MonsterListResponseDto;
 import com.sollertia.habit.domain.monster.dto.MonsterResponseDto;
 import com.sollertia.habit.domain.monster.dto.MonsterSelectRequestDto;
@@ -11,8 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
-
-import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,7 +30,7 @@ public class MonsterController {
     @PatchMapping("/user/monster")
     public MonsterResponseDto updateMonster(
             @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @Valid @RequestBody MonsterSelectRequestDto requestDto) {
+            @RequestBody MonsterSelectRequestDto requestDto) {
         return monsterService.updateMonster(userDetails.getUser(), requestDto);
     }
 
@@ -39,15 +38,16 @@ public class MonsterController {
     @PatchMapping("/monster/nameChange")
     public MonsterResponseDto updateMonsterName(
             @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @Valid @RequestBody MonsterSelectRequestDto requestDto) {
+            @RequestBody MonsterSelectRequestDto requestDto) {
+        monsterCollectionService.updateMonsterName(userDetails.getUser(), requestDto.getMonsterName());
         return monsterService.updateMonsterName(userDetails.getUser(), requestDto);
     }
 
     @ApiOperation(value = "몬스터 컬렉션 조회", notes = "사용자 몬스터 컬렉션 목록 반환")
     @GetMapping("/user/monsters")
-    public MonsterListResponseDto getMonsterCollection(
+    public MonsterCollectionResponseDto getMonsterCollection(
             @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return monsterCollectionService.getMonsterCollection(userDetails.getUser());
+        return monsterCollectionService.getMonsterCollectionResponseDto(userDetails.getUser());
     }
 
     @ApiOperation(value = "사용자 몬스터 조회", notes = "사용자 몬스터 정보 반환")

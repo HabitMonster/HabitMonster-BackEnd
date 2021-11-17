@@ -5,10 +5,12 @@ import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.domain.user.repository.UserRepository;
 import com.sollertia.habit.domain.user.security.jwt.dto.JwtResponseDto;
 import com.sollertia.habit.domain.user.security.jwt.filter.JwtTokenProvider;
+import com.sollertia.habit.domain.user.security.userdetail.UserDetailsImpl;
 import com.sollertia.habit.global.exception.user.UserIdNotFoundException;
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,11 +30,16 @@ public class JwtController {
         String refreshToken = jwtTokenProvider.requestRefreshToken(request);
 
         if (refreshToken != null) {
-            Optional<User> user = userRepository.findBySocialId(jwtTokenProvider.getSocialId(refreshToken));
-            if (user.isPresent()) {
-                String accessToken = jwtTokenProvider.responseAccessToken(user.get());
-                return ResponseEntity.ok().body(JwtResponseDto.builder().responseMessage("Issuance completed accessToken").
-                        statusCode(200).accessToken(accessToken).isFirstLogin(false).build());
+            Optional<User> optionalUser = userRepository.findBySocialId(jwtTokenProvider.getSocialId(refreshToken));
+            if (optionalUser.isPresent()) {
+                User user = optionalUser.get();
+                String accessToken = jwtTokenProvider.responseAccessToken(user);
+                return ResponseEntity.ok().body(JwtResponseDto.builder()
+                        .responseMessage("Issuance completed accessToken")
+                        .statusCode(200)
+                        .accessToken(accessToken)
+                        .isFirstLogin(user.getMonster() == null)
+                        .build());
             } else {
                 throw new UserIdNotFoundException("NotFound User");
             }
@@ -43,15 +50,14 @@ public class JwtController {
     }
 
     @GetMapping("/user/check")
-    public ResponseEntity<JwtResponseDto> userCheck(HttpServletRequest request) {
-        String accessToken = jwtTokenProvider.requestAccessToken(request);
-
-        if (accessToken != null) {
-            return ResponseEntity.ok().body(JwtResponseDto.builder().responseMessage("IsLogin True").
-                    statusCode(200).isFirstLogin(false).isLogin(true).build());
-        } else {
-            throw new JwtException("NotFound AccessToken");
-        }
+    public ResponseEntity<JwtResponseDto> userCheck(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseEntity.ok().body(
+                JwtResponseDto.builder()
+                        .responseMessage("IsLogin True")
+                        .statusCode(200)
+                        .isFirstLogin(userDetails.getUser().getMonster() == null)
+                        .isLogin(true)
+                        .createdAt(userDetails.getUser().getCreatedAt().toLocalDate().toString())
+                        .build());
     }
-
 }

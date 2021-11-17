@@ -19,4 +19,6 @@ public interface HabitService {
 
      List<HabitSummaryVo> getHabitSummaryList(User user) throws Throwable;
 
+     HabitDetailResponseDto updateHabit(Long habitId, HabitUpdateRequestDto habitUpdateRequestDto);
+
 }

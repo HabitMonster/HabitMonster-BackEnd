@@ -7,17 +7,21 @@ import lombok.Getter;
 @Getter
 @Builder
 public class MonsterVo {
+    private Long levelOneId;
     private String monsterImage;
     private String monsterName;
     private Integer monsterLevel;
     private Long monsterExpPoint;
+    private String createAt;
 
     public static MonsterVo of(Monster monster) {
         return MonsterVo.builder()
+                .levelOneId(monster.getMonsterDatabase().getMonsterType().getLv1Id())
                 .monsterImage(monster.getMonsterDatabase().getImageUrl())
                 .monsterName(monster.getName())
                 .monsterLevel(monster.getLevel().getValue())
                 .monsterExpPoint(monster.getExpPoint())
+                .createAt(monster.getCreatedAt().toLocalDate().toString())
                 .build();
     }
 }

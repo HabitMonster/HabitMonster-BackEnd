@@ -29,6 +29,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -68,7 +69,7 @@ class Oauth2ControllerTest {
         mockUserInfo = new GoogleOauth2UserInfo(attributes);
         testUser = User.create(mockUserInfo);
         mockUserInfo.putUser(testUser);
-        Whitebox.setInternalState(testUser, "createdAt", LocalDate.now());
+        Whitebox.setInternalState(testUser, "createdAt", LocalDateTime.now());
     }
 
     @Test

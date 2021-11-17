@@ -1,7 +1,8 @@
 package com.sollertia.habit.domain.monster.entity;
 
-import com.sollertia.habit.domain.user.enums.Level;
+import com.sollertia.habit.domain.monster.enums.Level;
 import com.sollertia.habit.domain.user.entity.User;
+import com.sollertia.habit.global.utils.TimeStamped;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,7 +10,7 @@ import javax.persistence.*;
 
 @Entity
 @Getter
-public class Monster {
+public class Monster extends TimeStamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,10 +22,11 @@ public class Monster {
     @Enumerated(value = EnumType.STRING)
     private Level level;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private MonsterDatabase monsterDatabase;
 
     @OneToOne(mappedBy = "monster", fetch = FetchType.LAZY)
+    @Setter
     private User user;
 
     public void setUser(User user) {
@@ -46,13 +48,13 @@ public class Monster {
         this.monsterDatabase = monsterDatabase;
     }
 
-    public void plusExpPoint() {
+    public boolean plusExpPoint() {
         setExpPoint(getExpPoint() + getLevel().getPlusPoint());
-        long margin = getExpPoint() - Level.MAX_EXP;
-        if ( margin >= 0 ) {
-            levelUp();
-            setExpPoint(margin);
+        if ( getExpPoint() >= Level.MAX_EXP ) {
+            setExpPoint(getExpPoint() - Level.MAX_EXP);
+            return true;
         }
+        return false;
     }
 
     public Level levelUp() {
@@ -80,4 +82,7 @@ public class Monster {
         return this;
     }
 
+    public void updateMonsterDatabase(MonsterDatabase monsterDatabase) {
+        setMonsterDatabase(monsterDatabase);
+    }
 }

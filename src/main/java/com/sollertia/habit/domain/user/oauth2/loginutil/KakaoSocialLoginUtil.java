@@ -36,6 +36,8 @@ public class KakaoSocialLoginUtil implements SocialLoginUtil {
 
     @Value("${oauth2.kakao.client_id}")
     String clientId;
+    @Value("${oauth2.kakao.redirect_url}")
+    String redirectUrl;
 
     @Override
     public Oauth2UserInfo getUserInfoByCode(String authCode) {
@@ -57,8 +59,7 @@ public class KakaoSocialLoginUtil implements SocialLoginUtil {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
         body.add("client_id", clientId);
-        body.add("redirect_uri", "http://localhost:3000/login");
-//        body.add("redirect_uri", "http://localhost:8080/user/login/test/kakao");
+        body.add("redirect_uri", redirectUrl);
         body.add("code", authCode);
 
         HttpEntity<MultiValueMap<String, String>> kakaoOauthRequestEntity =

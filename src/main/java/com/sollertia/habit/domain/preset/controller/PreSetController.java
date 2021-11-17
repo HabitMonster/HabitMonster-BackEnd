@@ -1,10 +1,13 @@
 package com.sollertia.habit.domain.preset.controller;
 
 
+import com.sollertia.habit.domain.habit.dto.HabitDetail;
+import com.sollertia.habit.domain.habit.dto.HabitDetailResponseDto;
 import com.sollertia.habit.domain.habit.dto.HabitDtoImpl;
 import com.sollertia.habit.domain.habit.dto.HabitTypeDto;
 import com.sollertia.habit.domain.habit.service.HabitServiceImpl;
 import com.sollertia.habit.domain.preset.dto.PreSetResponseDto;
+import com.sollertia.habit.domain.preset.dto.PreSetSelectResponseDto;
 import com.sollertia.habit.domain.preset.dto.PreSetVo;
 import com.sollertia.habit.domain.preset.service.PreSetServiceImpl;
 import com.sollertia.habit.domain.user.security.userdetail.UserDetailsImpl;
@@ -21,6 +24,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @RequiredArgsConstructor
 @RestController
@@ -38,22 +42,32 @@ public class PreSetController {
 
     @ApiOperation(value = "선택한 PreSet Habit 테이블에 저장")
     @PostMapping("/presets/{preset_id}")
-    public DefaultResponseDto selectPreSet(@PathVariable Long preset_id, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        //PreSetVo preSetVo = PreSet.getPreSet(preset_id);
+    public PreSetSelectResponseDto selectPreSet(@PathVariable Long preset_id, @AuthenticationPrincipal UserDetailsImpl userDetails){
         PreSetVo preSetVo = preSetService.getPreSet(preset_id);
 
         Calendar startDate = Calendar.getInstance();
         Calendar endDate = Calendar.getInstance();
         DateFormat form = new SimpleDateFormat("yyyy-MM-dd");
         endDate.add(Calendar.DATE, preSetVo.getPeriod());
+        long diffInMillies = Math.abs(endDate.getTime().getTime() - startDate.getTime().getTime());
+        long wholeDays = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
 
-        HabitDtoImpl habitDto = HabitDtoImpl.builder().durationStart(form.format(startDate.getTime())).durationEnd(form.format(endDate.getTime()))
-                .count(preSetVo.getCount()).title(preSetVo.getTitle()).description(preSetVo.getDescription()).practiceDays(preSetVo.getPracticeDays()).categoryId(preSetVo.getCategoryId()).build();
+        HabitDtoImpl habitDto = HabitDtoImpl.builder()
+                .durationStart(form.format(startDate.getTime()))
+                .durationEnd(form.format(endDate.getTime()))
+                .count(preSetVo.getCount())
+                .totalCount(Math.toIntExact(preSetVo.getCount() * wholeDays))
+                .title(preSetVo.getTitle())
+                .description(preSetVo.getDescription())
+                .practiceDays(preSetVo.getPracticeDays())
+                .categoryId(preSetVo.getCategoryId())
+                .build();
 
         HabitTypeDto habitTypeDto = new HabitTypeDto("counter", "specificDay");
 
-        habitService.createHabit(habitTypeDto, habitDto, userDetails.getUser());
+        HabitDetailResponseDto responseDto = habitService.createHabit(habitTypeDto, habitDto, userDetails.getUser());
+        habitDto.setHabitId(responseDto.getHabit().getHabitId());
 
-        return DefaultResponseDto.builder().responseMessage("Habit registered Completed").statusCode(200).build();
+        return PreSetSelectResponseDto.builder().habitDto(habitDto).statusCode(200).responseMessage("Habit registered Completed").build();
     }
 }

@@ -1,5 +1,6 @@
 package com.sollertia.habit.domain.user.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sollertia.habit.domain.habit.entity.Habit;
 import com.sollertia.habit.domain.monster.entity.Monster;
 import com.sollertia.habit.domain.monster.entity.MonsterCollection;
@@ -30,6 +31,8 @@ public class User extends TimeStamped {
 
     private String email;
 
+    private boolean disabled;
+
     @Enumerated(EnumType.STRING)
     private ProviderType providerType;
 
@@ -43,6 +46,8 @@ public class User extends TimeStamped {
     private List<MonsterCollection> monsterCollections;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @JoinColumn(name = "monster_id", unique = true)
+    @JsonIgnore
     private Monster monster;
 
     public User() {
@@ -68,6 +73,10 @@ public class User extends TimeStamped {
         this.monster = monster;
     }
 
+    private void setDisabled (boolean disabled) {
+        this.disabled = disabled;
+    }
+
     public void updateUsername(String username) {
         this.setUsername(username);
     }
@@ -86,5 +95,9 @@ public class User extends TimeStamped {
         this.setMonster(monster);
         monster.setUser(this);
         return this;
+    }
+
+    public void toDisabled() {
+        this.setDisabled(true);
     }
 }
