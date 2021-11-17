@@ -40,7 +40,7 @@ jobs:
         cp build/libs/Habit-0.0.1-SNAPSHOT.jar deploy/application.jar
         cp Procfile deploy/Procfile
         cp -r .ebextensions deploy/.ebextensions
-        sed -i 's/java -Dfile.encoding=UTF-8 -jar $JAR_PATH/java -Dfile.encoding=UTF-8 -Djasypt.encryptor.password=${{secrets.JASYPT_KEY}} -jar $JAR_PATH/g' /deploy/.ebextentions/00-makeFiles.config
+        sed -i 's/java -Dfile.encoding=UTF-8 -jar $JAR_PATH/java -Dfile.encoding=UTF-8 -Djasypt.encryptor.password=${{secrets.JASYPT_KEY}} -jar $JAR_PATH/g' ~/deploy/.ebextentions/00-makeFiles.config
         cp -r .platform deploy/.platform
         cd deploy && zip -r deploy.zip .
 
