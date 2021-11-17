@@ -25,10 +25,9 @@ public class History {
 
     private Category category;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
-
 
     public void setCategory(Category category) {
         this.category = category;

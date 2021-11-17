@@ -2,6 +2,7 @@ package com.sollertia.habit.domain.user.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sollertia.habit.domain.habit.entity.Habit;
+import com.sollertia.habit.domain.history.entity.History;
 import com.sollertia.habit.domain.monster.entity.Monster;
 import com.sollertia.habit.domain.monster.entity.MonsterCollection;
 import com.sollertia.habit.domain.user.oauth2.userinfo.Oauth2UserInfo;
@@ -41,6 +42,9 @@ public class User extends TimeStamped {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<UserTeam> userTeam;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<History> histories;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<MonsterCollection> monsterCollections;
