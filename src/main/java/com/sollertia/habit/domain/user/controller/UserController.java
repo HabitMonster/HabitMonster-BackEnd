@@ -1,5 +1,6 @@
 package com.sollertia.habit.domain.user.controller;
 
+import com.sollertia.habit.domain.user.dto.UserDetailResponseDto;
 import com.sollertia.habit.domain.user.dto.UsernameUpdateRequestDto;
 import com.sollertia.habit.domain.user.security.userdetail.UserDetailsImpl;
 import com.sollertia.habit.domain.user.service.UserService;
@@ -41,5 +42,14 @@ public class UserController {
             @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         return userService.disableUser(userDetails.getUser());
+    }
+
+    @ApiOperation(value = "특정 유저 정보 조회", notes = "사용자, 몬스터, 습관 정보 응답")
+    @GetMapping("/user/{monsterCode}/info")
+    public UserDetailResponseDto getUserInfoByMonsterCode(
+            @PathVariable String monsterCode,
+            @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        return userService.getUserDetailDtoByMonsterCode(userDetails.getUser(), monsterCode);
     }
 }

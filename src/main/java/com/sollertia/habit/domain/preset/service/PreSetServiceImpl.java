@@ -25,6 +25,6 @@ public class PreSetServiceImpl implements PreSetService{
 
     @Override
     public PreSetVo getPreSet(Long preSetId) {
-        return preSetRepository.findById(preSetId).map(PreSetVo::new).orElseThrow(()->new PreSetNotFoundException("NotFound PreSet"));
+        return preSetRepository.findById(preSetId).map(PreSetVo::new).orElseThrow(()->new PreSetNotFoundException("Not Found PreSet"));
     }
 }

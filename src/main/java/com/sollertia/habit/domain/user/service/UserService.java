@@ -1,28 +1,35 @@
 package com.sollertia.habit.domain.user.service;
 
+import com.sollertia.habit.domain.habit.dto.HabitSummaryVo;
+import com.sollertia.habit.domain.habit.service.HabitServiceImpl;
+import com.sollertia.habit.domain.monster.dto.MonsterVo;
 import com.sollertia.habit.domain.monster.entity.Monster;
-import com.sollertia.habit.domain.user.dto.UserInfoResponseDto;
-import com.sollertia.habit.domain.user.dto.UserInfoVo;
-import com.sollertia.habit.domain.user.dto.UsernameUpdateRequestDto;
+import com.sollertia.habit.domain.monster.service.MonsterService;
+import com.sollertia.habit.domain.user.dto.*;
 import com.sollertia.habit.domain.user.entity.User;
+import com.sollertia.habit.domain.user.follow.dto.FollowCount;
+import com.sollertia.habit.domain.user.follow.service.FollowServiceImpl;
 import com.sollertia.habit.domain.user.repository.UserRepository;
 import com.sollertia.habit.global.exception.user.UserIdNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
+    private final FollowServiceImpl followService;
+    private final MonsterService monsterService;
+    private final HabitServiceImpl habitService;
 
     @Transactional
     public User getUserById(Long id) {
         return userRepository.findById(id).orElseThrow(
-                () -> new UserIdNotFoundException("NotFound User")
+                () -> new UserIdNotFoundException("Not Found User")
         );
     }
 
@@ -74,5 +81,40 @@ public class UserService {
                 .statusCode(200)
                 .responseMessage("User Droped")
                 .build();
+    }
+
+    public UserDetailResponseDto getUserDetailDtoByMonsterCode(User user, String monsterCode) {
+        User targetUser = findByMonsterCode(monsterCode);
+
+        UserDetailsVo userInfo = getUserDetailsVo(user, monsterCode, targetUser);
+        MonsterVo monster = monsterService.getMonsterVo(targetUser);
+        List<HabitSummaryVo> habits = habitService.getHabitListByUser(targetUser);
+
+        return UserDetailResponseDto.builder()
+                .userInfo(userInfo)
+                .monster(monster)
+                .habits(habits)
+                .statusCode(200)
+                .responseMessage("User Detail Response")
+                .build();
+    }
+
+    private UserDetailsVo getUserDetailsVo(User user, String monsterCode, User targetUser) {
+        boolean isFollowed = followService.isFollowBetween(user, targetUser);
+        FollowCount followCount = followService.getCountByUser(targetUser);
+        return UserDetailsVo.builder()
+                .monsterCode(monsterCode)
+                .username(targetUser.getUsername())
+                .email(targetUser.getEmail())
+                .isFollowed(isFollowed)
+                .followsCount(followCount.getFollowersCount())
+                .followingsCount(followCount.getFollowingsCount())
+                .build();
+    }
+
+    private User findByMonsterCode(String monsterCode) {
+        return userRepository.findBySocialId(monsterCode).orElseThrow(
+                () -> new UserIdNotFoundException("Not Found MonsterCode")
+        );
     }
 }

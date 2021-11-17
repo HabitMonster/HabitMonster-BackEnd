@@ -10,12 +10,12 @@ import com.sollertia.habit.domain.monster.enums.Level;
 import com.sollertia.habit.domain.monster.repository.MonsterDatabaseRepository;
 import com.sollertia.habit.domain.monster.repository.MonsterRepository;
 import com.sollertia.habit.domain.user.entity.User;
-import com.sollertia.habit.domain.user.service.UserService;
+import com.sollertia.habit.domain.user.repository.UserRepository;
 import com.sollertia.habit.global.exception.monster.MonsterNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,8 +25,8 @@ public class MonsterService {
 
     private final MonsterRepository monsterRepository;
     private final MonsterDatabaseRepository monsterDatabaseRepository;
-    private final UserService userService;
     private final MonsterCollectionService monsterCollectionService;
+    private final UserRepository userRepository;
 
     public MonsterListResponseDto getAllMonsters(User user) {
         List<MonsterCollection> monsterCollectionList = monsterCollectionService.getMonsterCollectionListByUser(user);
@@ -47,7 +47,7 @@ public class MonsterService {
 
         Monster monster = Monster.createNewMonster(monsterName, monsterDatabase);
         Monster savedMonster = monsterRepository.save(monster);
-        User updatedUser = userService.updateMonster(user, savedMonster);
+        User updatedUser = updateMonster(user, savedMonster);
         monsterCollectionService.addMonsterCollection(savedMonster);
 
         MonsterVo monsterVo = MonsterVo.of(updatedUser.getMonster());
@@ -57,6 +57,11 @@ public class MonsterService {
                 .responseMessage("Selected Monster")
                 .statusCode(200)
                 .build();
+    }
+
+    private User updateMonster(User user, Monster newMonster) {
+        user.updateMonster(newMonster);
+        return userRepository.save(user);
     }
 
     @Transactional
@@ -81,7 +86,7 @@ public class MonsterService {
                 .build();
     }
 
-    private MonsterVo getMonsterVo(User user) {
+    public MonsterVo getMonsterVo(User user) {
         Monster monster = getMonsterByUser(user);
         return MonsterVo.of(monster);
     }
@@ -100,18 +105,18 @@ public class MonsterService {
     private void evoluteMonster(Monster monster, Level level) {
         MonsterType monsterType = monster.getMonsterDatabase().getMonsterType();
         MonsterDatabase monsterDatabase = monsterDatabaseRepository.findByMonsterTypeAndLevel(monsterType, level)
-                .orElseThrow( () -> new MonsterNotFoundException("NotFound Monster Database"));
+                .orElseThrow( () -> new MonsterNotFoundException("Not Found Monster Database"));
         monster.updateMonsterDatabase(monsterDatabase);
     }
 
-    private MonsterDatabase getMonsterDatabaseById(Long id) {
+    public MonsterDatabase getMonsterDatabaseById(Long id) {
         return monsterDatabaseRepository.findById(id).orElseThrow(
-                () -> new MonsterNotFoundException("NotFound Monster Id")
+                () -> new MonsterNotFoundException("Not Found Monster Id")
         );
     }
 
     private Monster getMonsterByUser(User user) {
         return monsterRepository.findByUserId(user.getId()).orElseThrow(
-                () -> new MonsterNotFoundException("NotFound Selected Monster from User"));
+                () -> new MonsterNotFoundException("Not Found Selected Monster from User"));
     }
 }
