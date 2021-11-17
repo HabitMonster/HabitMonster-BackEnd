@@ -67,6 +67,7 @@ public class UserService {
                 .build();
     }
 
+    @Transactional
     public UserInfoResponseDto disableUser(User user) {
         user.toDisabled();
         UserInfoVo infoVo = UserInfoVo.builder()
