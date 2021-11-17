@@ -36,7 +36,7 @@ public class KakaoSocialLoginUtil implements SocialLoginUtil {
 
     @Value("${oauth2.kakao.client_id}")
     String clientId;
-    @Value("${kakao.redirect_url}")
+    @Value("${oauth2.kakao.redirect_url}")
     String redirectUrl;
 
     @Override
