@@ -23,6 +23,8 @@ public class HabitSummaryVo {
     private String practiceDays;
     private Long achievePercentage;
     private Category category;
+    private int achieveCount;
+    private int totalCount;
 
     public static List<HabitSummaryVo> listOf(List<Habit> habits) {
         List<HabitSummaryVo> summaryVoList = new ArrayList<>();
@@ -45,6 +47,9 @@ public class HabitSummaryVo {
                 .current(habit.getCurrent())
                 .achievePercentage(habit.getAchievePercentage())
                 .category(habit.getCategory())
+                .achieveCount(Math.toIntExact(habit.getAccomplishCounter() * habit.getGoalCountInSession() +
+                        (habit.getIsAccomplishInSession() ? 0 : habit.getCurrent())))
+                .totalCount(Math.toIntExact(habit.getWholeDays() * habit.getGoalCountInSession()))
                 .build();
     }
 }

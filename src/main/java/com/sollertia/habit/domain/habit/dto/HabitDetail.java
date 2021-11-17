@@ -11,6 +11,7 @@ public class HabitDetail {
     private String durationStart;
     private String durationEnd;
     private int count;
+    private int totalCount;
     private String category;
     private String practiceDays;
     private int current;

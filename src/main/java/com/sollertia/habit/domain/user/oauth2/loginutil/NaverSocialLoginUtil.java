@@ -31,11 +31,6 @@ public class NaverSocialLoginUtil implements SocialLoginUtil {
     final static String NAVER_TOKEN_BASE_URL = "https://nid.naver.com/oauth2.0/token";
     final static String NAVER_TOKEN_INFO_URL = "https://openapi.naver.com/v1/nid/me";
 
-    @Value("${oauth2.naver.client_id}")
-    String clientId;
-    @Value("${oauth2.naver.client_secret}")
-    String clientSecret;
-
     @Override
     public Oauth2UserInfo getUserInfoByCode(String authCode) {
         try {
