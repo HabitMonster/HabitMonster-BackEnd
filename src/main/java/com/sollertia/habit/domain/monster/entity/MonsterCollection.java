@@ -28,7 +28,7 @@ public class MonsterCollection {
     @Enumerated(EnumType.STRING)
     private MonsterType monsterType;
 
-    @OneToMany(mappedBy = "monsterCollection")
+    @OneToMany(mappedBy = "monsterCollection", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<MonsterCollectionDatabase> monsterCollectionDatabaseList = new ArrayList<>();
 

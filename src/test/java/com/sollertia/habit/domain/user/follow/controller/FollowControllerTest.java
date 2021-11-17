@@ -188,19 +188,19 @@ class FollowControllerTest {
         //given
         authenticated();
         FollowSearchResponseVo responseVo = FollowSearchResponseVo.of(testUser2,false);
-        FollowSearchResponseDto responseDto = FollowSearchResponseDto.builder().searchResult(responseVo).statusCode(200).responseMessage("Search Completed").build();
+        FollowSearchResponseDto responseDto = FollowSearchResponseDto.builder().userInfo(responseVo).statusCode(200).responseMessage("Search Completed").build();
         given(followService.searchFollowing("1234G",testUser)).willReturn(responseDto);
 
         //when
-        mvc.perform(get("/monsterCode/1234G"))
+        mvc.perform(get("/user/1234G"))
                 .andDo(print())
                 //then
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.searchResult.monsterName").value(testUser2.getMonster().getName()))
-                .andExpect(jsonPath("$.searchResult.monsterImg").value(testUser2.getMonster().getMonsterDatabase().getImageUrl()))
-                .andExpect(jsonPath("$.searchResult.monsterCode").value(testUser2.getSocialId()))
-                .andExpect(jsonPath("$.searchResult.email").value(testUser2.getEmail()))
-                .andExpect(jsonPath("$.searchResult.isFollowed").value("false"))
+                .andExpect(jsonPath("$.userInfo.monsterName").value(testUser2.getMonster().getName()))
+                .andExpect(jsonPath("$.userInfo.monsterImg").value(testUser2.getMonster().getMonsterDatabase().getImageUrl()))
+                .andExpect(jsonPath("$.userInfo.monsterCode").value(testUser2.getSocialId()))
+                .andExpect(jsonPath("$.userInfo.email").value(testUser2.getEmail()))
+                .andExpect(jsonPath("$.userInfo.isFollowed").value("false"))
                 .andExpect(jsonPath("$.responseMessage").value("Search Completed"))
                 .andExpect(jsonPath("$.statusCode").value("200"));
 

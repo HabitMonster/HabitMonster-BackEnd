@@ -114,7 +114,7 @@ class JwtControllerTest {
                         .header("R-AUTH-TOKEN",refreshToken)).andDo(print())
                 //then
                 .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("responseMessage").value("NotFound RefreshToken"))
+                .andExpect(jsonPath("responseMessage").value("Not Found RefreshToken"))
                 .andExpect(jsonPath("statusCode").value(401));
     }
 
@@ -131,7 +131,7 @@ class JwtControllerTest {
                         .header("R-AUTH-TOKEN",refreshToken)).andDo(print())
                 //then
                 .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("responseMessage").value("NotFound User"))
+                .andExpect(jsonPath("responseMessage").value("Not Found User"))
                 .andExpect(jsonPath("statusCode").value(404));
     }
 

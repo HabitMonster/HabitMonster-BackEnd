@@ -35,7 +35,7 @@ public class MonsterController {
     }
 
     @ApiOperation(value = "몬스터 이름 수정", notes = "변경된 몬스터 데이터 반환")
-    @PatchMapping("/monster/nameChange")
+    @PatchMapping("/monster/name")
     public MonsterResponseDto updateMonsterName(
             @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestBody MonsterSelectRequestDto requestDto) {

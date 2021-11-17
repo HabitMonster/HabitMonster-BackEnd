@@ -13,7 +13,11 @@ public class NoticeVo {
     private String createdAt;
 
     public static NoticeVo of(Notice notice){
-        return NoticeVo.builder().id(notice.getId()).title(notice.getTitle())
-                        .content(notice.getContent()).createdAt(notice.getCreatedAt().toLocalDate().toString()).build();
+        return NoticeVo.builder()
+                .id(notice.getId())
+                .title(notice.getTitle())
+                .content(notice.getContent())
+                .createdAt(notice.getCreatedAt().toLocalDate().toString())
+                .build();
     }
 }

@@ -21,7 +21,6 @@ public class Notice extends TimeStamped {
     @Column(length = 5000)
     private String content;
 
-
     private void setTitle(String title) {
         this.title = title;
     }

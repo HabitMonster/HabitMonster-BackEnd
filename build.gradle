@@ -1,6 +1,8 @@
 plugins {
     id 'org.springframework.boot' version '2.5.6'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    //QueryDsl
+    id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
     id 'java'
     id 'jacoco'
 }
@@ -63,8 +65,33 @@ dependencies {
 
     //jasypt
     implementation "com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.4"
+
+    //QueryDsl
+    implementation 'com.querydsl:querydsl-jpa'
+    implementation 'com.querydsl:querydsl-apt'
 }
+
+
 
 test {
     useJUnitPlatform()
 }
+
+//QueryDSL
+def querydslDir = "$buildDir/generated/querydsl"
+
+querydsl {
+    jpa = true
+    querydslSourcesDir = querydslDir
+}
+sourceSets {
+    main.java.srcDir querydslDir
+}
+configurations {
+    querydsl.extendsFrom compileClasspath
+
+}
+compileQuerydsl {
+    options.annotationProcessorPath = configurations.querydsl
+}
+

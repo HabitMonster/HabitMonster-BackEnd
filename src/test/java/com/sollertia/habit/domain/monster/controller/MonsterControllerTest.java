@@ -162,7 +162,7 @@ class MonsterControllerTest {
                 "}";
 
         //when
-        mvc.perform(patch("/monster/nameChange")
+        mvc.perform(patch("/monster/name")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andDo(print())
@@ -235,7 +235,7 @@ class MonsterControllerTest {
     void getMonsterResponseDtoFromUseHasNotMonster() throws Exception {
         //given
         authenticated();
-        String errorMessage = "NotFound User of Selected Monster";
+        String errorMessage = "Not Found User of Selected Monster";
         willThrow(new MonsterNotFoundException(errorMessage)).given(monsterService)
                         .getMonsterResponseDtoFromUser(testUser);
 

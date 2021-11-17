@@ -12,13 +12,12 @@ import com.sollertia.habit.domain.history.entity.History;
 import com.sollertia.habit.domain.history.repository.HistoryRepository;
 import com.sollertia.habit.domain.monster.service.MonsterService;
 import com.sollertia.habit.domain.user.entity.User;
-import com.sollertia.habit.domain.user.service.UserService;
 import com.sollertia.habit.global.exception.habit.HabitIdNotFoundException;
 import com.sollertia.habit.global.utils.DefaultResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -35,8 +34,6 @@ public class HabitServiceImpl implements HabitService {
     private final CompletedHabitRepository completedHabitRepository;
 
     private final MonsterService monsterService;
-
-    private final UserService userService;
 
     @Transactional
     @Override
@@ -72,7 +69,7 @@ public class HabitServiceImpl implements HabitService {
     public HabitDetailResponseDto getHabitDetail(HabitTypeDto habitTypeDto, Long habitId) {
 
         HabitWithCounter foundHabit = habitWithCounterRepository.findById(habitId).orElseThrow(
-                () -> new HabitIdNotFoundException("NotFound Habit"));
+                () -> new HabitIdNotFoundException("Not Found Habit"));
 
         HabitDetail build = HabitDetail.builder()
                 .habitId(foundHabit.getId())
@@ -99,7 +96,7 @@ public class HabitServiceImpl implements HabitService {
     public HabitCheckResponseDto checkHabit(HabitTypeDto habitTypeDto, Long habitId) {
 
         HabitWithCounter habitWithCounter = habitWithCounterRepository.findById(habitId).orElseThrow(
-                () -> new HabitIdNotFoundException("NotFound Habit"));
+                () -> new HabitIdNotFoundException("Not Found Habit"));
         Boolean isAchieve = habitWithCounter.check(1L);
         HabitWithCounter checkedHabit = habitWithCounterRepository.save(habitWithCounter);
         HabitSummaryVo habitSummaryVo = HabitSummaryVo.of(checkedHabit);
@@ -135,7 +132,7 @@ public class HabitServiceImpl implements HabitService {
     public DefaultResponseDto deleteHabit(HabitTypeDto habitTypeDto, Long habitId, User user) {
 
         HabitWithCounter habitWithCounter = habitWithCounterRepository.findById(habitId).orElseThrow(
-                () -> new HabitIdNotFoundException("NotFound habit"));
+                () -> new HabitIdNotFoundException("Not Found habit"));
 
         user.getHabit().remove(habitWithCounter);
         habitRepository.delete(habitWithCounter);
@@ -160,7 +157,7 @@ public class HabitServiceImpl implements HabitService {
     public HabitDetailResponseDto updateHabit(Long habitId, HabitUpdateRequestDto habitUpdateRequestDto) {
 
         HabitWithCounter habit = habitWithCounterRepository.findById(habitId)
-                .orElseThrow(() -> new HabitIdNotFoundException("NotFound Habit"));
+                .orElseThrow(() -> new HabitIdNotFoundException("Not Found Habit"));
 
         habit.updateHabit(habitUpdateRequestDto);
 
@@ -194,5 +191,10 @@ public class HabitServiceImpl implements HabitService {
                 .responseMessage("Habit Detail List Query Completed")
                 .statusCode(200)
                 .build();
+    }
+
+    public List<HabitSummaryVo> getHabitListByUser(User user) {
+        List<Habit> habits = habitRepository.findByUser(user);
+        return HabitSummaryVo.listOf(habits);
     }
 }
