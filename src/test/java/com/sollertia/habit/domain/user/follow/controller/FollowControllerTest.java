@@ -188,7 +188,7 @@ class FollowControllerTest {
         //given
         authenticated();
         FollowSearchResponseVo responseVo = FollowSearchResponseVo.of(testUser2,false);
-        FollowSearchResponseDto responseDto = FollowSearchResponseDto.builder().searchResult(responseVo).statusCode(200).responseMessage("Search Completed").build();
+        FollowSearchResponseDto responseDto = FollowSearchResponseDto.builder().userInfo(responseVo).statusCode(200).responseMessage("Search Completed").build();
         given(followService.searchFollowing("1234G",testUser)).willReturn(responseDto);
 
         //when

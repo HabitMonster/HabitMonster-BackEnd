@@ -84,7 +84,7 @@ public class FollowServiceImpl implements FollowService {
 
         FollowSearchResponseVo followSearchResponseVo = FollowSearchResponseVo.of(searchUser, checkFollow(followingId, user).getIsFollowed());
 
-        return FollowSearchResponseDto.builder().searchResult(followSearchResponseVo).statusCode(200).responseMessage("Search Completed").build();
+        return FollowSearchResponseDto.builder().userInfo(followSearchResponseVo).statusCode(200).responseMessage("Search Completed").build();
     }
 
     @Override

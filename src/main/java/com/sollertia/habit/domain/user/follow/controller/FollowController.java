@@ -42,7 +42,7 @@ public class FollowController {
     }
 
     @ApiOperation(value = "친구 검색", notes = "Following User 검색")
-    @GetMapping("/monsterCode/{monsterCode}")
+    @GetMapping("/user/{monsterCode}")
     public FollowSearchResponseDto searchFollowing(@PathVariable(name = "monsterCode") String followingId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return followService.searchFollowing(followingId, userDetails.getUser());
     }

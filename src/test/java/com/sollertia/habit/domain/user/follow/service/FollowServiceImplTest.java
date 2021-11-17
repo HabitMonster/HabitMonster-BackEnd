@@ -36,7 +36,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @RunWith(PowerMockRunner.class)
@@ -179,11 +178,11 @@ class FollowServiceImplTest {
         FollowSearchResponseDto responseDto = followService.searchFollowing("1234G", testUser);
 
         //then
-        assertThat(responseDto.getSearchResult().getEmail()).isEqualTo(testUser2.getEmail());
-        assertThat(responseDto.getSearchResult().getIsFollowed()).isEqualTo(false);
-        assertThat(responseDto.getSearchResult().getMonsterCode()).isEqualTo(testUser2.getSocialId());
-        assertThat(responseDto.getSearchResult().getMonsterImg()).isEqualTo(testUser2.getMonster().getMonsterDatabase().getImageUrl());
-        assertThat(responseDto.getSearchResult().getMonsterName()).isEqualTo(testUser2.getMonster().getName());
+        assertThat(responseDto.getUserInfo().getEmail()).isEqualTo(testUser2.getEmail());
+        assertThat(responseDto.getUserInfo().getIsFollowed()).isEqualTo(false);
+        assertThat(responseDto.getUserInfo().getMonsterCode()).isEqualTo(testUser2.getSocialId());
+        assertThat(responseDto.getUserInfo().getMonsterImg()).isEqualTo(testUser2.getMonster().getMonsterDatabase().getImageUrl());
+        assertThat(responseDto.getUserInfo().getMonsterName()).isEqualTo(testUser2.getMonster().getName());
         assertThat(responseDto.getStatusCode()).isEqualTo(200);
         assertThat(responseDto.getResponseMessage()).isEqualTo("Search Completed");
     }
