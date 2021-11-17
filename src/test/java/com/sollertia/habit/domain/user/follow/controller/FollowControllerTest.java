@@ -5,21 +5,17 @@ import com.sollertia.habit.domain.monster.entity.MonsterDatabase;
 import com.sollertia.habit.domain.monster.entity.MonsterType;
 import com.sollertia.habit.domain.monster.enums.Level;
 import com.sollertia.habit.domain.user.entity.User;
-import com.sollertia.habit.domain.user.follow.dto.FollowResponseDto;
-import com.sollertia.habit.domain.user.follow.dto.FollowVo;
+import com.sollertia.habit.domain.user.follow.dto.*;
 import com.sollertia.habit.domain.user.follow.entity.Follow;
 import com.sollertia.habit.domain.user.follow.service.FollowServiceImpl;
 import com.sollertia.habit.domain.user.oauth2.userinfo.GoogleOauth2UserInfo;
 import com.sollertia.habit.domain.user.oauth2.userinfo.Oauth2UserInfo;
 import com.sollertia.habit.domain.user.security.jwt.filter.JwtTokenProvider;
 import com.sollertia.habit.domain.user.security.userdetail.UserDetailsImpl;
-import com.sollertia.habit.global.utils.DefaultResponseDto;
 import com.sollertia.habit.global.utils.RedisUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -96,8 +92,8 @@ class FollowControllerTest {
     void getFollowers() throws Exception {
         //given
         authenticated();
-        Follow follow = Follow.create(testUser2,testUser);
-        FollowVo followerVo = FollowVo.followerOf(follow);
+        Follow follow = Follow.create(testUser2, testUser);
+        FollowVo followerVo = FollowVo.followerOf(follow, true);
         List<FollowVo> followVos = new ArrayList<>();
         followVos.add(followerVo);
         FollowResponseDto followResponseDto = FollowResponseDto.builder().followers(followVos).statusCode(200).responseMessage("Followers Query Completed").build();
@@ -112,6 +108,7 @@ class FollowControllerTest {
                 .andExpect(jsonPath("$.followers[0].monsterName").value("blue"))
                 .andExpect(jsonPath("$.followers[0].monsterImg").value("blue.img"))
                 .andExpect(jsonPath("$.followers[0].monsterCode").value("1234G"))
+                .andExpect(jsonPath("$.followers[0].isFollowed").value("true"))
                 .andExpect(jsonPath("$.responseMessage").value("Followers Query Completed"))
                 .andExpect(jsonPath("$.statusCode").value("200"));
 
@@ -123,7 +120,7 @@ class FollowControllerTest {
     void getFollowings() throws Exception {
         //given
         authenticated();
-        Follow follow = Follow.create(testUser,testUser2);
+        Follow follow = Follow.create(testUser, testUser2);
         FollowVo followingVo = FollowVo.followingOf(follow);
         List<FollowVo> followVos = new ArrayList<>();
         followVos.add(followingVo);
@@ -150,14 +147,15 @@ class FollowControllerTest {
     void requestFollow() throws Exception {
         //given
         authenticated();
-        DefaultResponseDto responseDto = DefaultResponseDto.builder().statusCode(200).responseMessage("Success Follow").build();
-        given(followService.requestFollow("1234G",testUser)).willReturn(responseDto);
+        FollowCheckDto responseDto = FollowCheckDto.builder().isFollowed(true).statusCode(200).responseMessage("Success Follow").build();
+        given(followService.requestFollow("1234G", testUser)).willReturn(responseDto);
 
         //when
         mvc.perform(patch("/follow/1234G"))
                 .andDo(print())
                 //then
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isFollowed").value("true"))
                 .andExpect(jsonPath("$.responseMessage").value("Success Follow"))
                 .andExpect(jsonPath("$.statusCode").value("200"));
 
@@ -169,18 +167,64 @@ class FollowControllerTest {
     void requestUnFollow() throws Exception {
         //given
         authenticated();
-        DefaultResponseDto responseDto = DefaultResponseDto.builder().statusCode(200).responseMessage("Success UnFollow").build();
-        given(followService.requestUnFollow("1234G",testUser)).willReturn(responseDto);
+        FollowCheckDto responseDto = FollowCheckDto.builder().isFollowed(false).statusCode(200).responseMessage("Success UnFollow").build();
+        given(followService.requestUnFollow("1234G", testUser)).willReturn(responseDto);
 
         //when
         mvc.perform(delete("/unFollow/1234G"))
                 .andDo(print())
                 //then
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isFollowed").value("false"))
                 .andExpect(jsonPath("$.responseMessage").value("Success UnFollow"))
                 .andExpect(jsonPath("$.statusCode").value("200"));
 
         verify(followService).requestUnFollow("1234G", testUser);
+    }
+
+    @DisplayName("친구 검색")
+    @Test
+    void searchFollowing() throws Exception {
+        //given
+        authenticated();
+        FollowSearchResponseVo responseVo = FollowSearchResponseVo.of(testUser2,false);
+        FollowSearchResponseDto responseDto = FollowSearchResponseDto.builder().searchResult(responseVo).statusCode(200).responseMessage("Search Completed").build();
+        given(followService.searchFollowing("1234G",testUser)).willReturn(responseDto);
+
+        //when
+        mvc.perform(get("/monsterCode/1234G"))
+                .andDo(print())
+                //then
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.searchResult.monsterName").value(testUser2.getMonster().getName()))
+                .andExpect(jsonPath("$.searchResult.monsterImg").value(testUser2.getMonster().getMonsterDatabase().getImageUrl()))
+                .andExpect(jsonPath("$.searchResult.monsterCode").value(testUser2.getSocialId()))
+                .andExpect(jsonPath("$.searchResult.email").value(testUser2.getEmail()))
+                .andExpect(jsonPath("$.searchResult.isFollowed").value("false"))
+                .andExpect(jsonPath("$.responseMessage").value("Search Completed"))
+                .andExpect(jsonPath("$.statusCode").value("200"));
+
+        verify(followService).searchFollowing("1234G", testUser);
+    }
+
+    @DisplayName("Follow 유무 확인")
+    @Test
+    void checkFollow() throws Exception {
+        //given
+        authenticated();
+        FollowCheckDto responseDto = FollowCheckDto.builder().isFollowed(true).statusCode(200).responseMessage("isFollowedTrue").build();
+        given(followService.checkFollow("1234G",testUser)).willReturn(responseDto);
+
+        //when
+        mvc.perform(get("/checkFollow/1234G"))
+                .andDo(print())
+                //then
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isFollowed").value("true"))
+                .andExpect(jsonPath("$.responseMessage").value("isFollowedTrue"))
+                .andExpect(jsonPath("$.statusCode").value("200"));
+
+        verify(followService).checkFollow("1234G", testUser);
     }
 
 
