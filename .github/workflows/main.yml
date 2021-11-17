@@ -22,14 +22,12 @@ jobs:
       with:
         java-version: '11'
         distribution: 'adopt'
-        cache: gradle
+#        cache: gradle
 
     # Gradle 권한 부여
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
 
-    - name: build fail test
-      run: gradle clean
     # Test는 따로
     - name: Build with Gradle
       run: ./gradlew clean build -x test
