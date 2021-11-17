@@ -29,10 +29,6 @@ public class Monster extends TimeStamped {
     @Setter
     private User user;
 
-    public void setUser(User user) {
-        this.user = user;
-    }
-
     protected Monster() {
     }
 

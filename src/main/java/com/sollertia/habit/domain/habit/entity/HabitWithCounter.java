@@ -28,11 +28,6 @@ public class HabitWithCounter extends Habit {
     }
 
     @Override
-    public int getGoal() {
-        return this.goalCountInSession;
-    }
-
-    @Override
     public void updateHabit(HabitUpdateRequestDto habitUpdateRequestDto) {
         this.updateTitle(habitUpdateRequestDto.getTitle());
         this.updateDescription(habitUpdateRequestDto.getDescription());

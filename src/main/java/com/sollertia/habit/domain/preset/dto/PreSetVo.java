@@ -2,11 +2,11 @@ package com.sollertia.habit.domain.preset.dto;
 
 import com.sollertia.habit.domain.category.enums.Category;
 import com.sollertia.habit.domain.habit.entity.Habit;
+import com.sollertia.habit.domain.habit.entity.HabitWithCounter;
 import com.sollertia.habit.domain.preset.entity.PreSet;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.time.Duration;
 
@@ -39,7 +39,7 @@ public class PreSetVo {
         this.categoryId = habit.getCategory().getCategoryId();
         this.title = habit.getTitle();
         this.description = habit.getDescription();
-        this.count = habit.getGoal();
+        this.count = ((HabitWithCounter) habit).getGoalCountInSession();
         this.category = habit.getCategory();
         this.practiceDays = habit.getPracticeDays();
         this.period = (int) Duration.between(habit.getDurationStart().atStartOfDay(),habit.getDurationEnd().atStartOfDay()).toDays();

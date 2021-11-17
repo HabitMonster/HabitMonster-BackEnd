@@ -29,11 +29,6 @@ public class HabitWithTimer extends Habit {
     }
 
     @Override
-    public int getGoal() {
-        return this.goalDurationTime;
-    }
-
-    @Override
     public void updateHabit(HabitUpdateRequestDto habitUpdateRequestDto) {
         this.updateTitle(habitUpdateRequestDto.getTitle());
         this.updateDescription(habitUpdateRequestDto.getDescription());
