@@ -162,7 +162,7 @@ class MonsterControllerTest {
                 "}";
 
         //when
-        mvc.perform(patch("/monster/nameChange")
+        mvc.perform(patch("/monster/name")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andDo(print())
