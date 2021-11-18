@@ -2,6 +2,7 @@ package com.sollertia.habit.domain.habit.repository;
 
 import com.sollertia.habit.domain.habit.entity.Habit;
 import com.sollertia.habit.domain.user.entity.User;
+import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
