@@ -130,8 +130,8 @@ public class FollowServiceImpl implements FollowService {
     }
 
     public FollowCount getCountByUser(User targetUser) {
-        Integer followersCount = followRepository.findCountByFollowing(targetUser);
-        Integer followingsCount = followRepository.findCountByFollower(targetUser);
+        Integer followersCount = followRepository.countByFollowing(targetUser);
+        Integer followingsCount = followRepository.countByFollower(targetUser);
         return new FollowCount(followersCount, followingsCount);
     }
 
