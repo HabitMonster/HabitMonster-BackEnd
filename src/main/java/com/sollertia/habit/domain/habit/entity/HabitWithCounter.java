@@ -27,11 +27,18 @@ public class HabitWithCounter extends Habit {
         return this.todayCounter;
     }
 
+    private void setCurrent(int todayCounter) {
+        this.todayCounter = todayCounter;
+    }
+
     @Override
     public void updateHabit(HabitUpdateRequestDto habitUpdateRequestDto) {
         this.updateTitle(habitUpdateRequestDto.getTitle());
         this.updateDescription(habitUpdateRequestDto.getDescription());
         this.goalCountInSession = habitUpdateRequestDto.getCount();
+        if ( this.getCurrent() > this.getGoalCountInSession() ) {
+            this.setCurrent(this.getGoalCountInSession());
+        }
     }
 
     private void setGoalCountInSession(int goalCountInSession) {

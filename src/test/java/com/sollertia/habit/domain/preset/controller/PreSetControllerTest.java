@@ -126,7 +126,7 @@ class PreSetControllerTest {
                 .durationStart("2021-11-01")
                 .durationEnd("2021-11-30")
                 .count(preSetVo.getCount())
-                .category(preSetVo.getCategory().toString())
+                .category(preSetVo.getCategory())
                 .practiceDays(preSetVo.getPracticeDays())
                 .current(0)
                 .achievePercentage(0L)
