@@ -2,7 +2,7 @@ name: DeployScheduler
 
 on:
   push:
-    branches: [ SchedulerGithubAction ]
+    branches: [ SchedulerRelease ]
 
 jobs:
   build:

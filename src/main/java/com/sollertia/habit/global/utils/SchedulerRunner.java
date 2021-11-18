@@ -46,7 +46,18 @@ public class SchedulerRunner {
         LocalDate date = LocalDate.now();
         minusExpOnLapsedHabit(date);
         expireHabit(date);
+
     }
+
+    @Scheduled(cron = "0 0 1 ? * SUN")
+    public void runWhenEveryWeek() {
+        makePreset();
+    }
+
+//    @Scheduled(cron = "0 0 1 ? * SUN")
+//    public void runWhenEveryMonth() {
+//        makePreset();
+//    }
 
     private void minusExpOnLapsedHabit(LocalDate date) {
         String day = String.valueOf(date.minusDays(1).getDayOfWeek().getValue());
@@ -87,11 +98,6 @@ public class SchedulerRunner {
     private void deleteHabitList(List<Habit> habitListForDelete) {
         List<Long> habitIdListForDelete = habitListForDelete.stream().map(Habit::getId).collect(Collectors.toList());
         habitRepository.deleteAllById(habitIdListForDelete);
-    }
-
-    @Scheduled(cron = "0 0 1 ? * SUN")
-    public void runWhenEveryWeek() {
-        makePreset();
     }
 
     private void makePreset() {
