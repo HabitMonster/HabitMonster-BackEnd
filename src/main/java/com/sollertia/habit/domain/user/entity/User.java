@@ -28,6 +28,8 @@ public class User extends TimeStamped {
 
     private String socialId;
 
+    private String monsterCode;
+
     private String username;
 
     private String email;
@@ -57,9 +59,9 @@ public class User extends TimeStamped {
     public User() {
     }
 
+
 //    protected User() {  // 이유가 궁금하니다!
 //    }
-
     private void setSocialId(String socialId) {
         this.socialId = socialId;
     }
@@ -82,6 +84,10 @@ public class User extends TimeStamped {
 
     private void setDisabled (boolean disabled) {
         this.disabled = disabled;
+    }
+
+    public void setMonsterCode(String monsterCode) {
+        this.monsterCode = monsterCode;
     }
 
     public void updateUsername(String username) {

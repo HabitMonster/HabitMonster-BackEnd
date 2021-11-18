@@ -20,7 +20,7 @@ public class FollowVo {
         return FollowVo.builder()
                 .email(followerUser.getEmail() != null ? followerUser.getEmail() : followerUser.getUsername())
                 .monsterName(followerUser.getMonster().getName())
-                .monsterCode(followerUser.getSocialId())
+                .monsterCode(followerUser.getMonsterCode())
                 .isFollowed(checkFollow)
                 .monsterImg(followerUser.getMonster().getMonsterDatabase().getImageUrl())
                 .build();
@@ -31,7 +31,7 @@ public class FollowVo {
         return FollowVo.builder()
                 .email(followingUser.getEmail() != null ? followingUser.getEmail() : followingUser.getUsername())
                 .monsterName(followingUser.getMonster().getName())
-                .monsterCode(followingUser.getSocialId())
+                .monsterCode(followingUser.getMonsterCode())
                 .isFollowed(true)
                 .monsterImg(followingUser.getMonster().getMonsterDatabase().getImageUrl())
                 .build();
@@ -42,7 +42,7 @@ public class FollowVo {
         return FollowVo.builder()
                 .email(followingUser.getEmail() != null ? followingUser.getEmail() : followingUser.getUsername())
                 .monsterName(followingUser.getMonster().getName())
-                .monsterCode(followingUser.getSocialId())
+                .monsterCode(followingUser.getMonsterCode())
                 .isFollowed(checkFollow)
                 .monsterImg(followingUser.getMonster().getMonsterDatabase().getImageUrl())
                 .build();

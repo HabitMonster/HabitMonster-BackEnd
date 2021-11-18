@@ -27,7 +27,7 @@ public class FollowServiceImpl implements FollowService {
     public FollowResponseDto getFollowers(User user) {
 
         List<FollowVo> followers = followRepository.findAllByFollowingId(user.getId()).stream()
-                .map(f -> FollowVo.followerOf(f, checkFollow(f.getFollower().getSocialId(), user).getIsFollowed()))
+                .map(f -> FollowVo.followerOf(f, checkFollow(f.getFollower().getMonsterCode(), user).getIsFollowed()))
                 .collect(Collectors.toCollection(ArrayList::new));
 
         return FollowResponseDto.builder()
@@ -136,7 +136,7 @@ public class FollowServiceImpl implements FollowService {
     }
 
     private User getUserByMonsterCode(String monsterCode) {
-        return userRepository.findBySocialId(monsterCode).orElseThrow(
+        return userRepository.findByMonsterCode(monsterCode).orElseThrow(
                 () -> new UserIdNotFoundException("Not Found MonsterCode")
         );
     }

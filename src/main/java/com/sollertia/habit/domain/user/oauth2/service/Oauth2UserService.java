@@ -7,6 +7,7 @@ import com.sollertia.habit.domain.user.repository.UserRepository;
 import com.sollertia.habit.global.exception.user.OAuthProviderMissMatchException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -46,7 +47,9 @@ public class Oauth2UserService {
     }
 
     private User createUser(Oauth2UserInfo userInfo) {
-        return userRepository.save(User.create(userInfo));
+        User savedUser = userRepository.save(User.create(userInfo));
+        savedUser.setMonsterCode(savedUser.getSocialId().substring(0,5)+savedUser.getId());
+        return userRepository.save(savedUser);
     }
 
     private void checkProviderBetween(User user, Oauth2UserInfo userInfo) {

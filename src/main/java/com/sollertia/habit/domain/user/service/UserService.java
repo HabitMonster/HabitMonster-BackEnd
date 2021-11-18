@@ -43,7 +43,7 @@ public class UserService {
 
     private UserInfoVo getUserInfoVo(User user) {
         return UserInfoVo.builder()
-                .monsterCode(user.getSocialId())
+                .monsterCode(user.getMonsterCode())
                 .email(user.getEmail())
                 .username(user.getUsername())
                 .socialType(user.getProviderType())
@@ -74,7 +74,7 @@ public class UserService {
                 .socialType(user.getProviderType())
                 .email(user.getEmail())
                 .username(user.getUsername())
-                .monsterCode(user.getSocialId())
+                .monsterCode(user.getMonsterCode())
                 .build();
 
         return UserInfoResponseDto.builder()
@@ -114,7 +114,7 @@ public class UserService {
     }
 
     private User findByMonsterCode(String monsterCode) {
-        return userRepository.findBySocialId(monsterCode).orElseThrow(
+        return userRepository.findByMonsterCode(monsterCode).orElseThrow(
                 () -> new UserIdNotFoundException("Not Found MonsterCode")
         );
     }

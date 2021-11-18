@@ -44,6 +44,7 @@ class UserServiceTest {
         attributes.put("email", "tester.test.com");
         Oauth2UserInfo oauth2UserInfo = new GoogleOauth2UserInfo(attributes);
         testUser = User.create(oauth2UserInfo);
+        testUser.setMonsterCode("monsterCode");
         updatedTestUser = User.create(oauth2UserInfo);
 
         MonsterDatabase monsterDatabase1 = new MonsterDatabase(Level.LV1, MonsterType.BLUE, "cat.img");
@@ -63,7 +64,7 @@ class UserServiceTest {
         assertThat(responseDto.getResponseMessage()).isEqualTo("User Info Query Completed");
         assertThat(responseDto.getUserInfo().getEmail()).isEqualTo(testUser.getEmail());
         assertThat(responseDto.getUserInfo().getUsername()).isEqualTo(testUser.getUsername());
-        assertThat(responseDto.getUserInfo().getMonsterCode()).isEqualTo(testUser.getSocialId());
+        assertThat(responseDto.getUserInfo().getMonsterCode()).isEqualTo(testUser.getMonsterCode());
         assertThat(responseDto.getUserInfo().getSocialType()).isEqualTo(testUser.getProviderType());
     }
 

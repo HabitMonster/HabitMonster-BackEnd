@@ -79,6 +79,7 @@ class FollowControllerTest {
         Oauth2UserInfo oauth2UserInfo2 = new GoogleOauth2UserInfo(attributes);
         testUser2 = User.create(oauth2UserInfo2);
         testUser2.updateMonster(monster);
+        testUser2.setMonsterCode("monsterCode2");
     }
 
     private void authenticated() {
@@ -107,7 +108,7 @@ class FollowControllerTest {
                 .andExpect(jsonPath("$.followers[0].email").value("tester2.test.com"))
                 .andExpect(jsonPath("$.followers[0].monsterName").value("blue"))
                 .andExpect(jsonPath("$.followers[0].monsterImg").value("blue.img"))
-                .andExpect(jsonPath("$.followers[0].monsterCode").value("1234G"))
+                .andExpect(jsonPath("$.followers[0].monsterCode").value("monsterCode2"))
                 .andExpect(jsonPath("$.followers[0].isFollowed").value("true"))
                 .andExpect(jsonPath("$.responseMessage").value("Followers Query Completed"))
                 .andExpect(jsonPath("$.statusCode").value("200"));
@@ -135,7 +136,7 @@ class FollowControllerTest {
                 .andExpect(jsonPath("$.followings[0].email").value("tester2.test.com"))
                 .andExpect(jsonPath("$.followings[0].monsterName").value("blue"))
                 .andExpect(jsonPath("$.followings[0].monsterImg").value("blue.img"))
-                .andExpect(jsonPath("$.followings[0].monsterCode").value("1234G"))
+                .andExpect(jsonPath("$.followings[0].monsterCode").value("monsterCode2"))
                 .andExpect(jsonPath("$.responseMessage").value("Followings Query Completed"))
                 .andExpect(jsonPath("$.statusCode").value("200"));
 
@@ -198,7 +199,7 @@ class FollowControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.userInfo.monsterName").value(testUser2.getMonster().getName()))
                 .andExpect(jsonPath("$.userInfo.monsterImg").value(testUser2.getMonster().getMonsterDatabase().getImageUrl()))
-                .andExpect(jsonPath("$.userInfo.monsterCode").value(testUser2.getSocialId()))
+                .andExpect(jsonPath("$.userInfo.monsterCode").value(testUser2.getMonsterCode()))
                 .andExpect(jsonPath("$.userInfo.email").value(testUser2.getEmail()))
                 .andExpect(jsonPath("$.userInfo.isFollowed").value("false"))
                 .andExpect(jsonPath("$.responseMessage").value("Search Completed"))
