@@ -36,8 +36,9 @@ public class HabitWithCounter extends Habit {
         this.updateTitle(habitUpdateRequestDto.getTitle());
         this.updateDescription(habitUpdateRequestDto.getDescription());
         this.goalCountInSession = habitUpdateRequestDto.getCount();
-        if ( this.getCurrent() > this.getGoalCountInSession() ) {
+        if ( this.getCurrent() >= this.getGoalCountInSession() ) {
             this.setCurrent(this.getGoalCountInSession());
+            this.accomplishToday();
         }
     }
 
