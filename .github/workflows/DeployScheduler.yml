@@ -18,7 +18,7 @@ jobs:
 
       - name: Revise Dockerfile
         run: |
-          sed -i 's/OUR-PASSWORD/${{secrets.JASYPT_KEY}}/q' Dockerfile
+          sed -i 's/OUR-PASSWORD/${{secrets.JASYPT_KEY}}/g' Dockerfile
       - name: Login to DockerHub
         uses: docker/login-action@v1
         with:
