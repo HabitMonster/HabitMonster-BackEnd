@@ -3,9 +3,7 @@ name: DeployScheduler
 on:
   push:
     branches: [ SchedulerGithubAction ]
-  pull_request:
-    branches: [ SchedulerGithubAction ]
-
+    
 jobs:
   build:
 
