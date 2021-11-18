@@ -153,6 +153,9 @@ public abstract class Habit extends TimeStamped {
     protected void checkAccomplishCounter() {
         this.accomplishCounter += 1;
     }
+    protected void cancelAccomplishCounter() {
+        this.accomplishCounter -= 1;
+    }
 
     protected void setUser(User user) {
         this.user = user;
