@@ -85,7 +85,7 @@ class NoticeControllerTest {
                 .andDo(print())
                 //then
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.noticeVoList[0].title").value("title"))
+                .andExpect(jsonPath("$.notices[0].title").value("title"))
                 .andExpect(jsonPath("$.responseMessage").value("Notice Query Completed"))
                 .andExpect(jsonPath("$.statusCode").value("200"));
 
