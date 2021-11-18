@@ -123,7 +123,7 @@ public class TestData implements ApplicationRunner {
         MonsterCollectionDatabase monsterCollectionDatabase;
 
 
-        User testUser = User.builder().socialId("1234G").username("tester").email("tester.test.com").providerType(ProviderType.GOOGLE).build();
+        User testUser = User.builder().socialId("1234G").username("tester").monsterCode("monsterCode").email("tester.test.com").providerType(ProviderType.GOOGLE).build();
         userRepository.save(testUser);
 
         User user = userRepository.findById(1L).orElseThrow(()->new NullPointerException("없음"));
