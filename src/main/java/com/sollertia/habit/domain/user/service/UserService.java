@@ -108,7 +108,7 @@ public class UserService {
                 .username(targetUser.getUsername())
                 .email(targetUser.getEmail())
                 .isFollowed(isFollowed)
-                .followsCount(followCount.getFollowersCount())
+                .followersCount(followCount.getFollowersCount())
                 .followingsCount(followCount.getFollowingsCount())
                 .build();
     }
