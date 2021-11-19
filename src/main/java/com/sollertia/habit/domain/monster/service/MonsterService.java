@@ -115,6 +115,14 @@ public class MonsterService {
         );
     }
 
+    @Transactional
+    public void minusExpWithCount(User user, Long count) {
+        Monster monster = getMonsterByUser(user);
+        for (int i = 0; i < count; i++) {
+            monster.minusExpPoint();
+        }
+    }
+
     private Monster getMonsterByUser(User user) {
         return monsterRepository.findByUserId(user.getId()).orElseThrow(
                 () -> new MonsterNotFoundException("Not Found Selected Monster from User"));

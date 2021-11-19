@@ -137,7 +137,7 @@ public class HabitServiceImpl implements HabitService {
                 () -> new HabitIdNotFoundException("Not Found habit"));
 
         user.getHabit().remove(habitWithCounter);
-        minusExpOfDeletedHabit(user, habitWithCounter);
+        monsterService.minusExpWithCount(user, habitWithCounter.getAccomplishCounter());
         habitRepository.delete(habitWithCounter);
 
         return DefaultResponseDto.builder()
@@ -145,13 +145,6 @@ public class HabitServiceImpl implements HabitService {
                 .responseMessage("Habit Delete Completed")
                 .build();
     }
-
-    private void minusExpOfDeletedHabit(User user, HabitWithCounter habitWithCounter) {
-        for (int i = 0; i < habitWithCounter.getAccomplishCounter(); i++) {
-            user.getMonster().minusExpPoint();
-        }
-    }
-
 
     @Override
     public List<HabitSummaryVo> getHabitSummaryList(User user) {

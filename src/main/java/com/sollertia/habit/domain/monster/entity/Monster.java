@@ -47,8 +47,13 @@ public class Monster extends TimeStamped {
     public boolean plusExpPoint() {
         setExpPoint(getExpPoint() + getLevel().getPlusPoint());
         if ( getExpPoint() >= Level.MAX_EXP ) {
-            setExpPoint(getExpPoint() - Level.MAX_EXP);
-            return true;
+            if ( getLevel().isMax() ) {
+                setExpPoint(Level.MAX_EXP);
+                return false;
+            } else {
+                setExpPoint(getExpPoint() - Level.MAX_EXP);
+                return true;
+            }
         }
         return false;
     }
@@ -56,7 +61,7 @@ public class Monster extends TimeStamped {
     public void minusExpPoint() {
         setExpPoint(getExpPoint() - getLevel().getMinusPoint());
         if (getExpPoint() < Level.MIN_EXP) {
-            setExpPoint((long) Level.MIN_EXP);
+            setExpPoint(Level.MIN_EXP);
         }
     }
 

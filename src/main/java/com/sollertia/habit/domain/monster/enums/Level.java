@@ -11,9 +11,9 @@ public enum Level {
     LV4(4,5, 6),
     LV5(5,4, 7);
 
-    public static final int MAX_LEVEL = 5;
-    public static final int MAX_EXP = 100;
-    public static final int MIN_EXP = 0;
+    public static final Integer MAX_LEVEL = 5;
+    public static final long MAX_EXP = 100;
+    public static final long MIN_EXP = 0;
 
     private final Integer value;
     private final Integer plusPoint;
@@ -43,5 +43,9 @@ public enum Level {
         } else {
             throw new InvalidLevelException("불가능한 레벨입니다.");
         }
+    }
+
+    public boolean isMax() {
+        return this.getValue() == Level.MAX_LEVEL;
     }
 }
