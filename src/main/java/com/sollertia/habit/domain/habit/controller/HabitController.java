@@ -26,10 +26,10 @@ public class HabitController {
 
         return habitService.createHabit(habitTypeDto, habitDto, userDetails.getUser());
     }
+
     @ApiOperation(value = "습관 상세정보 요청", notes = "성공 실패여부 반환")
     @GetMapping("/habits/{habitId}")
-    public HabitDetailResponseDto habitDetailResponseDto(@PathVariable Long habitId,
-                                                         @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public HabitDetailResponseDto habitDetailResponseDto(@PathVariable Long habitId) {
 
 
         HabitTypeDto habitTypeDto = new HabitTypeDto("counter", "specificDay");
@@ -40,7 +40,6 @@ public class HabitController {
     @ApiOperation(value = "습관 변경", notes = "title, description, count 변경 가능")
     @PatchMapping("/habits/{habitId}")
     public HabitDetailResponseDto updateHabit(@PathVariable Long habitId,
-                                              @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails,
                                               @RequestBody HabitUpdateRequestDto habitUpdateRequestDto) {
 
         return habitService.updateHabit(habitId, habitUpdateRequestDto);
@@ -55,10 +54,10 @@ public class HabitController {
 
         return habitService.deleteHabit(habitTypeDto, habitId, userDetails.getUser());
     }
+
     @ApiOperation(value = "습관 체크", notes = "성공 실패여부 반환")
     @GetMapping("/habits/check/{habitId}")
-    public HabitCheckResponseDto checkHabit(@PathVariable Long habitId,
-                                         @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public HabitCheckResponseDto checkHabit(@PathVariable Long habitId) {
 
         HabitTypeDto habitTypeDto = new HabitTypeDto("counter", "specificDay");
 

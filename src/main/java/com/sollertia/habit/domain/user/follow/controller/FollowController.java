@@ -5,7 +5,6 @@ import com.sollertia.habit.domain.user.follow.dto.FollowResponseDto;
 import com.sollertia.habit.domain.user.follow.dto.FollowSearchResponseDto;
 import com.sollertia.habit.domain.user.follow.service.FollowServiceImpl;
 import com.sollertia.habit.domain.user.security.userdetail.UserDetailsImpl;
-import com.sollertia.habit.global.utils.DefaultResponseDto;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

@@ -43,7 +43,7 @@ public class HabitServiceImpl implements HabitService {
         HabitWithCounter habit = (HabitWithCounter) Habit.createHabit(habitTypeDto.getHabitType(), createHabitRequestDto, user);
         HabitWithCounter savedHabit = (HabitWithCounter) habitRepository.save(habit);
 
-        HabitDetail build = HabitDetail.builder()
+        HabitDetail habitDetail = HabitDetail.builder()
                 .habitId(savedHabit.getId())
                 .category(savedHabit.getCategory())
                 .count(savedHabit.getGoalCountInSession())
@@ -55,10 +55,11 @@ public class HabitServiceImpl implements HabitService {
                 .practiceDays(savedHabit.getPracticeDays())
                 .current(savedHabit.getCurrent())
                 .title(savedHabit.getTitle())
+                .isAccomplished(false)
                 .build();
 
         return HabitDetailResponseDto.builder()
-                .habit(build)
+                .habit(habitDetail)
                 .statusCode(200)
                 .responseMessage("Habit registered Completed")
                 .build();
@@ -129,18 +130,26 @@ public class HabitServiceImpl implements HabitService {
     }
 
     @Override
+    @Transactional
     public DefaultResponseDto deleteHabit(HabitTypeDto habitTypeDto, Long habitId, User user) {
 
         HabitWithCounter habitWithCounter = habitWithCounterRepository.findById(habitId).orElseThrow(
                 () -> new HabitIdNotFoundException("Not Found habit"));
 
         user.getHabit().remove(habitWithCounter);
+        minusExpOfDeletedHabit(user, habitWithCounter);
         habitRepository.delete(habitWithCounter);
 
         return DefaultResponseDto.builder()
                 .statusCode(200)
                 .responseMessage("Habit Delete Completed")
                 .build();
+    }
+
+    private void minusExpOfDeletedHabit(User user, HabitWithCounter habitWithCounter) {
+        for (int i = 0; i < habitWithCounter.getAccomplishCounter(); i++) {
+            user.getMonster().minusExpPoint();
+        }
     }
 
 

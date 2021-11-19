@@ -33,7 +33,6 @@ public class JwtTokenProvider {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
 
-
     public static final long ACCESS_TOKEN_USETIME = 1 * 60 * 60 * 1000L;
 
     public static final long REFRESH_TOKEN_USETIME = 7 * 24 * 60 * 60 * 1000L;

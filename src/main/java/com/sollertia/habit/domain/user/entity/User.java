@@ -7,7 +7,6 @@ import com.sollertia.habit.domain.monster.entity.Monster;
 import com.sollertia.habit.domain.monster.entity.MonsterCollection;
 import com.sollertia.habit.domain.user.enums.ProviderType;
 import com.sollertia.habit.domain.user.oauth2.userinfo.Oauth2UserInfo;
-import com.sollertia.habit.domain.userteam.entity.UserTeam;
 import com.sollertia.habit.global.utils.TimeStamped;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -40,9 +39,6 @@ public class User extends TimeStamped {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Habit> habit = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<UserTeam> userTeam = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<History> histories = new ArrayList<>();

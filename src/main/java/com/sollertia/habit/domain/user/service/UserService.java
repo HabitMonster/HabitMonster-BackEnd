@@ -8,13 +8,17 @@ import com.sollertia.habit.domain.monster.service.MonsterService;
 import com.sollertia.habit.domain.user.dto.*;
 import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.domain.user.follow.dto.FollowCount;
+import com.sollertia.habit.domain.user.follow.dto.FollowSearchResponseVo;
 import com.sollertia.habit.domain.user.follow.service.FollowServiceImpl;
 import com.sollertia.habit.domain.user.repository.UserRepository;
 import com.sollertia.habit.global.exception.user.UserIdNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -117,5 +121,23 @@ public class UserService {
         return userRepository.findByMonsterCode(monsterCode).orElseThrow(
                 () -> new UserIdNotFoundException("Not Found MonsterCode")
         );
+    }
+
+    public RecommendedUserListDto getRecommendedUserListDto(User user) {
+        List<FollowSearchResponseVo> userList = new ArrayList<>();
+        Page<User> userPage = userRepository.findAll(Pageable.ofSize(5));
+
+        for (User target : userPage) {
+            userList.add(
+                    FollowSearchResponseVo.of(
+                            target,
+                            followService.checkFollow(target.getMonsterCode(), user).getIsFollowed()
+                    ));
+        }
+        return RecommendedUserListDto.builder()
+                .userList(userList)
+                    .responseMessage("Response Recommeded User List")
+                .statusCode(200)
+                .build();
     }
 }

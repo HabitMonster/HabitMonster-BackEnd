@@ -5,6 +5,7 @@ public enum ProviderType {
     GOOGLE(AuthType.GOOGLE),
     KAKAO(AuthType.KAKAO),
     NAVER(AuthType.NAVER),
+    ADMIN(AuthType.ADMIN),
     NONE(null);
 
     private final String type;
@@ -19,5 +20,6 @@ public enum ProviderType {
         private static final String GOOGLE = "TYPE_GOOGLE";
         private static final String KAKAO = "TYPE_KAKAO";
         private static final String NAVER = "TYPE_NAVER";
+        private static final String ADMIN = "TYPE_ADMIN";
     }
 }

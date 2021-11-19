@@ -82,6 +82,10 @@ public class FollowServiceImpl implements FollowService {
     @Override
     public FollowCheckDto requestFollow(String followingId, User user) {
 
+        if(user.getMonsterCode().equals(followingId)){
+            throw new FollowException("You can't follow yourself");
+        }
+
         User followingUser = getUserByMonsterCode(followingId);
 
         if (isFollowBetween(user, followingUser)) {
