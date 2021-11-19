@@ -52,18 +52,13 @@ public class GlobalController {
 
     @ExceptionHandler
     public ResponseEntity<ErrorResponseDto> globalRedisConnectionExceptionHandler(RedisConnectionException exception) {
-        return new ResponseEntity<>(ErrorResponseDto.badRequest(exception.getMessage()), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(ErrorResponseDto.badRequest("Redis Connection Error"), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler
     public ResponseEntity<ErrorResponseDto> globalJwtExceptionHandler(JwtException exception) {
         return new ResponseEntity<>(ErrorResponseDto.unauthorized(exception.getMessage()), HttpStatus.UNAUTHORIZED);
     }
-
-//    @ExceptionHandler
-//    public ResponseEntity<ErrorResponseDto> globalNullPointerExceptionHandler(NullPointerException exception) {
-//        return new ResponseEntity<>(ErrorResponseDto.badRequest("NotFound Data"), HttpStatus.BAD_REQUEST);
-//    }
 
     @ExceptionHandler
     public ResponseEntity<ErrorResponseDto> globalIllegalArgumentExceptionHandler(IllegalArgumentException exception) {
