@@ -64,6 +64,7 @@ class FollowServiceImplTest {
         MonsterDatabase monsterDatabase1 = new MonsterDatabase(Level.LV1, MonsterType.BLUE, "blue.img");
         monster = Monster.createNewMonster("blue", monsterDatabase1);
         testUser.updateMonster(monster);
+        Whitebox.setInternalState(testUser, "monsterCode", "monsterCode");
         Whitebox.setInternalState(testUser, "id", 1L);
 
 
@@ -75,6 +76,7 @@ class FollowServiceImplTest {
         testUser2 = User.create(oauth2UserInfo2);
         testUser2.updateMonster(monster);
         testUser2.setMonsterCode("monsterCode2");
+        Whitebox.setInternalState(testUser2, "monsterCode", "monsterCode2");
         Whitebox.setInternalState(testUser2, "id", 2L);
     }
 
@@ -127,7 +129,6 @@ class FollowServiceImplTest {
     @Test
     void requestFollow() {
         //given
-        Follow follow = Follow.create(testUser, testUser2);
         given(userRepository.findByMonsterCode(testUser2.getMonsterCode())).willReturn(java.util.Optional.ofNullable(testUser2));
 
         //when
@@ -137,6 +138,15 @@ class FollowServiceImplTest {
         assertThat(responseDto.getIsFollowed()).isEqualTo(true);
         assertThat(responseDto.getStatusCode()).isEqualTo(200);
         assertThat(responseDto.getResponseMessage()).isEqualTo("Success Follow");
+    }
+
+    @DisplayName("Self Follow 오류")
+    @Test
+    void selfFollow() {
+        //given
+        //when
+        assertThrows(FollowException.class,
+                () -> followService.requestFollow(testUser2.getMonsterCode(), testUser2));
     }
 
     @DisplayName("Already Follow")
