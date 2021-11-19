@@ -16,6 +16,7 @@ public class TestToken {
     private final UserRepository userRepository;
     private final RedisUtil redisUtil;
 
+
     @ApiOperation("test 토큰 발급")
     @GetMapping("/test/token")
     public JwtResponseDto testToken(){
