@@ -3,9 +3,7 @@ package com.sollertia.habit.domain.completedhabbit.statics.dto;
 import com.sollertia.habit.domain.completedhabbit.dto.SimpleHabitVo;
 import com.sollertia.habit.global.utils.DefaultResponseDto;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-
 
 import java.util.List;
 

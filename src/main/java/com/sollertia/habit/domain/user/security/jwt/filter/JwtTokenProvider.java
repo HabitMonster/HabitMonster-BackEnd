@@ -1,7 +1,7 @@
 package com.sollertia.habit.domain.user.security.jwt.filter;
 
-import com.sollertia.habit.domain.user.enums.ProviderType;
 import com.sollertia.habit.domain.user.entity.User;
+import com.sollertia.habit.domain.user.enums.ProviderType;
 import com.sollertia.habit.domain.user.security.userdetail.UserDetailsServiceImpl;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;

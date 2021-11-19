@@ -1,7 +1,6 @@
 package com.sollertia.habit.domain.monster.repository;
 
 import com.sollertia.habit.domain.monster.entity.Monster;
-import com.sollertia.habit.domain.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

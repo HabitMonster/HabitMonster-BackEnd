@@ -1,4 +1,4 @@
-package com.sollertia.habit.domain.monster.entity;
+package com.sollertia.habit.domain.monster.enums;
 
 public enum MonsterType {
     GREEN(1L), PINK(6L), BLUE(11L), YELLOW(16L), ORANGE(21L), RED(26L);

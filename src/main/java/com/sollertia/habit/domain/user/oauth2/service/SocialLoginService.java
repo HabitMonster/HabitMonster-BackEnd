@@ -1,11 +1,11 @@
 package com.sollertia.habit.domain.user.oauth2.service;
 
+import com.sollertia.habit.domain.user.enums.ProviderType;
 import com.sollertia.habit.domain.user.oauth2.loginutil.GoogleSocialLoginUtil;
 import com.sollertia.habit.domain.user.oauth2.loginutil.KakaoSocialLoginUtil;
 import com.sollertia.habit.domain.user.oauth2.loginutil.NaverSocialLoginUtil;
 import com.sollertia.habit.domain.user.oauth2.loginutil.SocialLoginUtil;
 import com.sollertia.habit.domain.user.oauth2.userinfo.Oauth2UserInfo;
-import com.sollertia.habit.domain.user.enums.ProviderType;
 import com.sollertia.habit.global.exception.user.InvalidSocialNameException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

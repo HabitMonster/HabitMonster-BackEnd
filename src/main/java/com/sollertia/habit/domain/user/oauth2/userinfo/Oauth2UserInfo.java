@@ -1,7 +1,7 @@
 package com.sollertia.habit.domain.user.oauth2.userinfo;
 
-import com.sollertia.habit.domain.user.enums.ProviderType;
 import com.sollertia.habit.domain.user.entity.User;
+import com.sollertia.habit.domain.user.enums.ProviderType;
 
 import java.util.Map;
 

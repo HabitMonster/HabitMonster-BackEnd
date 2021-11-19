@@ -3,7 +3,8 @@ package com.sollertia.habit.domain.habit.dto;
 import com.sollertia.habit.domain.category.enums.Category;
 import com.sollertia.habit.domain.habit.entity.Habit;
 import com.sollertia.habit.domain.habit.entity.HabitWithCounter;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
