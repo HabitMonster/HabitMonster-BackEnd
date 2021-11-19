@@ -6,11 +6,14 @@ import com.sollertia.habit.domain.category.enums.Category;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import springfox.documentation.annotations.Cacheable;
 
 import java.util.List;
 
 @RestController
 public class CategoryController {
+
+    //@Cacheable()
     @ApiOperation(value = "Category 목록 조회")
     @GetMapping("/categories")
     public CategoryResponseDto categoryPresetList(){
