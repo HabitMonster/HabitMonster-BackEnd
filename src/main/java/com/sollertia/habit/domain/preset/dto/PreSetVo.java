@@ -5,9 +5,11 @@ import com.sollertia.habit.domain.preset.entity.PreSet;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class PreSetVo {
     private Long presetId;
