@@ -43,6 +43,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http
                 .authorizeRequests()
+                .antMatchers(HttpMethod.GET, "/test/token").permitAll()//test
                 .antMatchers(HttpMethod.GET, "/docs/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/notice").permitAll()
                 .antMatchers("/user/login/**").anonymous()
