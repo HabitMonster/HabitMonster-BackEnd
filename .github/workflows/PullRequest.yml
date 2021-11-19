@@ -38,7 +38,7 @@ jobs:
           files: build/test-results/**/*.xml
 
       - name: Cleanup Gradle Cache
-          if: ${{ always() }}
+        if: ${{ always() }}
         run: |
           rm -f ~/.gradle/caches/modules-2/modules-2.lock
           rm -f ~/.gradle/caches/modules-2/gc.properties
