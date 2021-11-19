@@ -11,6 +11,7 @@ public class FollowVo {
 
     private String email;
     private String monsterName;
+    private Long monsterId;
     private String monsterImg;
     private String monsterCode;
     private Boolean isFollowed;
@@ -20,6 +21,7 @@ public class FollowVo {
         return FollowVo.builder()
                 .email(followerUser.getEmail() != null ? followerUser.getEmail() : followerUser.getUsername())
                 .monsterName(followerUser.getMonster().getName())
+                .monsterId(followerUser.getMonster().getMonsterDatabase().getId())
                 .monsterCode(followerUser.getMonsterCode())
                 .isFollowed(checkFollow)
                 .monsterImg(followerUser.getMonster().getMonsterDatabase().getImageUrl())
