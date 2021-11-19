@@ -1,11 +1,9 @@
 package com.sollertia.habit.domain.habit.dto;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
 
 @Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
 public class HabitDtoImpl {
     private Long habitId;

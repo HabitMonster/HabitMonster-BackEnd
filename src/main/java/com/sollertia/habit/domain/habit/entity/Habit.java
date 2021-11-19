@@ -12,7 +12,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -152,6 +151,9 @@ public abstract class Habit extends TimeStamped {
     }
     protected void checkAccomplishCounter() {
         this.accomplishCounter += 1;
+    }
+    protected void cancelAccomplishCounter() {
+        this.accomplishCounter -= 1;
     }
 
     protected void setUser(User user) {

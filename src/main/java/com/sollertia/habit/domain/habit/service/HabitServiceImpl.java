@@ -45,7 +45,7 @@ public class HabitServiceImpl implements HabitService {
 
         HabitDetail build = HabitDetail.builder()
                 .habitId(savedHabit.getId())
-                .category(savedHabit.getCategory().toString())
+                .category(savedHabit.getCategory())
                 .count(savedHabit.getGoalCountInSession())
                 .totalCount(Math.toIntExact(savedHabit.getGoalCountInSession() * savedHabit.getWholeDays()))
                 .description(savedHabit.getDescription())
@@ -73,7 +73,7 @@ public class HabitServiceImpl implements HabitService {
 
         HabitDetail build = HabitDetail.builder()
                 .habitId(foundHabit.getId())
-                .category(foundHabit.getCategory().toString())
+                .category(foundHabit.getCategory())
                 .count(foundHabit.getGoalCountInSession())
                 .totalCount(Math.toIntExact(foundHabit.getGoalCountInSession() * foundHabit.getWholeDays()))
                 .description(foundHabit.getDescription())
@@ -160,22 +160,9 @@ public class HabitServiceImpl implements HabitService {
                 .orElseThrow(() -> new HabitIdNotFoundException("Not Found Habit"));
 
         habit.updateHabit(habitUpdateRequestDto);
-
         habitRepository.save(habit);
 
-        HabitDetail build = HabitDetail.builder()
-                .habitId(habit.getId())
-                .category(habit.getCategory().toString())
-                .count(habit.getGoalCountInSession())
-                .totalCount(Math.toIntExact(habit.getGoalCountInSession() * habit.getWholeDays()))
-                .description(habit.getDescription())
-                .durationEnd(habit.getDurationEnd().toString())
-                .durationStart(habit.getDurationStart().toString())
-                .achievePercentage(habit.getAchievePercentage())
-                .current(habit.getCurrent())
-                .practiceDays(habit.getPracticeDays())
-                .title(habit.getTitle())
-                .build();
+        HabitDetail build = HabitDetail.of(habit);
 
         return HabitDetailResponseDto.builder()
                 .habit(build)

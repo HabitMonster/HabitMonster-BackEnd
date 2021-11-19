@@ -3,7 +3,6 @@ package com.sollertia.habit.domain.user.security.userdetail;
 
 import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.domain.user.repository.UserRepository;
-import com.sollertia.habit.domain.user.security.userdetail.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

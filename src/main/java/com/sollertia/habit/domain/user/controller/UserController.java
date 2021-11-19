@@ -1,10 +1,10 @@
 package com.sollertia.habit.domain.user.controller;
 
 import com.sollertia.habit.domain.user.dto.UserDetailResponseDto;
+import com.sollertia.habit.domain.user.dto.UserInfoResponseDto;
 import com.sollertia.habit.domain.user.dto.UsernameUpdateRequestDto;
 import com.sollertia.habit.domain.user.security.userdetail.UserDetailsImpl;
 import com.sollertia.habit.domain.user.service.UserService;
-import com.sollertia.habit.domain.user.dto.UserInfoResponseDto;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

@@ -10,6 +10,6 @@ public class UserDetailsVo {
     private String username;
     private String email;
     private boolean isFollowed;
-    private Integer followsCount;
+    private Integer followersCount;
     private Integer followingsCount;
 }

@@ -6,11 +6,14 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Notice extends TimeStamped {
 
     @Id
@@ -18,21 +21,14 @@ public class Notice extends TimeStamped {
     private Long id;
 
     private String title;
-    @Column(length = 5000)
-    private String content;
 
     private void setTitle(String title) {
         this.title = title;
     }
 
-    private void setContent(String content) {
-        this.content = content;
-    }
-
     public static Notice create (NoticeVo noticeVo){
         Notice notice = new Notice();
         notice.setTitle(noticeVo.getTitle());
-        notice.setContent(noticeVo.getContent());
         return notice;
     }
 

@@ -9,7 +9,5 @@ import java.util.List;
 
 public interface CompletedHabitRepository extends JpaRepository<CompletedHabit, Long> {
 
-    List<CompletedHabit> findAllByUserAndCreatedAtBetween(User user, LocalDate start, LocalDate end);
-
     List<CompletedHabit> findAllByUserAndStartDateBetweenOrderByStartDate(User user, LocalDate start, LocalDate end);
 }

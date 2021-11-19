@@ -22,7 +22,7 @@ public class NoticeServiceImpl implements NoticeService{
                 .collect(Collectors.toCollection(ArrayList::new));
 
         return NoticeResponseDto.builder()
-                .noticeVoList(noticeVoList)
+                .notices(noticeVoList)
                 .responseMessage("Notice Query Completed")
                 .statusCode(200)
                 .build();

@@ -14,8 +14,12 @@ public class FollowSearchResponseVo {
     private Boolean isFollowed;
 
     public static  FollowSearchResponseVo of(User searchUser, Boolean checkFollow){
-        return FollowSearchResponseVo.builder().email(searchUser.getEmail() != null ? searchUser.getEmail() : searchUser.getUsername())
-                .monsterName(searchUser.getMonster().getName()).monsterCode(searchUser.getSocialId()).isFollowed(checkFollow)
-                .monsterImg(searchUser.getMonster().getMonsterDatabase().getImageUrl()).build();
+        return FollowSearchResponseVo.builder()
+                .email(searchUser.getEmail() != null ? searchUser.getEmail() : searchUser.getUsername())
+                .monsterName(searchUser.getMonster().getName())
+                .monsterCode(searchUser.getMonsterCode())
+                .isFollowed(checkFollow)
+                .monsterImg(searchUser.getMonster().getMonsterDatabase().getImageUrl())
+                .build();
     }
 }

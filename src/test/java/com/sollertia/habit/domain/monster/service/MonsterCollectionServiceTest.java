@@ -3,6 +3,7 @@ package com.sollertia.habit.domain.monster.service;
 import com.sollertia.habit.domain.monster.dto.MonsterCollectionResponseDto;
 import com.sollertia.habit.domain.monster.entity.*;
 import com.sollertia.habit.domain.monster.enums.Level;
+import com.sollertia.habit.domain.monster.enums.MonsterType;
 import com.sollertia.habit.domain.monster.repository.MonsterCollectionDatabaseRepository;
 import com.sollertia.habit.domain.monster.repository.MonsterCollectionRepository;
 import com.sollertia.habit.domain.user.entity.User;

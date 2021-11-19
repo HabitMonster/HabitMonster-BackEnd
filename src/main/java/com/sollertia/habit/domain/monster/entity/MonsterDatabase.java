@@ -1,12 +1,16 @@
 package com.sollertia.habit.domain.monster.entity;
 
 import com.sollertia.habit.domain.monster.enums.Level;
+import com.sollertia.habit.domain.monster.enums.MonsterType;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MonsterDatabase {
 
     @Id
@@ -20,9 +24,6 @@ public class MonsterDatabase {
 
     @Enumerated(EnumType.STRING)
     private MonsterType monsterType;
-
-    protected MonsterDatabase() {
-    }
 
     public MonsterDatabase(Level level, MonsterType monsterType, String imageUrl) {
         this.level = level;
