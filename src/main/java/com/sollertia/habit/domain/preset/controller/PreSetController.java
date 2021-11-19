@@ -11,6 +11,7 @@ import com.sollertia.habit.domain.preset.service.PreSetServiceImpl;
 import com.sollertia.habit.domain.user.security.userdetail.UserDetailsImpl;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,6 +31,7 @@ public class PreSetController {
     private final PreSetServiceImpl preSetService;
     private final HabitServiceImpl habitService;
 
+    @Cacheable(key = "#category_id",value = "PreSet")
     @ApiOperation(value = "선택한 Category의 PreSet 목록 조회")
     @GetMapping("/categories/{category_id}/presets")
     public PreSetResponseDto categoryPreSetList(@PathVariable Long category_id){
