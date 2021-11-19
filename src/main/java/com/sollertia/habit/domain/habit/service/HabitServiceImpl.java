@@ -43,7 +43,7 @@ public class HabitServiceImpl implements HabitService {
         HabitWithCounter habit = (HabitWithCounter) Habit.createHabit(habitTypeDto.getHabitType(), createHabitRequestDto, user);
         HabitWithCounter savedHabit = (HabitWithCounter) habitRepository.save(habit);
 
-        HabitDetail build = HabitDetail.builder()
+        HabitDetail habitDetail = HabitDetail.builder()
                 .habitId(savedHabit.getId())
                 .category(savedHabit.getCategory())
                 .count(savedHabit.getGoalCountInSession())
@@ -55,10 +55,11 @@ public class HabitServiceImpl implements HabitService {
                 .practiceDays(savedHabit.getPracticeDays())
                 .current(savedHabit.getCurrent())
                 .title(savedHabit.getTitle())
+                .isAccomplished(false)
                 .build();
 
         return HabitDetailResponseDto.builder()
-                .habit(build)
+                .habit(habitDetail)
                 .statusCode(200)
                 .responseMessage("Habit registered Completed")
                 .build();

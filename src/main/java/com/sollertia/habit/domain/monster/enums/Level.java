@@ -9,7 +9,7 @@ public enum Level {
     LV2(2,8, 4),
     LV3(3,6, 5),
     LV4(4,5, 6),
-    LV5(5,0, 0);
+    LV5(5,4, 7);
 
     public static final int MAX_LEVEL = 5;
     public static final int MAX_EXP = 100;
