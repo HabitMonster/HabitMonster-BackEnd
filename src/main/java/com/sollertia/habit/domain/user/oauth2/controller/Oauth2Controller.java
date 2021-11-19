@@ -9,7 +9,6 @@ import com.sollertia.habit.domain.user.security.jwt.dto.JwtResponseDto;
 import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.global.utils.RedisUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

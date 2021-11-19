@@ -2,6 +2,7 @@ package com.sollertia.habit.domain.user.oauth2.service;
 
 
 import com.sollertia.habit.domain.user.entity.User;
+import com.sollertia.habit.domain.user.follow.repository.FollowRepository;
 import com.sollertia.habit.domain.user.oauth2.userinfo.Oauth2UserInfo;
 import com.sollertia.habit.domain.user.repository.UserRepository;
 import com.sollertia.habit.global.exception.user.OAuthProviderMissMatchException;
@@ -16,6 +17,7 @@ import java.util.Optional;
 public class Oauth2UserService {
 
     private final UserRepository userRepository;
+    private final FollowRepository followRepository;
 
     public Oauth2UserInfo putUserInto(Oauth2UserInfo userInfo) {
         Oauth2UserInfo updatedUserInfo = updateUserInfo(userInfo);
@@ -43,6 +45,8 @@ public class Oauth2UserService {
     }
 
     private void deleteUser(User user) {
+        followRepository.deleteAllByFollower(user);
+        followRepository.deleteAllByFollowing(user);
         userRepository.delete(user);
     }
 
