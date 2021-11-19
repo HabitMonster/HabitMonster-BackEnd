@@ -141,11 +141,11 @@ class PreSetControllerTest {
                 .andDo(print())
                 //then
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.habitDto.categoryId").value(preSetVo.getCategoryId()))
-                .andExpect(jsonPath("$.habitDto.title").value(preSetVo.getTitle()))
-                .andExpect(jsonPath("$.habitDto.description").value(preSetVo.getDescription()))
-                .andExpect(jsonPath("$.habitDto.count").value(preSetVo.getCount()))
-                .andExpect(jsonPath("$.habitDto.practiceDays").value(preSetVo.getPracticeDays()))
+                .andExpect(jsonPath("$.habit.category").value(preSetVo.getCategory().toString()))
+                .andExpect(jsonPath("$.habit.title").value(preSetVo.getTitle()))
+                .andExpect(jsonPath("$.habit.description").value(preSetVo.getDescription()))
+                .andExpect(jsonPath("$.habit.count").value(preSetVo.getCount()))
+                .andExpect(jsonPath("$.habit.practiceDays").value(preSetVo.getPracticeDays()))
                 .andExpect(jsonPath("$.responseMessage").value("Habit registered Completed"))
                 .andExpect(jsonPath("$.statusCode").value(200));
 
