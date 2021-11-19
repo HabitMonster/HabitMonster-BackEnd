@@ -53,6 +53,13 @@ public class Monster extends TimeStamped {
         return false;
     }
 
+    public void minusExpPoint() {
+        setExpPoint(getExpPoint() - getLevel().getMinusPoint());
+        if (getExpPoint() < Level.MIN_EXP) {
+            setExpPoint((long) Level.MIN_EXP);
+        }
+    }
+
     public Level levelUp() {
         this.setLevel(Level.nextOf(this.getLevel()));
         return this.getLevel();

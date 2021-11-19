@@ -130,18 +130,26 @@ public class HabitServiceImpl implements HabitService {
     }
 
     @Override
+    @Transactional
     public DefaultResponseDto deleteHabit(HabitTypeDto habitTypeDto, Long habitId, User user) {
 
         HabitWithCounter habitWithCounter = habitWithCounterRepository.findById(habitId).orElseThrow(
                 () -> new HabitIdNotFoundException("Not Found habit"));
 
         user.getHabit().remove(habitWithCounter);
+        minusExpOfDeletedHabit(user, habitWithCounter);
         habitRepository.delete(habitWithCounter);
 
         return DefaultResponseDto.builder()
                 .statusCode(200)
                 .responseMessage("Habit Delete Completed")
                 .build();
+    }
+
+    private void minusExpOfDeletedHabit(User user, HabitWithCounter habitWithCounter) {
+        for (int i = 0; i < habitWithCounter.getAccomplishCounter(); i++) {
+            user.getMonster().minusExpPoint();
+        }
     }
 
 
