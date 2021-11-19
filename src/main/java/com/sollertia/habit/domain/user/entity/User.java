@@ -13,8 +13,7 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-@AllArgsConstructor//test
-@Builder//test
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
