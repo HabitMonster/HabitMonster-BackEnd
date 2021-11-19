@@ -34,7 +34,7 @@ class NoticeServiceImplTest {
     @Test
     void getNotice(){
         //given
-        NoticeVo noticeVo = NoticeVo.builder().id(1L).title("title").content("content").build();
+        NoticeVo noticeVo = NoticeVo.builder().id(1L).title("title").build();
         Notice notice = Notice.create(noticeVo);
         Whitebox.setInternalState(notice, "createdAt", LocalDateTime.now());
         List<Notice> notices = new ArrayList<>();
@@ -45,8 +45,7 @@ class NoticeServiceImplTest {
         NoticeResponseDto noticeResponseDto = noticeService.getNoticeList();
 
         //then
-        assertThat(noticeResponseDto.getNoticeVoList().get(0).getTitle()).isEqualTo(notices.get(0).getTitle());
-        assertThat(noticeResponseDto.getNoticeVoList().get(0).getContent()).isEqualTo(notices.get(0).getContent());
+        assertThat(noticeResponseDto.getNotices().get(0).getTitle()).isEqualTo(notices.get(0).getTitle());
         assertThat(noticeResponseDto.getStatusCode()).isEqualTo(200);
         assertThat(noticeResponseDto.getResponseMessage()).isEqualTo("Notice Query Completed");
 

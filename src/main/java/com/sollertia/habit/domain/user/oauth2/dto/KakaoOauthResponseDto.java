@@ -1,6 +1,8 @@
 package com.sollertia.habit.domain.user.oauth2.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @AllArgsConstructor

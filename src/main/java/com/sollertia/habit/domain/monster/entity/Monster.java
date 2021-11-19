@@ -3,13 +3,16 @@ package com.sollertia.habit.domain.monster.entity;
 import com.sollertia.habit.domain.monster.enums.Level;
 import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.global.utils.TimeStamped;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Monster extends TimeStamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,9 +31,6 @@ public class Monster extends TimeStamped {
     @OneToOne(mappedBy = "monster", fetch = FetchType.LAZY)
     @Setter
     private User user;
-
-    protected Monster() {
-    }
 
     private void setLevel(Level level){this.level = level;}
 

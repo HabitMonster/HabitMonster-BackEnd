@@ -1,14 +1,15 @@
 package com.sollertia.habit.domain.user.follow.entity;
 
 import com.sollertia.habit.domain.user.entity.User;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-@NoArgsConstructor
 @Getter
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Follow {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

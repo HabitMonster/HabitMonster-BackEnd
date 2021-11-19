@@ -1,11 +1,14 @@
 package com.sollertia.habit.domain.monster.entity;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MonsterCollectionDatabase {
 
     @Id
@@ -30,6 +33,4 @@ public class MonsterCollectionDatabase {
         monsterCollection.addMonsterCollectionDatabase(monsterCollectionDatabase);
         return monsterCollectionDatabase;
     }
-
-    protected MonsterCollectionDatabase() {}
 }

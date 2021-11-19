@@ -1,6 +1,5 @@
 package com.sollertia.habit.domain.user.follow.repository;
 
-import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sollertia.habit.domain.user.follow.dto.FollowVo;
 import lombok.RequiredArgsConstructor;

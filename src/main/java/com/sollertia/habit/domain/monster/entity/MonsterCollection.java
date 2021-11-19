@@ -1,9 +1,12 @@
 package com.sollertia.habit.domain.monster.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.domain.monster.enums.Level;
+import com.sollertia.habit.domain.monster.enums.MonsterType;
+import com.sollertia.habit.domain.user.entity.User;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -11,6 +14,7 @@ import java.util.List;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MonsterCollection {
 
     @Id
@@ -35,9 +39,6 @@ public class MonsterCollection {
     private String monsterName;
 
     private String createAt;
-
-    protected MonsterCollection() {
-    }
 
     private void setUser(User user) {
         this.user = user;

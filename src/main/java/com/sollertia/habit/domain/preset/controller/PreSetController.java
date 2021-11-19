@@ -1,17 +1,14 @@
 package com.sollertia.habit.domain.preset.controller;
 
 
-import com.sollertia.habit.domain.habit.dto.HabitDetail;
 import com.sollertia.habit.domain.habit.dto.HabitDetailResponseDto;
 import com.sollertia.habit.domain.habit.dto.HabitDtoImpl;
 import com.sollertia.habit.domain.habit.dto.HabitTypeDto;
 import com.sollertia.habit.domain.habit.service.HabitServiceImpl;
 import com.sollertia.habit.domain.preset.dto.PreSetResponseDto;
-import com.sollertia.habit.domain.preset.dto.PreSetSelectResponseDto;
 import com.sollertia.habit.domain.preset.dto.PreSetVo;
 import com.sollertia.habit.domain.preset.service.PreSetServiceImpl;
 import com.sollertia.habit.domain.user.security.userdetail.UserDetailsImpl;
-import com.sollertia.habit.global.utils.DefaultResponseDto;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -42,7 +39,7 @@ public class PreSetController {
 
     @ApiOperation(value = "선택한 PreSet Habit 테이블에 저장")
     @PostMapping("/presets/{preset_id}")
-    public PreSetSelectResponseDto selectPreSet(@PathVariable Long preset_id, @AuthenticationPrincipal UserDetailsImpl userDetails){
+    public HabitDetailResponseDto selectPreSet(@PathVariable Long preset_id, @AuthenticationPrincipal UserDetailsImpl userDetails){
         PreSetVo preSetVo = preSetService.getPreSet(preset_id);
 
         Calendar startDate = Calendar.getInstance();
@@ -65,9 +62,6 @@ public class PreSetController {
 
         HabitTypeDto habitTypeDto = new HabitTypeDto("counter", "specificDay");
 
-        HabitDetailResponseDto responseDto = habitService.createHabit(habitTypeDto, habitDto, userDetails.getUser());
-        habitDto.setHabitId(responseDto.getHabit().getHabitId());
-
-        return PreSetSelectResponseDto.builder().habitDto(habitDto).statusCode(200).responseMessage("Habit registered Completed").build();
+        return habitService.createHabit(habitTypeDto, habitDto, userDetails.getUser());
     }
 }

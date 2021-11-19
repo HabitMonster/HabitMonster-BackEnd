@@ -74,10 +74,10 @@ class NoticeControllerTest {
 
         //given
         authenticated();
-        NoticeVo noticeVo = NoticeVo.builder().title("title").content("content").build();
+        NoticeVo noticeVo = NoticeVo.builder().title("title").build();
         List<NoticeVo> noticeVoList = new ArrayList<>();
         noticeVoList.add(noticeVo);
-        NoticeResponseDto noticeResponseDto = NoticeResponseDto.builder().noticeVoList(noticeVoList).statusCode(200).responseMessage("Notice Query Completed").build();
+        NoticeResponseDto noticeResponseDto = NoticeResponseDto.builder().notices(noticeVoList).statusCode(200).responseMessage("Notice Query Completed").build();
         given(noticeService.getNoticeList()).willReturn(noticeResponseDto);
 
         //when
@@ -85,8 +85,7 @@ class NoticeControllerTest {
                 .andDo(print())
                 //then
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.noticeVoList[0].title").value("title"))
-                .andExpect(jsonPath("$.noticeVoList[0].content").value("content"))
+                .andExpect(jsonPath("$.notices[0].title").value("title"))
                 .andExpect(jsonPath("$.responseMessage").value("Notice Query Completed"))
                 .andExpect(jsonPath("$.statusCode").value("200"));
 

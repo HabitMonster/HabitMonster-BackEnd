@@ -1,15 +1,14 @@
 package com.sollertia.habit.domain.user.oauth2.controller;
 
+import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.domain.user.oauth2.dto.CodeDto;
 import com.sollertia.habit.domain.user.oauth2.service.Oauth2UserService;
 import com.sollertia.habit.domain.user.oauth2.service.SocialLoginService;
 import com.sollertia.habit.domain.user.oauth2.userinfo.Oauth2UserInfo;
-import com.sollertia.habit.domain.user.security.jwt.filter.JwtTokenProvider;
 import com.sollertia.habit.domain.user.security.jwt.dto.JwtResponseDto;
-import com.sollertia.habit.domain.user.entity.User;
+import com.sollertia.habit.domain.user.security.jwt.filter.JwtTokenProvider;
 import com.sollertia.habit.global.utils.RedisUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
