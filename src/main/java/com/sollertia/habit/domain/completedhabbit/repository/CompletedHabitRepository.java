@@ -10,4 +10,6 @@ import java.util.List;
 public interface CompletedHabitRepository extends JpaRepository<CompletedHabit, Long> {
 
     List<CompletedHabit> findAllByUserAndStartDateBetweenOrderByStartDate(User user, LocalDate start, LocalDate end);
+
+    Integer countByUser(User user);
 }

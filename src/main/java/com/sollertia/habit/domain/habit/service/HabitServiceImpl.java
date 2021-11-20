@@ -186,4 +186,10 @@ public class HabitServiceImpl implements HabitService {
         List<Habit> habits = habitRepository.findByUser(user);
         return HabitSummaryVo.listOf(habits);
     }
+
+    public Integer getAllHabitCountByUser(User user) {
+        Integer currentHabitCount = habitRepository.countByUser(user);
+        Integer complatedHabitCount = completedHabitRepository.countByUser(user);
+        return currentHabitCount+complatedHabitCount;
+    }
 }
