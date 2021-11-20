@@ -24,7 +24,6 @@ public class MonsterController {
     private final MonsterService monsterService;
     private final MonsterCollectionService monsterCollectionService;
 
-    @Cacheable(value = "Monsters", key = "1")
     @ApiOperation(value = "LV1 몬스터 목록 조회", notes = "몬스터 목록 반환")
     @GetMapping("/monsters")
     public MonsterListResponseDto getAllMonsters(@ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
