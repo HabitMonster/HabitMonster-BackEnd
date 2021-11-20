@@ -8,9 +8,7 @@ import com.sollertia.habit.domain.monster.entity.MonsterCollection;
 import com.sollertia.habit.domain.user.enums.ProviderType;
 import com.sollertia.habit.domain.user.oauth2.userinfo.Oauth2UserInfo;
 import com.sollertia.habit.global.utils.TimeStamped;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;

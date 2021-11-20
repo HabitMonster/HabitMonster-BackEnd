@@ -24,7 +24,6 @@ public class RedisUtil {
         stringRedisTemplate.expire(key, duration, TimeUnit.SECONDS);
     }
 
-    // 사용 가능성이 있을 수 있어서 미리 작성
     public void deleteData(String key) {
         stringRedisTemplate.delete(key);
     }

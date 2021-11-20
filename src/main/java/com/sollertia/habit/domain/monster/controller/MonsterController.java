@@ -9,6 +9,7 @@ import com.sollertia.habit.domain.monster.service.MonsterService;
 import com.sollertia.habit.domain.user.security.userdetail.UserDetailsImpl;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -23,6 +24,7 @@ public class MonsterController {
     private final MonsterService monsterService;
     private final MonsterCollectionService monsterCollectionService;
 
+    @Cacheable(value = "Monsters", key = "1")
     @ApiOperation(value = "LV1 몬스터 목록 조회", notes = "몬스터 목록 반환")
     @GetMapping("/monsters")
     public MonsterListResponseDto getAllMonsters(@ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
