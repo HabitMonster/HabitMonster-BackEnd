@@ -89,6 +89,8 @@ public class UserService {
         return MyPageResponseDto.builder()
                 .userInfo(getUserDetailsVo(user))
                 .monster(monster)
+                .responseMessage("User Info Query Completed")
+                .statusCode(200)
                 .build();
     }
 
