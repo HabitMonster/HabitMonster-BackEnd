@@ -7,6 +7,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class MonsterVo {
+    private Long monsterId;
     private Long levelOneId;
     private String monsterImage;
     private String monsterName;
@@ -16,6 +17,7 @@ public class MonsterVo {
 
     public static MonsterVo of(Monster monster) {
         return MonsterVo.builder()
+                .monsterId(monster.getMonsterDatabase().getId())
                 .levelOneId(monster.getMonsterDatabase().getMonsterType().getLv1Id())
                 .monsterImage(monster.getMonsterDatabase().getImageUrl())
                 .monsterName(monster.getName())
