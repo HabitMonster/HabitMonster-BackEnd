@@ -96,8 +96,7 @@ class FollowServiceImplTest {
 
         //then
         assertThat(followResponseDto.getFollowers().get(0).getIsFollowed()).isEqualTo(false);
-        assertThat(followResponseDto.getFollowers().get(0).getEmail()).isEqualTo(testUser2.getEmail());
-        assertThat(followResponseDto.getFollowers().get(0).getMonsterName()).isEqualTo(testUser2.getMonster().getName());
+        assertThat(followResponseDto.getFollowers().get(0).getNickName()).isEqualTo(testUser2.getUsername());
         assertThat(followResponseDto.getFollowers().get(0).getMonsterImg()).isEqualTo(testUser2.getMonster().getMonsterDatabase().getImageUrl());
         assertThat(followResponseDto.getFollowers().get(0).getMonsterCode()).isEqualTo(testUser2.getMonsterCode());
         assertThat(followResponseDto.getStatusCode()).isEqualTo(200);
@@ -117,8 +116,7 @@ class FollowServiceImplTest {
         FollowResponseDto followResponseDto = followService.getFollowings(testUser);
 
         //then
-        assertThat(followResponseDto.getFollowings().get(0).getEmail()).isEqualTo(testUser2.getEmail());
-        assertThat(followResponseDto.getFollowings().get(0).getMonsterName()).isEqualTo(testUser2.getMonster().getName());
+        assertThat(followResponseDto.getFollowings().get(0).getNickName()).isEqualTo(testUser2.getUsername());
         assertThat(followResponseDto.getFollowings().get(0).getMonsterImg()).isEqualTo(testUser2.getMonster().getMonsterDatabase().getImageUrl());
         assertThat(followResponseDto.getFollowings().get(0).getMonsterCode()).isEqualTo(testUser2.getMonsterCode());
         assertThat(followResponseDto.getStatusCode()).isEqualTo(200);
@@ -189,11 +187,10 @@ class FollowServiceImplTest {
         FollowSearchResponseDto responseDto = followService.searchFollowing(testUser2.getMonsterCode(), testUser);
 
         //then
-        assertThat(responseDto.getUserInfo().getEmail()).isEqualTo(testUser2.getEmail());
+        assertThat(responseDto.getUserInfo().getNickName()).isEqualTo(testUser2.getUsername());
         assertThat(responseDto.getUserInfo().getIsFollowed()).isEqualTo(false);
         assertThat(responseDto.getUserInfo().getMonsterCode()).isEqualTo(testUser2.getMonsterCode());
         assertThat(responseDto.getUserInfo().getMonsterImg()).isEqualTo(testUser2.getMonster().getMonsterDatabase().getImageUrl());
-        assertThat(responseDto.getUserInfo().getMonsterName()).isEqualTo(testUser2.getMonster().getName());
         assertThat(responseDto.getStatusCode()).isEqualTo(200);
         assertThat(responseDto.getResponseMessage()).isEqualTo("Search Completed");
     }

@@ -2,8 +2,8 @@ package com.sollertia.habit.domain.user.follow.controller;
 
 import com.sollertia.habit.domain.monster.entity.Monster;
 import com.sollertia.habit.domain.monster.entity.MonsterDatabase;
-import com.sollertia.habit.domain.monster.enums.MonsterType;
 import com.sollertia.habit.domain.monster.enums.Level;
+import com.sollertia.habit.domain.monster.enums.MonsterType;
 import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.domain.user.follow.dto.*;
 import com.sollertia.habit.domain.user.follow.entity.Follow;
@@ -16,6 +16,9 @@ import com.sollertia.habit.global.utils.RedisUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.reflect.Whitebox;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -39,6 +42,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = FollowController.class)
+@RunWith(PowerMockRunner.class)
 class FollowControllerTest {
 
     @Autowired
@@ -95,6 +99,7 @@ class FollowControllerTest {
         authenticated();
         Follow follow = Follow.create(testUser2, testUser);
         FollowVo followerVo = FollowVo.followerOf(follow, true);
+        Whitebox.setInternalState(followerVo, "monsterId", 1L);
         List<FollowVo> followVos = new ArrayList<>();
         followVos.add(followerVo);
         FollowResponseDto followResponseDto = FollowResponseDto.builder().followers(followVos).statusCode(200).responseMessage("Followers Query Completed").build();
@@ -105,8 +110,8 @@ class FollowControllerTest {
                 .andDo(print())
                 //then
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.followers[0].email").value("tester2.test.com"))
-                .andExpect(jsonPath("$.followers[0].monsterName").value("blue"))
+                .andExpect(jsonPath("$.followers[0].nickName").value("tester2"))
+                .andExpect(jsonPath("$.followers[0].monsterId").value(1L))
                 .andExpect(jsonPath("$.followers[0].monsterImg").value("blue.img"))
                 .andExpect(jsonPath("$.followers[0].monsterCode").value("monsterCode2"))
                 .andExpect(jsonPath("$.followers[0].isFollowed").value("true"))
@@ -123,6 +128,7 @@ class FollowControllerTest {
         authenticated();
         Follow follow = Follow.create(testUser, testUser2);
         FollowVo followingVo = FollowVo.followingOf(follow);
+        Whitebox.setInternalState(followingVo, "monsterId", 1L);
         List<FollowVo> followVos = new ArrayList<>();
         followVos.add(followingVo);
         FollowResponseDto followResponseDto = FollowResponseDto.builder().followings(followVos).statusCode(200).responseMessage("Followings Query Completed").build();
@@ -133,8 +139,8 @@ class FollowControllerTest {
                 .andDo(print())
                 //then
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.followings[0].email").value("tester2.test.com"))
-                .andExpect(jsonPath("$.followings[0].monsterName").value("blue"))
+                .andExpect(jsonPath("$.followings[0].nickName").value("tester2"))
+                .andExpect(jsonPath("$.followings[0].monsterId").value(1L))
                 .andExpect(jsonPath("$.followings[0].monsterImg").value("blue.img"))
                 .andExpect(jsonPath("$.followings[0].monsterCode").value("monsterCode2"))
                 .andExpect(jsonPath("$.responseMessage").value("Followings Query Completed"))
@@ -189,6 +195,7 @@ class FollowControllerTest {
         //given
         authenticated();
         FollowSearchResponseVo responseVo = FollowSearchResponseVo.of(testUser2,false);
+        Whitebox.setInternalState(responseVo, "monsterId", 1L);
         FollowSearchResponseDto responseDto = FollowSearchResponseDto.builder().userInfo(responseVo).statusCode(200).responseMessage("Search Completed").build();
         given(followService.searchFollowing("1234G",testUser)).willReturn(responseDto);
 
@@ -197,10 +204,10 @@ class FollowControllerTest {
                 .andDo(print())
                 //then
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.userInfo.monsterName").value(testUser2.getMonster().getName()))
                 .andExpect(jsonPath("$.userInfo.monsterImg").value(testUser2.getMonster().getMonsterDatabase().getImageUrl()))
                 .andExpect(jsonPath("$.userInfo.monsterCode").value(testUser2.getMonsterCode()))
-                .andExpect(jsonPath("$.userInfo.email").value(testUser2.getEmail()))
+                .andExpect(jsonPath("$.userInfo.monsterId").value("1"))
+                .andExpect(jsonPath("$.userInfo.nickName").value(testUser2.getUsername()))
                 .andExpect(jsonPath("$.userInfo.isFollowed").value("false"))
                 .andExpect(jsonPath("$.responseMessage").value("Search Completed"))
                 .andExpect(jsonPath("$.statusCode").value("200"));
