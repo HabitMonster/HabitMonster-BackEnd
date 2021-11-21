@@ -11,11 +11,11 @@ import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.domain.user.follow.dto.FollowCount;
 import com.sollertia.habit.domain.user.follow.dto.FollowSearchResponseVo;
 import com.sollertia.habit.domain.user.follow.service.FollowServiceImpl;
+import com.sollertia.habit.domain.user.recommendation.entity.Recommendation;
+import com.sollertia.habit.domain.user.recommendation.repository.RecommendationRepository;
 import com.sollertia.habit.domain.user.repository.UserRepository;
 import com.sollertia.habit.global.exception.user.UserIdNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +30,7 @@ public class UserService {
     private final FollowServiceImpl followService;
     private final MonsterService monsterService;
     private final HabitServiceImpl habitService;
+    private final RecommendationRepository recommendationRepository;
 
     public UserInfoResponseDto getUserInfoResponseDto(User user) {
         return UserInfoResponseDto.builder()
@@ -129,15 +130,15 @@ public class UserService {
     }
 
     public RecommendedUserListDto getRecommendedUserListDto(User user) {
-        List<FollowSearchResponseVo> userList = new ArrayList<>();
-        Page<User> userPage = userRepository.findAll(Pageable.ofSize(5));
+        List<RecommendationResponseVo> userList = new ArrayList<>();
+        List<Recommendation> recommendations = recommendationRepository.findAll();
 
-        for (User target : userPage) {
-            userList.add(
-                    FollowSearchResponseVo.of(
-                            target,
-                            followService.checkFollow(target.getMonsterCode(), user).getIsFollowed()
-                    ));
+        for (Recommendation recommendation : recommendations) {
+            FollowSearchResponseVo followSearchResponseVo = FollowSearchResponseVo.of(
+                    recommendation.getUser(),
+                    followService.checkFollow(recommendation.getUser().getMonsterCode(), user).getIsFollowed()
+            );
+            userList.add(new RecommendationResponseVo(recommendation.getTitle(), followSearchResponseVo));
         }
         return RecommendedUserListDto.builder()
                 .userList(userList)
