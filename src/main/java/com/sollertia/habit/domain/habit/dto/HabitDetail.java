@@ -22,6 +22,7 @@ public class HabitDetail {
     private Boolean isAccomplished;
     private String practiceDays;
     private Long achievePercentage;
+    private Long categoryId;
     private Category category;
     private int achieveCount;
     private int totalCount;
@@ -46,6 +47,7 @@ public class HabitDetail {
                 .practiceDays(habit.getPracticeDays())
                 .current(habit.getCurrent())
                 .achievePercentage(habit.getAchievePercentage())
+                .categoryId(habit.getCategory().getCategoryId())
                 .category(habit.getCategory())
                 .achieveCount(Math.toIntExact(habit.getAccomplishCounter() * habit.getGoalCountInSession() +
                         (habit.getIsAccomplishInSession() ? 0 : habit.getCurrent())))

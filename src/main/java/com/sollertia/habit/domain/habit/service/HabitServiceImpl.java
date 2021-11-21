@@ -54,6 +54,7 @@ public class HabitServiceImpl implements HabitService {
                 .achievePercentage(savedHabit.getAchievePercentage())
                 .practiceDays(savedHabit.getPracticeDays())
                 .current(savedHabit.getCurrent())
+                .categoryId(savedHabit.getCategory().getCategoryId())
                 .title(savedHabit.getTitle())
                 .isAccomplished(false)
                 .build();
@@ -75,6 +76,7 @@ public class HabitServiceImpl implements HabitService {
         HabitDetail build = HabitDetail.builder()
                 .habitId(foundHabit.getId())
                 .category(foundHabit.getCategory())
+                .categoryId(foundHabit.getCategory().getCategoryId())
                 .count(foundHabit.getGoalCountInSession())
                 .totalCount(Math.toIntExact(foundHabit.getGoalCountInSession() * foundHabit.getWholeDays()))
                 .description(foundHabit.getDescription())
