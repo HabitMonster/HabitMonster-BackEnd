@@ -185,7 +185,7 @@ public class HabitServiceImpl implements HabitService {
     }
 
     public List<HabitSummaryVo> getHabitListByUser(User user) {
-        List<Habit> habits = habitRepository.findByUser(user);
+        List<Habit> habits = habitRepository.findByUserOrderByCreatedAtDesc(user);
         return HabitSummaryVo.listOf(habits);
     }
 
