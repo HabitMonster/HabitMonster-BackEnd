@@ -7,8 +7,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class FollowSearchResponseVo {
-    private String email;
-    private String monsterName;
+    private String nickName;
     private Long monsterId;
     private String monsterImg;
     private String monsterCode;
@@ -17,9 +16,8 @@ public class FollowSearchResponseVo {
     public static FollowSearchResponseVo
     of(User searchUser, Boolean checkFollow){
         return FollowSearchResponseVo.builder()
-                .email(searchUser.getEmail() != null ? searchUser.getEmail() : searchUser.getUsername())
+                .nickName(searchUser.getUsername())
                 .monsterId(searchUser.getMonster().getMonsterDatabase().getId())
-                .monsterName(searchUser.getMonster().getName())
                 .monsterCode(searchUser.getMonsterCode())
                 .isFollowed(checkFollow)
                 .monsterImg(searchUser.getMonster().getMonsterDatabase().getImageUrl())
