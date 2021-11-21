@@ -51,7 +51,6 @@ public class Oauth2UserService {
     private void deleteUser(User user) {
         followRepository.deleteByFollower(user);
         followRepository.deleteByFollowing(user);
-        recommendationRepository.deleteByUser(user);
         userRepository.delete(user);
     }
 
