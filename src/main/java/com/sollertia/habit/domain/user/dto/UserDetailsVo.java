@@ -9,7 +9,8 @@ public class UserDetailsVo {
     private String monsterCode;
     private String username;
     private String email;
-    private boolean isFollowed;
+    private Boolean isFollowed;
+    private Integer totalHabitCount;
     private Integer followersCount;
     private Integer followingsCount;
 }

@@ -45,6 +45,14 @@ public class UserController {
         return userService.disableUser(userDetails.getUser());
     }
 
+    @ApiOperation(value = "사용자 마이페이지 정보 조회", notes = "사용자, 몬스터 정보 응답")
+    @GetMapping("/user/detail")
+    public MyPageResponseDto getUserDetailInfo(
+            @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        return userService.getUserDetailDto(userDetails.getUser());
+    }
+
     @ApiOperation(value = "특정 유저 정보 조회", notes = "사용자, 몬스터, 습관 정보 응답")
     @GetMapping("/user/{monsterCode}/info")
     public UserDetailResponseDto getUserInfoByMonsterCode(
