@@ -4,6 +4,8 @@ package com.sollertia.habit.domain.user.oauth2.service;
 import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.domain.user.follow.repository.FollowRepository;
 import com.sollertia.habit.domain.user.oauth2.userinfo.Oauth2UserInfo;
+import com.sollertia.habit.domain.user.recommendation.entity.Recommendation;
+import com.sollertia.habit.domain.user.recommendation.repository.RecommendationRepository;
 import com.sollertia.habit.domain.user.repository.UserRepository;
 import com.sollertia.habit.global.exception.user.OAuthProviderMissMatchException;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,7 @@ public class Oauth2UserService {
 
     private final UserRepository userRepository;
     private final FollowRepository followRepository;
+    private final RecommendationRepository recommendationRepository;
 
     @Transactional
     public Oauth2UserInfo putUserInto(Oauth2UserInfo userInfo) {
@@ -48,6 +51,7 @@ public class Oauth2UserService {
     private void deleteUser(User user) {
         followRepository.deleteByFollower(user);
         followRepository.deleteByFollowing(user);
+        recommendationRepository.deleteByUser(user);
         userRepository.delete(user);
     }
 
