@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -112,7 +113,13 @@ public class  FollowServiceImpl implements FollowService {
     @Override
     public FollowSearchResponseDto searchFollowing(String followingId, User user) {
 
-        User searchUser = getUserByMonsterCode(followingId);
+        Optional<User> searchUserOp = userRepository.findByMonsterCode(followingId);
+
+        if(!searchUserOp.isPresent()){
+            return FollowSearchResponseDto.builder().userInfo(null).statusCode(400).responseMessage("Not Found User").build();
+        }
+
+        User searchUser = searchUserOp.get();
 
         FollowSearchResponseVo followSearchResponseVo = FollowSearchResponseVo.of(searchUser, checkFollow(followingId, user).getIsFollowed());
 
