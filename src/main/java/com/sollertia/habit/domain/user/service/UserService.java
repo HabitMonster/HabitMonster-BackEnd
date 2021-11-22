@@ -5,7 +5,7 @@ import com.sollertia.habit.domain.habit.service.HabitServiceImpl;
 import com.sollertia.habit.domain.monster.dto.MonsterVo;
 import com.sollertia.habit.domain.monster.entity.Monster;
 import com.sollertia.habit.domain.monster.service.MonsterService;
-import com.sollertia.habit.domain.user.controller.MyPageResponseDto;
+import com.sollertia.habit.domain.user.dto.MyPageResponseDto;
 import com.sollertia.habit.domain.user.dto.*;
 import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.domain.user.follow.dto.FollowCount;
