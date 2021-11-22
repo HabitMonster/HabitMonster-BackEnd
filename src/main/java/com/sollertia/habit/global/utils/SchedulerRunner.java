@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-@Slf4j
+@Slf4j(topic = "SCHEDULER_FILE_LOGGER")
 @RequiredArgsConstructor
 public class SchedulerRunner {
 
@@ -40,7 +40,7 @@ public class SchedulerRunner {
     private final MonsterRepository monsterRepository;
     private final HistoryRepository historyRepository;
 
-    @Scheduled(cron = "0 0 0 * * *")
+    @Scheduled(cron = "0 * * * * *")
     @Transactional
     public void runWhenEveryMidNight() {
         LocalDate date = LocalDate.now();
@@ -84,6 +84,7 @@ public class SchedulerRunner {
 
     private void expireHabit(LocalDate date) {
         List<Habit> habitListForDelete = habitRepository.findAllByDurationEndLessThan(date);
+        log.info("Habit count for delete: "+ habitListForDelete.size());
 
         moveToCompletedHabitList(habitListForDelete);
         deleteHabitList(habitListForDelete);
