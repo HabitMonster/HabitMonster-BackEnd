@@ -1,4 +1,4 @@
-package com.sollertia.habit.domain.user.controller;
+package com.sollertia.habit.domain.user.dto;
 
 import com.sollertia.habit.domain.monster.dto.MonsterVo;
 import com.sollertia.habit.domain.user.dto.UserDetailsVo;
