@@ -179,6 +179,7 @@ public class HabitServiceImpl implements HabitService {
     public HabitSummaryListResponseDto getHabitSummaryListResponseDto(User user) {
         return HabitSummaryListResponseDto.builder()
                 .habits(getHabitSummaryList(user))
+                .totalHabitCount(getAllHabitCountByUser(user))
                 .responseMessage("Habit Detail List Query Completed")
                 .statusCode(200)
                 .build();

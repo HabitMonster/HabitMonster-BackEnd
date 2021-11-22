@@ -77,9 +77,7 @@ class UserControllerTest {
         authenticated();
         UserInfoVo infoVo = UserInfoVo.builder()
                 .monsterCode(testUser.getMonsterCode())
-                .email(testUser.getEmail())
                 .username(testUser.getUsername())
-                .socialType(testUser.getProviderType())
                 .build();
         UserInfoResponseDto responseDto = UserInfoResponseDto.builder()
                 .userInfo(infoVo)
@@ -93,10 +91,8 @@ class UserControllerTest {
         mvc.perform(get("/user/info"))
                 .andDo(print())
                 //then
-                .andExpect(jsonPath("$.userInfo.email").value(testUser.getEmail()))
                 .andExpect(jsonPath("$.userInfo.username").value(testUser.getUsername()))
                 .andExpect(jsonPath("$.userInfo.monsterCode").value(testUser.getMonsterCode()))
-                .andExpect(jsonPath("$.userInfo.socialType").value(testUser.getProviderType().toString()))
                 .andExpect(jsonPath("$.responseMessage").value("User Info Query Completed"))
                 .andExpect(jsonPath("$.statusCode").value("200"));
 
