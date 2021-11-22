@@ -11,5 +11,4 @@ import java.util.List;
 @SuperBuilder
 public class HabitSummaryListResponseDto extends DefaultResponseDto {
     private List<HabitSummaryVo> habits;
-    private Integer totalHabitCount;
 }
