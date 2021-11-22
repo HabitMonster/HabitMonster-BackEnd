@@ -2,7 +2,7 @@ package com.sollertia.habit.domain.user.service;
 
 import com.sollertia.habit.domain.monster.entity.Monster;
 import com.sollertia.habit.domain.monster.entity.MonsterDatabase;
-import com.sollertia.habit.domain.monster.entity.MonsterType;
+import com.sollertia.habit.domain.monster.enums.MonsterType;
 import com.sollertia.habit.domain.monster.enums.Level;
 import com.sollertia.habit.domain.user.dto.UserInfoResponseDto;
 import com.sollertia.habit.domain.user.entity.User;
@@ -44,6 +44,7 @@ class UserServiceTest {
         attributes.put("email", "tester.test.com");
         Oauth2UserInfo oauth2UserInfo = new GoogleOauth2UserInfo(attributes);
         testUser = User.create(oauth2UserInfo);
+        testUser.setMonsterCode("monsterCode");
         updatedTestUser = User.create(oauth2UserInfo);
 
         MonsterDatabase monsterDatabase1 = new MonsterDatabase(Level.LV1, MonsterType.BLUE, "cat.img");
@@ -61,10 +62,8 @@ class UserServiceTest {
         //then
         assertThat(responseDto.getStatusCode()).isEqualTo(200);
         assertThat(responseDto.getResponseMessage()).isEqualTo("User Info Query Completed");
-        assertThat(responseDto.getUserInfo().getEmail()).isEqualTo(testUser.getEmail());
         assertThat(responseDto.getUserInfo().getUsername()).isEqualTo(testUser.getUsername());
-        assertThat(responseDto.getUserInfo().getMonsterCode()).isEqualTo(testUser.getSocialId());
-        assertThat(responseDto.getUserInfo().getSocialType()).isEqualTo(testUser.getProviderType());
+        assertThat(responseDto.getUserInfo().getMonsterCode()).isEqualTo(testUser.getMonsterCode());
     }
 
     @Test

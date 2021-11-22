@@ -3,13 +3,16 @@ package com.sollertia.habit.domain.monster.entity;
 import com.sollertia.habit.domain.monster.enums.Level;
 import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.global.utils.TimeStamped;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Monster extends TimeStamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,9 +32,6 @@ public class Monster extends TimeStamped {
     @Setter
     private User user;
 
-    protected Monster() {
-    }
-
     private void setLevel(Level level){this.level = level;}
 
     private void setExpPoint(Long expPoint){this.expPoint = expPoint;}
@@ -47,10 +47,22 @@ public class Monster extends TimeStamped {
     public boolean plusExpPoint() {
         setExpPoint(getExpPoint() + getLevel().getPlusPoint());
         if ( getExpPoint() >= Level.MAX_EXP ) {
-            setExpPoint(getExpPoint() - Level.MAX_EXP);
-            return true;
+            if ( getLevel().isMax() ) {
+                setExpPoint(Level.MAX_EXP);
+                return false;
+            } else {
+                setExpPoint(getExpPoint() - Level.MAX_EXP);
+                return true;
+            }
         }
         return false;
+    }
+
+    public void minusExpPoint() {
+        setExpPoint(getExpPoint() - getLevel().getMinusPoint());
+        if (getExpPoint() < Level.MIN_EXP) {
+            setExpPoint(Level.MIN_EXP);
+        }
     }
 
     public Level levelUp() {

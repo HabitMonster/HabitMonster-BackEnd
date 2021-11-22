@@ -49,12 +49,10 @@ dependencies {
 
     //redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis:2.5.3'
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
 
     //fix enum nullable (enum.When)
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
-
-    //health check
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
     //validation
     implementation "org.springframework.boot:spring-boot-starter-validation"
@@ -70,8 +68,6 @@ dependencies {
     implementation 'com.querydsl:querydsl-jpa'
     implementation 'com.querydsl:querydsl-apt'
 }
-
-
 
 test {
     useJUnitPlatform()
@@ -91,10 +87,12 @@ configurations {
     querydsl.extendsFrom compileClasspath
 
 }
+
 compileQuerydsl.doFirst {
     if ( file(querydslDir).exists() )
         delete(file(querydslDir))
 }
+
 compileQuerydsl {
     options.annotationProcessorPath = configurations.querydsl
 }

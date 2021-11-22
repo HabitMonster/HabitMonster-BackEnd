@@ -9,11 +9,13 @@ import lombok.Getter;
 public class NoticeVo {
     private Long id;
     private String title;
-    private String content;
     private String createdAt;
 
     public static NoticeVo of(Notice notice){
-        return NoticeVo.builder().id(notice.getId()).title(notice.getTitle())
-                        .content(notice.getContent()).createdAt(notice.getCreatedAt().toLocalDate().toString()).build();
+        return NoticeVo.builder()
+                .id(notice.getId())
+                .title(notice.getTitle())
+                .createdAt(notice.getCreatedAt().toLocalDate().toString())
+                .build();
     }
 }

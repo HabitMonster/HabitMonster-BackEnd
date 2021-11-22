@@ -1,12 +1,14 @@
 package com.sollertia.habit.domain.monster.dto;
 
 import com.sollertia.habit.domain.monster.entity.MonsterDatabase;
-import com.sollertia.habit.domain.monster.entity.MonsterType;
+import com.sollertia.habit.domain.monster.enums.MonsterType;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@NoArgsConstructor
 @Getter
 public class MonsterSummaryVo {
     private Long monsterId;

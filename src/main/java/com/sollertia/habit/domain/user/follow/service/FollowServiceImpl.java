@@ -13,11 +13,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class FollowServiceImpl implements FollowService {
+public class  FollowServiceImpl implements FollowService {
 
     private final FollowRepository followRepository;
 
@@ -27,11 +28,14 @@ public class FollowServiceImpl implements FollowService {
     public FollowResponseDto getFollowers(User user) {
 
         List<FollowVo> followers = followRepository.findAllByFollowingId(user.getId()).stream()
-                .map(f -> FollowVo.followerOf(f, checkFollow(f.getFollower().getSocialId(), user).getIsFollowed()))
+                .map(f -> FollowVo.followerOf(f, checkFollow(f.getFollower().getMonsterCode(), user).getIsFollowed()))
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        return FollowResponseDto.builder().followers(followers)
-                .statusCode(200).responseMessage("Followers Query Completed").build();
+        return FollowResponseDto.builder()
+                .followers(followers)
+                .statusCode(200)
+                .responseMessage("Followers Query Completed")
+                .build();
     }
 
     @Override
@@ -40,17 +44,50 @@ public class FollowServiceImpl implements FollowService {
         List<FollowVo> followings = followRepository.findAllByFollowerId(user.getId()).stream()
                 .map(FollowVo::followingOf).collect(Collectors.toCollection(ArrayList::new));
 
-        return FollowResponseDto.builder().followings(followings)
-                .statusCode(200).responseMessage("Followings Query Completed").build();
+        return FollowResponseDto.builder()
+                .followings(followings)
+                .statusCode(200)
+                .responseMessage("Followings Query Completed")
+                .build();
+    }
+
+    public FollowResponseDto getFollowers(String monsterCode) {
+        User targetUser = getUserByMonsterCode(monsterCode);
+
+        List<FollowVo> followers = followRepository.findAllByFollowingId(targetUser.getId()).stream()
+                .map(follow -> FollowVo.followerOf(follow, null))
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        return FollowResponseDto.builder()
+                .followers(followers)
+                .statusCode(200)
+                .responseMessage("Followers Query Completed")
+                .build();
+    }
+
+    public FollowResponseDto getFollowings(String monsterCode) {
+        User targetUser = getUserByMonsterCode(monsterCode);
+
+        List<FollowVo> followings = followRepository.findAllByFollowerId(targetUser.getId()).stream()
+                .map(following -> FollowVo.followingOf(following, null))
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        return FollowResponseDto.builder()
+                .followings(followings)
+                .statusCode(200)
+                .responseMessage("Followings Query Completed")
+                .build();
     }
 
     @Transactional
     @Override
     public FollowCheckDto requestFollow(String followingId, User user) {
 
-        User followingUser = userRepository.findBySocialId(followingId).orElseThrow(
-                () -> new UserIdNotFoundException("Not Found MonsterCode")
-        );
+        if(user.getMonsterCode().equals(followingId)){
+            throw new FollowException("You can't follow yourself");
+        }
+
+        User followingUser = getUserByMonsterCode(followingId);
 
         if (isFollowBetween(user, followingUser)) {
             throw new FollowException("Already Follow");
@@ -66,9 +103,7 @@ public class FollowServiceImpl implements FollowService {
     @Override
     public FollowCheckDto requestUnFollow(String followingId, User user) {
 
-        User followingUser = userRepository.findBySocialId(followingId).orElseThrow(
-                () -> new UserIdNotFoundException("Not Found MonsterCode")
-        );
+        User followingUser = getUserByMonsterCode(followingId);
 
         followRepository.deleteByFollowerIdAndFollowingId(user.getId(), followingUser.getId());
 
@@ -78,9 +113,13 @@ public class FollowServiceImpl implements FollowService {
     @Override
     public FollowSearchResponseDto searchFollowing(String followingId, User user) {
 
-        User searchUser = userRepository.findBySocialId(followingId).orElseThrow(
-                () -> new UserIdNotFoundException("Not Found MonsterCode")
-        );
+        Optional<User> searchUserOp = userRepository.findByMonsterCode(followingId);
+
+        if(!searchUserOp.isPresent()){
+            return FollowSearchResponseDto.builder().userInfo(null).statusCode(400).responseMessage("Not Found User").build();
+        }
+
+        User searchUser = searchUserOp.get();
 
         FollowSearchResponseVo followSearchResponseVo = FollowSearchResponseVo.of(searchUser, checkFollow(followingId, user).getIsFollowed());
 
@@ -90,9 +129,7 @@ public class FollowServiceImpl implements FollowService {
     @Override
     public FollowCheckDto checkFollow(String followingId, User user) {
 
-        User checkUser = userRepository.findBySocialId(followingId).orElseThrow(
-                () -> new UserIdNotFoundException("Not Found MonsterCode")
-        );
+        User checkUser = getUserByMonsterCode(followingId);
 
         return isFollowBetween(user, checkUser) ?
                 FollowCheckDto.builder().isFollowed(true).statusCode(200).responseMessage("isFollowedTrue").build() :
@@ -104,8 +141,14 @@ public class FollowServiceImpl implements FollowService {
     }
 
     public FollowCount getCountByUser(User targetUser) {
-        Integer followersCount = followRepository.findCountByFollowing(targetUser);
-        Integer followingsCount = followRepository.findCountByFollower(targetUser);
+        Integer followersCount = followRepository.countByFollowing(targetUser);
+        Integer followingsCount = followRepository.countByFollower(targetUser);
         return new FollowCount(followersCount, followingsCount);
+    }
+
+    private User getUserByMonsterCode(String monsterCode) {
+        return userRepository.findByMonsterCode(monsterCode).orElseThrow(
+                () -> new UserIdNotFoundException("Not Found MonsterCode")
+        );
     }
 }

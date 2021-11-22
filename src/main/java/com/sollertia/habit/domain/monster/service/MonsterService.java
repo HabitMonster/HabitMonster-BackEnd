@@ -5,8 +5,8 @@ import com.sollertia.habit.domain.monster.dto.*;
 import com.sollertia.habit.domain.monster.entity.Monster;
 import com.sollertia.habit.domain.monster.entity.MonsterCollection;
 import com.sollertia.habit.domain.monster.entity.MonsterDatabase;
-import com.sollertia.habit.domain.monster.entity.MonsterType;
 import com.sollertia.habit.domain.monster.enums.Level;
+import com.sollertia.habit.domain.monster.enums.MonsterType;
 import com.sollertia.habit.domain.monster.repository.MonsterDatabaseRepository;
 import com.sollertia.habit.domain.monster.repository.MonsterRepository;
 import com.sollertia.habit.domain.user.entity.User;
@@ -113,6 +113,14 @@ public class MonsterService {
         return monsterDatabaseRepository.findById(id).orElseThrow(
                 () -> new MonsterNotFoundException("Not Found Monster Id")
         );
+    }
+
+    @Transactional
+    public void minusExpWithCount(User user, Long count) {
+        Monster monster = getMonsterByUser(user);
+        for (int i = 0; i < count; i++) {
+            monster.minusExpPoint();
+        }
     }
 
     private Monster getMonsterByUser(User user) {

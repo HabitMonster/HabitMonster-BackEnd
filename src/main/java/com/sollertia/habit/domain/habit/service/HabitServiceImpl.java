@@ -43,9 +43,9 @@ public class HabitServiceImpl implements HabitService {
         HabitWithCounter habit = (HabitWithCounter) Habit.createHabit(habitTypeDto.getHabitType(), createHabitRequestDto, user);
         HabitWithCounter savedHabit = (HabitWithCounter) habitRepository.save(habit);
 
-        HabitDetail build = HabitDetail.builder()
+        HabitDetail habitDetail = HabitDetail.builder()
                 .habitId(savedHabit.getId())
-                .category(savedHabit.getCategory().toString())
+                .category(savedHabit.getCategory())
                 .count(savedHabit.getGoalCountInSession())
                 .totalCount(Math.toIntExact(savedHabit.getGoalCountInSession() * savedHabit.getWholeDays()))
                 .description(savedHabit.getDescription())
@@ -54,11 +54,13 @@ public class HabitServiceImpl implements HabitService {
                 .achievePercentage(savedHabit.getAchievePercentage())
                 .practiceDays(savedHabit.getPracticeDays())
                 .current(savedHabit.getCurrent())
+                .categoryId(savedHabit.getCategory().getCategoryId())
                 .title(savedHabit.getTitle())
+                .isAccomplished(false)
                 .build();
 
         return HabitDetailResponseDto.builder()
-                .habit(build)
+                .habit(habitDetail)
                 .statusCode(200)
                 .responseMessage("Habit registered Completed")
                 .build();
@@ -73,7 +75,8 @@ public class HabitServiceImpl implements HabitService {
 
         HabitDetail build = HabitDetail.builder()
                 .habitId(foundHabit.getId())
-                .category(foundHabit.getCategory().toString())
+                .category(foundHabit.getCategory())
+                .categoryId(foundHabit.getCategory().getCategoryId())
                 .count(foundHabit.getGoalCountInSession())
                 .totalCount(Math.toIntExact(foundHabit.getGoalCountInSession() * foundHabit.getWholeDays()))
                 .description(foundHabit.getDescription())
@@ -129,12 +132,14 @@ public class HabitServiceImpl implements HabitService {
     }
 
     @Override
+    @Transactional
     public DefaultResponseDto deleteHabit(HabitTypeDto habitTypeDto, Long habitId, User user) {
 
         HabitWithCounter habitWithCounter = habitWithCounterRepository.findById(habitId).orElseThrow(
                 () -> new HabitIdNotFoundException("Not Found habit"));
 
         user.getHabit().remove(habitWithCounter);
+        monsterService.minusExpWithCount(user, habitWithCounter.getAccomplishCounter());
         habitRepository.delete(habitWithCounter);
 
         return DefaultResponseDto.builder()
@@ -142,7 +147,6 @@ public class HabitServiceImpl implements HabitService {
                 .responseMessage("Habit Delete Completed")
                 .build();
     }
-
 
     @Override
     public List<HabitSummaryVo> getHabitSummaryList(User user) {
@@ -160,22 +164,9 @@ public class HabitServiceImpl implements HabitService {
                 .orElseThrow(() -> new HabitIdNotFoundException("Not Found Habit"));
 
         habit.updateHabit(habitUpdateRequestDto);
-
         habitRepository.save(habit);
 
-        HabitDetail build = HabitDetail.builder()
-                .habitId(habit.getId())
-                .category(habit.getCategory().toString())
-                .count(habit.getGoalCountInSession())
-                .totalCount(Math.toIntExact(habit.getGoalCountInSession() * habit.getWholeDays()))
-                .description(habit.getDescription())
-                .durationEnd(habit.getDurationEnd().toString())
-                .durationStart(habit.getDurationStart().toString())
-                .achievePercentage(habit.getAchievePercentage())
-                .current(habit.getCurrent())
-                .practiceDays(habit.getPracticeDays())
-                .title(habit.getTitle())
-                .build();
+        HabitDetail build = HabitDetail.of(habit);
 
         return HabitDetailResponseDto.builder()
                 .habit(build)
@@ -188,13 +179,20 @@ public class HabitServiceImpl implements HabitService {
     public HabitSummaryListResponseDto getHabitSummaryListResponseDto(User user) {
         return HabitSummaryListResponseDto.builder()
                 .habits(getHabitSummaryList(user))
+                .totalHabitCount(getAllHabitCountByUser(user))
                 .responseMessage("Habit Detail List Query Completed")
                 .statusCode(200)
                 .build();
     }
 
     public List<HabitSummaryVo> getHabitListByUser(User user) {
-        List<Habit> habits = habitRepository.findByUser(user);
+        List<Habit> habits = habitRepository.findByUserOrderByCreatedAtDesc(user);
         return HabitSummaryVo.listOf(habits);
+    }
+
+    public Integer getAllHabitCountByUser(User user) {
+        Integer currentHabitCount = habitRepository.countByUser(user);
+        Integer complatedHabitCount = completedHabitRepository.countByUser(user);
+        return currentHabitCount+complatedHabitCount;
     }
 }

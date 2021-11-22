@@ -23,6 +23,7 @@ public class HabitSummaryVo {
     private String practiceDays;
     private Long achievePercentage;
     private Category category;
+    private Long categoryId;
     private int achieveCount;
     private int totalCount;
 
@@ -47,6 +48,7 @@ public class HabitSummaryVo {
                 .current(habit.getCurrent())
                 .achievePercentage(habit.getAchievePercentage())
                 .category(habit.getCategory())
+                .categoryId(habit.getCategory().getCategoryId())
                 .achieveCount(Math.toIntExact(habit.getAccomplishCounter() * habit.getGoalCountInSession() +
                         (habit.getIsAccomplishInSession() ? 0 : habit.getCurrent())))
                 .totalCount(Math.toIntExact(habit.getWholeDays() * habit.getGoalCountInSession()))

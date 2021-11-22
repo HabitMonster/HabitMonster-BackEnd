@@ -44,14 +44,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/docs/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/").permitAll()
-                .antMatchers(HttpMethod.GET, "/actuator/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/profile").permitAll()
                 .antMatchers(HttpMethod.GET, "/notice").permitAll()
-//                .anyRequest().permitAll()
+                .antMatchers(HttpMethod.GET, "/").permitAll()
                 .antMatchers("/user/login/**").anonymous()
-                //.antMatchers("/user/loginCheck").anonymous()
-                .antMatchers("/test/**").anonymous()
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider,redisUtil),

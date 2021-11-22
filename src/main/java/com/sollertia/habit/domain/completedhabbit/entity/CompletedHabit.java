@@ -103,7 +103,7 @@ public class CompletedHabit extends TimeStamped {
         completedHabit.setHabitType(HabitType.HABITWITHCOUNTER);
         completedHabit.setAchievementPercentage(habit.getAchievePercentage());
         completedHabit.setSuccess(completedHabit.getAchievementPercentage() >= 85L);
-//        completedHabit.setGoalCount(habit.getCount());
+        completedHabit.setGoalCount(habit.getNPerDay());
 //        completedHabit.setGoalTime();
         completedHabit.setStartDate(habit.getDurationStart());
         completedHabit.setEndupDate(habit.getDurationEnd());

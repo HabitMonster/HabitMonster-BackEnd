@@ -2,9 +2,9 @@ package com.sollertia.habit.domain.habit.repository;
 
 import com.sollertia.habit.domain.habit.entity.Habit;
 import com.sollertia.habit.domain.user.entity.User;
-import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -21,7 +21,7 @@ public interface HabitRepository<T extends Habit> extends JpaRepository<T, Long>
             "and h.durationStart <= :today " +
             "and h.durationEnd >= :today " +
             "order by h.isAccomplishInSession, h.createdAt desc")
-    List<Habit> findTodayHabitListByUser(User user, int day, LocalDate today);
+    List<Habit> findTodayHabitListByUser(@Param("user") User user,@Param("day") int day,@Param("today") LocalDate today);
 
     @Query("select h from Habit h join fetch h.user where h.practiceDays like %:day% and h.isAccomplishInSession = :complete")
     List<Habit> findHabitsWithDaysAndAccomplish(@Param("day") String day, @Param("complete") Boolean complete);
@@ -33,4 +33,7 @@ public interface HabitRepository<T extends Habit> extends JpaRepository<T, Long>
     List<Habit> findAllByDurationEndLessThan(LocalDate date);
 
     List<Habit> findByUser(User user);
+    List<Habit> findByUserOrderByCreatedAtDesc(User user);
+
+    Integer countByUser(User user);
 }

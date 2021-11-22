@@ -61,6 +61,7 @@ class UserControllerTest {
         attributes.put("email", "tester.test.com");
         Oauth2UserInfo oauth2UserInfo = new GoogleOauth2UserInfo(attributes);
         testUser = User.create(oauth2UserInfo);
+        testUser.setMonsterCode("monsterCode");
         mockUserDetails = new UserDetailsImpl(testUser);
     }
 
@@ -75,10 +76,8 @@ class UserControllerTest {
         //given
         authenticated();
         UserInfoVo infoVo = UserInfoVo.builder()
-                .monsterCode(testUser.getSocialId())
-                .email(testUser.getEmail())
+                .monsterCode(testUser.getMonsterCode())
                 .username(testUser.getUsername())
-                .socialType(testUser.getProviderType())
                 .build();
         UserInfoResponseDto responseDto = UserInfoResponseDto.builder()
                 .userInfo(infoVo)
@@ -92,10 +91,8 @@ class UserControllerTest {
         mvc.perform(get("/user/info"))
                 .andDo(print())
                 //then
-                .andExpect(jsonPath("$.userInfo.email").value(testUser.getEmail()))
                 .andExpect(jsonPath("$.userInfo.username").value(testUser.getUsername()))
-                .andExpect(jsonPath("$.userInfo.monsterCode").value(testUser.getSocialId()))
-                .andExpect(jsonPath("$.userInfo.socialType").value(testUser.getProviderType().toString()))
+                .andExpect(jsonPath("$.userInfo.monsterCode").value(testUser.getMonsterCode()))
                 .andExpect(jsonPath("$.responseMessage").value("User Info Query Completed"))
                 .andExpect(jsonPath("$.statusCode").value("200"));
 

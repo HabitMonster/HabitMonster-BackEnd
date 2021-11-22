@@ -5,7 +5,6 @@ import com.sollertia.habit.domain.user.follow.dto.FollowResponseDto;
 import com.sollertia.habit.domain.user.follow.dto.FollowSearchResponseDto;
 import com.sollertia.habit.domain.user.follow.service.FollowServiceImpl;
 import com.sollertia.habit.domain.user.security.userdetail.UserDetailsImpl;
-import com.sollertia.habit.global.utils.DefaultResponseDto;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -27,6 +26,20 @@ public class FollowController {
     @GetMapping("/followings")
     public FollowResponseDto getFollowings(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return followService.getFollowings(userDetails.getUser());
+    }
+
+    @ApiOperation(value = "follower 목록", notes = "follower list")
+    @GetMapping("/followers/{monsterCode}")
+    public FollowResponseDto getFollowersByMonsterCode(
+            @PathVariable String monsterCode) {
+        return followService.getFollowers(monsterCode);
+    }
+
+    @ApiOperation(value = "following 목록", notes = "following list")
+    @GetMapping("/followings/{monsterCode}")
+    public FollowResponseDto getFollowingsByMonsterCode(
+            @PathVariable String monsterCode) {
+        return followService.getFollowings(monsterCode);
     }
 
     @ApiOperation(value = "follow 요청", notes = "로그인 중인 User와 follow 대상자 매핑")
@@ -52,5 +65,4 @@ public class FollowController {
     public FollowCheckDto checkFollow(@PathVariable(name = "monsterCode") String followingId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return followService.checkFollow(followingId, userDetails.getUser());
     }
-
 }

@@ -4,8 +4,6 @@ import com.sollertia.habit.domain.completedhabbit.entity.CompletedHabit;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
-
 @Getter
 @Setter
 public class SimpleHabitVo {
