@@ -195,6 +195,19 @@ class FollowServiceImplTest {
         assertThat(responseDto.getResponseMessage()).isEqualTo("Search Completed");
     }
 
+    @DisplayName("searchFollowing mySelf")
+    @Test
+    void searchFollowingMyself() {
+        //given
+        //when
+        FollowSearchResponseDto responseDto = followService.searchFollowing(testUser2.getMonsterCode(), testUser2);
+
+        //then
+        assertThat(responseDto.getUserInfo()).isEqualTo(null);
+        assertThat(responseDto.getStatusCode()).isEqualTo(400);
+        assertThat(responseDto.getResponseMessage()).isEqualTo("You can't search yourself");
+    }
+
     @DisplayName("Follow UserNoFound")
     @Test
     void followUserNotFound() {
