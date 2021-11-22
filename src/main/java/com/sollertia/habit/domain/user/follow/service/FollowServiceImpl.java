@@ -113,6 +113,10 @@ public class  FollowServiceImpl implements FollowService {
     @Override
     public FollowSearchResponseDto searchFollowing(String followingId, User user) {
 
+        if(user.getMonsterCode().equals(followingId)){
+            return FollowSearchResponseDto.builder().userInfo(null).statusCode(400).responseMessage("You can't search yourself").build();
+        }
+
         Optional<User> searchUserOp = userRepository.findByMonsterCode(followingId);
 
         if(!searchUserOp.isPresent()){
