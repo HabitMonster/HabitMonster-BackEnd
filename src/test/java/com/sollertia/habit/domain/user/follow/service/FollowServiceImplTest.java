@@ -143,11 +143,8 @@ class FollowServiceImplTest {
     void selfFollow() {
         //given
         //when
-        FollowCheckDto responseDto = followService.requestFollow(testUser2.getMonsterCode(), testUser2);
-        //when
-        assertThat(responseDto.getIsFollowed()).isEqualTo(null);
-        assertThat(responseDto.getStatusCode()).isEqualTo(400);
-        assertThat(responseDto.getResponseMessage()).isEqualTo("You can't follow yourself");
+        assertThrows(FollowException.class,
+                () -> followService.requestFollow(testUser2.getMonsterCode(), testUser2));
     }
 
     @DisplayName("Already Follow")

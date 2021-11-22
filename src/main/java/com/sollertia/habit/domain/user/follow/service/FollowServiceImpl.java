@@ -84,7 +84,7 @@ public class  FollowServiceImpl implements FollowService {
     public FollowCheckDto requestFollow(String followingId, User user) {
 
         if(user.getMonsterCode().equals(followingId)){
-            return FollowCheckDto.builder().isFollowed(null).statusCode(400).responseMessage("You can't follow yourself").build();
+            throw new FollowException("You can't follow yourself");
         }
 
         User followingUser = getUserByMonsterCode(followingId);
