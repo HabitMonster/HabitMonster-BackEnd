@@ -79,12 +79,6 @@ public class Monster extends TimeStamped {
         return newMonster;
     }
 
-    public void minusExpPoint() {
-        setExpPoint(getExpPoint() - getLevel().getMinusPoint());
-        if (getExpPoint() < Level.MIN_EXP) {
-            setExpPoint((long) Level.MIN_EXP);
-        }
-    }
     public Monster updateName(String name){
         setName(name);
         return this;
