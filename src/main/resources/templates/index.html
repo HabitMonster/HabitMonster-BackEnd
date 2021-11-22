@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Scheduler</title>
+</head>
+<body>
+<h1>Scheduler</h1>
+<tr th:each="log : ${logs}">
+    <td>
+        <a th:href="'scheduler/'+${log}" th:text="${log}"></a>
+        <br/>
+    </td>
+</tr>
+</body>
+</html>
