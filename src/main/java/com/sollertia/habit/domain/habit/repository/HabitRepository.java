@@ -11,6 +11,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+public interface HabitRepository<T extends Habit> extends JpaRepository<T, Long>, HabitRepositoryCustom{
 import java.time.LocalDate;
 import java.util.List;
 
