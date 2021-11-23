@@ -16,8 +16,8 @@ public class Statistics {
 
     private String contents;
 
+    private String value;
+
     @Enumerated(EnumType.STRING)
     private SessionType sessionType;
-
-
 }
