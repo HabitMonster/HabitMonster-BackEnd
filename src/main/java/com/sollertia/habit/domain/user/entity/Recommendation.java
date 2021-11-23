@@ -2,6 +2,7 @@ package com.sollertia.habit.domain.user.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sollertia.habit.domain.user.entity.User;
+import com.sollertia.habit.domain.user.enums.RecommendationType;
 import lombok.Getter;
 
 import javax.persistence.*;
@@ -13,10 +14,14 @@ public class Recommendation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String title;
+    @Column(nullable = false)
+    private Integer number;
+
+    @Column(nullable = false)
+    private RecommendationType type;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     @JsonIgnore
     private User user;
 }
