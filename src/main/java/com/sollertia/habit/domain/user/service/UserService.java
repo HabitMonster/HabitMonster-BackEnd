@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -130,20 +131,49 @@ public class UserService {
     }
 
     public RecommendedUserListDto getRecommendedUserListDto(User user) {
-        List<RecommendationResponseVo> userList = new ArrayList<>();
-        List<Recommendation> recommendations = recommendationRepository.findAll();
+        int number = getRandomNumber();
+        List<Recommendation> recommendations = recommendationRepository.searchByNumber(number);
 
-        for (Recommendation recommendation : recommendations) {
-            FollowSearchResponseVo followSearchResponseVo = FollowSearchResponseVo.of(
-                    recommendation.getUser(),
-                    followService.checkFollow(recommendation.getUser().getMonsterCode(), user).getIsFollowed()
-            );
-            userList.add(new RecommendationResponseVo(recommendation.getTitle(), followSearchResponseVo));
+        int max = recommendations.size();
+        int[] vars = getRandom4Numbers(max);
+
+        List<RecommendationVo> userList = new ArrayList<>();
+        for (int var : vars) {
+            Recommendation recommendation = recommendations.get(var);
+            RecommendationVo responseVo = getRecommendationVo(recommendation, user);
+            userList.add(responseVo);
         }
         return RecommendedUserListDto.builder()
                 .userList(userList)
                 .responseMessage("Response Recommeded User List")
                 .statusCode(200)
                 .build();
+    }
+
+    private RecommendationVo getRecommendationVo(Recommendation recommendation, User user) {
+        FollowSearchResponseVo followSearchResponseVo = FollowSearchResponseVo.of(
+                recommendation.getUser(),
+                followService.checkFollow(recommendation.getUser().getMonsterCode(), user).getIsFollowed()
+        );
+        return new RecommendationVo(recommendation.getType().getTitle(), followSearchResponseVo);
+    }
+
+    private int getRandomNumber() {
+        int min = 1;
+        int max = 10;
+        Random random = new Random();
+        return random.nextInt((max - min) + 1) + min;
+    }
+
+    private int[] getRandom4Numbers(int max) {
+        int size = 5;
+        if ( max < size ) {
+            size = max;
+        }
+        Random random = new Random();
+        return random.ints(0, max)
+                .distinct()
+                .limit(size)
+                .toArray();
     }
 }
