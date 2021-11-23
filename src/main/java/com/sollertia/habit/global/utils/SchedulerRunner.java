@@ -1,6 +1,7 @@
 package com.sollertia.habit.global.utils;
 
 
+import com.sollertia.habit.domain.category.enums.Category;
 import com.sollertia.habit.domain.completedhabbit.entity.CompletedHabit;
 import com.sollertia.habit.domain.completedhabbit.repository.CompletedHabitRepository;
 import com.sollertia.habit.domain.habit.entity.Habit;
@@ -14,6 +15,9 @@ import com.sollertia.habit.domain.preset.dto.PreSetVo;
 import com.sollertia.habit.domain.preset.entity.PreSet;
 import com.sollertia.habit.domain.preset.repository.PreSetRepository;
 import com.sollertia.habit.domain.preset.service.PreSetServiceImpl;
+import com.sollertia.habit.domain.user.entity.User;
+import com.sollertia.habit.domain.user.enums.RecommendationType;
+import com.sollertia.habit.domain.user.repository.UserRepository;
 import com.sollertia.habit.global.exception.monster.MonsterNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +43,7 @@ public class SchedulerRunner {
     private final HabitRepository habitRepository;
     private final MonsterRepository monsterRepository;
     private final HistoryRepository historyRepository;
+    private final UserRepository userRepository;
 
     @Scheduled(cron = "0 0 0 * * *")
     @Transactional
@@ -130,7 +135,17 @@ public class SchedulerRunner {
 
 
     private void makeRecommendations() {
+        RecommendationType[] values = RecommendationType.values();
+        for (RecommendationType value : values) {
+            List<User> top10List = getTop10(value);
+        }
+    }
 
+    private List<User> getTop10(RecommendationType value) {
+        if ( value.equals(RecommendationType.RELATION_TOP10)) {
+            return userRepository.searchTop10ByCategory(Category.Relation);
+        }
+        return null;
     }
 }
 
