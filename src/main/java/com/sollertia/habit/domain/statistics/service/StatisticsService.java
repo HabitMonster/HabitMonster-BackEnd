@@ -1,6 +1,6 @@
-package com.sollertia.habit.domain.completedhabbit.statics.service;
+package com.sollertia.habit.domain.statistics.service;
 
-import com.sollertia.habit.domain.completedhabbit.statics.dto.StatisticsResponseDto;
+import com.sollertia.habit.domain.statistics.dto.StatisticsResponseDto;
 import com.sollertia.habit.domain.user.entity.User;
 
 public interface StatisticsService {
