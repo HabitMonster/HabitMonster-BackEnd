@@ -159,8 +159,8 @@ public class UserService {
     }
 
     private int getRandomNumber() {
-        int min = 1;
-        int max = 10;
+        int min = 0;
+        int max = 9;
         Random random = new Random();
         return random.nextInt((max - min) + 1) + min;
     }
