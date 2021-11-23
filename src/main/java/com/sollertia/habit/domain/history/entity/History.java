@@ -3,12 +3,12 @@ package com.sollertia.habit.domain.history.entity;
 import com.sollertia.habit.domain.category.enums.Category;
 import com.sollertia.habit.domain.habit.entity.Habit;
 import com.sollertia.habit.domain.user.entity.User;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-
-
 @Entity
 @Getter
 public class History {
@@ -23,6 +23,7 @@ public class History {
 
     private String habitTitle;
 
+    @Enumerated(EnumType.STRING)
     private Category category;
 
     @ManyToOne(fetch = FetchType.LAZY)
