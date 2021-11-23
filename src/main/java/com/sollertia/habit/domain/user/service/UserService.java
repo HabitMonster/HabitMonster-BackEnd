@@ -11,9 +11,10 @@ import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.domain.user.follow.dto.FollowCount;
 import com.sollertia.habit.domain.user.follow.dto.FollowSearchResponseVo;
 import com.sollertia.habit.domain.user.follow.service.FollowServiceImpl;
-import com.sollertia.habit.domain.user.recommendation.entity.Recommendation;
-import com.sollertia.habit.domain.user.recommendation.repository.RecommendationRepository;
+import com.sollertia.habit.domain.user.entity.Recommendation;
+import com.sollertia.habit.domain.user.repository.RecommendationRepository;
 import com.sollertia.habit.domain.user.repository.UserRepository;
+import com.sollertia.habit.global.exception.user.InvalidRecommendationTypeException;
 import com.sollertia.habit.global.exception.user.UserIdNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -130,20 +132,57 @@ public class UserService {
     }
 
     public RecommendedUserListDto getRecommendedUserListDto(User user) {
-        List<RecommendationResponseVo> userList = new ArrayList<>();
-        List<Recommendation> recommendations = recommendationRepository.findAll();
+        List<Recommendation> recommendations = new ArrayList<>();
+        int length = 0;
+        int count = 0;
+        while ( length == 0 ) {
+            int number = getRandomNumber();
+            recommendations = recommendationRepository.searchByNumber(number);
+            length = recommendations.size();
+            count++;
+            if ( count == 10 ) {
+                throw new InvalidRecommendationTypeException("Recommendations List is Empty");
+            }
+        }
 
-        for (Recommendation recommendation : recommendations) {
-            FollowSearchResponseVo followSearchResponseVo = FollowSearchResponseVo.of(
-                    recommendation.getUser(),
-                    followService.checkFollow(recommendation.getUser().getMonsterCode(), user).getIsFollowed()
-            );
-            userList.add(new RecommendationResponseVo(recommendation.getTitle(), followSearchResponseVo));
+        List<RecommendationVo> userList = new ArrayList<>();
+        int[] randomNumbers = getRandomNumbers(length);
+        for (int index : randomNumbers) {
+            Recommendation recommendation = recommendations.get(index);
+            RecommendationVo responseVo = getRecommendationVo(recommendation, user);
+            userList.add(responseVo);
         }
         return RecommendedUserListDto.builder()
                 .userList(userList)
                 .responseMessage("Response Recommeded User List")
                 .statusCode(200)
                 .build();
+    }
+
+    private RecommendationVo getRecommendationVo(Recommendation recommendation, User user) {
+        FollowSearchResponseVo followSearchResponseVo = FollowSearchResponseVo.of(
+                recommendation.getUser(),
+                followService.checkFollow(recommendation.getUser().getMonsterCode(), user).getIsFollowed()
+        );
+        return new RecommendationVo(recommendation.getType().getTitle(), followSearchResponseVo);
+    }
+
+    private int getRandomNumber() {
+        int min = 0;
+        int max = 9;
+        Random random = new Random();
+        return random.nextInt((max - min) + 1) + min;
+    }
+
+    private int[] getRandomNumbers(int max) {
+        int size = 5;
+        if ( max < size ) {
+            size = max;
+        }
+        Random random = new Random();
+        return random.ints(0, max)
+                .distinct()
+                .limit(size)
+                .toArray();
     }
 }
