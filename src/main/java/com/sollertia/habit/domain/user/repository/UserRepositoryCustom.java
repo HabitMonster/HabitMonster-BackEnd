@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface UserRepositoryCustom {
     List<User> searchTop10ByCategory(Category category);
+
+    List<User> searchTop10ByFollow();
 }

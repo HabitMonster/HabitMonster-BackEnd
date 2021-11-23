@@ -15,8 +15,10 @@ import com.sollertia.habit.domain.preset.dto.PreSetVo;
 import com.sollertia.habit.domain.preset.entity.PreSet;
 import com.sollertia.habit.domain.preset.repository.PreSetRepository;
 import com.sollertia.habit.domain.preset.service.PreSetServiceImpl;
+import com.sollertia.habit.domain.user.entity.Recommendation;
 import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.domain.user.enums.RecommendationType;
+import com.sollertia.habit.domain.user.repository.RecommendationRepository;
 import com.sollertia.habit.domain.user.repository.UserRepository;
 import com.sollertia.habit.global.exception.monster.MonsterNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -44,6 +46,7 @@ public class SchedulerRunner {
     private final MonsterRepository monsterRepository;
     private final HistoryRepository historyRepository;
     private final UserRepository userRepository;
+    private final RecommendationRepository recommendationRepository;
 
     @Scheduled(cron = "0 0 0 * * *")
     @Transactional
@@ -135,17 +138,26 @@ public class SchedulerRunner {
 
 
     private void makeRecommendations() {
+        log.info("Start Remake Recommendations");
         RecommendationType[] values = RecommendationType.values();
+
         for (RecommendationType value : values) {
             List<User> top10List = getTop10(value);
+            Recommendation.listOf(top10List, value);
+            recommendationRepository.saveAll();
         }
+
+        log.info("End Remake Recommendations");
     }
 
     private List<User> getTop10(RecommendationType value) {
-        if ( value.equals(RecommendationType.RELATION_TOP10)) {
-            return userRepository.searchTop10ByCategory(Category.Relation);
+        if ( value.getId() <= 8 ) {
+            return userRepository.searchTop10ByCategory(Category.getCategory(value.getId()));
+        } else if ( value.getId() == 9 ) {
+            return userRepository.searchTop10ByFollow();
+        } else {
+            return new ArrayList<>();
         }
-        return null;
     }
 }
 
