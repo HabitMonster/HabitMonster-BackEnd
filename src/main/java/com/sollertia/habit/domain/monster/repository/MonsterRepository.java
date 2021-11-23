@@ -7,7 +7,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
-public interface MonsterRepository extends JpaRepository<Monster, Long> {
+public interface MonsterRepository extends JpaRepository<Monster, Long>, MonsterRepositoryCustom {
     @Query("select m from Monster m " +
             "join fetch m.user " +
             "where m.user.id = :userId")
