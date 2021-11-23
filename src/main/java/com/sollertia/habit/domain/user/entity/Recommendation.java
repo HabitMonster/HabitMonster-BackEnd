@@ -1,4 +1,4 @@
-package com.sollertia.habit.domain.user.recommendation.entity;
+package com.sollertia.habit.domain.user.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sollertia.habit.domain.user.entity.User;
