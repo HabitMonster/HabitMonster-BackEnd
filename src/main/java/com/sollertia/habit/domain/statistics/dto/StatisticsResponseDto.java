@@ -1,4 +1,4 @@
-package com.sollertia.habit.domain.completedhabbit.statics.dto;
+package com.sollertia.habit.domain.statistics.dto;
 
 import com.sollertia.habit.domain.completedhabbit.dto.SimpleHabitVo;
 import com.sollertia.habit.global.utils.DefaultResponseDto;

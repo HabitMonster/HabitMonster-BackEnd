@@ -1,9 +1,9 @@
-package com.sollertia.habit.domain.completedhabbit.statics.service;
+package com.sollertia.habit.domain.statistics.service;
 
 import com.sollertia.habit.domain.completedhabbit.dto.SimpleHabitVo;
 import com.sollertia.habit.domain.completedhabbit.entity.CompletedHabit;
 import com.sollertia.habit.domain.completedhabbit.repository.CompletedHabitRepository;
-import com.sollertia.habit.domain.completedhabbit.statics.dto.StatisticsResponseDto;
+import com.sollertia.habit.domain.statistics.dto.StatisticsResponseDto;
 import com.sollertia.habit.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
