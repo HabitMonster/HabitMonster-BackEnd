@@ -48,7 +48,7 @@ public class Recommendation {
         return recommendation;
     }
 
-    private static List<Recommendation> listOf(List<User> userList, RecommendationType type) {
+    public static List<Recommendation> listOf(List<User> userList, RecommendationType type) {
         List<Recommendation> recommendationList = new ArrayList<>();
         for (int i = 0; i < userList.size(); i++) {
             Recommendation recommendation = Recommendation.of(userList.get(i), type);
