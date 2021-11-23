@@ -140,13 +140,13 @@ public class SchedulerRunner {
     private void makeRecommendations() {
         log.info("Start Remake Recommendations");
         RecommendationType[] values = RecommendationType.values();
+        List<Recommendation> recommendationList = new ArrayList<>();
 
         for (RecommendationType value : values) {
             List<User> top10List = getTop10(value);
-            Recommendation.listOf(top10List, value);
-            recommendationRepository.saveAll();
+            recommendationList.addAll(Recommendation.listOf(top10List, value));
         }
-
+        recommendationRepository.saveAll(recommendationList);
         log.info("End Remake Recommendations");
     }
 
