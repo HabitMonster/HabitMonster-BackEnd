@@ -131,8 +131,7 @@ public class UserService {
     }
 
     public RecommendedUserListDto getRecommendedUserListDto(User user) {
-//        int number = getRandomNumber();
-        int number = 1;
+        int number = getRandomNumber();
         List<Recommendation> recommendations = recommendationRepository.searchByNumber(number);
 
         int max = recommendations.size();
@@ -175,7 +174,6 @@ public class UserService {
         return random.ints(0, max)
                 .distinct()
                 .limit(size)
-                .sorted()
                 .toArray();
     }
 }
