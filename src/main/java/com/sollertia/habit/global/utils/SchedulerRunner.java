@@ -146,6 +146,7 @@ public class SchedulerRunner {
             List<User> top10List = getTop10(value);
             recommendationList.addAll(Recommendation.listOf(top10List, value));
         }
+        recommendationRepository.deleteAll();
         recommendationRepository.saveAll(recommendationList);
         log.info("End Remake Recommendations");
     }
