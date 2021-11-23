@@ -1,6 +1,7 @@
 package com.sollertia.habit.domain.category.enums;
 
 import com.sollertia.habit.domain.category.dto.CategoryVo;
+import com.sollertia.habit.global.exception.habit.InvalidCategoryException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +35,6 @@ public enum Category {
                 return c;
             }
         }
-        return null;
+        throw  new InvalidCategoryException("Not Found Category ID");
     }
 }
