@@ -20,8 +20,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +40,7 @@ public class SchedulerRunner {
     private final MonsterRepository monsterRepository;
     private final HistoryRepository historyRepository;
 
-    @Scheduled(cron = "0 * * * * *")
+    @Scheduled(cron = "0 0 0 * * *")
     @Transactional
     public void runWhenEveryMidNight() {
         LocalDate date = LocalDate.now();
@@ -50,15 +50,16 @@ public class SchedulerRunner {
     }
 
     @Scheduled(cron = "0 0 1 ? * SUN")
+    @Transactional
     public void runWhenEveryWeek() {
         makePreset();
+        makeRecommendations();
     }
 
 //    @Scheduled(cron = "0 0 1 ? * SUN")
 //    public void runWhenEveryMonth() {
 //        makePreset();
 //    }
-
     private void minusExpOnLapsedHabit(LocalDate date) {
         String day = String.valueOf(date.minusDays(1).getDayOfWeek().getValue());
         List<Habit> habitsWithDaysAndAccomplish = habitRepository.findHabitsWithDaysAndAccomplish(day, false);
@@ -127,5 +128,9 @@ public class SchedulerRunner {
         preSetRepository.saveAll(preSets);
     }
 
+
+    private void makeRecommendations() {
+
+    }
 }
 
