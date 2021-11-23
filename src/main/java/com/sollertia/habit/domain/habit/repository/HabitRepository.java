@@ -3,19 +3,14 @@ package com.sollertia.habit.domain.habit.repository;
 import com.sollertia.habit.domain.habit.entity.Habit;
 import com.sollertia.habit.domain.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.util.List;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
 
 public interface HabitRepository<T extends Habit> extends JpaRepository<T, Long>, HabitRepositoryCustom{
-import java.time.LocalDate;
-import java.util.List;
-
-public interface HabitRepository<T extends Habit> extends JpaRepository<T, Long>, HabitRepositoryCustom {
     @Query("select h from Habit h " +
             "where h.user = :user " +
             "and h.practiceDays like %:day% " +
