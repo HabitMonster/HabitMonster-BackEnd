@@ -1,5 +1,6 @@
 package com.sollertia.habit.domain.statistics.controller;
 
+import com.sollertia.habit.domain.statistics.dto.GlobalStatisticsResponseDto;
 import com.sollertia.habit.domain.statistics.dto.StatisticsResponseDto;
 import com.sollertia.habit.domain.statistics.service.StatisticsServiceImpl;
 import com.sollertia.habit.domain.user.security.userdetail.UserDetailsImpl;
@@ -24,5 +25,9 @@ public class StatisticsContoller {
 
     }
 
-
+    @ApiOperation(value = "글로벌 통계 페이지", notes = "글로벌 통계 정보 반환")
+    @GetMapping("/statistics/global")
+    private GlobalStatisticsResponseDto getStatistics() {
+        return statisticsService.getGlobalStatistics();
+    }
 }
