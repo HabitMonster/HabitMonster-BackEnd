@@ -15,6 +15,11 @@ import com.sollertia.habit.domain.preset.dto.PreSetVo;
 import com.sollertia.habit.domain.preset.entity.PreSet;
 import com.sollertia.habit.domain.preset.repository.PreSetRepository;
 import com.sollertia.habit.domain.preset.service.PreSetServiceImpl;
+import com.sollertia.habit.domain.statistics.dto.StatisticsSuccessCategoryAvgVo;
+import com.sollertia.habit.domain.statistics.enums.SessionType;
+import com.sollertia.habit.domain.statistics.dto.StatisticsCategoryVo;
+import com.sollertia.habit.domain.statistics.entity.Statistics;
+import com.sollertia.habit.domain.statistics.repository.StatisticsRepository;
 import com.sollertia.habit.domain.user.entity.Recommendation;
 import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.domain.user.enums.RecommendationType;
@@ -49,6 +54,7 @@ public class SchedulerRunner {
     private final HabitRepository habitRepository;
     private final MonsterRepository monsterRepository;
     private final HistoryRepository historyRepository;
+    private final StatisticsRepository statisticsRepository;
     private final UserRepository userRepository;
     private final RecommendationRepository recommendationRepository;
 
@@ -97,7 +103,7 @@ public class SchedulerRunner {
 
     private void expireHabit(LocalDate date) {
         List<Habit> habitListForDelete = habitRepository.findAllByDurationEndLessThan(date);
-        log.info("Habit count for delete: "+ habitListForDelete.size());
+        log.info("Habit count for delete: " + habitListForDelete.size());
 
         moveToCompletedHabitList(habitListForDelete);
         deleteHabitList(habitListForDelete);
@@ -105,7 +111,6 @@ public class SchedulerRunner {
 
     private void moveToCompletedHabitList(List<Habit> habitListForDelete) {
         List<CompletedHabit> completedHabitList = CompletedHabit.listOf(habitListForDelete);
-        System.out.println(completedHabitList.size()+" completedHabitList");
         completedHabitRepository.saveAll(completedHabitList);
     }
 
@@ -202,5 +207,70 @@ public class SchedulerRunner {
             return new ArrayList<>();
         }
     }
+    public void statisticsMonthMaxMinusByCategory() {
+
+        LocalDate lastMonth = LocalDate.now().minusMonths(1L);
+        LocalDate start = lastMonth.withDayOfMonth(1);
+        LocalDate end = lastMonth.withDayOfMonth(lastMonth.lengthOfMonth());
+
+        List<StatisticsCategoryVo> list = historyRepository.statisticsMonthMaxMinusByCategory(start.atStartOfDay(), end.atStartOfDay());
+        Category category = Category.Health;
+        Long num = 0L;
+        for (StatisticsCategoryVo vo : list) {
+            if (num <= vo.getNum()) {
+                num = vo.getNum();
+                category = vo.getCategory();
+            }
+        }
+        String result = lastMonth.getMonth().getValue() + "월 한달동안 가장 많은 감점을 받은 카테고리는 " + category.toString() + "입니다.";
+
+        Statistics statistics = new Statistics(result, SessionType.MONTHLY);
+        statisticsRepository.save(statistics);
+    }
+
+    public void statisticsAvgAchievementPercentageByCategory() {
+
+        LocalDate lastMonth = LocalDate.now().minusMonths(1L);
+        LocalDate start = lastMonth.withDayOfMonth(1);
+        LocalDate end = lastMonth.withDayOfMonth(lastMonth.lengthOfMonth());
+
+        List<StatisticsSuccessCategoryAvgVo> list = completedHabitRepository.statisticsAvgAchievementPercentageByCategory(start.atStartOfDay(), end.atStartOfDay());
+
+        List<Statistics> statisticsList = new ArrayList<>();
+        for (StatisticsSuccessCategoryAvgVo vo : list) {
+            int avg = (int) Math.round(vo.getAvgPer());
+            String result = lastMonth.getMonth().getValue() + "월 한달동안 " + vo.getCategory().toString() +
+                    "의 평균 성공률은 " + avg + "%입니다.";
+            statisticsList.add(new Statistics(result, SessionType.MONTHLY));
+        }
+
+        statisticsRepository.saveAll(statisticsList);
+    }
+
+    public void statisticsMaxSelectedByCategory(){
+
+
+        LocalDate lastMonth = LocalDate.now().minusMonths(1L);
+        LocalDate start = lastMonth.withDayOfMonth(1);
+        LocalDate end = lastMonth.withDayOfMonth(lastMonth.lengthOfMonth());
+
+        List<StatisticsCategoryVo> completedList = completedHabitRepository.statisticsMaxSelectedByCategory(start,end);
+
+        Category category = Category.Health;
+        Long num = 0L;
+        for (StatisticsCategoryVo vo : completedList) {
+            if (num <= vo.getNum()) {
+                num = vo.getNum();
+                category = vo.getCategory();
+            }
+        }
+
+        String result = lastMonth.getMonth().getValue() + "월 한달동안 가장 많은 사람이 선택한 카테고리는 " + category.toString() + "입니다.";
+
+        Statistics statistics = new Statistics(result, SessionType.MONTHLY);
+        statisticsRepository.save(statistics);
+    }
+
+
 }
 
