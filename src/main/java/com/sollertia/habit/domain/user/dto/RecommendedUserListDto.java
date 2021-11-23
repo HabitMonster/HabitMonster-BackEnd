@@ -9,5 +9,5 @@ import java.util.List;
 @Getter
 @SuperBuilder
 public class RecommendedUserListDto extends DefaultResponseDto {
-    private List<RecommendationResponseVo> userList;
+    private List<RecommendationVo> userList;
 }

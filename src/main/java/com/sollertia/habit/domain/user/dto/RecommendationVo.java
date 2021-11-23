@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class RecommendationResponseVo {
+public class RecommendationVo {
     private String title;
     private FollowSearchResponseVo userInfo;
 }
