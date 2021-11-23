@@ -23,6 +23,7 @@ public class History {
 
     private String habitTitle;
 
+    @Enumerated(EnumType.STRING)
     private Category category;
 
     @ManyToOne(fetch = FetchType.LAZY)

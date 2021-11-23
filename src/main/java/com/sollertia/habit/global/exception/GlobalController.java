@@ -59,11 +59,6 @@ public class GlobalController {
     }
 
     @ExceptionHandler
-    public ResponseEntity<ErrorResponseDto> globalIllegalArgumentExceptionHandler(IllegalArgumentException exception) {
-        return new ResponseEntity<>(ErrorResponseDto.badRequest("BAD REQUEST"), HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler
     public ResponseEntity<ErrorResponseDto> oAuthProviderMissMatchExceptionHandler(OAuthProviderMissMatchException exception) {
         return new ResponseEntity<>(ErrorResponseDto.badRequest(exception.getMessage()), HttpStatus.BAD_REQUEST);
     }
@@ -100,11 +95,16 @@ public class GlobalController {
 
     @ExceptionHandler
     public ResponseEntity<ErrorResponseDto> invalidRecommendationTypeExceptionHandler(InvalidRecommendationTypeException exception) {
-        return new ResponseEntity<>(ErrorResponseDto.badRequest(exception.getMessage()), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(ErrorResponseDto.notFound(exception.getMessage()), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler
     public ResponseEntity<ErrorResponseDto> invalidCategoryExceptionHandler(InvalidCategoryException exception) {
-        return new ResponseEntity<>(ErrorResponseDto.badRequest(exception.getMessage()), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(ErrorResponseDto.notFound(exception.getMessage()), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponseDto> hasNoPermissionExceptionHandler(HasNoPermissionException exception) {
+        return new ResponseEntity<>(ErrorResponseDto.forbidden(exception.getMessage()), HttpStatus.FORBIDDEN);
     }
 }

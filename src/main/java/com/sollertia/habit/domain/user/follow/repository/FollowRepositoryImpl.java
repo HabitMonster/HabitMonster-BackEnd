@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 
 @RequiredArgsConstructor
-public class FollowRepositoryCustomImpl implements FollowRepositoryCustom{
+public class FollowRepositoryImpl implements FollowRepositoryCustom{
 
     private final JPAQueryFactory queryFactory;
 

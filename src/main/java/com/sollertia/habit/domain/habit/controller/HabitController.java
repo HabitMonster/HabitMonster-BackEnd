@@ -40,9 +40,10 @@ public class HabitController {
     @ApiOperation(value = "습관 변경", notes = "title, description, count 변경 가능")
     @PatchMapping("/habits/{habitId}")
     public HabitDetailResponseDto updateHabit(@PathVariable Long habitId,
-                                              @RequestBody HabitUpdateRequestDto habitUpdateRequestDto) {
+                                              @RequestBody HabitUpdateRequestDto habitUpdateRequestDto,
+                                              @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        return habitService.updateHabit(habitId, habitUpdateRequestDto);
+        return habitService.updateHabit(habitId, habitUpdateRequestDto, userDetails.getUser());
     }
 
     @ApiOperation(value = "습관 삭제", notes = "성공 실패여부 반환")

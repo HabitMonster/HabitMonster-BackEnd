@@ -13,11 +13,13 @@ import com.sollertia.habit.domain.history.repository.HistoryRepository;
 import com.sollertia.habit.domain.monster.service.MonsterService;
 import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.global.exception.habit.HabitIdNotFoundException;
+import com.sollertia.habit.global.exception.user.HasNoPermissionException;
 import com.sollertia.habit.global.utils.DefaultResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.naming.NoPermissionException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -138,9 +140,13 @@ public class HabitServiceImpl implements HabitService {
         HabitWithCounter habitWithCounter = habitWithCounterRepository.findById(habitId).orElseThrow(
                 () -> new HabitIdNotFoundException("Not Found habit"));
 
-        user.getHabit().remove(habitWithCounter);
-        monsterService.minusExpWithCount(user, habitWithCounter.getAccomplishCounter());
-        habitRepository.delete(habitWithCounter);
+        if ( isOwner(user, habitWithCounter) ) {
+            user.getHabit().remove(habitWithCounter);
+            monsterService.minusExpWithCount(user, habitWithCounter.getAccomplishCounter());
+            habitRepository.delete(habitWithCounter);
+        } else {
+            throw new HasNoPermissionException("User has no permission");
+        }
 
         return DefaultResponseDto.builder()
                 .statusCode(200)
@@ -158,16 +164,19 @@ public class HabitServiceImpl implements HabitService {
     }
 
     @Override
-    public HabitDetailResponseDto updateHabit(Long habitId, HabitUpdateRequestDto habitUpdateRequestDto) {
+    @Transactional
+    public HabitDetailResponseDto updateHabit(Long habitId, HabitUpdateRequestDto habitUpdateRequestDto, User user) {
 
         HabitWithCounter habit = habitWithCounterRepository.findById(habitId)
                 .orElseThrow(() -> new HabitIdNotFoundException("Not Found Habit"));
 
-        habit.updateHabit(habitUpdateRequestDto);
-        habitRepository.save(habit);
+        if ( isOwner(user, habit) ) {
+            habit.updateHabit(habitUpdateRequestDto);
+        } else {
+            throw new HasNoPermissionException("User has no permission");
+        }
 
         HabitDetail build = HabitDetail.of(habit);
-
         return HabitDetailResponseDto.builder()
                 .habit(build)
                 .statusCode(200)
@@ -194,5 +203,9 @@ public class HabitServiceImpl implements HabitService {
         Integer currentHabitCount = habitRepository.countByUser(user);
         Integer complatedHabitCount = completedHabitRepository.countByUser(user);
         return currentHabitCount+complatedHabitCount;
+    }
+
+    private boolean isOwner(User user, HabitWithCounter habitWithCounter) {
+        return habitWithCounter.getUser().getId().equals(user.getId());
     }
 }

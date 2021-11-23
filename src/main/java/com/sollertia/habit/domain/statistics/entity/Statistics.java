@@ -1,6 +1,6 @@
 package com.sollertia.habit.domain.statistics.entity;
 
-import com.sollertia.habit.domain.statistics.SessionType;
+import com.sollertia.habit.domain.statistics.enums.SessionType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -16,8 +16,8 @@ public class Statistics {
 
     private String contents;
 
+    private String value;
+
     @Enumerated(EnumType.STRING)
     private SessionType sessionType;
-
-
 }
