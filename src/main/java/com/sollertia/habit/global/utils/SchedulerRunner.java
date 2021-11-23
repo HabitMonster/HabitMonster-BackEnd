@@ -15,6 +15,8 @@ import com.sollertia.habit.domain.preset.entity.PreSet;
 import com.sollertia.habit.domain.preset.repository.PreSetRepository;
 import com.sollertia.habit.domain.preset.service.PreSetServiceImpl;
 import com.sollertia.habit.global.exception.monster.MonsterNotFoundException;
+import com.sollertia.habit.global.globaldto.SearchDateDto;
+import com.sollertia.habit.global.globalenum.DurationEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -23,6 +25,8 @@ import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -126,6 +130,44 @@ public class SchedulerRunner {
 
         preSetRepository.saveAll(preSets);
     }
+
+    public void saveMonsterTypeStatistics(DurationEnum durationEnum) {
+        SearchDateDto duration = getSearchDateDto(durationEnum);
+        monsterRepository.getMonsterTypeCount(duration);
+        // 이후 최대값 최소값 찾아 String 만들고 statisticsRepository 저장
+
+    }
+
+    public SearchDateDto getSearchDateDto(DurationEnum durationEnum) {
+        LocalDate schedulerNow = LocalDate.now();
+        SearchDateDto result = null;
+        switch (durationEnum) {
+            case DAILY:
+                result = new SearchDateDto(
+                        schedulerNow.atStartOfDay().minusDays(1),
+                        LocalDateTime.of(schedulerNow.minusDays(1), LocalTime.MAX).withNano(0)
+                );
+                break;
+
+            case WEEKLY:
+                result = new SearchDateDto(
+                        schedulerNow.atStartOfDay().minusDays(8),
+                        LocalDateTime.of(schedulerNow.minusDays(1), LocalTime.MAX).withNano(0)
+                );
+                break;
+
+            case MONTHLY:
+                result = new SearchDateDto(
+                        schedulerNow.atStartOfDay().minusMonths(1),
+                        LocalDateTime.of(schedulerNow.minusDays(1), LocalTime.MAX).withNano(0)
+                );
+                break;
+
+        }
+        return result;
+    }
+
+
 
 }
 
