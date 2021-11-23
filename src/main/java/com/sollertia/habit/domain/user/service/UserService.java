@@ -14,6 +14,7 @@ import com.sollertia.habit.domain.user.follow.service.FollowServiceImpl;
 import com.sollertia.habit.domain.user.entity.Recommendation;
 import com.sollertia.habit.domain.user.repository.RecommendationRepository;
 import com.sollertia.habit.domain.user.repository.UserRepository;
+import com.sollertia.habit.global.exception.user.InvalidRecommendationTypeException;
 import com.sollertia.habit.global.exception.user.UserIdNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -131,15 +132,23 @@ public class UserService {
     }
 
     public RecommendedUserListDto getRecommendedUserListDto(User user) {
-        int number = getRandomNumber();
-        List<Recommendation> recommendations = recommendationRepository.searchByNumber(number);
-
-        int max = recommendations.size();
-        int[] vars = getRandom4Numbers(max);
+        List<Recommendation> recommendations = new ArrayList<>();
+        int length = 0;
+        int count = 0;
+        while ( length == 0 ) {
+            int number = getRandomNumber();
+            recommendations = recommendationRepository.searchByNumber(number);
+            length = recommendations.size();
+            count++;
+            if ( count == 10 ) {
+                throw new InvalidRecommendationTypeException("Recommendations List is Empty");
+            }
+        }
 
         List<RecommendationVo> userList = new ArrayList<>();
-        for (int var : vars) {
-            Recommendation recommendation = recommendations.get(var);
+        int[] randomNumbers = getRandomNumbers(length);
+        for (int index : randomNumbers) {
+            Recommendation recommendation = recommendations.get(index);
             RecommendationVo responseVo = getRecommendationVo(recommendation, user);
             userList.add(responseVo);
         }
@@ -165,7 +174,7 @@ public class UserService {
         return random.nextInt((max - min) + 1) + min;
     }
 
-    private int[] getRandom4Numbers(int max) {
+    private int[] getRandomNumbers(int max) {
         int size = 5;
         if ( max < size ) {
             size = max;

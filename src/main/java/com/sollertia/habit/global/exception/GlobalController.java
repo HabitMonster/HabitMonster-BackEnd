@@ -3,6 +3,7 @@ package com.sollertia.habit.global.exception;
 
 import com.sollertia.habit.global.exception.habit.AlreadyGoalCountException;
 import com.sollertia.habit.global.exception.habit.HabitIdNotFoundException;
+import com.sollertia.habit.global.exception.habit.InvalidCategoryException;
 import com.sollertia.habit.global.exception.monster.InvalidLevelException;
 import com.sollertia.habit.global.exception.monster.MonsterNotFoundException;
 import com.sollertia.habit.global.exception.preset.PreSetNotFoundException;
@@ -99,6 +100,11 @@ public class GlobalController {
 
     @ExceptionHandler
     public ResponseEntity<ErrorResponseDto> invalidRecommendationTypeExceptionHandler(InvalidRecommendationTypeException exception) {
+        return new ResponseEntity<>(ErrorResponseDto.badRequest(exception.getMessage()), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponseDto> invalidCategoryExceptionHandler(InvalidCategoryException exception) {
         return new ResponseEntity<>(ErrorResponseDto.badRequest(exception.getMessage()), HttpStatus.NOT_FOUND);
     }
 }
