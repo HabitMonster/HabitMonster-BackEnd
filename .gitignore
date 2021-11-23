@@ -38,3 +38,4 @@ out/
 /src/main/resources/static/docs/jacoco/
 /src/main/resources/application-app1.properties
 /src/main/resources/application-app2.properties
+/logs/
