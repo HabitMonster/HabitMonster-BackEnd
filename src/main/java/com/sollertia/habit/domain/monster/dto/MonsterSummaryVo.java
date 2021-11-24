@@ -25,7 +25,7 @@ public class MonsterSummaryVo {
     }
 
     public void toDisable() {
-        this.enable = false;
+        this.setEnable(false);
     }
 
     public static MonsterSummaryVo of(MonsterDatabase monsterDatabase) {

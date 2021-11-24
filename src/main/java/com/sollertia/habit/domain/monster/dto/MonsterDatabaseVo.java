@@ -1,7 +1,11 @@
 package com.sollertia.habit.domain.monster.dto;
 
+import com.sollertia.habit.domain.monster.entity.MonsterCollectionDatabase;
 import com.sollertia.habit.domain.monster.entity.MonsterDatabase;
 import lombok.Getter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 public class MonsterDatabaseVo {
@@ -20,5 +24,13 @@ public class MonsterDatabaseVo {
                 monsterDatabase.getId(),
                 monsterDatabase.getLevel().getValue(),
                 monsterDatabase.getImageUrl());
+    }
+
+    public static List<MonsterDatabaseVo> listOf(List<MonsterCollectionDatabase> monsterCollectionDatabaseList) {
+        List<MonsterDatabaseVo> monsterDatabaseVoList = new ArrayList<>();
+        for (MonsterCollectionDatabase monsterCollectionDatabase : monsterCollectionDatabaseList) {
+            monsterDatabaseVoList.add(MonsterDatabaseVo.of(monsterCollectionDatabase.getMonsterDatabase()));
+        }
+        return monsterDatabaseVoList;
     }
 }

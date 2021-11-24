@@ -22,6 +22,7 @@ public class User extends TimeStamped {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
     private String socialId;
 
     private String monsterCode;

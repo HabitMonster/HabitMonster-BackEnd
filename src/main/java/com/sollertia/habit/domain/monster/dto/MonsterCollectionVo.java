@@ -1,8 +1,10 @@
 package com.sollertia.habit.domain.monster.dto;
 
 import com.sollertia.habit.domain.monster.entity.MonsterCollection;
+import com.sollertia.habit.domain.monster.entity.MonsterCollectionDatabase;
 import lombok.Getter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -26,5 +28,18 @@ public class MonsterCollectionVo {
                 monsterCollection.getMaxLevel().getValue(),
                 monsterDatabases
         );
+    }
+
+    public static List<MonsterCollectionVo> listOf(List<MonsterCollection> monsterCollectionList) {
+        List<MonsterCollectionVo> monsterCollectionVoList = new ArrayList<>();
+
+        for (MonsterCollection monsterCollection : monsterCollectionList) {
+            List<MonsterCollectionDatabase> monsterCollectionDatabaseList =
+                    monsterCollection.getMonsterCollectionDatabaseList();
+            List<MonsterDatabaseVo> monsterDatabaseVoList = MonsterDatabaseVo.listOf(monsterCollectionDatabaseList);
+            monsterCollectionVoList.add(MonsterCollectionVo.of(monsterCollection, monsterDatabaseVoList));
+        }
+
+        return monsterCollectionVoList;
     }
 }

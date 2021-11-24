@@ -51,6 +51,7 @@ public class Oauth2UserService {
         followRepository.deleteByFollower(user);
         followRepository.deleteByFollowing(user);
         userRepository.delete(user);
+        userRepository.flush();
     }
 
     private User createUser(Oauth2UserInfo userInfo) {
