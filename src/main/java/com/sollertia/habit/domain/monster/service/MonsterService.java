@@ -10,8 +10,8 @@ import com.sollertia.habit.domain.monster.enums.MonsterType;
 import com.sollertia.habit.domain.monster.repository.MonsterDatabaseRepository;
 import com.sollertia.habit.domain.monster.repository.MonsterRepository;
 import com.sollertia.habit.domain.user.entity.User;
-import com.sollertia.habit.domain.user.repository.UserRepository;
 import com.sollertia.habit.global.exception.monster.MonsterNotFoundException;
+import com.sollertia.habit.global.exception.monster.NotReachedMaximumLevelException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +26,6 @@ public class MonsterService {
     private final MonsterRepository monsterRepository;
     private final MonsterDatabaseRepository monsterDatabaseRepository;
     private final MonsterCollectionService monsterCollectionService;
-    private final UserRepository userRepository;
 
     public MonsterListResponseDto getAllMonsters(User user) {
         List<MonsterCollection> monsterCollectionList = monsterCollectionService.getMonsterCollectionListByUser(user);
@@ -44,14 +43,16 @@ public class MonsterService {
                                             MonsterSelectRequestDto requestDto) {
         String monsterName = requestDto.getMonsterName();
         MonsterDatabase monsterDatabase = getMonsterDatabaseById(requestDto.getMonsterId());
+        Monster newMonster = Monster.createNewMonster(monsterName, monsterDatabase);
+        Monster currentMonster = user.getMonster();
 
-        Monster monster = Monster.createNewMonster(monsterName, monsterDatabase);
-        Monster savedMonster = monsterRepository.save(monster);
-        User updatedUser = updateMonster(user, savedMonster);
-        monsterCollectionService.addMonsterCollection(savedMonster);
+        if ( currentMonster == null || currentMonster.changeable()) {
+            newMonster = changeMonster(user, newMonster);
+        } else {
+            throw new NotReachedMaximumLevelException("New monsters require max level and EXP.");
+        }
 
-        MonsterVo monsterVo = MonsterVo.of(updatedUser.getMonster());
-
+        MonsterVo monsterVo = MonsterVo.of(newMonster);
         return MonsterResponseDto.builder()
                 .monster(monsterVo)
                 .responseMessage("Selected Monster")
@@ -59,9 +60,11 @@ public class MonsterService {
                 .build();
     }
 
-    private User updateMonster(User user, Monster newMonster) {
-        user.updateMonster(newMonster);
-        return userRepository.save(user);
+    private Monster changeMonster(User user, Monster monster) {
+        Monster savedMonster = monsterRepository.save(monster);
+        user.updateMonster(savedMonster);
+        monsterCollectionService.addMonsterCollection(savedMonster);
+        return savedMonster;
     }
 
     @Transactional
@@ -96,13 +99,13 @@ public class MonsterService {
         Monster monster = getMonsterByUser(user);
         boolean isLevelUp = monster.plusExpPoint();
         if ( isLevelUp ) {
-            Level level = monster.levelUp();
-            evoluteMonster(monster, level);
+            evoluteMonster(monster);
             monsterCollectionService.addEvolutedMonster(user);
         }
     }
 
-    private void evoluteMonster(Monster monster, Level level) {
+    private void evoluteMonster(Monster monster) {
+        Level level = monster.levelUp();
         MonsterType monsterType = monster.getMonsterDatabase().getMonsterType();
         MonsterDatabase monsterDatabase = monsterDatabaseRepository.findByMonsterTypeAndLevel(monsterType, level)
                 .orElseThrow( () -> new MonsterNotFoundException("Not Found Monster Database"));
