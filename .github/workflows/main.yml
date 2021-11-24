@@ -25,16 +25,10 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
       
-    - name: querydsl compile error fix try 1
-      run: gradle clean
-
-    # Test는 따로
+    # 빌드
     - name: Build with Gradle
-      run: ./gradlew build -x test
+      run: ./gradlew build
 
-    # 테스트 실행
-    - name: Test with Gradle
-      run: SPRING_PROFILES_ACTIVE=[test] ./gradlew test
 
     # 테스트 완료시 정보 저장
     - name: Publish Unit Test Results
@@ -50,6 +44,7 @@ jobs:
       with:
         format: YYYY-MM-DDTHH-mm-ss
         utcOffset: "+09:00"
+        
     # 배포 준비 - 빌드된 파일과 eb 환경 설정 관련 파일들 패키지로 묶어 zip으로 만들어서 보내줘야함
     # sed -i ~ 구문 : properies파일 암호화 풀기 위해서는 jasypt decode 키를 포함해서 빌드 명령을 내줘야함 그러기 위해 프로젝트에 저장된 빌드명령 변경
     - name: Generate deployment package 
