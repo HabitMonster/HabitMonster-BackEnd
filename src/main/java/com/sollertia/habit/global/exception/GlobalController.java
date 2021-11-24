@@ -6,6 +6,7 @@ import com.sollertia.habit.global.exception.habit.HabitIdNotFoundException;
 import com.sollertia.habit.global.exception.habit.InvalidCategoryException;
 import com.sollertia.habit.global.exception.monster.InvalidLevelException;
 import com.sollertia.habit.global.exception.monster.MonsterNotFoundException;
+import com.sollertia.habit.global.exception.monster.NotReachedMaximumLevelException;
 import com.sollertia.habit.global.exception.preset.PreSetNotFoundException;
 import com.sollertia.habit.global.exception.user.*;
 import com.sollertia.habit.global.utils.ErrorResponseDto;
@@ -106,5 +107,10 @@ public class GlobalController {
     @ExceptionHandler
     public ResponseEntity<ErrorResponseDto> hasNoPermissionExceptionHandler(HasNoPermissionException exception) {
         return new ResponseEntity<>(ErrorResponseDto.forbidden(exception.getMessage()), HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponseDto> notReachedMaximumLevelExceptionHandler(NotReachedMaximumLevelException exception) {
+        return new ResponseEntity<>(ErrorResponseDto.badRequest(exception.getMessage()), HttpStatus.BAD_REQUEST);
     }
 }
