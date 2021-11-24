@@ -40,6 +40,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -147,9 +149,55 @@ public class SchedulerRunner {
 
     public void saveMonsterTypeStatistics(DurationEnum durationEnum) {
         SearchDateDto duration = getSearchDateDto(durationEnum);
-        monsterRepository.getMonsterTypeCount(duration);
-        // 이후 최대값 최소값 찾아 String 만들고 statisticsRepository 저장
+        Map<String, Integer> monsterTypeCount = monsterRepository.getMonsterTypeCount(duration);
 
+        Optional<Map.Entry<String, Integer>> max = monsterTypeCount
+                .entrySet()
+                .stream()
+                .max((Map.Entry<String, Integer> e1, Map.Entry<String, Integer> e2)
+                        -> e1.getValue().compareTo(e2.getValue()));
+
+        Optional<Map.Entry<String, Integer>> min = monsterTypeCount
+                .entrySet()
+                .stream()
+                .min((Map.Entry<String, Integer> e1, Map.Entry<String, Integer> e2)
+                        -> e1.getValue().compareTo(e2.getValue()));
+
+        String contentsMax = "지난 "
+                + "가장 많이 선택된 monster는 "
+                + max.get().getKey() + "이며"
+                + "총" + max.get().getValue()
+                + "회 선택받았습니다!";
+
+        String contentsMin = "지난 "
+                + "가장 적게 선택된 monster는 "
+                + min.get().getKey() + "이며"
+                + "총" + min.get().getValue()
+                + "회 선택받았습니다!";
+        //세션 타입 일치 필요 일단은 그냥 monthly로 해둠
+        statisticsRepository.save(new Statistics(contentsMax, SessionType.MONTHLY));
+        statisticsRepository.save(new Statistics(contentsMin, SessionType.MONTHLY));
+
+    }
+
+    public void saveMostFailedDay(DurationEnum durationEnum) {
+        SearchDateDto searchDateDto = getSearchDateDto(durationEnum);
+        Map<String, Integer> mostFaildedDay = historyRepository.getMostFaildedDay(searchDateDto);
+
+        Optional<Map.Entry<String, Integer>> max = mostFaildedDay
+                .entrySet()
+                .stream()
+                .max((Map.Entry<String, Integer> e1, Map.Entry<String, Integer> e2)
+                        -> e1.getValue().compareTo(e2.getValue()));
+
+        String content = "지난 "
+                + "가장 많은 유저가"
+                + max.get().getKey()
+                + "요일에 습관 달성을 실패했습니다."
+                + "총" + max.get().getValue()
+                + "번의 습관 실패가 기록되어 있네요";
+
+        statisticsRepository.save(new Statistics(content, SessionType.MONTHLY));
     }
 
     public SearchDateDto getSearchDateDto(DurationEnum durationEnum) {
