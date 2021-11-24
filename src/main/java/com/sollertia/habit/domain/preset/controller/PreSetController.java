@@ -31,7 +31,7 @@ public class PreSetController {
     private final PreSetServiceImpl preSetService;
     private final HabitServiceImpl habitService;
 
-//    @Cacheable(key = "#category_id",value = "PreSet")
+    @Cacheable(key = "#category_id",value = "PreSet")
     @ApiOperation(value = "선택한 Category의 PreSet 목록 조회")
     @GetMapping("/categories/{category_id}/presets")
     public PreSetResponseDto categoryPreSetList(@PathVariable Long category_id){

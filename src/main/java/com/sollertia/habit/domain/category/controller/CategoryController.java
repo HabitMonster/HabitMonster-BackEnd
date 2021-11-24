@@ -13,7 +13,7 @@ import java.util.List;
 @RestController
 public class CategoryController {
 
-//    @Cacheable(value = "Categories", key = "1")
+    @Cacheable(value = "Categories", key = "1")
     @ApiOperation(value = "Category 목록 조회")
     @GetMapping("/categories")
     public CategoryResponseDto categoryPresetList() {
