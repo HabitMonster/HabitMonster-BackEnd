@@ -39,8 +39,7 @@ public class  FollowServiceImpl implements FollowService {
     @Override
     public FollowResponseDto getFollowings(User user) {
 
-        List<FollowVo> followings = followRepository.findAllByFollowerId(user.getId()).stream()
-                .map(FollowVo::followingOf).collect(Collectors.toCollection(ArrayList::new));
+        List<FollowVo> followings = followRepository.searchFollowingsByUser(user);
 
         return FollowResponseDto.builder()
                 .followings(followings)
@@ -49,12 +48,9 @@ public class  FollowServiceImpl implements FollowService {
                 .build();
     }
 
-    public FollowResponseDto getFollowers(String monsterCode) {
+    public FollowResponseDto getFollowers(String monsterCode, User user) {
         User targetUser = getUserByMonsterCode(monsterCode);
-
-        List<FollowVo> followers = followRepository.findAllByFollowingId(targetUser.getId()).stream()
-                .map(follow -> FollowVo.followerOf(follow, null))
-                .collect(Collectors.toCollection(ArrayList::new));
+        List<FollowVo> followers = followRepository.searchFollowersByUser(user, targetUser);
 
         return FollowResponseDto.builder()
                 .followers(followers)
@@ -63,12 +59,9 @@ public class  FollowServiceImpl implements FollowService {
                 .build();
     }
 
-    public FollowResponseDto getFollowings(String monsterCode) {
+    public FollowResponseDto getFollowings(String monsterCode, User user) {
         User targetUser = getUserByMonsterCode(monsterCode);
-
-        List<FollowVo> followings = followRepository.findAllByFollowerId(targetUser.getId()).stream()
-                .map(following -> FollowVo.followingOf(following, null))
-                .collect(Collectors.toCollection(ArrayList::new));
+        List<FollowVo> followings = followRepository.searchFollowingsByUser(user, targetUser);
 
         return FollowResponseDto.builder()
                 .followings(followings)

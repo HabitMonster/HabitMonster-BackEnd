@@ -105,9 +105,9 @@ class FollowServiceImplTest {
     void getFollowings() {
         //given
         Follow follow = Follow.create(testUser, testUser2);
-        List<Follow> follows = new ArrayList<>();
-        follows.add(follow);
-        given(followRepository.findAllByFollowerId(testUser.getId())).willReturn(follows);
+        List<FollowVo> followVoList = new ArrayList<>();
+        followVoList.add(FollowVo.followingOf(follow, true));
+        given(followRepository.searchFollowingsByUser(testUser)).willReturn(followVoList);
 
         //when
         FollowResponseDto followResponseDto = followService.getFollowings(testUser);
