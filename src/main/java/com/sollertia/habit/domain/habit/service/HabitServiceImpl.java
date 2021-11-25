@@ -9,6 +9,7 @@ import com.sollertia.habit.domain.habit.entity.HabitWithCounter;
 import com.sollertia.habit.domain.habit.entity.HabitWithTimer;
 import com.sollertia.habit.domain.habit.repository.HabitRepository;
 import com.sollertia.habit.domain.habit.repository.HabitWithCounterRepository;
+import com.sollertia.habit.domain.habit.repository.HabitWithTimerRepository;
 import com.sollertia.habit.domain.history.entity.History;
 import com.sollertia.habit.domain.history.repository.HistoryRepository;
 import com.sollertia.habit.domain.monster.service.MonsterService;
@@ -31,6 +32,8 @@ public class HabitServiceImpl implements HabitService {
     private final HabitRepository habitRepository;
 
     private final HabitWithCounterRepository habitWithCounterRepository;
+
+    private final HabitWithTimerRepository habitWithTimerRepository;
 
     private final HistoryRepository historyRepository;
 
@@ -72,15 +75,15 @@ public class HabitServiceImpl implements HabitService {
     @Override
     public HabitDetailResponseDto getHabitDetail(HabitTypeDto habitTypeDto, Long habitId) {
 
-        HabitWithCounter foundHabit = habitWithCounterRepository.findById(habitId).orElseThrow(
-                () -> new HabitIdNotFoundException("Not Found Habit"));
+
+        Habit foundHabit = getHabitFromRepository(habitTypeDto, habitId);
 
         HabitDetail build = HabitDetail.builder()
                 .habitId(foundHabit.getId())
                 .category(foundHabit.getCategory())
                 .categoryId(foundHabit.getCategory().getCategoryId())
                 .count(foundHabit.getGoalInSession())
-                .totalCount(Math.toIntExact(foundHabit.getGoalInSession() * foundHabit.getWholeDays()))
+                .totalCount(foundHabit.getTotalCount())
                 .description(foundHabit.getDescription())
                 .durationEnd(foundHabit.getDurationEnd().toString())
                 .durationStart(foundHabit.getDurationStart().toString())
@@ -192,6 +195,23 @@ public class HabitServiceImpl implements HabitService {
                 .responseMessage("Habit Detail List Query Completed")
                 .statusCode(200)
                 .build();
+    }
+
+    private Habit getHabitFromRepository(HabitTypeDto habitTypeDto, Long habitId) {
+        Habit foundHabit = null;
+
+        switch (habitTypeDto.getHabitType()) {
+            case HABITWITHCOUNTER:
+                foundHabit = habitWithCounterRepository.findById(habitId).orElseThrow(
+                        () -> new HabitIdNotFoundException("Not Found Habit"));
+                break;
+            case HABITWITHTIMER:
+                foundHabit = habitWithTimerRepository.findById(habitId).orElseThrow(
+                        () -> new HabitIdNotFoundException("Not Found Habit"));
+
+                break;
+        }
+        return foundHabit;
     }
 
     public List<HabitSummaryVo> getHabitListByUser(User user) {
