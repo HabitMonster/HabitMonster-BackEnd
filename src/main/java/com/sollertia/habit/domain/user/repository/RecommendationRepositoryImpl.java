@@ -5,7 +5,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sollertia.habit.domain.user.dto.QRecommendationVo;
 import com.sollertia.habit.domain.user.dto.RecommendationVo;
 import com.sollertia.habit.domain.user.entity.User;
-import com.sollertia.habit.domain.user.follow.dto.QFollowSearchResponseVo;
+import com.sollertia.habit.domain.user.follow.dto.QFollowVo;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -30,7 +30,7 @@ public class RecommendationRepositoryImpl implements RecommendationRepositoryCus
     public List<RecommendationVo> searchByNumber(User login, int number) {
         return queryFactory
                 .select(new QRecommendationVo(recommendation.type,
-                        new QFollowSearchResponseVo(
+                        new QFollowVo(
                                 user.username,
                                 monsterDatabase.id,
                                 monsterDatabase.imageUrl,
