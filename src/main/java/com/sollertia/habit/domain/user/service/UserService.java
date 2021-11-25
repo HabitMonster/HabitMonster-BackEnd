@@ -158,14 +158,6 @@ public class UserService {
                 .build();
     }
 
-    private RecommendationVo getRecommendationVo(Recommendation recommendation, User user) {
-        FollowSearchResponseVo followSearchResponseVo = FollowSearchResponseVo.of(
-                recommendation.getUser(),
-                followService.checkFollow(recommendation.getUser().getMonsterCode(), user).getIsFollowed()
-        );
-        return new RecommendationVo(recommendation.getType().getTitle(), followSearchResponseVo);
-    }
-
     private int getRandomNumber() {
         int min = 0;
         int max = 9;

@@ -29,7 +29,7 @@ public class RecommendationRepositoryImpl implements RecommendationRepositoryCus
     @Override
     public List<RecommendationVo> searchByNumber(User login, int number) {
         return queryFactory
-                .select(new QRecommendationVo(recommendation.type.stringValue(),
+                .select(new QRecommendationVo(recommendation.type,
                         new QFollowSearchResponseVo(
                                 user.username,
                                 monsterDatabase.id,
