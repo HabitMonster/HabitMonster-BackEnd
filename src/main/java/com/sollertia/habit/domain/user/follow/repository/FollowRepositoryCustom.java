@@ -7,8 +7,6 @@ import java.util.List;
 
 public interface FollowRepositoryCustom {
 
-    List<FollowVo> followers(Long followerId);
-
     List<FollowVo> searchFollowersByUser(User user);
 
     List<FollowVo> searchFollowersByUser(User login, User target);
@@ -16,4 +14,6 @@ public interface FollowRepositoryCustom {
     List<FollowVo> searchFollowingsByUser(User login);
 
     List<FollowVo> searchFollowingsByUser(User login, User target);
+
+    FollowVo searchUser(String monsterCode, User target);
 }

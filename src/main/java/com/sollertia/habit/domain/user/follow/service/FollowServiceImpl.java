@@ -11,10 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -103,17 +100,13 @@ public class  FollowServiceImpl implements FollowService {
 
     @Override
     public FollowSearchResponseDto searchFollowing(String followingId, User user) {
-        Optional<User> searchUserOp = userRepository.findByMonsterCode(followingId);
+        FollowVo searchUser = followRepository.searchUser(followingId, user);
 
-        if(!searchUserOp.isPresent()){
+        if(searchUser==null){
             return FollowSearchResponseDto.builder().userInfo(null).statusCode(400).responseMessage("Not Found User").build();
         }
 
-        User searchUser = searchUserOp.get();
-
-        FollowSearchResponseVo followSearchResponseVo = FollowSearchResponseVo.of(searchUser, checkFollow(followingId, user).getIsFollowed());
-
-        return FollowSearchResponseDto.builder().userInfo(followSearchResponseVo).statusCode(200).responseMessage("Search Completed").build();
+        return FollowSearchResponseDto.builder().userInfo(searchUser).statusCode(200).responseMessage("Search Completed").build();
     }
 
     @Override

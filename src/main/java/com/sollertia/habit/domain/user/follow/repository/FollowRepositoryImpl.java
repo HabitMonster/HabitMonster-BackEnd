@@ -1,6 +1,5 @@
 package com.sollertia.habit.domain.user.follow.repository;
 
-import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -21,12 +20,6 @@ import static com.sollertia.habit.domain.user.follow.entity.QFollow.follow;
 public class FollowRepositoryImpl implements FollowRepositoryCustom{
 
     private final JPAQueryFactory queryFactory;
-
-    @Override
-    public List<FollowVo> followers(Long followerId) {
-        return null;
-        //return queryFactory.select(Projections.class,);
-    }
 
     @Override
     public List<FollowVo> searchFollowersByUser(User login) {
@@ -123,5 +116,30 @@ public class FollowRepositoryImpl implements FollowRepositoryCustom{
                 .on(subFollow.follower.eq(login)
                         .and(subFollow.following.eq(user)))
                 .fetch();
+    }
+
+    @Override
+    public FollowVo searchUser(String monsterCode, User login) {
+        return queryFactory
+                .select(new QFollowVo(
+                        user.username,
+                        monsterDatabase.id,
+                        monsterDatabase.imageUrl,
+                        user.monsterCode,
+                        new CaseBuilder()
+                                .when(follow.id.isNotNull())
+                                .then(Boolean.TRUE)
+                                .when(user.eq(login))
+                                .then(Expressions.nullExpression())
+                                .otherwise(Boolean.FALSE))
+                )
+                .from(user)
+                .join(user.monster, monster)
+                .join(monster.monsterDatabase, monsterDatabase)
+                .where(user.monsterCode.eq(monsterCode))
+                .leftJoin(follow)
+                .on(follow.follower.eq(login)
+                        .and(follow.following.eq(user)))
+                .fetchOne();
     }
 }
