@@ -183,6 +183,10 @@ public abstract class Habit extends TimeStamped {
 
     public abstract void updateHabit(HabitUpdateRequestDto habitUpdateRequestDto);
 
+    public abstract Boolean check(Long value);
+
+    public abstract int getGoalInSession();
+
     protected void updateTitle(String title) {
         this.title = title;
     }
@@ -190,7 +194,6 @@ public abstract class Habit extends TimeStamped {
     protected void updateDescription(String description) {
         this.description = description;
     }
-    public abstract Boolean check(Long value);
 
 
 

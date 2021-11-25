@@ -6,6 +6,7 @@ import com.sollertia.habit.domain.completedhabbit.repository.CompletedHabitRepos
 import com.sollertia.habit.domain.habit.dto.*;
 import com.sollertia.habit.domain.habit.entity.Habit;
 import com.sollertia.habit.domain.habit.entity.HabitWithCounter;
+import com.sollertia.habit.domain.habit.entity.HabitWithTimer;
 import com.sollertia.habit.domain.habit.repository.HabitRepository;
 import com.sollertia.habit.domain.habit.repository.HabitWithCounterRepository;
 import com.sollertia.habit.domain.history.entity.History;
@@ -41,15 +42,14 @@ public class HabitServiceImpl implements HabitService {
     @Override
     public HabitDetailResponseDto createHabit(HabitTypeDto habitTypeDto, HabitDtoImpl createHabitRequestDto, User user) {
 
-        //임시 수정, getGoalCount override해서 형변환 없이 리팩토링 하기
-        HabitWithCounter habit = (HabitWithCounter) Habit.createHabit(habitTypeDto.getHabitType(), createHabitRequestDto, user);
-        HabitWithCounter savedHabit = (HabitWithCounter) habitRepository.save(habit);
+        Habit habit = Habit.createHabit(habitTypeDto.getHabitType(), createHabitRequestDto, user);
+        Habit savedHabit = (Habit) habitRepository.save(habit);
 
         HabitDetail habitDetail = HabitDetail.builder()
                 .habitId(savedHabit.getId())
                 .category(savedHabit.getCategory())
-                .count(savedHabit.getGoalCountInSession())
-                .totalCount(Math.toIntExact(savedHabit.getGoalCountInSession() * savedHabit.getWholeDays()))
+                .count(savedHabit.getGoalInSession())
+                .totalCount(Math.toIntExact(savedHabit.getGoalInSession() * savedHabit.getWholeDays()))
                 .description(savedHabit.getDescription())
                 .durationEnd(savedHabit.getDurationEnd().toString())
                 .durationStart(savedHabit.getDurationStart().toString())
@@ -79,8 +79,8 @@ public class HabitServiceImpl implements HabitService {
                 .habitId(foundHabit.getId())
                 .category(foundHabit.getCategory())
                 .categoryId(foundHabit.getCategory().getCategoryId())
-                .count(foundHabit.getGoalCountInSession())
-                .totalCount(Math.toIntExact(foundHabit.getGoalCountInSession() * foundHabit.getWholeDays()))
+                .count(foundHabit.getGoalInSession())
+                .totalCount(Math.toIntExact(foundHabit.getGoalInSession() * foundHabit.getWholeDays()))
                 .description(foundHabit.getDescription())
                 .durationEnd(foundHabit.getDurationEnd().toString())
                 .durationStart(foundHabit.getDurationStart().toString())

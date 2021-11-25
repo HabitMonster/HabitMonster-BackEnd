@@ -12,23 +12,33 @@ import javax.persistence.Entity;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-@Getter
 @Entity
 @DiscriminatorValue("C")
 public class HabitWithCounter extends Habit {
 
 
-    private int todayCounter = 0;
+    private int currentCount = 0;
 
     private int goalCountInSession;
 
-    @Override
-    public int getCurrent() {
-        return this.todayCounter;
+    public int getCurrentCount() {
+        return currentCount;
     }
 
+
+
     private void setCurrent(int todayCounter) {
-        this.todayCounter = todayCounter;
+        this.currentCount = todayCounter;
+    }
+
+    @Override
+    public int getCurrent() {
+        return this.currentCount;
+    }
+
+    @Override
+    public int getGoalInSession() {
+        return this.goalCountInSession;
     }
 
     @Override
@@ -36,8 +46,8 @@ public class HabitWithCounter extends Habit {
         this.updateTitle(habitUpdateRequestDto.getTitle());
         this.updateDescription(habitUpdateRequestDto.getDescription());
         this.goalCountInSession = habitUpdateRequestDto.getCount();
-        if ( this.getCurrent() >= this.getGoalCountInSession() ) {
-            this.setCurrent(this.getGoalCountInSession());
+        if ( this.getCurrent() >= this.getGoalInSession() ) {
+            this.setCurrent(this.getGoalInSession());
             this.accomplishToday();
         } else if ( this.getIsAccomplishInSession() ) {
             this.setAccomplishInSession(false);
@@ -67,11 +77,11 @@ public class HabitWithCounter extends Habit {
 
     @Override
     public Boolean check(Long value) {
-        if ( this.todayCounter + value < this.goalCountInSession ) {
-            this.todayCounter += value;
+        if ( this.currentCount + value < this.goalCountInSession ) {
+            this.currentCount += value;
             return false;
-        } else if ( this.todayCounter + value == this.goalCountInSession ) {
-            this.todayCounter += value;
+        } else if ( this.currentCount + value == this.goalCountInSession ) {
+            this.currentCount += value;
             this.accomplishToday();
             return true;
         } else {
