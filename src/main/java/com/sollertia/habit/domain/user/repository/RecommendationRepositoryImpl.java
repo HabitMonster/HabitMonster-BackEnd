@@ -6,6 +6,7 @@ import com.sollertia.habit.domain.user.dto.QRecommendationVo;
 import com.sollertia.habit.domain.user.dto.RecommendationVo;
 import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.domain.user.follow.dto.QFollowVo;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -17,14 +18,10 @@ import static com.sollertia.habit.domain.user.entity.QRecommendation.recommendat
 import static com.sollertia.habit.domain.user.entity.QUser.user;
 import static com.sollertia.habit.domain.user.follow.entity.QFollow.follow;
 
-@Repository
+@RequiredArgsConstructor
 public class RecommendationRepositoryImpl implements RecommendationRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
-
-    public RecommendationRepositoryImpl(EntityManager em) {
-        this.queryFactory = new JPAQueryFactory(em);
-    }
 
     @Override
     public List<RecommendationVo> searchByNumber(User login, int number) {
