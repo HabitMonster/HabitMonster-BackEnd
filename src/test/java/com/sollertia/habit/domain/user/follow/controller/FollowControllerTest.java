@@ -97,9 +97,8 @@ class FollowControllerTest {
     void getFollowers() throws Exception {
         //given
         authenticated();
-        Follow follow = Follow.create(testUser2, testUser);
-        FollowVo followerVo = FollowVo.followerOf(follow, true);
-        Whitebox.setInternalState(followerVo, "monsterId", 1L);
+        FollowVo followerVo = new FollowVo(testUser2.getUsername(),1L, testUser2.getMonster().getMonsterDatabase().getImageUrl(),
+                testUser2.getMonsterCode(),true);
         List<FollowVo> followVos = new ArrayList<>();
         followVos.add(followerVo);
         FollowResponseDto followResponseDto = FollowResponseDto.builder().followers(followVos).statusCode(200).responseMessage("Followers Query Completed").build();
@@ -126,9 +125,8 @@ class FollowControllerTest {
     void getFollowings() throws Exception {
         //given
         authenticated();
-        Follow follow = Follow.create(testUser, testUser2);
-        FollowVo followingVo = FollowVo.followingOf(follow);
-        Whitebox.setInternalState(followingVo, "monsterId", 1L);
+        FollowVo followingVo = new FollowVo(testUser2.getUsername(),1L, testUser2.getMonster().getMonsterDatabase().getImageUrl(),
+                testUser2.getMonsterCode(),true);
         List<FollowVo> followVos = new ArrayList<>();
         followVos.add(followingVo);
         FollowResponseDto followResponseDto = FollowResponseDto.builder().followings(followVos).statusCode(200).responseMessage("Followings Query Completed").build();
@@ -194,9 +192,9 @@ class FollowControllerTest {
     void searchFollowing() throws Exception {
         //given
         authenticated();
-        FollowSearchResponseVo responseVo = FollowSearchResponseVo.of(testUser2,false);
-        Whitebox.setInternalState(responseVo, "monsterId", 1L);
-        FollowSearchResponseDto responseDto = FollowSearchResponseDto.builder().userInfo(responseVo).statusCode(200).responseMessage("Search Completed").build();
+        FollowVo followVo = new FollowVo(testUser2.getUsername(),1L, testUser2.getMonster().getMonsterDatabase().getImageUrl(),
+                testUser2.getMonsterCode(),false);
+        FollowSearchResponseDto responseDto = FollowSearchResponseDto.builder().userInfo(followVo).statusCode(200).responseMessage("Search Completed").build();
         given(followService.searchFollowing("1234G",testUser)).willReturn(responseDto);
 
         //when

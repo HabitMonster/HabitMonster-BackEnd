@@ -82,9 +82,10 @@ class FollowServiceImplTest {
     @Test
     void getFollowers() {
         //given
-        Follow follow = Follow.create(testUser2, testUser);
+        FollowVo followers = new FollowVo(testUser2.getUsername(),1L, testUser2.getMonster().getMonsterDatabase().getImageUrl(),
+                testUser2.getMonsterCode(),false);
         List<FollowVo> followVoList = new ArrayList<>();
-        followVoList.add(FollowVo.followerOf(follow, false));
+        followVoList.add(followers);
 
         given(followRepository.searchFollowersByUser(testUser)).willReturn(followVoList);
 
@@ -100,13 +101,14 @@ class FollowServiceImplTest {
         assertThat(followResponseDto.getResponseMessage()).isEqualTo("Followers Query Completed");
     }
 
-    @DisplayName("Followeings 가져오기")
+    @DisplayName("Followings 가져오기")
     @Test
     void getFollowings() {
         //given
-        Follow follow = Follow.create(testUser, testUser2);
+        FollowVo followings = new FollowVo(testUser2.getUsername(),1L, testUser2.getMonster().getMonsterDatabase().getImageUrl(),
+                testUser2.getMonsterCode(),true);
         List<FollowVo> followVoList = new ArrayList<>();
-        followVoList.add(FollowVo.followingOf(follow, true));
+        followVoList.add(followings);
         given(followRepository.searchFollowingsByUser(testUser)).willReturn(followVoList);
 
         //when
@@ -176,9 +178,9 @@ class FollowServiceImplTest {
     @Test
     void searchFollowing() {
         //given
-        Follow follow = Follow.create(testUser2, testUser);
-        given(userRepository.findByMonsterCode(testUser2.getMonsterCode())).willReturn(java.util.Optional.ofNullable(testUser2));
-        lenient().when(followRepository.findByFollowerIdAndFollowingId(testUser2.getId(), testUser.getId())).thenReturn(follow);
+        FollowVo followings = new FollowVo(testUser2.getUsername(),1L, testUser2.getMonster().getMonsterDatabase().getImageUrl(),
+                testUser2.getMonsterCode(),false);
+        given(followRepository.searchUser(testUser2.getMonsterCode(),testUser)).willReturn(followings);
 
         //when
         FollowSearchResponseDto responseDto = followService.searchFollowing(testUser2.getMonsterCode(), testUser);
@@ -196,8 +198,10 @@ class FollowServiceImplTest {
     @Test
     void searchFollowingMyself() {
         //given
-        given(userRepository.findByMonsterCode(testUser2.getMonsterCode()))
-                .willReturn(Optional.of(testUser2));
+        FollowVo followings = new FollowVo(testUser2.getUsername(),1L, testUser2.getMonster().getMonsterDatabase().getImageUrl(),
+                testUser2.getMonsterCode(),null);
+        given(followRepository.searchUser(testUser2.getMonsterCode(),testUser2))
+                .willReturn(followings);
         //when
         FollowSearchResponseDto responseDto = followService.searchFollowing(testUser2.getMonsterCode(), testUser2);
 
@@ -225,7 +229,7 @@ class FollowServiceImplTest {
     @DisplayName("searchFollowing UserNoFound")
     @Test
     void searchFollowingUserNotFound() {
-        willThrow(UserIdNotFoundException.class).given(userRepository).findByMonsterCode(testUser2.getMonsterCode());
+        willThrow(UserIdNotFoundException.class).given(followRepository).searchUser(testUser2.getMonsterCode(),testUser);
         assertThrows(UserIdNotFoundException.class,
                 () -> followService.searchFollowing(testUser2.getMonsterCode(), testUser));
     }
