@@ -70,15 +70,20 @@ public class UserService {
     }
 
     public UserDetailResponseDto getUserDetailDtoByMonsterCode(User user, String monsterCode) {
-        User targetUser = findByMonsterCode(monsterCode);
 
-        UserDetailsVo userInfo = getUserDetailsVo(user, targetUser);
-        MonsterVo monster = monsterService.getMonsterVo(targetUser);
-        List<HabitSummaryVo> habits = habitService.getHabitListByUser(targetUser);
+        UserMonsterVo userDetailByMonsterCode = userRepository.userDetailByMonsterCode(monsterCode, user);
+
+        FollowCount followCount = followService.getCountByUser(userDetailByMonsterCode.getUser());
+        Integer totalHabitCount = habitService.getAllHabitCountByUser(userDetailByMonsterCode.getUser());
+
+        UserMonsterVo userMonsterVo = new UserMonsterVo();
+        userMonsterVo = userMonsterVo.of(userDetailByMonsterCode,followCount,totalHabitCount);
+
+        List<HabitSummaryVo> habits = habitService.getHabitListByUser(userDetailByMonsterCode.getUser());
 
         return UserDetailResponseDto.builder()
-                .userInfo(userInfo)
-                .monster(monster)
+                .userInfo(userMonsterVo.getUserInfo())
+                .monster(userMonsterVo.getMonster())
                 .habits(habits)
                 .statusCode(200)
                 .responseMessage("User Detail Response")
@@ -107,27 +112,6 @@ public class UserService {
                 .followersCount(followCount.getFollowersCount())
                 .followingsCount(followCount.getFollowingsCount())
                 .build();
-    }
-
-    private UserDetailsVo getUserDetailsVo(User user, User targetUser) {
-        boolean isFollowed = followService.isFollowBetween(user, targetUser);
-        FollowCount followCount = followService.getCountByUser(targetUser);
-        Integer totalHabitCount = habitService.getAllHabitCountByUser(targetUser);
-        return UserDetailsVo.builder()
-                .monsterCode(targetUser.getMonsterCode())
-                .username(targetUser.getUsername())
-                .email(targetUser.getEmail())
-                .isFollowed(isFollowed)
-                .totalHabitCount(totalHabitCount)
-                .followersCount(followCount.getFollowersCount())
-                .followingsCount(followCount.getFollowingsCount())
-                .build();
-    }
-
-    private User findByMonsterCode(String monsterCode) {
-        return userRepository.findByMonsterCode(monsterCode).orElseThrow(
-                () -> new UserIdNotFoundException("Not Found MonsterCode")
-        );
     }
 
     @Transactional
