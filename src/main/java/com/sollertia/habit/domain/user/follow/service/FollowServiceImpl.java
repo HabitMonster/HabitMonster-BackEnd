@@ -27,9 +27,7 @@ public class  FollowServiceImpl implements FollowService {
     @Override
     public FollowResponseDto getFollowers(User user) {
 
-        List<FollowVo> followers = followRepository.findAllByFollowingId(user.getId()).stream()
-                .map(f -> FollowVo.followerOf(f, checkFollow(f.getFollower().getMonsterCode(), user).getIsFollowed()))
-                .collect(Collectors.toCollection(ArrayList::new));
+        List<FollowVo> followers = followRepository.searchFollowersByUser(user);
 
         return FollowResponseDto.builder()
                 .followers(followers)

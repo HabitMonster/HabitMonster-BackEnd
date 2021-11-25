@@ -8,6 +8,7 @@ import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.domain.user.follow.dto.FollowCheckDto;
 import com.sollertia.habit.domain.user.follow.dto.FollowResponseDto;
 import com.sollertia.habit.domain.user.follow.dto.FollowSearchResponseDto;
+import com.sollertia.habit.domain.user.follow.dto.FollowVo;
 import com.sollertia.habit.domain.user.follow.entity.Follow;
 import com.sollertia.habit.domain.user.follow.repository.FollowRepository;
 import com.sollertia.habit.domain.user.oauth2.userinfo.GoogleOauth2UserInfo;
@@ -82,11 +83,10 @@ class FollowServiceImplTest {
     void getFollowers() {
         //given
         Follow follow = Follow.create(testUser2, testUser);
-        List<Follow> follows = new ArrayList<>();
-        follows.add(follow);
-        given(followRepository.findAllByFollowingId(testUser.getId())).willReturn(follows);
-        given(userRepository.findByMonsterCode(testUser2.getMonsterCode())).willReturn(java.util.Optional.ofNullable(testUser2));
-        lenient().when(followRepository.findByFollowerIdAndFollowingId(testUser2.getId(), testUser.getId())).thenReturn(follow);
+        List<FollowVo> followVoList = new ArrayList<>();
+        followVoList.add(FollowVo.followerOf(follow, false));
+
+        given(followRepository.searchFollowersByUser(testUser)).willReturn(followVoList);
 
         //when
         FollowResponseDto followResponseDto = followService.getFollowers(testUser);

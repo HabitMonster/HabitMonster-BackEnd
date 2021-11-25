@@ -1,5 +1,6 @@
 package com.sollertia.habit.domain.user.follow.dto;
 
+import com.querydsl.core.annotations.QueryProjection;
 import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.domain.user.follow.entity.Follow;
 import lombok.Builder;
@@ -15,8 +16,8 @@ public class FollowVo {
     private String monsterCode;
     private Boolean isFollowed;
 
-    public static FollowVo followerOf(Follow follower, Boolean checkFollow) {
-        User followerUser = follower.getFollower();
+    public static FollowVo followerOf(Follow follow, Boolean checkFollow) {
+        User followerUser = follow.getFollower();
         return FollowVo.builder()
                 .nickName(followerUser.getUsername())
                 .monsterId(followerUser.getMonster().getMonsterDatabase().getId())
@@ -26,8 +27,8 @@ public class FollowVo {
                 .build();
     }
 
-    public static FollowVo followingOf(Follow following) {
-        User followingUser = following.getFollowing();
+    public static FollowVo followingOf(Follow follow) {
+        User followingUser = follow.getFollowing();
         return FollowVo.builder()
                 .nickName(followingUser.getUsername())
                 .monsterCode(followingUser.getMonsterCode())
@@ -37,8 +38,8 @@ public class FollowVo {
                 .build();
     }
 
-    public static FollowVo followingOf(Follow following, Boolean checkFollow) {
-        User followingUser = following.getFollowing();
+    public static FollowVo followingOf(Follow follow, Boolean checkFollow) {
+        User followingUser = follow.getFollowing();
         return FollowVo.builder()
                 .nickName(followingUser.getUsername())
                 .monsterCode(followingUser.getMonsterCode())
@@ -46,5 +47,14 @@ public class FollowVo {
                 .isFollowed(checkFollow)
                 .monsterImg(followingUser.getMonster().getMonsterDatabase().getImageUrl())
                 .build();
+    }
+
+    @QueryProjection
+    public FollowVo(String nickName, Long monsterId, String monsterImg, String monsterCode, Boolean isFollowed) {
+        this.nickName = nickName;
+        this.monsterId = monsterId;
+        this.monsterImg = monsterImg;
+        this.monsterCode = monsterCode;
+        this.isFollowed = isFollowed;
     }
 }
