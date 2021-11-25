@@ -1,5 +1,8 @@
 package com.sollertia.habit.domain.habit.dto;
 
+
+
+
 import com.sollertia.habit.domain.category.enums.Category;
 import com.sollertia.habit.domain.habit.entity.Habit;
 import com.sollertia.habit.domain.habit.entity.HabitWithCounter;
@@ -42,16 +45,16 @@ public class HabitSummaryVo {
                 .description(habit.getDescription())
                 .durationStart(habit.getDurationStart().toString())
                 .durationEnd(habit.getDurationEnd().toString())
-                .count(habit.getGoalCountInSession())
+                .count(habit.getGoalInSession())
                 .isAccomplished(habit.getIsAccomplishInSession())
                 .practiceDays(habit.getPracticeDays())
                 .current(habit.getCurrent())
                 .achievePercentage(habit.getAchievePercentage())
                 .category(habit.getCategory())
                 .categoryId(habit.getCategory().getCategoryId())
-                .achieveCount(Math.toIntExact(habit.getAccomplishCounter() * habit.getGoalCountInSession() +
+                .achieveCount(Math.toIntExact(habit.getAccomplishCounter() * habit.getGoalInSession() +
                         (habit.getIsAccomplishInSession() ? 0 : habit.getCurrent())))
-                .totalCount(Math.toIntExact(habit.getWholeDays() * habit.getGoalCountInSession()))
+                .totalCount(Math.toIntExact(habit.getWholeDays() * habit.getGoalInSession()))
                 .build();
     }
 }

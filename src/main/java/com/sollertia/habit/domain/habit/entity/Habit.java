@@ -57,11 +57,6 @@ public abstract class Habit extends TimeStamped {
     @JsonIgnore
     private User user;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "team_id")
-//    @JsonIgnore
-//    private Team team;
-
     @Enumerated(EnumType.STRING)
     private Category category;
 
@@ -149,6 +144,10 @@ public abstract class Habit extends TimeStamped {
         double percentage = ((double)this.accomplishCounter / (double)this.wholeDays) * 100;
         return Math.round(percentage);
     }
+
+    public int getTotalCount() {
+        return Math.toIntExact(this.getGoalInSession() * this.getWholeDays());
+    }
     protected void checkAccomplishCounter() {
         this.accomplishCounter += 1;
     }
@@ -161,10 +160,6 @@ public abstract class Habit extends TimeStamped {
         user.getHabit().add(this);
     }
 
-//    protected void setTeam(Team team) {
-//        this.team = team;
-//        team.getHabitsWithCounter().add(this);
-//    }
 
     protected void setCategory(Category category) {
         this.category = category;

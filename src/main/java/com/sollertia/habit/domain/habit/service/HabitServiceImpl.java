@@ -49,7 +49,7 @@ public class HabitServiceImpl implements HabitService {
                 .habitId(savedHabit.getId())
                 .category(savedHabit.getCategory())
                 .count(savedHabit.getGoalInSession())
-                .totalCount(Math.toIntExact(savedHabit.getGoalInSession() * savedHabit.getWholeDays()))
+                .totalCount(savedHabit.getTotalCount())
                 .description(savedHabit.getDescription())
                 .durationEnd(savedHabit.getDurationEnd().toString())
                 .durationStart(savedHabit.getDurationStart().toString())
