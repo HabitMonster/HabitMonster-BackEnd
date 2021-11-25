@@ -5,13 +5,12 @@ import com.sollertia.habit.domain.habit.service.HabitServiceImpl;
 import com.sollertia.habit.domain.monster.dto.MonsterVo;
 import com.sollertia.habit.domain.monster.entity.Monster;
 import com.sollertia.habit.domain.monster.service.MonsterService;
-import com.sollertia.habit.domain.user.dto.MyPageResponseDto;
 import com.sollertia.habit.domain.user.dto.*;
+import com.sollertia.habit.domain.user.entity.Recommendation;
 import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.domain.user.follow.dto.FollowCount;
 import com.sollertia.habit.domain.user.follow.dto.FollowSearchResponseVo;
 import com.sollertia.habit.domain.user.follow.service.FollowServiceImpl;
-import com.sollertia.habit.domain.user.entity.Recommendation;
 import com.sollertia.habit.domain.user.repository.RecommendationRepository;
 import com.sollertia.habit.domain.user.repository.UserRepository;
 import com.sollertia.habit.global.exception.user.InvalidRecommendationTypeException;
@@ -21,8 +20,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -131,29 +132,27 @@ public class UserService {
         );
     }
 
+    @Transactional
     public RecommendedUserListDto getRecommendedUserListDto(User user) {
-        List<Recommendation> recommendations = new ArrayList<>();
+        List<RecommendationVo> recommendationVoList = new ArrayList<>();
         int length = 0;
         int count = 0;
         while ( length == 0 ) {
-            int number = getRandomNumber();
-            recommendations = recommendationRepository.searchByNumber(number);
-            length = recommendations.size();
             count++;
             if ( count == 10 ) {
                 throw new InvalidRecommendationTypeException("Recommendations List is Empty");
             }
+            int number = getRandomNumber();
+            recommendationVoList = recommendationRepository.searchByNumber(user, number);
+            length = recommendationVoList.size();
         }
 
-        List<RecommendationVo> userList = new ArrayList<>();
         int[] randomNumbers = getRandomNumbers(length);
-        for (int index : randomNumbers) {
-            Recommendation recommendation = recommendations.get(index);
-            RecommendationVo responseVo = getRecommendationVo(recommendation, user);
-            userList.add(responseVo);
-        }
+        List<RecommendationVo> collect = Arrays.stream(randomNumbers)
+                .mapToObj(recommendationVoList::get)
+                .collect(Collectors.toList());
         return RecommendedUserListDto.builder()
-                .userList(userList)
+                .userList(collect)
                 .responseMessage("Response Recommeded User List")
                 .statusCode(200)
                 .build();
