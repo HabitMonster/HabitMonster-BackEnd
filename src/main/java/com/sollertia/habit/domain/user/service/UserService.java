@@ -2,7 +2,7 @@ package com.sollertia.habit.domain.user.service;
 
 import com.sollertia.habit.domain.habit.dto.HabitSummaryVo;
 import com.sollertia.habit.domain.habit.service.HabitServiceImpl;
-import com.sollertia.habit.domain.monster.dto.MonsterVo;
+import com.sollertia.habit.domain.monster.dto.MonsterDto;
 import com.sollertia.habit.domain.monster.entity.Monster;
 import com.sollertia.habit.domain.monster.service.MonsterService;
 import com.sollertia.habit.domain.user.dto.*;
@@ -34,7 +34,7 @@ public class UserService {
 
     public UserInfoResponseDto getUserInfoResponseDto(User user) {
         return UserInfoResponseDto.builder()
-                .userInfo(UserInfoVo.of(user))
+                .userInfo(UserInfoDto.of(user))
                 .statusCode(200)
                 .responseMessage("User Info Query Completed")
                 .build();
@@ -50,7 +50,7 @@ public class UserService {
     public UserInfoResponseDto updateUsername(User user, UsernameUpdateRequestDto requestDto) {
         user.updateUsername(requestDto.getUsername());
         return UserInfoResponseDto.builder()
-                .userInfo(UserInfoVo.of(user))
+                .userInfo(UserInfoDto.of(user))
                 .statusCode(200)
                 .responseMessage("User Name Updated Completed")
                 .build();
@@ -59,7 +59,7 @@ public class UserService {
     @Transactional
     public UserInfoResponseDto disableUser(User user) {
         user.toDisabled();
-        UserInfoVo infoVo = UserInfoVo.of(user);
+        UserInfoDto infoVo = UserInfoDto.of(user);
 
         return UserInfoResponseDto.builder()
                 .userInfo(infoVo)
@@ -70,17 +70,17 @@ public class UserService {
 
     public UserDetailResponseDto getUserDetailDtoByMonsterCode(User user, String monsterCode) {
 
-        UserMonsterVo userMonsterVo = userRepository.userDetailByMonsterCode(monsterCode, user);
-        FollowCount followCount = followService.getCountByUser(userMonsterVo.getUser());
-        Integer totalHabitCount = habitService.getAllHabitCountByUser(userMonsterVo.getUser());
+        UserMonsterDto userMonsterDto = userRepository.userDetailByMonsterCode(monsterCode, user);
+        FollowCount followCount = followService.getCountByUser(userMonsterDto.getUser());
+        Integer totalHabitCount = habitService.getAllHabitCountByUser(userMonsterDto.getUser());
 
-        UserDetailsVo userInfoVo = UserDetailsVo.from(userMonsterVo, followCount, totalHabitCount);
-        MonsterVo monsterVo = MonsterVo.from(userMonsterVo);
-        List<HabitSummaryVo> habits = habitService.getHabitListByUser(userMonsterVo.getUser());
+        UserDetailsDto userInfoVo = UserDetailsDto.from(userMonsterDto, followCount, totalHabitCount);
+        MonsterDto monsterDto = MonsterDto.from(userMonsterDto);
+        List<HabitSummaryVo> habits = habitService.getHabitListByUser(userMonsterDto.getUser());
 
         return UserDetailResponseDto.builder()
                 .userInfo(userInfoVo)
-                .monster(monsterVo)
+                .monster(monsterDto)
                 .habits(habits)
                 .statusCode(200)
                 .responseMessage("User Detail Response")
@@ -88,7 +88,7 @@ public class UserService {
     }
 
     public MyPageResponseDto getUserDetailDto(User user) {
-        MonsterVo monster = monsterService.getMonsterVo(user);
+        MonsterDto monster = monsterService.getMonsterVo(user);
 
         return MyPageResponseDto.builder()
                 .userInfo(getUserDetailsVo(user))
@@ -98,10 +98,10 @@ public class UserService {
                 .build();
     }
 
-    private UserDetailsVo getUserDetailsVo(User user) {
+    private UserDetailsDto getUserDetailsVo(User user) {
         FollowCount followCount = followService.getCountByUser(user);
         Integer totalHabitCount = habitService.getAllHabitCountByUser(user);
-        return UserDetailsVo.builder()
+        return UserDetailsDto.builder()
                 .monsterCode(user.getMonsterCode())
                 .username(user.getUsername())
                 .email(user.getEmail())
@@ -113,7 +113,7 @@ public class UserService {
 
     @Transactional
     public RecommendedUserListDto getRecommendedUserListDto(User user) {
-        List<RecommendationVo> recommendationVoList = new ArrayList<>();
+        List<RecommendationDto> recommendationDtoList = new ArrayList<>();
         int length = 0;
         int count = 0;
         while ( length == 0 ) {
@@ -122,13 +122,13 @@ public class UserService {
                 throw new InvalidRecommendationTypeException("Recommendations List is Empty");
             }
             int number = getRandomNumber();
-            recommendationVoList = recommendationRepository.searchByNumber(user, number);
-            length = recommendationVoList.size();
+            recommendationDtoList = recommendationRepository.searchByNumber(user, number);
+            length = recommendationDtoList.size();
         }
 
         int[] randomNumbers = getRandomNumbers(length);
-        List<RecommendationVo> collect = Arrays.stream(randomNumbers)
-                .mapToObj(recommendationVoList::get)
+        List<RecommendationDto> collect = Arrays.stream(randomNumbers)
+                .mapToObj(recommendationDtoList::get)
                 .collect(Collectors.toList());
         return RecommendedUserListDto.builder()
                 .userList(collect)

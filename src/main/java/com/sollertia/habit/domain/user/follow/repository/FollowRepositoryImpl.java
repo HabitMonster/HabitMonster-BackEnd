@@ -4,8 +4,8 @@ import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sollertia.habit.domain.user.entity.User;
-import com.sollertia.habit.domain.user.follow.dto.FollowVo;
-import com.sollertia.habit.domain.user.follow.dto.QFollowVo;
+import com.sollertia.habit.domain.user.follow.dto.FollowDto;
+import com.sollertia.habit.domain.user.follow.dto.QFollowDto;
 import com.sollertia.habit.domain.user.follow.entity.QFollow;
 import lombok.RequiredArgsConstructor;
 
@@ -22,10 +22,10 @@ public class FollowRepositoryImpl implements FollowRepositoryCustom{
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<FollowVo> searchFollowersByUser(User login) {
+    public List<FollowDto> searchFollowersByUser(User login) {
         QFollow subFollow = new QFollow("subFollow");
         return queryFactory
-                .select(new QFollowVo(
+                .select(new QFollowDto(
                         user.username,
                         monsterDatabase.id,
                         monsterDatabase.imageUrl,
@@ -48,10 +48,10 @@ public class FollowRepositoryImpl implements FollowRepositoryCustom{
     }
 
     @Override
-    public List<FollowVo> searchFollowersByUser(User login, User target) {
+    public List<FollowDto> searchFollowersByUser(User login, User target) {
         QFollow subFollow = new QFollow("subFollow");
         return queryFactory
-                .select(new QFollowVo(
+                .select(new QFollowDto(
                         user.username,
                         monsterDatabase.id,
                         monsterDatabase.imageUrl,
@@ -76,9 +76,9 @@ public class FollowRepositoryImpl implements FollowRepositoryCustom{
     }
 
     @Override
-    public List<FollowVo> searchFollowingsByUser(User login) {
+    public List<FollowDto> searchFollowingsByUser(User login) {
         return queryFactory
-                .select(new QFollowVo(
+                .select(new QFollowDto(
                         user.username,
                         monsterDatabase.id,
                         monsterDatabase.imageUrl,
@@ -95,10 +95,10 @@ public class FollowRepositoryImpl implements FollowRepositoryCustom{
     }
 
     @Override
-    public List<FollowVo> searchFollowingsByUser(User login, User target) {
+    public List<FollowDto> searchFollowingsByUser(User login, User target) {
         QFollow subFollow = new QFollow("subFollow");
         return queryFactory
-                .select(new QFollowVo(
+                .select(new QFollowDto(
                         user.username,
                         monsterDatabase.id,
                         monsterDatabase.imageUrl,
@@ -123,9 +123,9 @@ public class FollowRepositoryImpl implements FollowRepositoryCustom{
     }
 
     @Override
-    public FollowVo searchUser(String monsterCode, User login) {
+    public FollowDto searchUser(String monsterCode, User login) {
         return queryFactory
-                .select(new QFollowVo(
+                .select(new QFollowDto(
                         user.username,
                         monsterDatabase.id,
                         monsterDatabase.imageUrl,

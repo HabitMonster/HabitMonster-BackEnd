@@ -2,7 +2,7 @@ package com.sollertia.habit.domain.monster.service;
 
 
 import com.sollertia.habit.domain.monster.dto.MonsterCollectionResponseDto;
-import com.sollertia.habit.domain.monster.dto.MonsterCollectionVo;
+import com.sollertia.habit.domain.monster.dto.MonsterCollectionDto;
 import com.sollertia.habit.domain.monster.entity.Monster;
 import com.sollertia.habit.domain.monster.entity.MonsterCollection;
 import com.sollertia.habit.domain.monster.entity.MonsterCollectionDatabase;
@@ -48,10 +48,10 @@ public class MonsterCollectionService {
     @Transactional
     public MonsterCollectionResponseDto getMonsterCollectionResponseDto(User user) {
         List<MonsterCollection> monsterCollectionList = getMonsterCollectionListByUser(user);
-        List<MonsterCollectionVo> monsterCollectionVoList = getMonsterCollectionVoListFrom(monsterCollectionList);
+        List<MonsterCollectionDto> monsterCollectionDtoList = getMonsterCollectionVoListFrom(monsterCollectionList);
 
         return MonsterCollectionResponseDto.builder()
-                .monsters(monsterCollectionVoList)
+                .monsters(monsterCollectionDtoList)
                 .responseMessage("Monster Collection Query Completed")
                 .statusCode(200)
                 .build();
@@ -61,18 +61,18 @@ public class MonsterCollectionService {
         return monsterCollectionRepository.findAllByUser(user);
     }
 
-    private List<MonsterCollectionVo> getMonsterCollectionVoListFrom(List<MonsterCollection> monsterCollectionList) {
-        List<MonsterCollectionVo> monsterCollectionVoList = MonsterCollectionVo.listOf(monsterCollectionList);
+    private List<MonsterCollectionDto> getMonsterCollectionVoListFrom(List<MonsterCollection> monsterCollectionList) {
+        List<MonsterCollectionDto> monsterCollectionDtoList = MonsterCollectionDto.listOf(monsterCollectionList);
 
-        if ( onlyOneMonsterExist(monsterCollectionVoList) ) {
-            monsterCollectionVoList = null;
+        if ( onlyOneMonsterExist(monsterCollectionDtoList) ) {
+            monsterCollectionDtoList = null;
         }
 
-        return monsterCollectionVoList;
+        return monsterCollectionDtoList;
     }
 
-    private boolean onlyOneMonsterExist(List<MonsterCollectionVo> monsterCollectionVoList) {
-        return monsterCollectionVoList.size() == 1 && monsterCollectionVoList.get(0).getMonsterDatabases().size() == 1;
+    private boolean onlyOneMonsterExist(List<MonsterCollectionDto> monsterCollectionDtoList) {
+        return monsterCollectionDtoList.size() == 1 && monsterCollectionDtoList.get(0).getMonsterDatabases().size() == 1;
     }
 
     @Transactional

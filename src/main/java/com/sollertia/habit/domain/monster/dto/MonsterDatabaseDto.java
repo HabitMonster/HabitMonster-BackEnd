@@ -8,29 +8,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-public class MonsterDatabaseVo {
+public class MonsterDatabaseDto {
     private Long monsterId;
     private Integer monsterLevel;
     private String monsterImage;
 
-    private MonsterDatabaseVo(Long monsterId, Integer monsterLevel, String monsterImage) {
+    private MonsterDatabaseDto(Long monsterId, Integer monsterLevel, String monsterImage) {
         this.monsterId = monsterId;
         this.monsterLevel = monsterLevel;
         this.monsterImage = monsterImage;
     }
 
-    public static MonsterDatabaseVo of(MonsterDatabase monsterDatabase) {
-        return new MonsterDatabaseVo(
+    public static MonsterDatabaseDto of(MonsterDatabase monsterDatabase) {
+        return new MonsterDatabaseDto(
                 monsterDatabase.getId(),
                 monsterDatabase.getLevel().getValue(),
                 monsterDatabase.getImageUrl());
     }
 
-    public static List<MonsterDatabaseVo> listOf(List<MonsterCollectionDatabase> monsterCollectionDatabaseList) {
-        List<MonsterDatabaseVo> monsterDatabaseVoList = new ArrayList<>();
+    public static List<MonsterDatabaseDto> listOf(List<MonsterCollectionDatabase> monsterCollectionDatabaseList) {
+        List<MonsterDatabaseDto> monsterDatabaseDtoList = new ArrayList<>();
         for (MonsterCollectionDatabase monsterCollectionDatabase : monsterCollectionDatabaseList) {
-            monsterDatabaseVoList.add(MonsterDatabaseVo.of(monsterCollectionDatabase.getMonsterDatabase()));
+            monsterDatabaseDtoList.add(MonsterDatabaseDto.of(monsterCollectionDatabase.getMonsterDatabase()));
         }
-        return monsterDatabaseVoList;
+        return monsterDatabaseDtoList;
     }
 }

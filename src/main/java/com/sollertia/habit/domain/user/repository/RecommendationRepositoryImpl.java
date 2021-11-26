@@ -2,10 +2,10 @@ package com.sollertia.habit.domain.user.repository;
 
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.sollertia.habit.domain.user.dto.QRecommendationVo;
-import com.sollertia.habit.domain.user.dto.RecommendationVo;
+import com.sollertia.habit.domain.user.dto.QRecommendationDto;
+import com.sollertia.habit.domain.user.dto.RecommendationDto;
 import com.sollertia.habit.domain.user.entity.User;
-import com.sollertia.habit.domain.user.follow.dto.QFollowVo;
+import com.sollertia.habit.domain.user.follow.dto.QFollowDto;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -22,10 +22,10 @@ public class RecommendationRepositoryImpl implements RecommendationRepositoryCus
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<RecommendationVo> searchByNumber(User login, int number) {
+    public List<RecommendationDto> searchByNumber(User login, int number) {
         return queryFactory
-                .select(new QRecommendationVo(recommendation.type,
-                        new QFollowVo(
+                .select(new QRecommendationDto(recommendation.type,
+                        new QFollowDto(
                                 user.username,
                                 monsterDatabase.id,
                                 monsterDatabase.imageUrl,

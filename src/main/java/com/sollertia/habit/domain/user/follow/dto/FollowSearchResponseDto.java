@@ -7,5 +7,5 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @SuperBuilder
 public class FollowSearchResponseDto extends DefaultResponseDto {
-    private FollowVo userInfo;
+    private FollowDto userInfo;
 }

@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
-public class UserMonsterVo {
+public class UserMonsterDto {
 
     User user;
 
@@ -29,8 +29,8 @@ public class UserMonsterVo {
     private String createAt;
 
     @QueryProjection
-    public UserMonsterVo(String monsterCode, String username, String email, Long monsterId, MonsterType monsterType, String monsterImage,
-                         String monsterName, Level level, Long expPoint, LocalDateTime createAt, Boolean isFollowed, User user){
+    public UserMonsterDto(String monsterCode, String username, String email, Long monsterId, MonsterType monsterType, String monsterImage,
+                          String monsterName, Level level, Long expPoint, LocalDateTime createAt, Boolean isFollowed, User user){
             this.monsterCode = monsterCode;
             this.username = username;
             this.email = email;

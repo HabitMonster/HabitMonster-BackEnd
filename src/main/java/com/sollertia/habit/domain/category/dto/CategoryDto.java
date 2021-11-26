@@ -7,10 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
-public class CategoryVo {
+public class CategoryDto {
     private Long categoryId;
     private Category category;
 }

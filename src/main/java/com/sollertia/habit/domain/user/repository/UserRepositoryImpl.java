@@ -3,8 +3,8 @@ package com.sollertia.habit.domain.user.repository;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.sollertia.habit.domain.user.dto.QUserMonsterVo;
-import com.sollertia.habit.domain.user.dto.UserMonsterVo;
+import com.sollertia.habit.domain.user.dto.QUserMonsterDto;
+import com.sollertia.habit.domain.user.dto.UserMonsterDto;
 import com.sollertia.habit.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 
@@ -19,9 +19,9 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public UserMonsterVo userDetailByMonsterCode(String monsterCode, User login) {
+    public UserMonsterDto userDetailByMonsterCode(String monsterCode, User login) {
 
-        return queryFactory.select(new QUserMonsterVo(
+        return queryFactory.select(new QUserMonsterDto(
                 user.monsterCode,
                 user.username,
                 user.email,

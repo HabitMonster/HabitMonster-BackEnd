@@ -8,5 +8,5 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @SuperBuilder
 public class UserInfoResponseDto extends DefaultResponseDto {
-    private UserInfoVo userInfo;
+    private UserInfoDto userInfo;
 }

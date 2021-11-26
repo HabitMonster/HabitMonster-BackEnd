@@ -9,5 +9,5 @@ import java.util.List;
 @Getter
 @SuperBuilder
 public class GlobalStatisticsResponseDto extends DefaultResponseDto {
-    private List<GlobalStatisticsVo> statistics;
+    private List<GlobalStatisticsDto> statistics;
 }

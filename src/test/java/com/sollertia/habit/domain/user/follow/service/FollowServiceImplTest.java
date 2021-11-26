@@ -6,9 +6,9 @@ import com.sollertia.habit.domain.monster.enums.MonsterType;
 import com.sollertia.habit.domain.monster.enums.Level;
 import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.domain.user.follow.dto.FollowCheckDto;
+import com.sollertia.habit.domain.user.follow.dto.FollowDto;
 import com.sollertia.habit.domain.user.follow.dto.FollowResponseDto;
 import com.sollertia.habit.domain.user.follow.dto.FollowSearchResponseDto;
-import com.sollertia.habit.domain.user.follow.dto.FollowVo;
 import com.sollertia.habit.domain.user.follow.entity.Follow;
 import com.sollertia.habit.domain.user.follow.repository.FollowRepository;
 import com.sollertia.habit.domain.user.oauth2.userinfo.GoogleOauth2UserInfo;
@@ -33,7 +33,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willThrow;
-import static org.mockito.Mockito.lenient;
 
 @ExtendWith(MockitoExtension.class)
 @RunWith(PowerMockRunner.class)
@@ -82,12 +81,12 @@ class FollowServiceImplTest {
     @Test
     void getFollowers() {
         //given
-        FollowVo followers = new FollowVo(testUser2.getUsername(),1L, testUser2.getMonster().getMonsterDatabase().getImageUrl(),
+        FollowDto followers = new FollowDto(testUser2.getUsername(),1L, testUser2.getMonster().getMonsterDatabase().getImageUrl(),
                 testUser2.getMonsterCode(),false);
-        List<FollowVo> followVoList = new ArrayList<>();
-        followVoList.add(followers);
+        List<FollowDto> followDtoList = new ArrayList<>();
+        followDtoList.add(followers);
 
-        given(followRepository.searchFollowersByUser(testUser)).willReturn(followVoList);
+        given(followRepository.searchFollowersByUser(testUser)).willReturn(followDtoList);
 
         //when
         FollowResponseDto followResponseDto = followService.getFollowers(testUser);
@@ -105,11 +104,11 @@ class FollowServiceImplTest {
     @Test
     void getFollowings() {
         //given
-        FollowVo followings = new FollowVo(testUser2.getUsername(),1L, testUser2.getMonster().getMonsterDatabase().getImageUrl(),
+        FollowDto followings = new FollowDto(testUser2.getUsername(),1L, testUser2.getMonster().getMonsterDatabase().getImageUrl(),
                 testUser2.getMonsterCode(),true);
-        List<FollowVo> followVoList = new ArrayList<>();
-        followVoList.add(followings);
-        given(followRepository.searchFollowingsByUser(testUser)).willReturn(followVoList);
+        List<FollowDto> followDtoList = new ArrayList<>();
+        followDtoList.add(followings);
+        given(followRepository.searchFollowingsByUser(testUser)).willReturn(followDtoList);
 
         //when
         FollowResponseDto followResponseDto = followService.getFollowings(testUser);
@@ -178,7 +177,7 @@ class FollowServiceImplTest {
     @Test
     void searchFollowing() {
         //given
-        FollowVo followings = new FollowVo(testUser2.getUsername(),1L, testUser2.getMonster().getMonsterDatabase().getImageUrl(),
+        FollowDto followings = new FollowDto(testUser2.getUsername(),1L, testUser2.getMonster().getMonsterDatabase().getImageUrl(),
                 testUser2.getMonsterCode(),false);
         given(followRepository.searchUser(testUser2.getMonsterCode(),testUser)).willReturn(followings);
 
@@ -198,7 +197,7 @@ class FollowServiceImplTest {
     @Test
     void searchFollowingMyself() {
         //given
-        FollowVo followings = new FollowVo(testUser2.getUsername(),1L, testUser2.getMonster().getMonsterDatabase().getImageUrl(),
+        FollowDto followings = new FollowDto(testUser2.getUsername(),1L, testUser2.getMonster().getMonsterDatabase().getImageUrl(),
                 testUser2.getMonsterCode(),null);
         given(followRepository.searchUser(testUser2.getMonsterCode(),testUser2))
                 .willReturn(followings);

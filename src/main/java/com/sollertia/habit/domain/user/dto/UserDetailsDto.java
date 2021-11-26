@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class UserDetailsVo {
+public class UserDetailsDto {
     private String monsterCode;
     private String username;
     private String email;
@@ -15,12 +15,12 @@ public class UserDetailsVo {
     private Long followersCount;
     private Long followingsCount;
 
-    public static UserDetailsVo from(UserMonsterVo userMonsterVo, FollowCount followCount, Integer totalHabitCount) {
-        return UserDetailsVo.builder()
-                .monsterCode(userMonsterVo.getMonsterCode())
-                .username(userMonsterVo.getUsername())
-                .email(userMonsterVo.getEmail())
-                .isFollowed(userMonsterVo.getIsFollowed())
+    public static UserDetailsDto from(UserMonsterDto userMonsterDto, FollowCount followCount, Integer totalHabitCount) {
+        return UserDetailsDto.builder()
+                .monsterCode(userMonsterDto.getMonsterCode())
+                .username(userMonsterDto.getUsername())
+                .email(userMonsterDto.getEmail())
+                .isFollowed(userMonsterDto.getIsFollowed())
                 .totalHabitCount(totalHabitCount)
                 .followersCount(followCount.getFollowersCount())
                 .followingsCount(followCount.getFollowingsCount())

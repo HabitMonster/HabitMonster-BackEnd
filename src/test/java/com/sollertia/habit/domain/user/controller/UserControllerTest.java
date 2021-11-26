@@ -2,7 +2,7 @@ package com.sollertia.habit.domain.user.controller;
 
 
 import com.sollertia.habit.domain.user.dto.UserInfoResponseDto;
-import com.sollertia.habit.domain.user.dto.UserInfoVo;
+import com.sollertia.habit.domain.user.dto.UserInfoDto;
 import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.domain.user.oauth2.userinfo.GoogleOauth2UserInfo;
 import com.sollertia.habit.domain.user.oauth2.userinfo.Oauth2UserInfo;
@@ -75,7 +75,7 @@ class UserControllerTest {
     void getUserInfo() throws Exception {
         //given
         authenticated();
-        UserInfoVo infoVo = UserInfoVo.builder()
+        UserInfoDto infoVo = UserInfoDto.builder()
                 .monsterCode(testUser.getMonsterCode())
                 .username(testUser.getUsername())
                 .build();

@@ -6,7 +6,6 @@ import com.sollertia.habit.domain.monster.enums.Level;
 import com.sollertia.habit.domain.monster.enums.MonsterType;
 import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.domain.user.follow.dto.*;
-import com.sollertia.habit.domain.user.follow.entity.Follow;
 import com.sollertia.habit.domain.user.follow.service.FollowServiceImpl;
 import com.sollertia.habit.domain.user.oauth2.userinfo.GoogleOauth2UserInfo;
 import com.sollertia.habit.domain.user.oauth2.userinfo.Oauth2UserInfo;
@@ -18,7 +17,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.reflect.Whitebox;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -97,11 +95,11 @@ class FollowControllerTest {
     void getFollowers() throws Exception {
         //given
         authenticated();
-        FollowVo followerVo = new FollowVo(testUser2.getUsername(),1L, testUser2.getMonster().getMonsterDatabase().getImageUrl(),
+        FollowDto followerVo = new FollowDto(testUser2.getUsername(),1L, testUser2.getMonster().getMonsterDatabase().getImageUrl(),
                 testUser2.getMonsterCode(),true);
-        List<FollowVo> followVos = new ArrayList<>();
-        followVos.add(followerVo);
-        FollowResponseDto followResponseDto = FollowResponseDto.builder().followers(followVos).statusCode(200).responseMessage("Followers Query Completed").build();
+        List<FollowDto> followDtos = new ArrayList<>();
+        followDtos.add(followerVo);
+        FollowResponseDto followResponseDto = FollowResponseDto.builder().followers(followDtos).statusCode(200).responseMessage("Followers Query Completed").build();
         given(followService.getFollowers(testUser)).willReturn(followResponseDto);
 
         //when
@@ -125,11 +123,11 @@ class FollowControllerTest {
     void getFollowings() throws Exception {
         //given
         authenticated();
-        FollowVo followingVo = new FollowVo(testUser2.getUsername(),1L, testUser2.getMonster().getMonsterDatabase().getImageUrl(),
+        FollowDto followingVo = new FollowDto(testUser2.getUsername(),1L, testUser2.getMonster().getMonsterDatabase().getImageUrl(),
                 testUser2.getMonsterCode(),true);
-        List<FollowVo> followVos = new ArrayList<>();
-        followVos.add(followingVo);
-        FollowResponseDto followResponseDto = FollowResponseDto.builder().followings(followVos).statusCode(200).responseMessage("Followings Query Completed").build();
+        List<FollowDto> followDtos = new ArrayList<>();
+        followDtos.add(followingVo);
+        FollowResponseDto followResponseDto = FollowResponseDto.builder().followings(followDtos).statusCode(200).responseMessage("Followings Query Completed").build();
         given(followService.getFollowings(testUser)).willReturn(followResponseDto);
 
         //when
@@ -192,9 +190,9 @@ class FollowControllerTest {
     void searchFollowing() throws Exception {
         //given
         authenticated();
-        FollowVo followVo = new FollowVo(testUser2.getUsername(),1L, testUser2.getMonster().getMonsterDatabase().getImageUrl(),
+        FollowDto followDto = new FollowDto(testUser2.getUsername(),1L, testUser2.getMonster().getMonsterDatabase().getImageUrl(),
                 testUser2.getMonsterCode(),false);
-        FollowSearchResponseDto responseDto = FollowSearchResponseDto.builder().userInfo(followVo).statusCode(200).responseMessage("Search Completed").build();
+        FollowSearchResponseDto responseDto = FollowSearchResponseDto.builder().userInfo(followDto).statusCode(200).responseMessage("Search Completed").build();
         given(followService.searchFollowing("1234G",testUser)).willReturn(responseDto);
 
         //when

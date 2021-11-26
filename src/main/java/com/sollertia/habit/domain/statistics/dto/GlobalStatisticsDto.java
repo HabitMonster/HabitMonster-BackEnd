@@ -4,16 +4,16 @@ import com.sollertia.habit.domain.statistics.entity.Statistics;
 import lombok.Getter;
 
 @Getter
-public class GlobalStatisticsVo {
+public class GlobalStatisticsDto {
     private String content;
     private String value;
 
-    private GlobalStatisticsVo(String content, String value) {
+    private GlobalStatisticsDto(String content, String value) {
         this.content = content;
         this.value = value;
     }
 
-    public static GlobalStatisticsVo of(Statistics statistics) {
-        return new GlobalStatisticsVo(statistics.getContents(), statistics.getValue());
+    public static GlobalStatisticsDto of(Statistics statistics) {
+        return new GlobalStatisticsDto(statistics.getContents(), statistics.getValue());
     }
 }

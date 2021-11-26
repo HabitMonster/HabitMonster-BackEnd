@@ -2,16 +2,16 @@ package com.sollertia.habit.domain.user.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
 import com.sollertia.habit.domain.user.enums.RecommendationType;
-import com.sollertia.habit.domain.user.follow.dto.FollowVo;
+import com.sollertia.habit.domain.user.follow.dto.FollowDto;
 import lombok.Getter;
 
 @Getter
-public class RecommendationVo {
+public class RecommendationDto {
     private String title;
-    private FollowVo userInfo;
+    private FollowDto userInfo;
 
     @QueryProjection
-    public RecommendationVo(RecommendationType type, FollowVo userInfo) {
+    public RecommendationDto(RecommendationType type, FollowDto userInfo) {
         this.title = type.getTitle();
         this.userInfo = userInfo;
     }

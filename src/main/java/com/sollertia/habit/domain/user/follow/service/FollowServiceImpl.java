@@ -24,7 +24,7 @@ public class  FollowServiceImpl implements FollowService {
     @Override
     public FollowResponseDto getFollowers(User user) {
 
-        List<FollowVo> followers = followRepository.searchFollowersByUser(user);
+        List<FollowDto> followers = followRepository.searchFollowersByUser(user);
 
         return FollowResponseDto.builder()
                 .followers(followers)
@@ -36,7 +36,7 @@ public class  FollowServiceImpl implements FollowService {
     @Override
     public FollowResponseDto getFollowings(User user) {
 
-        List<FollowVo> followings = followRepository.searchFollowingsByUser(user);
+        List<FollowDto> followings = followRepository.searchFollowingsByUser(user);
 
         return FollowResponseDto.builder()
                 .followings(followings)
@@ -47,7 +47,7 @@ public class  FollowServiceImpl implements FollowService {
 
     public FollowResponseDto getFollowers(String monsterCode, User user) {
         User targetUser = getUserByMonsterCode(monsterCode);
-        List<FollowVo> followers = followRepository.searchFollowersByUser(user, targetUser);
+        List<FollowDto> followers = followRepository.searchFollowersByUser(user, targetUser);
 
         return FollowResponseDto.builder()
                 .followers(followers)
@@ -58,7 +58,7 @@ public class  FollowServiceImpl implements FollowService {
 
     public FollowResponseDto getFollowings(String monsterCode, User user) {
         User targetUser = getUserByMonsterCode(monsterCode);
-        List<FollowVo> followings = followRepository.searchFollowingsByUser(user, targetUser);
+        List<FollowDto> followings = followRepository.searchFollowingsByUser(user, targetUser);
 
         return FollowResponseDto.builder()
                 .followings(followings)
@@ -102,7 +102,7 @@ public class  FollowServiceImpl implements FollowService {
 
     @Override
     public FollowSearchResponseDto searchFollowing(String followingId, User user) {
-        FollowVo searchUser = followRepository.searchUser(followingId, user);
+        FollowDto searchUser = followRepository.searchUser(followingId, user);
 
         if(searchUser==null){
             return FollowSearchResponseDto.builder().userInfo(null).statusCode(400).responseMessage("Not Found User").build();

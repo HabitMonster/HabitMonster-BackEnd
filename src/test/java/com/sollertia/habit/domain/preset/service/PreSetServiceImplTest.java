@@ -1,7 +1,7 @@
 package com.sollertia.habit.domain.preset.service;
 
 import com.sollertia.habit.domain.category.enums.Category;
-import com.sollertia.habit.domain.preset.dto.PreSetVo;
+import com.sollertia.habit.domain.preset.dto.PreSetDto;
 import com.sollertia.habit.domain.preset.entity.PreSet;
 import com.sollertia.habit.domain.preset.repository.PreSetRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -32,24 +32,24 @@ class PreSetServiceImplTest {
     @Test
     void categoryPreSetList(){
         //given
-        PreSetVo preSetVo = PreSetVo.builder().presetId(1L).categoryId(1L).title("title").description("description").
+        PreSetDto preSetDto = PreSetDto.builder().presetId(1L).categoryId(1L).title("title").description("description").
                 period(30).count(3).category(Category.Health).practiceDays("12345").build();
         List<PreSet> preSets = new ArrayList<>();
-        preSets.add(new PreSet(preSetVo));
+        preSets.add(new PreSet(preSetDto));
         given(preSetRepository.findAllByCategoryId(1L)).willReturn(preSets);
 
         //when
-        List<PreSetVo> preSetVoList= preSetService.categoryPreSetList(1L);
+        List<PreSetDto> preSetDtoList = preSetService.categoryPreSetList(1L);
 
         //then
-        assertThat(preSetVoList.get(0).getPresetId()).isEqualTo(preSets.get(0).getId());
-        assertThat(preSetVoList.get(0).getCategoryId()).isEqualTo(preSets.get(0).getCategoryId());
-        assertThat(preSetVoList.get(0).getTitle()).isEqualTo(preSets.get(0).getTitle());
-        assertThat(preSetVoList.get(0).getDescription()).isEqualTo(preSets.get(0).getDescription());
-        assertThat(preSetVoList.get(0).getPeriod()).isEqualTo(preSets.get(0).getPeriod());
-        assertThat(preSetVoList.get(0).getCount()).isEqualTo(preSets.get(0).getCount());
-        assertThat(preSetVoList.get(0).getCategory()).isEqualTo(preSets.get(0).getCategory());
-        assertThat(preSetVoList.get(0).getPracticeDays()).isEqualTo(preSets.get(0).getPracticeDays());
+        assertThat(preSetDtoList.get(0).getPresetId()).isEqualTo(preSets.get(0).getId());
+        assertThat(preSetDtoList.get(0).getCategoryId()).isEqualTo(preSets.get(0).getCategoryId());
+        assertThat(preSetDtoList.get(0).getTitle()).isEqualTo(preSets.get(0).getTitle());
+        assertThat(preSetDtoList.get(0).getDescription()).isEqualTo(preSets.get(0).getDescription());
+        assertThat(preSetDtoList.get(0).getPeriod()).isEqualTo(preSets.get(0).getPeriod());
+        assertThat(preSetDtoList.get(0).getCount()).isEqualTo(preSets.get(0).getCount());
+        assertThat(preSetDtoList.get(0).getCategory()).isEqualTo(preSets.get(0).getCategory());
+        assertThat(preSetDtoList.get(0).getPracticeDays()).isEqualTo(preSets.get(0).getPracticeDays());
 
         verify(preSetRepository).findAllByCategoryId(1L);
 
@@ -59,21 +59,21 @@ class PreSetServiceImplTest {
     @Test
     void getPreSet(){
         //given
-        PreSetVo preSetVo = PreSetVo.builder().presetId(1L).categoryId(1L).title("title").description("description").
+        PreSetDto preSetDto = PreSetDto.builder().presetId(1L).categoryId(1L).title("title").description("description").
                 period(30).count(3).category(Category.Health).practiceDays("12345").build();
-        given(preSetRepository.findById(1L)).willReturn(Optional.of(new PreSet(preSetVo)));
+        given(preSetRepository.findById(1L)).willReturn(Optional.of(new PreSet(preSetDto)));
 
         //when
-        PreSetVo preSetVoRes = preSetService.getPreSet(1L);
+        PreSetDto preSetDtoRes = preSetService.getPreSet(1L);
 
         //then
-        assertThat(preSetVoRes.getCategoryId()).isEqualTo(preSetVo.getCategoryId());
-        assertThat(preSetVoRes.getTitle()).isEqualTo(preSetVo.getTitle());
-        assertThat(preSetVoRes.getDescription()).isEqualTo(preSetVo.getDescription());
-        assertThat(preSetVoRes.getPeriod()).isEqualTo(preSetVo.getPeriod());
-        assertThat(preSetVoRes.getCount()).isEqualTo(preSetVo.getCount());
-        assertThat(preSetVoRes.getCategory()).isEqualTo(preSetVo.getCategory());
-        assertThat(preSetVoRes.getPracticeDays()).isEqualTo(preSetVo.getPracticeDays());
+        assertThat(preSetDtoRes.getCategoryId()).isEqualTo(preSetDto.getCategoryId());
+        assertThat(preSetDtoRes.getTitle()).isEqualTo(preSetDto.getTitle());
+        assertThat(preSetDtoRes.getDescription()).isEqualTo(preSetDto.getDescription());
+        assertThat(preSetDtoRes.getPeriod()).isEqualTo(preSetDto.getPeriod());
+        assertThat(preSetDtoRes.getCount()).isEqualTo(preSetDto.getCount());
+        assertThat(preSetDtoRes.getCategory()).isEqualTo(preSetDto.getCategory());
+        assertThat(preSetDtoRes.getPracticeDays()).isEqualTo(preSetDto.getPracticeDays());
 
         verify(preSetRepository).findById(1L);
 

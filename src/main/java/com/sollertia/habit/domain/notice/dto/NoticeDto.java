@@ -6,13 +6,13 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class NoticeVo {
+public class NoticeDto {
     private Long id;
     private String title;
     private String createdAt;
 
-    public static NoticeVo of(Notice notice){
-        return NoticeVo.builder()
+    public static NoticeDto of(Notice notice){
+        return NoticeDto.builder()
                 .id(notice.getId())
                 .title(notice.getTitle())
                 .createdAt(notice.getCreatedAt().toLocalDate().toString())
