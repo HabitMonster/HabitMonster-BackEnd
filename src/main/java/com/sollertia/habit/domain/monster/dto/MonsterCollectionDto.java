@@ -31,12 +31,14 @@ public class MonsterCollectionDto {
     }
 
     public static List<MonsterCollectionDto> listOf(List<MonsterCollection> monsterCollectionList) {
+
         List<MonsterCollectionDto> monsterCollectionDtoList = new ArrayList<>();
 
         for (MonsterCollection monsterCollection : monsterCollectionList) {
             List<MonsterCollectionDatabase> monsterCollectionDatabaseList =
                     monsterCollection.getMonsterCollectionDatabaseList();
-            List<MonsterDatabaseDto> monsterDatabaseDtoList = MonsterDatabaseDto.listOf(monsterCollectionDatabaseList);
+            List<MonsterDatabaseDto> monsterDatabaseDtoList =
+                    MonsterDatabaseDto.listOf(monsterCollectionDatabaseList);
             monsterCollectionDtoList.add(MonsterCollectionDto.of(monsterCollection, monsterDatabaseDtoList));
         }
 

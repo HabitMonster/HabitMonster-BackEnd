@@ -47,8 +47,7 @@ public class MonsterCollectionService {
 
     @Transactional
     public MonsterCollectionResponseDto getMonsterCollectionResponseDto(User user) {
-        List<MonsterCollection> monsterCollectionList = getMonsterCollectionListByUser(user);
-        List<MonsterCollectionDto> monsterCollectionDtoList = getMonsterCollectionVoListFrom(monsterCollectionList);
+        List<MonsterCollectionDto> monsterCollectionDtoList = getMonsterCollectionDtoListByUser(user);
 
         return MonsterCollectionResponseDto.builder()
                 .monsters(monsterCollectionDtoList)
@@ -57,11 +56,8 @@ public class MonsterCollectionService {
                 .build();
     }
 
-    public List<MonsterCollection> getMonsterCollectionListByUser(User user) {
-        return monsterCollectionRepository.findAllByUser(user);
-    }
-
-    private List<MonsterCollectionDto> getMonsterCollectionVoListFrom(List<MonsterCollection> monsterCollectionList) {
+    private List<MonsterCollectionDto> getMonsterCollectionDtoListByUser(User user) {
+        List<MonsterCollection> monsterCollectionList = monsterCollectionRepository.searchByUser(user);
         List<MonsterCollectionDto> monsterCollectionDtoList = MonsterCollectionDto.listOf(monsterCollectionList);
 
         if ( onlyOneMonsterExist(monsterCollectionDtoList) ) {
@@ -72,7 +68,8 @@ public class MonsterCollectionService {
     }
 
     private boolean onlyOneMonsterExist(List<MonsterCollectionDto> monsterCollectionDtoList) {
-        return monsterCollectionDtoList.size() == 1 && monsterCollectionDtoList.get(0).getMonsterDatabases().size() == 1;
+        return monsterCollectionDtoList.size() == 1
+                && monsterCollectionDtoList.get(0).getMonsterDatabases().size() == 1;
     }
 
     @Transactional
@@ -84,5 +81,9 @@ public class MonsterCollectionService {
     private MonsterCollection getCurrentMonsterCollectionByUser(User user) {
         MonsterType monsterType = user.getMonster().getMonsterDatabase().getMonsterType();
         return monsterCollectionRepository.findByUserAndMonsterType(user, monsterType);
+    }
+
+    public List<MonsterType> getMonsterTypeListByUser(User user) {
+        return monsterCollectionRepository.searchTypeListByUser(user);
     }
 }
