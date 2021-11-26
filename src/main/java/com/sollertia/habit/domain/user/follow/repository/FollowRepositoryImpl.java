@@ -39,7 +39,8 @@ public class FollowRepositoryImpl implements FollowRepositoryCustom{
                 .join(follow.follower, user)
                 .join(user.monster, monster)
                 .join(monster.monsterDatabase, monsterDatabase)
-                .where(follow.following.eq(login))
+                .where(follow.following.eq(login)
+                        .and(user.disabled.eq(false)))
                 .leftJoin(subFollow)
                 .on(subFollow.follower.eq(login)
                         .and(subFollow.following.eq(user)))
@@ -66,7 +67,8 @@ public class FollowRepositoryImpl implements FollowRepositoryCustom{
                 .join(follow.follower, user)
                 .join(user.monster, monster)
                 .join(monster.monsterDatabase, monsterDatabase)
-                .where(follow.following.eq(target))
+                .where(follow.following.eq(target)
+                        .and(user.disabled.eq(false)))
                 .leftJoin(subFollow)
                 .on(subFollow.follower.eq(login)
                         .and(subFollow.following.eq(user)))
@@ -87,7 +89,8 @@ public class FollowRepositoryImpl implements FollowRepositoryCustom{
                 .join(follow.following, user)
                 .join(user.monster, monster)
                 .join(monster.monsterDatabase, monsterDatabase)
-                .where(follow.follower.eq(login))
+                .where(follow.follower.eq(login)
+                        .and(user.disabled.eq(false)))
                 .fetch();
     }
 
@@ -111,10 +114,11 @@ public class FollowRepositoryImpl implements FollowRepositoryCustom{
                 .join(follow.following, user)
                 .join(user.monster, monster)
                 .join(monster.monsterDatabase, monsterDatabase)
-                .where(follow.follower.eq(target))
                 .leftJoin(subFollow)
-                .on(subFollow.follower.eq(login)
-                        .and(subFollow.following.eq(user)))
+                        .on(subFollow.follower.eq(login)
+                .and(subFollow.following.eq(user)))
+                .where(follow.follower.eq(target)
+                        .and(user.disabled.eq(false)))
                 .fetch();
     }
 
@@ -136,10 +140,32 @@ public class FollowRepositoryImpl implements FollowRepositoryCustom{
                 .from(user)
                 .join(user.monster, monster)
                 .join(monster.monsterDatabase, monsterDatabase)
-                .where(user.monsterCode.eq(monsterCode))
                 .leftJoin(follow)
                 .on(follow.follower.eq(login)
                         .and(follow.following.eq(user)))
+                .where(user.monsterCode.eq(monsterCode)
+                        .and(user.disabled.eq(false)))
+
                 .fetchOne();
+    }
+
+    @Override
+    public long countByFollower(User follower) {
+        return queryFactory
+                .selectFrom(follow)
+                .join(follow.following, user)
+                .where(follow.follower.eq(follower)
+                        .and(user.disabled.eq(false)))
+                .fetchCount();
+    }
+
+    @Override
+    public long countByFollowing(User following) {
+        return queryFactory
+                .selectFrom(follow)
+                .join(follow.follower, user)
+                .where(follow.following.eq(following)
+                        .and(user.disabled.eq(false)))
+                .fetchCount();
     }
 }

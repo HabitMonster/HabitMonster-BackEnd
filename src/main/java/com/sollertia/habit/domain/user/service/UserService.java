@@ -12,7 +12,6 @@ import com.sollertia.habit.domain.user.follow.service.FollowServiceImpl;
 import com.sollertia.habit.domain.user.repository.RecommendationRepository;
 import com.sollertia.habit.domain.user.repository.UserRepository;
 import com.sollertia.habit.global.exception.user.InvalidRecommendationTypeException;
-import com.sollertia.habit.global.exception.user.UserIdNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -71,19 +70,17 @@ public class UserService {
 
     public UserDetailResponseDto getUserDetailDtoByMonsterCode(User user, String monsterCode) {
 
-        UserMonsterVo userDetailByMonsterCode = userRepository.userDetailByMonsterCode(monsterCode, user);
+        UserMonsterVo userMonsterVo = userRepository.userDetailByMonsterCode(monsterCode, user);
+        FollowCount followCount = followService.getCountByUser(userMonsterVo.getUser());
+        Integer totalHabitCount = habitService.getAllHabitCountByUser(userMonsterVo.getUser());
 
-        FollowCount followCount = followService.getCountByUser(userDetailByMonsterCode.getUser());
-        Integer totalHabitCount = habitService.getAllHabitCountByUser(userDetailByMonsterCode.getUser());
-
-        UserMonsterVo userMonsterVo = new UserMonsterVo();
-        userMonsterVo = userMonsterVo.of(userDetailByMonsterCode,followCount,totalHabitCount);
-
-        List<HabitSummaryVo> habits = habitService.getHabitListByUser(userDetailByMonsterCode.getUser());
+        UserDetailsVo userInfoVo = UserDetailsVo.from(userMonsterVo, followCount, totalHabitCount);
+        MonsterVo monsterVo = MonsterVo.from(userMonsterVo);
+        List<HabitSummaryVo> habits = habitService.getHabitListByUser(userMonsterVo.getUser());
 
         return UserDetailResponseDto.builder()
-                .userInfo(userMonsterVo.getUserInfo())
-                .monster(userMonsterVo.getMonster())
+                .userInfo(userInfoVo)
+                .monster(monsterVo)
                 .habits(habits)
                 .statusCode(200)
                 .responseMessage("User Detail Response")

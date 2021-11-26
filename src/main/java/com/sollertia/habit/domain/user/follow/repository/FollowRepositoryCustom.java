@@ -16,4 +16,8 @@ public interface FollowRepositoryCustom {
     List<FollowVo> searchFollowingsByUser(User login, User target);
 
     FollowVo searchUser(String monsterCode, User target);
+
+    long countByFollower(User following);
+
+    long countByFollowing(User following);
 }

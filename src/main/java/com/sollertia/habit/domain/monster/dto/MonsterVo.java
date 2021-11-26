@@ -1,6 +1,7 @@
 package com.sollertia.habit.domain.monster.dto;
 
 import com.sollertia.habit.domain.monster.entity.Monster;
+import com.sollertia.habit.domain.user.dto.UserMonsterVo;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -24,6 +25,18 @@ public class MonsterVo {
                 .monsterLevel(monster.getLevel().getValue())
                 .monsterExpPoint(monster.getExpPoint())
                 .createAt(monster.getCreatedAt().toLocalDate().toString())
+                .build();
+    }
+
+    public static MonsterVo from(UserMonsterVo userMonsterVo) {
+        return MonsterVo.builder()
+                .monsterId(userMonsterVo.getMonsterId())
+                .levelOneId(userMonsterVo.getLevelOneId())
+                .monsterImage(userMonsterVo.getMonsterImage())
+                .monsterName(userMonsterVo.getMonsterName())
+                .monsterLevel(userMonsterVo.getMonsterLevel())
+                .monsterExpPoint(userMonsterVo.getMonsterExpPoint())
+                .createAt(userMonsterVo.getCreateAt())
                 .build();
     }
 }

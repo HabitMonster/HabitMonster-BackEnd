@@ -79,6 +79,8 @@ public class  FollowServiceImpl implements FollowService {
 
         if (isFollowBetween(user, followingUser)) {
             throw new FollowException("Already Follow");
+        } else if ( followingUser.isDisabled() ) {
+            throw new FollowException("User is Droped");
         }
 
         Follow follow = Follow.create(user, followingUser);
@@ -126,8 +128,8 @@ public class  FollowServiceImpl implements FollowService {
     }
 
     public FollowCount getCountByUser(User targetUser) {
-        Integer followersCount = followRepository.countByFollowing(targetUser);
-        Integer followingsCount = followRepository.countByFollower(targetUser);
+        long followersCount = followRepository.countByFollowing(targetUser);
+        long followingsCount = followRepository.countByFollower(targetUser);
         return new FollowCount(followersCount, followingsCount);
     }
 

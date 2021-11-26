@@ -7,9 +7,7 @@ import com.sollertia.habit.domain.user.dto.RecommendationVo;
 import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.domain.user.follow.dto.QFollowVo;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
 import java.util.List;
 
 import static com.sollertia.habit.domain.monster.entity.QMonster.monster;
@@ -45,7 +43,8 @@ public class RecommendationRepositoryImpl implements RecommendationRepositoryCus
                     .on(user.eq(follow.following)
                             .and(follow.follower.eq(login))
                     )
-                .where(recommendation.number.eq(number))
+                .where(recommendation.number.eq(number)
+                        .and(user.disabled.eq(false)))
                 .fetch();
     }
 }
