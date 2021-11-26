@@ -21,17 +21,18 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
     @Override
     public UserMonsterDto userDetailByMonsterCode(String monsterCode, User login) {
 
-        return queryFactory.select(new QUserMonsterDto(
-                user.monsterCode,
-                user.username,
-                user.email,
-                user.monster.monsterDatabase.id,
-                user.monster.monsterDatabase.monsterType,
-                user.monster.monsterDatabase.imageUrl,
-                user.monster.name,
-                user.monster.level,
-                user.monster.expPoint,
-                user.monster.createdAt,
+        return queryFactory
+                .select(new QUserMonsterDto(
+                        user.monsterCode,
+                        user.username,
+                        user.email,
+                        monsterDatabase.id,
+                        monsterDatabase.monsterType,
+                        monsterDatabase.imageUrl,
+                        monster.name,
+                        monster.level,
+                        monster.expPoint,
+                        monster.createdAt,
                         new CaseBuilder()
                                 .when(follow.id.isNotNull())
                                 .then(Boolean.TRUE)
