@@ -5,10 +5,12 @@ import com.sollertia.habit.domain.preset.entity.PreSet;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
-@AllArgsConstructor
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class PreSetDto {
     private Long presetId;
     private Long categoryId;
@@ -30,3 +32,4 @@ public class PreSetDto {
         this.practiceDays = preSet.getPracticeDays();
     }
 }
+
