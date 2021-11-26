@@ -9,6 +9,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 @RequiredArgsConstructor
 @RestController
@@ -18,28 +19,30 @@ public class FollowController {
 
     @ApiOperation(value = "follower 목록", notes = "follower list")
     @GetMapping("/followers")
-    public FollowResponseDto getFollowers(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public FollowResponseDto getFollowers(@ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return followService.getFollowers(userDetails.getUser());
     }
 
     @ApiOperation(value = "following 목록", notes = "following list")
     @GetMapping("/followings")
-    public FollowResponseDto getFollowings(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public FollowResponseDto getFollowings(@ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return followService.getFollowings(userDetails.getUser());
     }
 
     @ApiOperation(value = "follower 목록", notes = "follower list")
     @GetMapping("/followers/{monsterCode}")
     public FollowResponseDto getFollowersByMonsterCode(
-            @PathVariable String monsterCode) {
-        return followService.getFollowers(monsterCode);
+            @PathVariable String monsterCode,
+            @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return followService.getFollowers(monsterCode, userDetails.getUser());
     }
 
     @ApiOperation(value = "following 목록", notes = "following list")
     @GetMapping("/followings/{monsterCode}")
     public FollowResponseDto getFollowingsByMonsterCode(
-            @PathVariable String monsterCode) {
-        return followService.getFollowings(monsterCode);
+            @PathVariable String monsterCode,
+            @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return followService.getFollowings(monsterCode, userDetails.getUser());
     }
 
     @ApiOperation(value = "follow 요청", notes = "로그인 중인 User와 follow 대상자 매핑")

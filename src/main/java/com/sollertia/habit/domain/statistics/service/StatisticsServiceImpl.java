@@ -1,10 +1,10 @@
 package com.sollertia.habit.domain.statistics.service;
 
-import com.sollertia.habit.domain.completedhabbit.dto.SimpleHabitVo;
+import com.sollertia.habit.domain.completedhabbit.dto.SimpleHabitDto;
 import com.sollertia.habit.domain.completedhabbit.entity.CompletedHabit;
 import com.sollertia.habit.domain.completedhabbit.repository.CompletedHabitRepository;
 import com.sollertia.habit.domain.statistics.dto.GlobalStatisticsResponseDto;
-import com.sollertia.habit.domain.statistics.dto.GlobalStatisticsVo;
+import com.sollertia.habit.domain.statistics.dto.GlobalStatisticsDto;
 import com.sollertia.habit.domain.statistics.dto.StatisticsResponseDto;
 import com.sollertia.habit.domain.statistics.entity.Statistics;
 import com.sollertia.habit.domain.statistics.repository.StatisticsRepository;
@@ -31,7 +31,7 @@ public class StatisticsServiceImpl implements StatisticsService {
         String datenow = date + "-01";
         LocalDate now = LocalDate.parse(datenow, DateTimeFormatter.ISO_DATE);
 
-        List<SimpleHabitVo> simpleHabitVoList = new ArrayList<>();
+        List<SimpleHabitDto> simpleHabitDtoList = new ArrayList<>();
 
         List<CompletedHabit> habitList = completedHabitRepository.findAllByUserAndStartDateBetweenOrderByStartDate(user,
                 now.with(TemporalAdjusters.firstDayOfMonth()),
@@ -40,11 +40,11 @@ public class StatisticsServiceImpl implements StatisticsService {
         int failedCount = (int) habitList.stream().filter(completedHabit -> !completedHabit.getIsSuccess()).count();
 
         for (CompletedHabit completedHabit : habitList) {
-            simpleHabitVoList.add(new SimpleHabitVo(completedHabit));
+            simpleHabitDtoList.add(new SimpleHabitDto(completedHabit));
         }
 
         return StatisticsResponseDto.builder()
-                .habitList(simpleHabitVoList)
+                .habitList(simpleHabitDtoList)
                 .succeededCount(succeededCount)
                 .failedCount(failedCount)
                 .totalCount(habitList.size())
@@ -62,7 +62,7 @@ public class StatisticsServiceImpl implements StatisticsService {
         }
 
         int[] randomNumbers = getRandomNumbers(length);
-        List<GlobalStatisticsVo> statisticsVoList = extractRandomStatistics(statisticsList, randomNumbers);
+        List<GlobalStatisticsDto> statisticsVoList = extractRandomStatistics(statisticsList, randomNumbers);
         return GlobalStatisticsResponseDto.builder()
                 .statistics(statisticsVoList)
                 .statusCode(200)
@@ -77,13 +77,13 @@ public class StatisticsServiceImpl implements StatisticsService {
                 .build();
     }
 
-    private List<GlobalStatisticsVo> extractRandomStatistics(List<Statistics> statisticsList, int[] randomNumbers) {
-        List<GlobalStatisticsVo> globalStatisticsVoList = new ArrayList<>();
+    private List<GlobalStatisticsDto> extractRandomStatistics(List<Statistics> statisticsList, int[] randomNumbers) {
+        List<GlobalStatisticsDto> globalStatisticsDtoList = new ArrayList<>();
         for (int number : randomNumbers) {
             Statistics statistics = statisticsList.get(number);
-            globalStatisticsVoList.add(GlobalStatisticsVo.of(statistics));
+            globalStatisticsDtoList.add(GlobalStatisticsDto.of(statistics));
         }
-        return globalStatisticsVoList;
+        return globalStatisticsDtoList;
     }
 
     private int[] getRandomNumbers(int max) {

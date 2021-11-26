@@ -9,5 +9,5 @@ import java.util.List;
 @Getter
 @SuperBuilder
 public class NoticeResponseDto extends DefaultResponseDto {
-    List<NoticeVo> notices;
+    List<NoticeDto> notices;
 }

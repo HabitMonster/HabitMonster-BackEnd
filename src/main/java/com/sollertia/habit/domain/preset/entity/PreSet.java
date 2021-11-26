@@ -1,7 +1,7 @@
 package com.sollertia.habit.domain.preset.entity;
 
 import com.sollertia.habit.domain.category.enums.Category;
-import com.sollertia.habit.domain.preset.dto.PreSetVo;
+import com.sollertia.habit.domain.preset.dto.PreSetDto;
 import lombok.Getter;
 
 import javax.persistence.*;
@@ -54,14 +54,14 @@ public class PreSet {
         this.practiceDays = practiceDays;
     }
 
-    public PreSet(PreSetVo preSetVo){
-        setCategoryId(preSetVo.getCategoryId());
-        setCategory(Category.getCategory(preSetVo.getCategoryId()));
-        setCount(preSetVo.getCount());
-        setTitle(preSetVo.getTitle());
-        setDescription(preSetVo.getDescription());
-        setPeriod(preSetVo.getPeriod());
-        setPracticeDays(preSetVo.getPracticeDays());
+    public PreSet(PreSetDto preSetDto){
+        setCategoryId(preSetDto.getCategoryId());
+        setCategory(Category.getCategory(preSetDto.getCategoryId()));
+        setCount(preSetDto.getCount());
+        setTitle(preSetDto.getTitle());
+        setDescription(preSetDto.getDescription());
+        setPeriod(preSetDto.getPeriod());
+        setPracticeDays(preSetDto.getPracticeDays());
     }
 
 }

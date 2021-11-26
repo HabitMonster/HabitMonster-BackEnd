@@ -1,6 +1,6 @@
 package com.sollertia.habit.domain.statistics.controller;
 
-import com.sollertia.habit.domain.completedhabbit.dto.SimpleHabitVo;
+import com.sollertia.habit.domain.completedhabbit.dto.SimpleHabitDto;
 import com.sollertia.habit.domain.completedhabbit.entity.CompletedHabit;
 import com.sollertia.habit.domain.statistics.dto.StatisticsResponseDto;
 import com.sollertia.habit.domain.statistics.service.StatisticsServiceImpl;
@@ -58,7 +58,7 @@ class StatisticsContollerTest {
     SecurityContext securityContext;
     HabitDtoImpl habitDto;
     CompletedHabit completedHabit;
-    List<SimpleHabitVo> simpleHabitVoList;
+    List<SimpleHabitDto> simpleHabitDtoList;
 
     @BeforeEach
     private void beforeEach() {
@@ -80,8 +80,8 @@ class StatisticsContollerTest {
         Habit habit = Habit.createHabit(habitTypeDto.getHabitType(), habitDto, testUser);
         completedHabit = CompletedHabit.of(habit);
 
-        simpleHabitVoList = new ArrayList<>();
-        simpleHabitVoList.add(new SimpleHabitVo(completedHabit));
+        simpleHabitDtoList = new ArrayList<>();
+        simpleHabitDtoList.add(new SimpleHabitDto(completedHabit));
 
     }
 
@@ -100,7 +100,7 @@ class StatisticsContollerTest {
                 .succeededCount(10)
                 .failedCount(10)
                 .totalCount(20)
-                .habitList(simpleHabitVoList)
+                .habitList(simpleHabitDtoList)
                 .responseMessage("Statistics Query Completed").statusCode(200).build();
 
         given(statisticsService.getStatistics(testUser, date))

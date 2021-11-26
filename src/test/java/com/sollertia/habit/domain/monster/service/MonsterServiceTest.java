@@ -102,7 +102,10 @@ class MonsterServiceTest {
     void updateMonsterName() {
         //given
         updatedTestUser.updateMonster(monster1);
-        MonsterSelectRequestDto mockRequestDto = new MonsterSelectRequestDto(1L, monster1.getName());
+        MonsterSelectRequestDto mockRequestDto = new MonsterSelectRequestDto();
+        Whitebox.setInternalState(mockRequestDto, "monsterId", 1L);
+        Whitebox.setInternalState(mockRequestDto, "monsterName", monster1.getName());
+
         given(monsterRepository.findByUserId(any()))
                 .willReturn(Optional.ofNullable(monster1));
 
@@ -124,7 +127,9 @@ class MonsterServiceTest {
         updatedTestUser.updateMonster(monster1);
         given(monsterDatabaseRepository.findById(1L))
                 .willReturn(Optional.of(mockMonsterDatabaseList.get(0)));
-        MonsterSelectRequestDto mockRequestDto = new MonsterSelectRequestDto(1L, monster1.getName());
+        MonsterSelectRequestDto mockRequestDto = new MonsterSelectRequestDto();
+        Whitebox.setInternalState(mockRequestDto, "monsterId", 1L);
+        Whitebox.setInternalState(mockRequestDto, "monsterName", monster1.getName());
         given(monsterRepository.save(any(Monster.class)))
                 .willReturn(monster1);
 
@@ -156,7 +161,9 @@ class MonsterServiceTest {
                 .willReturn(Optional.of(mockMonsterDatabaseList.get(1)));
         given(monsterRepository.save(any(Monster.class)))
                 .willReturn(monster2);
-        MonsterSelectRequestDto mockRequestDto = new MonsterSelectRequestDto(1L, monster2.getName());
+        MonsterSelectRequestDto mockRequestDto = new MonsterSelectRequestDto();
+        Whitebox.setInternalState(mockRequestDto, "monsterId", 1L);
+        Whitebox.setInternalState(mockRequestDto, "monsterName", monster2.getName());
 
         //when
         MonsterResponseDto responseDto = monsterService.updateMonster(testUser, mockRequestDto);
@@ -183,7 +190,9 @@ class MonsterServiceTest {
         updatedTestUser.updateMonster(monster1);
         given(monsterDatabaseRepository.findById(1L))
                 .willReturn(Optional.empty());
-        MonsterSelectRequestDto mockRequestDto = new MonsterSelectRequestDto(1L, monster1.getName());
+        MonsterSelectRequestDto mockRequestDto = new MonsterSelectRequestDto();
+        Whitebox.setInternalState(mockRequestDto, "monsterId", 1L);
+        Whitebox.setInternalState(mockRequestDto, "monsterName", monster1.getName());
 
         //when, then
         assertThrows(MonsterNotFoundException.class,

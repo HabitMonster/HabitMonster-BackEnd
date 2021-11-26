@@ -65,8 +65,10 @@ public class KakaoSocialLoginUtil implements SocialLoginUtil {
         HttpEntity<MultiValueMap<String, String>> kakaoOauthRequestEntity =
                 new HttpEntity<>(body, headers);
 
-        ResponseEntity<String> resultEntity = restTemplate.postForEntity(KAKAO_TOKEN_BASE_URL, kakaoOauthRequestEntity, String.class);
-        KakaoOauthResponseDto responseDto = mapper.readValue(resultEntity.getBody(), new TypeReference<KakaoOauthResponseDto>(){});
+        ResponseEntity<String> resultEntity = restTemplate
+                .postForEntity(KAKAO_TOKEN_BASE_URL, kakaoOauthRequestEntity, String.class);
+        KakaoOauthResponseDto responseDto =
+                mapper.readValue(resultEntity.getBody(), new TypeReference<KakaoOauthResponseDto>(){});
 
         return responseDto.getAccess_token();
     }
@@ -86,7 +88,8 @@ public class KakaoSocialLoginUtil implements SocialLoginUtil {
                 String.class
         );
 
-        Map<String,Object> userInfo = mapper.readValue(response.getBody(), new TypeReference<Map<String, Object>>(){});
+        Map<String,Object> userInfo = mapper
+                .readValue(response.getBody(), new TypeReference<Map<String, Object>>(){});
         return Oauth2UserInfoFactory.getOAuth2UserInfo(ProviderType.KAKAO, userInfo);
     }
 }

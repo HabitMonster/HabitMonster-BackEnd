@@ -32,7 +32,7 @@ public class MonsterService {
         List<MonsterType> collect = monsterCollectionList.stream().map(MonsterCollection::getMonsterType).collect(Collectors.toList());
         List<MonsterDatabase> monsterDatabaseList = monsterDatabaseRepository.findAllByLevel(Level.LV1);
         return MonsterListResponseDto.builder()
-                .monsters(MonsterSummaryVo.listFromMonsterDatabasesDisabledIfNotIn(monsterDatabaseList, collect))
+                .monsters(MonsterSummaryDto.listFromMonsterDatabasesDisabledIfNotIn(monsterDatabaseList, collect))
                 .responseMessage("LV1 Monster Query Completed")
                 .statusCode(200)
                 .build();
@@ -52,9 +52,9 @@ public class MonsterService {
             throw new NotReachedMaximumLevelException("New monsters require max level and EXP.");
         }
 
-        MonsterVo monsterVo = MonsterVo.of(newMonster);
+        MonsterDto monsterDto = MonsterDto.of(newMonster);
         return MonsterResponseDto.builder()
-                .monster(monsterVo)
+                .monster(monsterDto)
                 .responseMessage("Selected Monster")
                 .statusCode(200)
                 .build();
@@ -72,10 +72,10 @@ public class MonsterService {
                                             MonsterSelectRequestDto requestDto) {
         Monster monster = getMonsterByUser(user);
         monster = monster.updateName(requestDto.getMonsterName());
-        MonsterVo monsterVo = MonsterVo.of(monster);
+        MonsterDto monsterDto = MonsterDto.of(monster);
 
         return MonsterResponseDto.builder()
-                .monster(monsterVo)
+                .monster(monsterDto)
                 .responseMessage("Change Monster Name")
                 .statusCode(200)
                 .build();
@@ -89,9 +89,9 @@ public class MonsterService {
                 .build();
     }
 
-    public MonsterVo getMonsterVo(User user) {
+    public MonsterDto getMonsterVo(User user) {
         Monster monster = getMonsterByUser(user);
-        return MonsterVo.of(monster);
+        return MonsterDto.of(monster);
     }
 
     @Transactional

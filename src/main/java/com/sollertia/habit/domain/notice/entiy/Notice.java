@@ -1,6 +1,6 @@
 package com.sollertia.habit.domain.notice.entiy;
 
-import com.sollertia.habit.domain.notice.dto.NoticeVo;
+import com.sollertia.habit.domain.notice.dto.NoticeDto;
 import com.sollertia.habit.global.utils.TimeStamped;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -26,9 +26,9 @@ public class Notice extends TimeStamped {
         this.title = title;
     }
 
-    public static Notice create (NoticeVo noticeVo){
+    public static Notice create (NoticeDto noticeDto){
         Notice notice = new Notice();
-        notice.setTitle(noticeVo.getTitle());
+        notice.setTitle(noticeDto.getTitle());
         return notice;
     }
 
