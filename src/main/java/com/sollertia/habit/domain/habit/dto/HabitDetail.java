@@ -35,7 +35,7 @@ public class HabitDetail {
         return habitDetails;
     }
 
-    public static HabitDetail of(HabitWithCounter habit) {
+    public static HabitDetail of(Habit habit) {
         return HabitDetail.builder()
                 .habitId(habit.getId())
                 .title(habit.getTitle())

@@ -8,9 +8,11 @@ import com.sollertia.habit.global.utils.DefaultResponseDto;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 
 @RestController
@@ -21,8 +23,14 @@ public class HabitController {
 
     @ApiOperation(value = "습관 생성", notes = "성공 실패여부 반환")
     @PostMapping("/habits")
-    public HabitDetailResponseDto createHabit(@RequestBody HabitDtoImpl habitDto,
+    public HabitDetailResponseDto createHabit(final @Valid @RequestBody HabitDtoImpl habitDto,
+                                              BindingResult bindingResult,
                                               @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        if (bindingResult.hasErrors()) {
+
+        }
+
 
         HabitTypeDto habitTypeDto = new HabitTypeDto("counter", "specificDay");
 
@@ -42,10 +50,15 @@ public class HabitController {
     @ApiOperation(value = "습관 변경", notes = "title, description, count 변경 가능")
     @PatchMapping("/habits/{habitId}")
     public HabitDetailResponseDto updateHabit(@PathVariable Long habitId,
-                                              @RequestBody HabitUpdateRequestDto habitUpdateRequestDto,
+                                              final @Valid @RequestBody HabitUpdateRequestDto habitUpdateRequestDto,
+                                              BindingResult bindingResult,
                                               @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        return habitService.updateHabit(habitId, habitUpdateRequestDto, userDetails.getUser());
+        if (bindingResult.hasErrors()) {
+
+        }
+        HabitTypeDto habitTypeDto = new HabitTypeDto("counter", "specificDay");
+        return habitService.updateHabit(habitTypeDto, habitId, habitUpdateRequestDto, userDetails.getUser());
     }
 
     @ApiOperation(value = "습관 삭제", notes = "성공 실패여부 반환")
