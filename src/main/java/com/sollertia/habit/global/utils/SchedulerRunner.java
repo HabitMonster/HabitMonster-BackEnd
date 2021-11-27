@@ -6,7 +6,6 @@ import com.sollertia.habit.domain.completedhabbit.entity.CompletedHabit;
 import com.sollertia.habit.domain.completedhabbit.repository.CompletedHabitRepository;
 import com.sollertia.habit.domain.habit.entity.Habit;
 import com.sollertia.habit.domain.habit.repository.HabitRepository;
-import com.sollertia.habit.domain.habit.repository.HabitWithCounterRepository;
 import com.sollertia.habit.domain.history.entity.History;
 import com.sollertia.habit.domain.history.repository.HistoryRepository;
 import com.sollertia.habit.domain.monster.entity.Monster;
@@ -30,7 +29,6 @@ import com.sollertia.habit.global.globaldto.SearchDateDto;
 import com.sollertia.habit.global.globalenum.DurationEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,7 +45,6 @@ import java.util.stream.Collectors;
 public class SchedulerRunner {
 
     private final PreSetRepository preSetRepository;
-    private final HabitWithCounterRepository habitWithCounterRepository;
     private final CompletedHabitRepository completedHabitRepository;
     private final PreSetServiceImpl preSetService;
     private final HabitRepository habitRepository;
@@ -56,6 +53,7 @@ public class SchedulerRunner {
     private final StatisticsRepository statisticsRepository;
     private final UserRepository userRepository;
     private final RecommendationRepository recommendationRepository;
+    private final RedisUtil redisUtil;
 
     @Scheduled(cron = "0 0 0 * * *")
     @Transactional
@@ -63,7 +61,6 @@ public class SchedulerRunner {
         LocalDate date = LocalDate.now();
         minusExpOnLapsedHabit(date);
         expireHabit(date);
-
     }
 
     @Scheduled(cron = "0 0 1 ? * SUN")
@@ -73,10 +70,16 @@ public class SchedulerRunner {
         makeRecommendations();
     }
 
-    //    @Scheduled(cron = "0 0 1 ? * SUN")
-//    public void runWhenEveryMonth() {
-//        makePreset();
-//    }
+    @Scheduled(cron = "0 0 0 1 * *")
+    @Transactional
+    public void runWhenEveryMonth() {
+        statisticsRepository.deleteAllInBatch();
+        statisticsMonthMaxMinusByCategory(DurationEnum.MONTHLY);
+        statisticsAvgAchievementPercentageByCategory(DurationEnum.MONTHLY);
+        statisticsMaxSelectedByCategory(DurationEnum.MONTHLY);
+        maintainNumberOfHabitByUser();
+    }
+
     private void minusExpOnLapsedHabit(LocalDate date) {
         String day = String.valueOf(date.minusDays(1).getDayOfWeek().getValue());
         List<Habit> habitsWithDaysAndAccomplish = habitRepository.findHabitsWithDaysAndAccomplish(day, false);
@@ -122,26 +125,46 @@ public class SchedulerRunner {
 
         preSetService.deletePreSet();
 
-        Long userId = completedHabitRepository.maxIsSuccessTrueUser(PageRequest.of(0, 1));
-        if (userId == null) {
-            userId = 1L;
+        for (int i = 1; i < 8; i++) {
+            String key = "PreSet::" + i;
+            redisUtil.deleteData(key);
         }
 
-        List<PreSetVo> habits = habitWithCounterRepository.findByUserId(userId).stream()
-                .map(PreSetVo::new).collect(Collectors.toCollection(ArrayList::new));
+        List<CompletedHabit> completedHabitList = new ArrayList<>();
+        Category[] categories = Category.values();
+        for (Category c : categories) {
+            String achievementPercentage;
+            if(redisUtil.hasKey(c.toString())){
+                achievementPercentage = redisUtil.getData(c.toString());
+            }else{
+                achievementPercentage = "70";
+            }
+            Long achievementPercentageLong = Long.parseLong(achievementPercentage);
+            List<CompletedHabit> list = completedHabitRepository.habitMoreThanAvgAchievementPercentageByCategory(c, achievementPercentageLong);
 
-        if (habits.size() < 15) {
-            habits.clear();
-            habits = habitWithCounterRepository.findByUserId(1L).stream()
+            if(list.size()==0){continue;}
+
+            int size = Math.min(list.size(), 3);
+            HashSet<Integer> randomNum = new HashSet<>();
+            while(randomNum.size() < size){
+                randomNum.add((int) (Math.random() * list.size()));
+            }
+            for (Integer integer : randomNum) {
+                completedHabitList.add(list.get(integer));
+            }
+        }
+
+        if(completedHabitList.size()!=0) {
+            List<PreSetVo> habits = completedHabitList.stream()
                     .map(PreSetVo::new).collect(Collectors.toCollection(ArrayList::new));
-        }
 
-        List<PreSet> preSets = new ArrayList<>();
-        for (PreSetVo h : habits) {
-            preSets.add(new PreSet(h));
-        }
+            List<PreSet> preSets = new ArrayList<>();
+            for (PreSetVo h : habits) {
+                preSets.add(new PreSet(h));
+            }
 
-        preSetRepository.saveAll(preSets);
+            preSetRepository.saveAll(preSets);
+        }
     }
 
     public void saveMonsterTypeStatistics(DurationEnum durationEnum) {
@@ -227,6 +250,11 @@ public class SchedulerRunner {
 
     public void statisticsAvgAchievementPercentageByCategory(DurationEnum durationEnum) {
 
+        Category[] categories = Category.values();
+        for (Category c : categories) {
+            redisUtil.deleteData(c.toString());
+        }
+
         SearchDateDto duration = getSearchDateDto(durationEnum);
         LocalDate lastMonth = LocalDate.now().minusMonths(1L);
 
@@ -235,6 +263,7 @@ public class SchedulerRunner {
         List<Statistics> statisticsList = new ArrayList<>();
         for (StatisticsSuccessCategoryAvgVo vo : list) {
             int avg = (int) Math.round(vo.getAvgPer());
+            redisUtil.setDataExpire(vo.getCategory().toString(), Integer.toString(avg));
             String result = lastMonth.getMonth().getValue() + "월 한달동안 " + vo.getCategory().toString() +
                     "의 평균 성공률은 " + avg + "%입니다.";
             statisticsList.add(new Statistics(result, SessionType.MONTHLY));
@@ -285,7 +314,7 @@ public class SchedulerRunner {
         statisticsRepository.save(statistics);
     }
 
-    public void maintainNumberOfHabitByUser(){
+    public void maintainNumberOfHabitByUser() {
         int habits = (int) habitRepository.count();
         List<Long> users = habitRepository.statisticsGetNumberOfUser();
         int totalUser = users.size();
@@ -295,7 +324,6 @@ public class SchedulerRunner {
         Statistics statistics = new Statistics(result, SessionType.MONTHLY);
         statisticsRepository.save(statistics);
     }
-
 
 
 }

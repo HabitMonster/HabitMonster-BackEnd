@@ -2,6 +2,8 @@ package com.sollertia.habit.domain.completedhabbit.repository;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.sollertia.habit.domain.category.enums.Category;
+import com.sollertia.habit.domain.completedhabbit.entity.CompletedHabit;
 import com.sollertia.habit.domain.statistics.dto.StatisticsCategoryVo;
 import com.sollertia.habit.domain.statistics.dto.StatisticsSuccessCategoryAvgVo;
 import com.sollertia.habit.global.OrderByNull;
@@ -46,6 +48,14 @@ public class CompletedHabitRepositoryImpl implements  CompletedHabitRepositoryCu
                 .where((completedHabit.startDate.between(start, end)))
                 .groupBy(completedHabit.category)
                 .orderBy(OrderByNull.DEFAULT)
+                .fetch();
+    }
+
+    @Override
+    public List<CompletedHabit> habitMoreThanAvgAchievementPercentageByCategory(Category category, Long achievementPercentage) {
+        return jpaQueryFactory
+                .selectFrom(completedHabit)
+                .where(completedHabit.category.eq(category).and(completedHabit.achievementPercentage.goe(achievementPercentage)))
                 .fetch();
     }
 

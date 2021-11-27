@@ -1,6 +1,7 @@
 package com.sollertia.habit.domain.preset.dto;
 
 import com.sollertia.habit.domain.category.enums.Category;
+import com.sollertia.habit.domain.completedhabbit.entity.CompletedHabit;
 import com.sollertia.habit.domain.habit.entity.Habit;
 import com.sollertia.habit.domain.habit.entity.HabitWithCounter;
 import com.sollertia.habit.domain.preset.entity.PreSet;
@@ -37,14 +38,14 @@ public class PreSetVo {
         this.practiceDays = preSet.getPracticeDays();
     }
 
-    public PreSetVo(Habit habit) {
-        this.categoryId = habit.getCategory().getCategoryId();
-        this.title = habit.getTitle();
-        this.description = habit.getDescription();
-        this.count = ((HabitWithCounter) habit).getGoalCountInSession();
-        this.category = habit.getCategory();
-        this.practiceDays = habit.getPracticeDays();
-        this.period = (int) Duration.between(habit.getDurationStart().atStartOfDay(),habit.getDurationEnd().atStartOfDay()).toDays();
-        this.userId = habit.getUser().getId();
+    public PreSetVo(CompletedHabit completedHabit) {
+        this.categoryId = completedHabit.getCategory().getCategoryId();
+        this.title = completedHabit.getTitle();
+        this.description = completedHabit.getDescription();
+        this.count = Math.toIntExact(completedHabit.getGoalCount());
+        this.category = completedHabit.getCategory();
+        this.practiceDays = completedHabit.getPracticeDays();
+        this.period = (int) Duration.between(completedHabit.getStartDate().atStartOfDay(),completedHabit.getEndupDate().atStartOfDay()).toDays();
+        this.userId = completedHabit.getUser().getId();
     }
 }
