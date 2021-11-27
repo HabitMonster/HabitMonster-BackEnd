@@ -124,6 +124,12 @@ class HabitServiceImplTest {
         assertThat(result.getHabit().getDescription()).isEqualTo(habit1.getDescription());
         assertThat(result.getHabit().getDurationEnd()).isEqualTo(habit1.getDurationEnd().toString());
         assertThat(result.getHabit().getDurationStart()).isEqualTo(habit1.getDurationStart().toString());
+
+
+
+
+
+
         assertThat(result.getHabit().getAchievePercentage()).isEqualTo(habit1.getAchievePercentage());
         assertThat(result.getHabit().getPracticeDays()).isEqualTo(habit1.getPracticeDays());
         assertThat(result.getHabit().getCurrent()).isEqualTo(habit1.getCurrent());
