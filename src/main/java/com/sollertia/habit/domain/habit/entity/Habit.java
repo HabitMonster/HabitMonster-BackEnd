@@ -98,6 +98,7 @@ public abstract class Habit extends TimeStamped {
     }
 
     public abstract int getCurrent();
+    public abstract int getGoalCount();
 
     public void setWholeDays() {
 

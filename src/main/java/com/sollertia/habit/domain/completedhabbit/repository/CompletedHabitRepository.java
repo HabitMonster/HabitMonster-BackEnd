@@ -14,7 +14,4 @@ public interface CompletedHabitRepository extends JpaRepository<CompletedHabit, 
     List<CompletedHabit> findAllByUserAndStartDateBetweenOrderByStartDate(User user, LocalDate start, LocalDate end);
 
     Integer countByUser(User user);
-
-    @Query(value = "select c.user.id, count(c.user) as cnt from CompletedHabit c group by c.user, c.isSuccess having c.isSuccess = true order by cnt desc")
-    Long maxIsSuccessTrueUser(PageRequest pageRequest);
 }
