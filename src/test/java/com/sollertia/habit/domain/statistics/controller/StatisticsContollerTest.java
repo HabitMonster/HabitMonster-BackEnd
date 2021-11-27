@@ -1,6 +1,6 @@
 package com.sollertia.habit.domain.statistics.controller;
 
-import com.sollertia.habit.domain.completedhabbit.dto.SimpleHabitVo;
+import com.sollertia.habit.domain.completedhabbit.dto.SimpleHabitDto;
 import com.sollertia.habit.domain.completedhabbit.entity.CompletedHabit;
 import com.sollertia.habit.domain.statistics.dto.StatisticsResponseDto;
 import com.sollertia.habit.domain.statistics.service.StatisticsServiceImpl;
@@ -58,7 +58,7 @@ class StatisticsContollerTest {
     SecurityContext securityContext;
     HabitDtoImpl habitDto;
     CompletedHabit completedHabit;
-    List<SimpleHabitVo> simpleHabitVoList;
+    List<SimpleHabitDto> simpleHabitDtoList;
 
     @BeforeEach
     private void beforeEach() {
@@ -70,18 +70,15 @@ class StatisticsContollerTest {
         testUser = User.create(oauth2UserInfo);
         mockUserDetails = new UserDetailsImpl(testUser);
 
-        Calendar startDate = Calendar.getInstance();
-        DateFormat form = new SimpleDateFormat("yyyy-MM-dd");
-
         habitDto = HabitDtoImpl.builder()
-                .durationStart(form.format(startDate.getTime())).durationEnd(form.format(startDate.getTime()))
+                .durationStart("2021-11-01").durationEnd("2021-11-30")
                 .count(3).title("title").description("description").practiceDays("1234567").categoryId(1L).build();
         HabitTypeDto habitTypeDto = new HabitTypeDto("counter", "specificDay");
         Habit habit = Habit.createHabit(habitTypeDto.getHabitType(), habitDto, testUser);
         completedHabit = CompletedHabit.of(habit);
 
-        simpleHabitVoList = new ArrayList<>();
-        simpleHabitVoList.add(new SimpleHabitVo(completedHabit));
+        simpleHabitDtoList = new ArrayList<>();
+        simpleHabitDtoList.add(new SimpleHabitDto(completedHabit));
 
     }
 
@@ -100,7 +97,7 @@ class StatisticsContollerTest {
                 .succeededCount(10)
                 .failedCount(10)
                 .totalCount(20)
-                .habitList(simpleHabitVoList)
+                .habitList(simpleHabitDtoList)
                 .responseMessage("Statistics Query Completed").statusCode(200).build();
 
         given(statisticsService.getStatistics(testUser, date))

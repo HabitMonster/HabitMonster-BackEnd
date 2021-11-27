@@ -9,6 +9,6 @@ import java.util.List;
 @Getter
 @SuperBuilder
 public class FollowResponseDto extends DefaultResponseDto {
-    List<FollowVo> followers;
-    List<FollowVo> followings;
+    List<FollowDto> followers;
+    List<FollowDto> followings;
 }

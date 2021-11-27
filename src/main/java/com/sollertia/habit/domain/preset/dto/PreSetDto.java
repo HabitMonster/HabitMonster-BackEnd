@@ -12,10 +12,10 @@ import lombok.NoArgsConstructor;
 import java.time.Duration;
 
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
-public class PreSetVo {
+@NoArgsConstructor
+@AllArgsConstructor
+public class PreSetDto {
     private Long presetId;
     private Long categoryId;
     private String title;
@@ -26,7 +26,7 @@ public class PreSetVo {
     private Long userId;
     private String practiceDays;
 
-    public PreSetVo(PreSet preSet) {
+    public PreSetDto(PreSet preSet) {
         this.presetId = preSet.getId();
         this.categoryId = preSet.getCategoryId();
         this.title = preSet.getTitle();
@@ -48,3 +48,4 @@ public class PreSetVo {
         this.userId = habit.getUser().getId();
     }
 }
+

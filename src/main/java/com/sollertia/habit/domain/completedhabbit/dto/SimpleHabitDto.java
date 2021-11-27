@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class SimpleHabitVo {
+public class SimpleHabitDto {
     private String title;
     private Long achievement;
     private Long accomplishCount;
@@ -16,7 +16,7 @@ public class SimpleHabitVo {
     private String startDate;
     private String endUPDate;
 
-    public SimpleHabitVo(CompletedHabit completedHabit) {
+    public SimpleHabitDto(CompletedHabit completedHabit) {
         this.title = completedHabit.getTitle();
         this.achievement = completedHabit.getAchievementPercentage();
         this.accomplishCount = completedHabit.getAccomplishCounter();

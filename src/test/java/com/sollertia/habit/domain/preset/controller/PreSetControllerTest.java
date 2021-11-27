@@ -3,9 +3,8 @@ package com.sollertia.habit.domain.preset.controller;
 import com.sollertia.habit.domain.category.enums.Category;
 import com.sollertia.habit.domain.habit.dto.HabitDetail;
 import com.sollertia.habit.domain.habit.dto.HabitDetailResponseDto;
-import com.sollertia.habit.domain.habit.dto.HabitTypeDto;
 import com.sollertia.habit.domain.habit.service.HabitServiceImpl;
-import com.sollertia.habit.domain.preset.dto.PreSetVo;
+import com.sollertia.habit.domain.preset.dto.PreSetDto;
 import com.sollertia.habit.domain.preset.service.PreSetServiceImpl;
 import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.domain.user.oauth2.userinfo.GoogleOauth2UserInfo;
@@ -88,8 +87,8 @@ class PreSetControllerTest {
     void categoryPreSet() throws Exception {
         //given
         authenticated();
-        List<PreSetVo> list = new ArrayList<>();
-        list.add(PreSetVo.builder().presetId(1L).categoryId(1L).title("title").description("description").
+        List<PreSetDto> list = new ArrayList<>();
+        list.add(PreSetDto.builder().presetId(1L).categoryId(1L).title("title").description("description").
                 period(30).count(3).category(Category.Health).practiceDays("12345").build());
 
         given(preSetService.categoryPreSetList(1L)).willReturn(list);
@@ -117,23 +116,23 @@ class PreSetControllerTest {
     void selectPreSet() throws Exception {
         //given
         authenticated();
-        PreSetVo preSetVo = PreSetVo.builder().presetId(1L).categoryId(1L).title("title").description("description").
+        PreSetDto preSetDto = PreSetDto.builder().presetId(1L).categoryId(1L).title("title").description("description").
                 period(30).count(3).category(Category.Health).practiceDays("12345").build();
         HabitDetail habitDetail = HabitDetail.builder()
                 .habitId(1L)
-                .title(preSetVo.getTitle())
-                .description(preSetVo.getDescription())
+                .title(preSetDto.getTitle())
+                .description(preSetDto.getDescription())
                 .durationStart("2021-11-01")
                 .durationEnd("2021-11-30")
-                .count(preSetVo.getCount())
-                .category(preSetVo.getCategory())
-                .practiceDays(preSetVo.getPracticeDays())
+                .count(preSetDto.getCount())
+                .category(preSetDto.getCategory())
+                .practiceDays(preSetDto.getPracticeDays())
                 .current(0)
                 .achievePercentage(0L)
                 .build();
         HabitDetailResponseDto responseDto = HabitDetailResponseDto.builder()
                 .habit(habitDetail).statusCode(200).responseMessage("Habit registered Completed").build();
-        given(preSetService.getPreSet(1L)).willReturn(preSetVo);
+        given(preSetService.getPreSet(1L)).willReturn(preSetDto);
         given(habitService.createHabit(any(), any(), eq(testUser))).willReturn(responseDto);
 
         //when
@@ -141,11 +140,11 @@ class PreSetControllerTest {
                 .andDo(print())
                 //then
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.habit.category").value(preSetVo.getCategory().toString()))
-                .andExpect(jsonPath("$.habit.title").value(preSetVo.getTitle()))
-                .andExpect(jsonPath("$.habit.description").value(preSetVo.getDescription()))
-                .andExpect(jsonPath("$.habit.count").value(preSetVo.getCount()))
-                .andExpect(jsonPath("$.habit.practiceDays").value(preSetVo.getPracticeDays()))
+                .andExpect(jsonPath("$.habit.category").value(preSetDto.getCategory().toString()))
+                .andExpect(jsonPath("$.habit.title").value(preSetDto.getTitle()))
+                .andExpect(jsonPath("$.habit.description").value(preSetDto.getDescription()))
+                .andExpect(jsonPath("$.habit.count").value(preSetDto.getCount()))
+                .andExpect(jsonPath("$.habit.practiceDays").value(preSetDto.getPracticeDays()))
                 .andExpect(jsonPath("$.responseMessage").value("Habit registered Completed"))
                 .andExpect(jsonPath("$.statusCode").value(200));
 
