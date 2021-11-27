@@ -74,15 +74,14 @@ public class HabitServiceImpl implements HabitService {
     @Override
     public HabitCheckResponseDto checkHabit(HabitTypeDto habitTypeDto, Long habitId, LocalDate today) {
 
-        HabitWithCounter habitWithCounter = habitWithCounterRepository.findById(habitId).orElseThrow(
-                () -> new HabitIdNotFoundException("Not Found Habit"));
-        Boolean isAchieve = habitWithCounter.check(1L);
-        HabitWithCounter checkedHabit = habitWithCounterRepository.save(habitWithCounter);
-        HabitSummaryVo habitSummaryVo = HabitSummaryVo.of(checkedHabit);
+        Habit foundHabit = getHabitFromRepository(habitTypeDto, habitId);
+        Boolean isAchieve = foundHabit.check(1L);
+        Habit checkedHabit = (Habit) habitRepository.save(foundHabit);
+        HabitSummaryVo habitSummaryVo = HabitSummaryVo.of(foundHabit);
 
         if (isAchieve) {
-            plusExpPointAndMakeHistory(habitWithCounter);
-            deleteHabitIfCompleteToday(habitWithCounter, today);
+            plusExpPointAndMakeHistory(foundHabit);
+            deleteHabitIfCompleteToday(foundHabit, today);
         }
 
         return HabitCheckResponseDto.builder()
@@ -97,14 +96,13 @@ public class HabitServiceImpl implements HabitService {
     @Transactional
     public DefaultResponseDto deleteHabit(HabitTypeDto habitTypeDto, Long habitId, User user) {
 
-        HabitWithCounter habitWithCounter = habitWithCounterRepository.findById(habitId).orElseThrow(
-                () -> new HabitIdNotFoundException("Not Found habit"));
+        Habit foundHabit = getHabitFromRepository(habitTypeDto, habitId);
 
-        isOwner(user, habitWithCounter);
+        isOwner(user, foundHabit);
 
-        user.getHabit().remove(habitWithCounter);
-        monsterService.minusExpWithCount(user, habitWithCounter.getAccomplishCounter());
-        habitRepository.delete(habitWithCounter);
+        user.getHabit().remove(foundHabit);
+        monsterService.minusExpWithCount(user, foundHabit.getAccomplishCounter());
+        habitRepository.delete(foundHabit);
 
 
         return DefaultResponseDto.builder()
@@ -202,17 +200,17 @@ public class HabitServiceImpl implements HabitService {
         return habitDetail;
     }
 
-    private void plusExpPointAndMakeHistory(HabitWithCounter habitWithCounter) {
-        monsterService.plusExpPoint(habitWithCounter.getUser());
-        History history = History.makeHistory(habitWithCounter);
+    private void plusExpPointAndMakeHistory(Habit habit) {
+        monsterService.plusExpPoint(habit.getUser());
+        History history = History.makeHistory(habit);
         historyRepository.save(history);
     }
 
-    private void deleteHabitIfCompleteToday(HabitWithCounter habitWithCounter, LocalDate today) {
-        if (habitWithCounter.getDurationEnd().equals(today)) {
-            CompletedHabit completedHabit = CompletedHabit.of(habitWithCounter);
+    private void deleteHabitIfCompleteToday(Habit habit, LocalDate today) {
+        if (habit.getDurationEnd().equals(today)) {
+            CompletedHabit completedHabit = CompletedHabit.of(habit);
             completedHabitRepository.save(completedHabit);
-            habitWithCounterRepository.delete(habitWithCounter);
+            habitRepository.delete(habit);
         }
     }
 }
