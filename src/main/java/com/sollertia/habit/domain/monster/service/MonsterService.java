@@ -22,8 +22,8 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class MonsterService {
-
     private final MonsterRepository monsterRepository;
+
     private final MonsterDatabaseRepository monsterDatabaseRepository;
     private final MonsterCollectionService monsterCollectionService;
 
