@@ -11,5 +11,5 @@ public interface PreSetRepository extends JpaRepository<PreSet,Long> {
     List<PreSet> findAllByCategoryId(Long categoryID);
     @Modifying(clearAutomatically = true)
     @Query(value = "DELETE FROM PreSet where userId is not null")
-    void deletePresetBySchduler();
+    void deletePresetByScheduler();
 }

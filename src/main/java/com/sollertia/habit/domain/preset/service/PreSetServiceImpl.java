@@ -14,28 +14,28 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
-public class PreSetServiceImpl implements PreSetService{
+public class PreSetServiceImpl implements PreSetService {
 
     private final PreSetRepository preSetRepository;
 
     @Override
-    public  List<PreSetVo> categoryPreSetList(Long categoryId) {
-            return preSetRepository.findAllByCategoryId(categoryId).stream().map(PreSetVo::new)
+    public List<PreSetVo> categoryPreSetList(Long categoryId) {
+        return preSetRepository.findAllByCategoryId(categoryId).stream().map(PreSetVo::new)
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
     @Override
     public PreSetVo getPreSet(Long preSetId) {
-        return preSetRepository.findById(preSetId).map(PreSetVo::new).orElseThrow(()->new PreSetNotFoundException("Not Found PreSet"));
+        return preSetRepository.findById(preSetId).map(PreSetVo::new).orElseThrow(() -> new PreSetNotFoundException("Not Found PreSet"));
     }
 
     @Transactional
     @Override
     public void deletePreSet() {
         try {
-            preSetRepository.deletePresetBySchduler();
-        }catch (Exception e){
-            throw new IllegalArgumentException("삭제할 PreSet 없습니다");
+            preSetRepository.deletePresetByScheduler();
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Not Found PreSet");
         }
     }
 }
