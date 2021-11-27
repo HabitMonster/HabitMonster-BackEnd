@@ -127,6 +127,7 @@ public class  FollowServiceImpl implements FollowService {
         return followRepository.findByFollowerIdAndFollowingId(user.getId(), checkUser.getId()) != null;
     }
 
+    @Override
     public FollowCount getCountByUser(User targetUser) {
         long followersCount = followRepository.countByFollowing(targetUser);
         long followingsCount = followRepository.countByFollower(targetUser);
