@@ -82,14 +82,52 @@ class MonsterCollectionServiceTest {
 
         //then
         assertThat(monsterCollection.getMonsterName()).isEqualTo(monster1.getName());
+        assertThat(monsterCollection.getMaxLevel()).isEqualTo(monster1.getLevel());
+        assertThat(monsterCollection.getMonsterType()).isEqualTo(monster1.getMonsterDatabase().getMonsterType());
+        assertThat(monsterCollection.getCreatedAt()).isEqualTo(monster1.getCreatedAt().toLocalDate().toString());
 
         verify(monsterCollectionRepository).save(any(MonsterCollection.class));
         verify(monsterCollectionDatabaseRepository).save(any(MonsterCollectionDatabase.class));
     }
 
     @Test
-    void getMonsterCollection() {
+    void addEvolutedMonster() {
         //given
+        monster1.levelUp();
+        given(monsterCollectionRepository
+                .findByUserAndMonsterType(testUser, monster1.getMonsterDatabase().getMonsterType()))
+                .willReturn(mockMonsterCollectionList.get(0));
+
+        //when
+        MonsterCollection monsterCollection = monsterCollectionService.addEvolutedMonster(testUser);
+
+        //then
+        assertThat(monsterCollection.getMaxLevel()).isEqualTo(monster1.getLevel());
+        assertThat(monsterCollection.getMonsterName()).isEqualTo(monster1.getName());
+        assertThat(monsterCollection.getCreatedAt()).isEqualTo(monster1.getCreatedAt().toLocalDate().toString());
+        assertThat(monsterCollection.getMonsterType()).isEqualTo(monster1.getMonsterDatabase().getMonsterType());
+    }
+
+    @Test
+    void getMonsterCollectionResponseDto() {
+        //given
+        given(monsterCollectionRepository.searchByUser(testUser))
+                .willReturn(mockMonsterCollectionList);
+
+        //when
+        MonsterCollectionResponseDto responseDto = monsterCollectionService.getMonsterCollectionResponseDto(testUser);
+
+        //then
+        assertThat(responseDto.getStatusCode()).isEqualTo(200);
+        assertThat(responseDto.getResponseMessage()).isEqualTo("Monster Collection Query Completed");
+
+        verify(monsterCollectionRepository).searchByUser(testUser);
+    }
+
+    @Test
+    void getMonsterCollectionResponseDtoOnlyOne() {
+        //given
+        mockMonsterCollectionList.remove(1);
         given(monsterCollectionRepository.searchByUser(testUser))
                 .willReturn(mockMonsterCollectionList);
 

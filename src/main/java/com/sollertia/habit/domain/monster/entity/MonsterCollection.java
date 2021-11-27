@@ -38,7 +38,7 @@ public class MonsterCollection {
 
     private String monsterName;
 
-    private String createAt;
+    private String createdAt;
 
     private void setUser(User user) {
         this.user = user;
@@ -48,7 +48,7 @@ public class MonsterCollection {
         this.maxLevel = maxLevel;
     }
 
-    private void setCreateAt(String createAt){this.createAt=createAt;}
+    private void setCreatedAt(String createdAt){this.createdAt = createdAt;}
 
     public void addMonsterCollectionDatabase(MonsterCollectionDatabase monsterCollectionDatabase) {
         this.monsterCollectionDatabaseList.add(monsterCollectionDatabase);
@@ -72,7 +72,7 @@ public class MonsterCollection {
         monsterCollection.setMaxLevel(monster.getLevel());
         monsterCollection.setMonsterType(monster.getMonsterDatabase().getMonsterType());
         monsterCollection.setMonsterName(monster.getName());
-        monsterCollection.setCreateAt(monster.getCreatedAt().toLocalDate().toString());
+        monsterCollection.setCreatedAt(monster.getCreatedAt().toLocalDate().toString());
         return monsterCollection;
     }
 
