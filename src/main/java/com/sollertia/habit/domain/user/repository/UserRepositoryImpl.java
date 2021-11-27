@@ -48,4 +48,36 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
                 .on(follow.follower.eq(login)
                         .and(follow.following.eq(user))).fetchOne();
     }
+
+
+
+    @Override
+    public List<User> searchTop10ByCategory(Category category) {
+        return queryFactory
+                .selectFrom(user)
+                .join(completedHabit)
+                .on(completedHabit.user.eq(user))
+                .where(categoryEq(category), user.disabled.isFalse())
+                .groupBy(user)
+                .orderBy(completedHabit.count().desc())
+                .limit(10)
+                .fetch();
+    }
+
+    private BooleanExpression categoryEq(Category category) {
+        return category == null ? null : completedHabit.category.eq(category);
+    }
+
+    @Override
+    public List<User> searchTop10ByFollow() {
+        return queryFactory
+                .selectFrom(user)
+                .join(follow)
+                .on(follow.follower.eq(user))
+                .where(user.disabled.isFalse())
+                .groupBy(user)
+                .orderBy(follow.count().desc())
+                .limit(10)
+                .fetch();
+    }
 }
