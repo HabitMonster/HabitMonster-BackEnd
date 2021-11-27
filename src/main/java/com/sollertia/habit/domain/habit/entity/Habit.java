@@ -6,6 +6,7 @@ import com.sollertia.habit.domain.habit.dto.HabitDtoImpl;
 import com.sollertia.habit.domain.habit.dto.HabitUpdateRequestDto;
 import com.sollertia.habit.domain.habit.enums.HabitType;
 import com.sollertia.habit.domain.user.entity.User;
+import com.sollertia.habit.global.exception.habit.BadDataAboutHabitException;
 import com.sollertia.habit.global.utils.TimeStamped;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -89,7 +90,7 @@ public abstract class Habit extends TimeStamped {
     }
 
     protected void setAccomplishInSession(Boolean accomplishInSession) {
-        isAccomplishInSession = accomplishInSession;
+        this.isAccomplishInSession = accomplishInSession;
     }
 
     public void setWholeDays() {
@@ -97,6 +98,10 @@ public abstract class Habit extends TimeStamped {
         int wholeCount = 0;
         Long until = this.durationStart.until(durationEnd, ChronoUnit.DAYS);
         int wholeDays = until.intValue();
+
+        if (wholeDays < 7) {
+            throw new BadDataAboutHabitException("Bad Habit Data About Date");
+        }
 
         int startDay = this.durationStart.getDayOfWeek().getValue();
 
@@ -136,9 +141,6 @@ public abstract class Habit extends TimeStamped {
     }
 
     public Long getAchievePercentage() {
-        if (wholeDays == 0) {
-            return 0l;
-        }
         double percentage = ((double)this.accomplishCounter / (double)this.wholeDays) * 100;
         return Math.round(percentage);
     }
