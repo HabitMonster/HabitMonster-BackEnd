@@ -92,8 +92,6 @@ public abstract class Habit extends TimeStamped {
         isAccomplishInSession = accomplishInSession;
     }
 
-    public abstract int getCurrent();
-
     public void setWholeDays() {
 
         int wholeCount = 0;
@@ -148,13 +146,13 @@ public abstract class Habit extends TimeStamped {
     public int getTotalCount() {
         return Math.toIntExact(this.getGoalInSession() * this.getWholeDays());
     }
+
     protected void checkAccomplishCounter() {
         this.accomplishCounter += 1;
     }
     protected void cancelAccomplishCounter() {
         this.accomplishCounter -= 1;
     }
-
     protected void setUser(User user) {
         this.user = user;
         user.getHabit().add(this);
@@ -176,12 +174,6 @@ public abstract class Habit extends TimeStamped {
         return null;
     }
 
-    public abstract void updateHabit(HabitUpdateRequestDto habitUpdateRequestDto);
-
-    public abstract Boolean check(Long value);
-
-    public abstract int getGoalInSession();
-
     protected void updateTitle(String title) {
         this.title = title;
     }
@@ -189,6 +181,14 @@ public abstract class Habit extends TimeStamped {
     protected void updateDescription(String description) {
         this.description = description;
     }
+
+    public abstract void updateHabit(HabitUpdateRequestDto habitUpdateRequestDto);
+
+    public abstract Boolean check(Long value);
+
+    public abstract int getGoalInSession();
+
+    public abstract int getCurrent();
 
 
 
