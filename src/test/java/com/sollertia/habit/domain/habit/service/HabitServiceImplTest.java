@@ -17,6 +17,7 @@ import com.sollertia.habit.domain.monster.service.MonsterService;
 import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.domain.user.oauth2.userinfo.GoogleOauth2UserInfo;
 import com.sollertia.habit.domain.user.oauth2.userinfo.Oauth2UserInfo;
+import com.sollertia.habit.global.utils.DefaultResponseDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -219,6 +220,20 @@ class HabitServiceImplTest {
         verify(historyRepository, times(2)).save(any());
         verify(completedHabitRepository, times(1)).save(any());
         verify(habitWithCounterRepository, times(1)).delete(habitDueToday);
+    }
+
+
+    @Test
+    public void deleteHabitTest() throws Exception {
+        //given
+        given(habitWithCounterRepository.findById(habit1.getId())).willReturn(Optional.ofNullable(habit1));
+        //when
+        DefaultResponseDto defaultResponseDto = habitService.deleteHabit(habitTypeDto1, habit1.getId(), testUser);
+        //then
+        assertThat(defaultResponseDto.getResponseMessage()).isEqualTo("Habit Delete Completed");
+        assertThat(defaultResponseDto.getStatusCode()).isEqualTo(200);
+        verify(monsterService, times(1)).minusExpWithCount(testUser, any());
+        verify(habitRepository, times(1)).delete(habit1);
     }
 
 
