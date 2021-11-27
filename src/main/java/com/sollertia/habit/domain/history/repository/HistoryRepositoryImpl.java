@@ -40,7 +40,8 @@ public class HistoryRepositoryImpl implements HistoryRepositoryCustom{
     public Map<String, Integer> getMostFaildedDay(SearchDateDto searchDateDto) {
         List<Tuple> result = jpaQueryFactory
                 .select(history.dayOfWeek, history.id.count())
-                .where(history.createdAt.between(searchDateDto.getSearchStartDate(), searchDateDto.getSearchEndDate()))
+                .where(history.createdAt.between(searchDateDto.getSearchStartDate(), searchDateDto.getSearchEndDate()),
+                        history.isSuccessToday.eq(false))
                 .groupBy(history.dayOfWeek)
                 .fetch();
         return resultToHashMap(result);

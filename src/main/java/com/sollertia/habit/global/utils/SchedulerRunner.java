@@ -163,6 +163,8 @@ public class SchedulerRunner {
                 .min((Map.Entry<String, Integer> e1, Map.Entry<String, Integer> e2)
                         -> e1.getValue().compareTo(e2.getValue()));
 
+        String
+
         String contentsMax = "지난 "
                 + "가장 많이 선택된 monster는 "
                 + max.get().getKey() + "이며"

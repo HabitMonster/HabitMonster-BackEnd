@@ -16,20 +16,27 @@ public class Statistics {
 
     private String contents;
 
+    private String value;
+
     @Enumerated(EnumType.STRING)
     private SessionType sessionType;
 
-    public void setContents(String contents) {
+    private void setContents(String contents) {
         this.contents = contents;
     }
 
-    public void setSessionType(SessionType sessionType) {
+    private void setSessionType(SessionType sessionType) {
         this.sessionType = sessionType;
     }
 
-    public Statistics(String contents, SessionType sessionType){
+    private void setValue(String value) {
+        this.value = value;
+    }
+
+    public Statistics(String contents, String value, SessionType sessionType){
         setContents(contents);
         setSessionType(sessionType);
+        setValue(value);
     }
 
 }
