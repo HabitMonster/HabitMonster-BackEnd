@@ -9,6 +9,7 @@ import com.sollertia.habit.domain.statistics.dto.StatisticsResponseDto;
 import com.sollertia.habit.domain.statistics.entity.Statistics;
 import com.sollertia.habit.domain.statistics.repository.StatisticsRepository;
 import com.sollertia.habit.domain.user.entity.User;
+import com.sollertia.habit.global.utils.RandomUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +26,7 @@ public class StatisticsServiceImpl implements StatisticsService {
 
     private final CompletedHabitRepository completedHabitRepository;
     private final StatisticsRepository statisticsRepository;
+    private final RandomUtil randomUtil;
 
     @Override
     public StatisticsResponseDto getStatistics(User user, String date) {
@@ -61,7 +63,7 @@ public class StatisticsServiceImpl implements StatisticsService {
             return emptyGlobalStatisticsDto();
         }
 
-        int[] randomNumbers = getRandomNumbers(length);
+        int[] randomNumbers = randomUtil.getRandomNumbers(length);
         List<GlobalStatisticsDto> statisticsVoList = extractRandomStatistics(statisticsList, randomNumbers);
         return GlobalStatisticsResponseDto.builder()
                 .statistics(statisticsVoList)
@@ -84,17 +86,5 @@ public class StatisticsServiceImpl implements StatisticsService {
             globalStatisticsDtoList.add(GlobalStatisticsDto.of(statistics));
         }
         return globalStatisticsDtoList;
-    }
-
-    private int[] getRandomNumbers(int max) {
-        int size = 5;
-        if ( max < size ) {
-            size = max;
-        }
-        Random random = new Random();
-        return random.ints(0, max)
-                .distinct()
-                .limit(size)
-                .toArray();
     }
 }
