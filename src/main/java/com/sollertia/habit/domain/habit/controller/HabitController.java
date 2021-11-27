@@ -24,12 +24,7 @@ public class HabitController {
     @ApiOperation(value = "습관 생성", notes = "성공 실패여부 반환")
     @PostMapping("/habits")
     public HabitDetailResponseDto createHabit(final @Valid @RequestBody HabitDtoImpl habitDto,
-                                              BindingResult bindingResult,
                                               @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
-
-        if (bindingResult.hasErrors()) {
-
-        }
 
 
         HabitTypeDto habitTypeDto = new HabitTypeDto("counter", "specificDay");
@@ -51,12 +46,9 @@ public class HabitController {
     @PatchMapping("/habits/{habitId}")
     public HabitDetailResponseDto updateHabit(@PathVariable Long habitId,
                                               final @Valid @RequestBody HabitUpdateRequestDto habitUpdateRequestDto,
-                                              BindingResult bindingResult,
                                               @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        if (bindingResult.hasErrors()) {
 
-        }
         HabitTypeDto habitTypeDto = new HabitTypeDto("counter", "specificDay");
         return habitService.updateHabit(habitTypeDto, habitId, habitUpdateRequestDto, userDetails.getUser());
     }
