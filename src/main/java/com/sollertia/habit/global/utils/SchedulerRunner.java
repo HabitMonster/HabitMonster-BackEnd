@@ -6,17 +6,16 @@ import com.sollertia.habit.domain.completedhabbit.entity.CompletedHabit;
 import com.sollertia.habit.domain.completedhabbit.repository.CompletedHabitRepository;
 import com.sollertia.habit.domain.habit.entity.Habit;
 import com.sollertia.habit.domain.habit.repository.HabitRepository;
-import com.sollertia.habit.domain.habit.repository.HabitWithCounterRepository;
 import com.sollertia.habit.domain.history.entity.History;
 import com.sollertia.habit.domain.history.repository.HistoryRepository;
 import com.sollertia.habit.domain.monster.entity.Monster;
 import com.sollertia.habit.domain.monster.repository.MonsterRepository;
+import com.sollertia.habit.domain.preset.dto.PreSetDto;
 import com.sollertia.habit.domain.preset.entity.PreSet;
 import com.sollertia.habit.domain.preset.repository.PreSetRepository;
 import com.sollertia.habit.domain.preset.service.PreSetServiceImpl;
-import com.sollertia.habit.domain.statistics.dto.StatisticsSuccessCategoryAvgVo;
-import com.sollertia.habit.domain.statistics.enums.SessionType;
 import com.sollertia.habit.domain.statistics.dto.StatisticsCategoryVo;
+import com.sollertia.habit.domain.statistics.dto.StatisticsSuccessCategoryAvgVo;
 import com.sollertia.habit.domain.statistics.entity.Statistics;
 import com.sollertia.habit.domain.statistics.repository.StatisticsRepository;
 import com.sollertia.habit.domain.user.entity.Recommendation;
@@ -29,7 +28,6 @@ import com.sollertia.habit.global.globaldto.SearchDateDto;
 import com.sollertia.habit.global.globalenum.DurationEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,8 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -158,11 +155,11 @@ public class SchedulerRunner {
         }
 
         if(completedHabitList.size()!=0) {
-            List<PreSetVo> habits = completedHabitList.stream()
-                    .map(PreSetVo::new).collect(Collectors.toCollection(ArrayList::new));
+            List<PreSetDto> habits = completedHabitList.stream()
+                    .map(PreSetDto::new).collect(Collectors.toCollection(ArrayList::new));
 
             List<PreSet> preSets = new ArrayList<>();
-            for (PreSetVo h : habits) {
+            for (PreSetDto h : habits) {
                 preSets.add(new PreSet(h));
             }
 
@@ -247,8 +244,8 @@ public class SchedulerRunner {
         }
         String result = lastMonth.getMonth().getValue() + "월 한달동안 가장 많은 감점을 받은 카테고리는 " + category.toString() + "입니다.";
 
-        Statistics statistics = new Statistics(result, SessionType.MONTHLY);
-        statisticsRepository.save(statistics);
+//        Statistics statistics = new Statistics(result, SessionType.MONTHLY);
+//        statisticsRepository.save(statistics);
     }
 
     public void statisticsAvgAchievementPercentageByCategory(DurationEnum durationEnum) {
@@ -269,7 +266,7 @@ public class SchedulerRunner {
             redisUtil.setDataExpire(vo.getCategory().toString(), Integer.toString(avg));
             String result = lastMonth.getMonth().getValue() + "월 한달동안 " + vo.getCategory().toString() +
                     "의 평균 성공률은 " + avg + "%입니다.";
-            statisticsList.add(new Statistics(result, SessionType.MONTHLY));
+//            statisticsList.add(new Statistics(result, SessionType.MONTHLY));
         }
 
         statisticsRepository.saveAll(statisticsList);
@@ -313,8 +310,8 @@ public class SchedulerRunner {
 
         String result = lastMonth.getMonth().getValue() + "월 한달동안 가장 많은 사람이 선택한 카테고리는 " + resultCategory.toString() + "입니다.";
 
-        Statistics statistics = new Statistics(result, SessionType.MONTHLY);
-        statisticsRepository.save(statistics);
+//        Statistics statistics = new Statistics(result, SessionType.MONTHLY);
+//        statisticsRepository.save(statistics);
     }
 
     public void maintainNumberOfHabitByUser() {
@@ -324,8 +321,8 @@ public class SchedulerRunner {
 
         String result = "현재 사용자들이 평균적으로 유지하고 있는 습관의 개수는 " + Math.round(habits / totalUser) + "개입니다.";
 
-        Statistics statistics = new Statistics(result, SessionType.MONTHLY);
-        statisticsRepository.save(statistics);
+//        Statistics statistics = new Statistics(result, SessionType.MONTHLY);
+//        statisticsRepository.save(statistics);
     }
 
 

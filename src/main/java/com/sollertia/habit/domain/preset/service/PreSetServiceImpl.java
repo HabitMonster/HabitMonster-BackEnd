@@ -1,7 +1,7 @@
 package com.sollertia.habit.domain.preset.service;
 
 
-import com.sollertia.habit.domain.preset.dto.PreSetVo;
+import com.sollertia.habit.domain.preset.dto.PreSetDto;
 import com.sollertia.habit.domain.preset.repository.PreSetRepository;
 import com.sollertia.habit.global.exception.preset.PreSetNotFoundException;
 import lombok.RequiredArgsConstructor;

@@ -1,6 +1,7 @@
 package com.sollertia.habit.domain.preset.dto;
 
 import com.sollertia.habit.domain.category.enums.Category;
+import com.sollertia.habit.domain.completedhabbit.entity.CompletedHabit;
 import com.sollertia.habit.domain.habit.entity.Habit;
 import com.sollertia.habit.domain.habit.entity.HabitWithCounter;
 import com.sollertia.habit.domain.preset.entity.PreSet;
@@ -37,7 +38,7 @@ public class PreSetDto {
         this.practiceDays = preSet.getPracticeDays();
     }
 
-    public PreSetVo(CompletedHabit completedHabit) {
+    public PreSetDto(CompletedHabit completedHabit) {
         this.categoryId = completedHabit.getCategory().getCategoryId();
         this.title = completedHabit.getTitle();
         this.description = completedHabit.getDescription();
