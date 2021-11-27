@@ -1,5 +1,6 @@
 package com.sollertia.habit.domain.user.repository;
 
+import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sollertia.habit.domain.user.dto.QRecommendationDto;
 import com.sollertia.habit.domain.user.dto.RecommendationDto;
@@ -14,13 +15,6 @@ import static com.sollertia.habit.domain.monster.entity.QMonsterDatabase.monster
 import static com.sollertia.habit.domain.user.entity.QRecommendation.recommendation;
 import static com.sollertia.habit.domain.user.entity.QUser.user;
 import static com.sollertia.habit.domain.user.follow.entity.QFollow.follow;
-import com.sollertia.habit.domain.user.entity.Recommendation;
-import lombok.RequiredArgsConstructor;
-
-import java.util.List;
-
-import static com.sollertia.habit.domain.user.entity.QRecommendation.recommendation;
-import static com.sollertia.habit.domain.user.entity.QUser.user;
 
 @RequiredArgsConstructor
 public class RecommendationRepositoryImpl implements RecommendationRepositoryCustom {

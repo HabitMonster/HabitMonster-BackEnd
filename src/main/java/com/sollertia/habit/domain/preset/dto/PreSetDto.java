@@ -37,15 +37,6 @@ public class PreSetDto {
         this.practiceDays = preSet.getPracticeDays();
     }
 
-    public PreSetVo(Habit habit) {
-        this.categoryId = habit.getCategory().getCategoryId();
-        this.title = habit.getTitle();
-        this.description = habit.getDescription();
-        this.count = ((HabitWithCounter) habit).getGoalCountInSession();
-        this.category = habit.getCategory();
-        this.practiceDays = habit.getPracticeDays();
-        this.period = (int) Duration.between(habit.getDurationStart().atStartOfDay(),habit.getDurationEnd().atStartOfDay()).toDays();
-        this.userId = habit.getUser().getId();
-    }
+
 }
 

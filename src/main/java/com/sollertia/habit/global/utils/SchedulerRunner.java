@@ -11,14 +11,12 @@ import com.sollertia.habit.domain.history.entity.History;
 import com.sollertia.habit.domain.history.repository.HistoryRepository;
 import com.sollertia.habit.domain.monster.entity.Monster;
 import com.sollertia.habit.domain.monster.repository.MonsterRepository;
-import com.sollertia.habit.domain.preset.dto.PreSetVo;
 import com.sollertia.habit.domain.preset.entity.PreSet;
 import com.sollertia.habit.domain.preset.repository.PreSetRepository;
 import com.sollertia.habit.domain.preset.service.PreSetServiceImpl;
-import com.sollertia.habit.domain.statistics.dto.StatisticsSuccessCategoryAvgVo;
-import com.sollertia.habit.domain.statistics.enums.SessionType;
 import com.sollertia.habit.domain.statistics.dto.StatisticsCategoryVo;
 import com.sollertia.habit.domain.statistics.entity.Statistics;
+import com.sollertia.habit.domain.statistics.enums.SessionType;
 import com.sollertia.habit.domain.statistics.repository.StatisticsRepository;
 import com.sollertia.habit.domain.user.entity.Recommendation;
 import com.sollertia.habit.domain.user.entity.User;
@@ -33,8 +31,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -72,7 +70,6 @@ public class SchedulerRunner {
     @Scheduled(cron = "0 0 1 ? * SUN")
     @Transactional
     public void runWhenEveryWeek() {
-        makePreset();
         makeRecommendations();
     }
 
@@ -121,31 +118,6 @@ public class SchedulerRunner {
         habitRepository.deleteAllById(habitIdListForDelete);
     }
 
-    private void makePreset() {
-
-        preSetService.deletePreSet();
-
-        Long userId = completedHabitRepository.maxIsSuccessTrueUser(PageRequest.of(0, 1));
-        if (userId == null) {
-            userId = 1L;
-        }
-
-        List<PreSetVo> habits = habitWithCounterRepository.findByUserId(userId).stream()
-                .map(PreSetVo::new).collect(Collectors.toCollection(ArrayList::new));
-
-        if (habits.size() < 15) {
-            habits.clear();
-            habits = habitWithCounterRepository.findByUserId(1L).stream()
-                    .map(PreSetVo::new).collect(Collectors.toCollection(ArrayList::new));
-        }
-
-        List<PreSet> preSets = new ArrayList<>();
-        for (PreSetVo h : habits) {
-            preSets.add(new PreSet(h));
-        }
-
-        preSetRepository.saveAll(preSets);
-    }
 
     public void saveMonsterTypeStatistics(DurationEnum durationEnum) {
         SearchDateDto duration = getSearchDateDto(durationEnum);
@@ -163,8 +135,6 @@ public class SchedulerRunner {
                 .min((Map.Entry<String, Integer> e1, Map.Entry<String, Integer> e2)
                         -> e1.getValue().compareTo(e2.getValue()));
 
-        String
-
         String contentsMax = "지난 "
                 + "가장 많이 선택된 monster는 "
                 + max.get().getKey() + "이며"
@@ -176,9 +146,9 @@ public class SchedulerRunner {
                 + min.get().getKey() + "이며"
                 + "총" + min.get().getValue()
                 + "회 선택받았습니다!";
-        //세션 타입 일치 필요 일단은 그냥 monthly로 해둠
-        statisticsRepository.save(new Statistics(contentsMax, SessionType.MONTHLY));
-        statisticsRepository.save(new Statistics(contentsMin, SessionType.MONTHLY));
+//        //세션 타입 일치 필요 일단은 그냥 monthly로 해둠
+//        statisticsRepository.save(new Statistics(contentsMax, SessionType.MONTHLY));
+//        statisticsRepository.save(new Statistics(contentsMin, SessionType.MONTHLY));
 
     }
 
@@ -198,8 +168,8 @@ public class SchedulerRunner {
                 + "요일에 습관 달성을 실패했습니다."
                 + "총" + max.get().getValue()
                 + "번의 습관 실패가 기록되어 있네요";
-
-        statisticsRepository.save(new Statistics(content, SessionType.MONTHLY));
+//
+//        statisticsRepository.save(new Statistics(content, SessionType.MONTHLY));
     }
 
     public SearchDateDto getSearchDateDto(DurationEnum durationEnum) {
@@ -274,8 +244,8 @@ public class SchedulerRunner {
         }
         String result = lastMonth.getMonth().getValue() + "월 한달동안 가장 많은 감점을 받은 카테고리는 " + category.toString() + "입니다.";
 
-        Statistics statistics = new Statistics(result, SessionType.MONTHLY);
-        statisticsRepository.save(statistics);
+//        Statistics statistics = new Statistics(result, SessionType.MONTHLY);
+//        statisticsRepository.save(statistics);
     }
 
     public void statisticsAvgAchievementPercentageByCategory() {
@@ -284,15 +254,15 @@ public class SchedulerRunner {
         LocalDate start = lastMonth.withDayOfMonth(1);
         LocalDate end = lastMonth.withDayOfMonth(lastMonth.lengthOfMonth());
 
-        List<StatisticsSuccessCategoryAvgVo> list = completedHabitRepository.statisticsAvgAchievementPercentageByCategory(start.atStartOfDay(), end.atStartOfDay());
+//        List<StatisticsSuccessCategoryAvgVo> list = completedHabitRepository.statisticsAvgAchievementPercentageByCategory(start.atStartOfDay(), end.atStartOfDay());
 
         List<Statistics> statisticsList = new ArrayList<>();
-        for (StatisticsSuccessCategoryAvgVo vo : list) {
-            int avg = (int) Math.round(vo.getAvgPer());
-            String result = lastMonth.getMonth().getValue() + "월 한달동안 " + vo.getCategory().toString() +
-                    "의 평균 성공률은 " + avg + "%입니다.";
-            statisticsList.add(new Statistics(result, SessionType.MONTHLY));
-        }
+//        for (StatisticsSuccessCategoryAvgVo vo : list) {
+//            int avg = (int) Math.round(vo.getAvgPer());
+//            String result = lastMonth.getMonth().getValue() + "월 한달동안 " + vo.getCategory().toString() +
+//                    "의 평균 성공률은 " + avg + "%입니다.";
+//            statisticsList.add(new Statistics(result, SessionType.MONTHLY));
+//        }
 
         statisticsRepository.saveAll(statisticsList);
     }
@@ -317,8 +287,8 @@ public class SchedulerRunner {
 
         String result = lastMonth.getMonth().getValue() + "월 한달동안 가장 많은 사람이 선택한 카테고리는 " + category.toString() + "입니다.";
 
-        Statistics statistics = new Statistics(result, SessionType.MONTHLY);
-        statisticsRepository.save(statistics);
+//        Statistics statistics = new Statistics(result, SessionType.MONTHLY);
+//        statisticsRepository.save(statistics);
     }
 
 
