@@ -4,7 +4,6 @@ import com.sollertia.habit.domain.habit.dto.HabitSummaryVo;
 import com.sollertia.habit.domain.habit.service.HabitServiceImpl;
 import com.sollertia.habit.domain.monster.dto.MonsterDto;
 import com.sollertia.habit.domain.monster.entity.Monster;
-import com.sollertia.habit.domain.monster.service.MonsterService;
 import com.sollertia.habit.domain.user.dto.*;
 import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.domain.user.follow.dto.FollowCount;
@@ -28,7 +27,6 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final FollowServiceImpl followService;
-    private final MonsterService monsterService;
     private final HabitServiceImpl habitService;
     private final RecommendationRepository recommendationRepository;
 
@@ -84,30 +82,6 @@ public class UserService {
                 .habits(habits)
                 .statusCode(200)
                 .responseMessage("User Detail Response")
-                .build();
-    }
-
-    public MyPageResponseDto getUserDetailDto(User user) {
-        MonsterDto monster = monsterService.getMonsterVo(user);
-
-        return MyPageResponseDto.builder()
-                .userInfo(getUserDetailsVo(user))
-                .monster(monster)
-                .responseMessage("User Info Query Completed")
-                .statusCode(200)
-                .build();
-    }
-
-    private UserDetailsDto getUserDetailsVo(User user) {
-        FollowCount followCount = followService.getCountByUser(user);
-        Integer totalHabitCount = habitService.getAllHabitCountByUser(user);
-        return UserDetailsDto.builder()
-                .monsterCode(user.getMonsterCode())
-                .username(user.getUsername())
-                .email(user.getEmail())
-                .totalHabitCount(totalHabitCount)
-                .followersCount(followCount.getFollowersCount())
-                .followingsCount(followCount.getFollowingsCount())
                 .build();
     }
 
