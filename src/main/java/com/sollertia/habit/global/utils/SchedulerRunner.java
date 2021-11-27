@@ -14,9 +14,10 @@ import com.sollertia.habit.domain.monster.repository.MonsterRepository;
 import com.sollertia.habit.domain.preset.entity.PreSet;
 import com.sollertia.habit.domain.preset.repository.PreSetRepository;
 import com.sollertia.habit.domain.preset.service.PreSetServiceImpl;
+import com.sollertia.habit.domain.statistics.dto.StatisticsSuccessCategoryAvgVo;
+import com.sollertia.habit.domain.statistics.enums.SessionType;
 import com.sollertia.habit.domain.statistics.dto.StatisticsCategoryVo;
 import com.sollertia.habit.domain.statistics.entity.Statistics;
-import com.sollertia.habit.domain.statistics.enums.SessionType;
 import com.sollertia.habit.domain.statistics.repository.StatisticsRepository;
 import com.sollertia.habit.domain.user.entity.Recommendation;
 import com.sollertia.habit.domain.user.entity.User;
@@ -31,15 +32,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -48,7 +47,6 @@ import java.util.stream.Collectors;
 public class SchedulerRunner {
 
     private final PreSetRepository preSetRepository;
-    private final HabitWithCounterRepository habitWithCounterRepository;
     private final CompletedHabitRepository completedHabitRepository;
     private final PreSetServiceImpl preSetService;
     private final HabitRepository habitRepository;
@@ -57,6 +55,7 @@ public class SchedulerRunner {
     private final StatisticsRepository statisticsRepository;
     private final UserRepository userRepository;
     private final RecommendationRepository recommendationRepository;
+    private final RedisUtil redisUtil;
 
     @Scheduled(cron = "0 0 0 * * *")
     @Transactional
@@ -70,13 +69,20 @@ public class SchedulerRunner {
     @Scheduled(cron = "0 0 1 ? * SUN")
     @Transactional
     public void runWhenEveryWeek() {
+        makePreset();
         makeRecommendations();
     }
 
-//    @Scheduled(cron = "0 0 1 ? * SUN")
-//    public void runWhenEveryMonth() {
-//        makePreset();
-//    }
+    @Scheduled(cron = "0 0 0 1 * *")
+    @Transactional
+    public void runWhenEveryMonth() {
+        statisticsRepository.deleteAllInBatch();
+        statisticsMonthMaxMinusByCategory(DurationEnum.MONTHLY);
+        statisticsAvgAchievementPercentageByCategory(DurationEnum.MONTHLY);
+        statisticsMaxSelectedByCategory(DurationEnum.MONTHLY);
+        maintainNumberOfHabitByUser();
+    }
+
     private void minusExpOnLapsedHabit(LocalDate date) {
         String day = String.valueOf(date.minusDays(1).getDayOfWeek().getValue());
         List<Habit> habitsWithDaysAndAccomplish = habitRepository.findHabitsWithDaysAndAccomplish(day, false);
@@ -118,58 +124,57 @@ public class SchedulerRunner {
         habitRepository.deleteAllById(habitIdListForDelete);
     }
 
+    private void makePreset() {
+
+        preSetService.deletePreSet();
+
+        for (int i = 1; i < 8; i++) {
+            String key = "PreSet::" + i;
+            redisUtil.deleteData(key);
+        }
+
+        List<CompletedHabit> completedHabitList = new ArrayList<>();
+        Category[] categories = Category.values();
+        for (Category c : categories) {
+            String achievementPercentage;
+            if(redisUtil.hasKey(c.toString())){
+                achievementPercentage = redisUtil.getData(c.toString());
+            }else{
+                achievementPercentage = "70";
+            }
+            Long achievementPercentageLong = Long.parseLong(achievementPercentage);
+            List<CompletedHabit> list = completedHabitRepository.habitMoreThanAvgAchievementPercentageByCategory(c, achievementPercentageLong);
+
+            if(list.size()==0){continue;}
+
+            int size = Math.min(list.size(), 3);
+            HashSet<Integer> randomNum = new HashSet<>();
+            while(randomNum.size() < size){
+                randomNum.add((int) (Math.random() * list.size()));
+            }
+            for (Integer integer : randomNum) {
+                completedHabitList.add(list.get(integer));
+            }
+        }
+
+        if(completedHabitList.size()!=0) {
+            List<PreSetVo> habits = completedHabitList.stream()
+                    .map(PreSetVo::new).collect(Collectors.toCollection(ArrayList::new));
+
+            List<PreSet> preSets = new ArrayList<>();
+            for (PreSetVo h : habits) {
+                preSets.add(new PreSet(h));
+            }
+
+            preSetRepository.saveAll(preSets);
+        }
+    }
 
     public void saveMonsterTypeStatistics(DurationEnum durationEnum) {
         SearchDateDto duration = getSearchDateDto(durationEnum);
-        Map<String, Integer> monsterTypeCount = monsterRepository.getMonsterTypeCount(duration);
+        monsterRepository.getMonsterTypeCount(duration);
+        // 이후 최대값 최소값 찾아 String 만들고 statisticsRepository 저장
 
-        Optional<Map.Entry<String, Integer>> max = monsterTypeCount
-                .entrySet()
-                .stream()
-                .max((Map.Entry<String, Integer> e1, Map.Entry<String, Integer> e2)
-                        -> e1.getValue().compareTo(e2.getValue()));
-
-        Optional<Map.Entry<String, Integer>> min = monsterTypeCount
-                .entrySet()
-                .stream()
-                .min((Map.Entry<String, Integer> e1, Map.Entry<String, Integer> e2)
-                        -> e1.getValue().compareTo(e2.getValue()));
-
-        String contentsMax = "지난 "
-                + "가장 많이 선택된 monster는 "
-                + max.get().getKey() + "이며"
-                + "총" + max.get().getValue()
-                + "회 선택받았습니다!";
-
-        String contentsMin = "지난 "
-                + "가장 적게 선택된 monster는 "
-                + min.get().getKey() + "이며"
-                + "총" + min.get().getValue()
-                + "회 선택받았습니다!";
-//        //세션 타입 일치 필요 일단은 그냥 monthly로 해둠
-//        statisticsRepository.save(new Statistics(contentsMax, SessionType.MONTHLY));
-//        statisticsRepository.save(new Statistics(contentsMin, SessionType.MONTHLY));
-
-    }
-
-    public void saveMostFailedDay(DurationEnum durationEnum) {
-        SearchDateDto searchDateDto = getSearchDateDto(durationEnum);
-        Map<String, Integer> mostFaildedDay = historyRepository.getMostFaildedDay(searchDateDto);
-
-        Optional<Map.Entry<String, Integer>> max = mostFaildedDay
-                .entrySet()
-                .stream()
-                .max((Map.Entry<String, Integer> e1, Map.Entry<String, Integer> e2)
-                        -> e1.getValue().compareTo(e2.getValue()));
-
-        String content = "지난 "
-                + "가장 많은 유저가"
-                + max.get().getKey()
-                + "요일에 습관 달성을 실패했습니다."
-                + "총" + max.get().getValue()
-                + "번의 습관 실패가 기록되어 있네요";
-//
-//        statisticsRepository.save(new Statistics(content, SessionType.MONTHLY));
     }
 
     public SearchDateDto getSearchDateDto(DurationEnum durationEnum) {
@@ -202,8 +207,6 @@ public class SchedulerRunner {
     }
 
 
-
-
     private void makeRecommendations() {
         log.info("Start Remake Recommendations");
         RecommendationType[] values = RecommendationType.values();
@@ -219,21 +222,21 @@ public class SchedulerRunner {
     }
 
     private List<User> getTop10(RecommendationType value) {
-        if ( value.getId() <= 8 ) {
+        if (value.getId() <= 8) {
             return userRepository.searchTop10ByCategory(Category.getCategory(value.getId()));
-        } else if ( value.getId() == 9 ) {
+        } else if (value.getId() == 9) {
             return userRepository.searchTop10ByFollow();
         } else {
             return new ArrayList<>();
         }
     }
-    public void statisticsMonthMaxMinusByCategory() {
 
+    public void statisticsMonthMaxMinusByCategory(DurationEnum durationEnum) {
+
+        SearchDateDto duration = getSearchDateDto(durationEnum);
         LocalDate lastMonth = LocalDate.now().minusMonths(1L);
-        LocalDate start = lastMonth.withDayOfMonth(1);
-        LocalDate end = lastMonth.withDayOfMonth(lastMonth.lengthOfMonth());
 
-        List<StatisticsCategoryVo> list = historyRepository.statisticsMonthMaxMinusByCategory(start.atStartOfDay(), end.atStartOfDay());
+        List<StatisticsCategoryVo> list = historyRepository.statisticsMonthMaxMinusByCategory(duration);
         Category category = Category.Health;
         Long num = 0L;
         for (StatisticsCategoryVo vo : list) {
@@ -244,51 +247,85 @@ public class SchedulerRunner {
         }
         String result = lastMonth.getMonth().getValue() + "월 한달동안 가장 많은 감점을 받은 카테고리는 " + category.toString() + "입니다.";
 
-//        Statistics statistics = new Statistics(result, SessionType.MONTHLY);
-//        statisticsRepository.save(statistics);
+        Statistics statistics = new Statistics(result, SessionType.MONTHLY);
+        statisticsRepository.save(statistics);
     }
 
-    public void statisticsAvgAchievementPercentageByCategory() {
+    public void statisticsAvgAchievementPercentageByCategory(DurationEnum durationEnum) {
 
+        Category[] categories = Category.values();
+        for (Category c : categories) {
+            redisUtil.deleteData(c.toString());
+        }
+
+        SearchDateDto duration = getSearchDateDto(durationEnum);
         LocalDate lastMonth = LocalDate.now().minusMonths(1L);
-        LocalDate start = lastMonth.withDayOfMonth(1);
-        LocalDate end = lastMonth.withDayOfMonth(lastMonth.lengthOfMonth());
 
-//        List<StatisticsSuccessCategoryAvgVo> list = completedHabitRepository.statisticsAvgAchievementPercentageByCategory(start.atStartOfDay(), end.atStartOfDay());
+        List<StatisticsSuccessCategoryAvgVo> list = completedHabitRepository.statisticsAvgAchievementPercentageByCategory(duration);
 
         List<Statistics> statisticsList = new ArrayList<>();
-//        for (StatisticsSuccessCategoryAvgVo vo : list) {
-//            int avg = (int) Math.round(vo.getAvgPer());
-//            String result = lastMonth.getMonth().getValue() + "월 한달동안 " + vo.getCategory().toString() +
-//                    "의 평균 성공률은 " + avg + "%입니다.";
-//            statisticsList.add(new Statistics(result, SessionType.MONTHLY));
-//        }
+        for (StatisticsSuccessCategoryAvgVo vo : list) {
+            int avg = (int) Math.round(vo.getAvgPer());
+            redisUtil.setDataExpire(vo.getCategory().toString(), Integer.toString(avg));
+            String result = lastMonth.getMonth().getValue() + "월 한달동안 " + vo.getCategory().toString() +
+                    "의 평균 성공률은 " + avg + "%입니다.";
+            statisticsList.add(new Statistics(result, SessionType.MONTHLY));
+        }
 
         statisticsRepository.saveAll(statisticsList);
     }
 
-    public void statisticsMaxSelectedByCategory(){
+    public void statisticsMaxSelectedByCategory(DurationEnum durationEnum) {
 
-
+        SearchDateDto duration = getSearchDateDto(durationEnum);
         LocalDate lastMonth = LocalDate.now().minusMonths(1L);
         LocalDate start = lastMonth.withDayOfMonth(1);
         LocalDate end = lastMonth.withDayOfMonth(lastMonth.lengthOfMonth());
 
-        List<StatisticsCategoryVo> completedList = completedHabitRepository.statisticsMaxSelectedByCategory(start,end);
+        List<StatisticsCategoryVo> completedList = completedHabitRepository.statisticsMaxSelectedByCategory(start, end);
+        List<StatisticsCategoryVo> habitList = habitRepository.statisticsMaxSelectedByCategory(duration);
 
-        Category category = Category.Health;
+        Category resultCategory = Category.Hobby;
         Long num = 0L;
+
+        Map<Category, Long> sumList = new HashMap<>();
+
         for (StatisticsCategoryVo vo : completedList) {
-            if (num <= vo.getNum()) {
-                num = vo.getNum();
-                category = vo.getCategory();
+            sumList.put(vo.getCategory(), vo.getNum());
+        }
+
+        for (StatisticsCategoryVo vo : habitList) {
+            if (sumList.containsKey(vo.getCategory())) {
+                sumList.put(vo.getCategory(), sumList.get(vo.getCategory()) + vo.getNum());
+            } else {
+                sumList.put(vo.getCategory(), vo.getNum());
             }
         }
 
-        String result = lastMonth.getMonth().getValue() + "월 한달동안 가장 많은 사람이 선택한 카테고리는 " + category.toString() + "입니다.";
+        Set<Category> keySet = sumList.keySet();
 
-//        Statistics statistics = new Statistics(result, SessionType.MONTHLY);
-//        statisticsRepository.save(statistics);
+        for (Category tempKey : keySet) {
+            if (num <= sumList.get(tempKey)) {
+                num = sumList.get(tempKey);
+                resultCategory = tempKey;
+            }
+        }
+
+        String result = lastMonth.getMonth().getValue() + "월 한달동안 가장 많은 사람이 선택한 카테고리는 " + resultCategory.toString() + "입니다.";
+
+        Statistics statistics = new Statistics(result, SessionType.MONTHLY);
+        statisticsRepository.save(statistics);
+    }
+
+    public void maintainNumberOfHabitByUser() {
+        int habits = (int) habitRepository.count();
+        List<Long> users = habitRepository.statisticsGetNumberOfUser();
+        int totalUser = users.size();
+
+        String result = "현재 사용자들이 평균적으로 유지하고 있는 습관의 개수는 " + Math.round(habits / totalUser) + "개입니다.";
+
+        Statistics statistics = new Statistics(result, SessionType.MONTHLY);
+        statisticsRepository.save(statistics);
     }
 
 

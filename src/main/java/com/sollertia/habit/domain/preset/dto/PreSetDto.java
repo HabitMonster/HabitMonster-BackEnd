@@ -37,6 +37,14 @@ public class PreSetDto {
         this.practiceDays = preSet.getPracticeDays();
     }
 
-
+    public PreSetVo(CompletedHabit completedHabit) {
+        this.categoryId = completedHabit.getCategory().getCategoryId();
+        this.title = completedHabit.getTitle();
+        this.description = completedHabit.getDescription();
+        this.count = Math.toIntExact(completedHabit.getGoalCount());
+        this.category = completedHabit.getCategory();
+        this.practiceDays = completedHabit.getPracticeDays();
+        this.period = (int) Duration.between(completedHabit.getStartDate().atStartOfDay(),completedHabit.getEndupDate().atStartOfDay()).toDays();
+        this.userId = completedHabit.getUser().getId();
+    }
 }
-

@@ -1,7 +1,7 @@
 package com.sollertia.habit.domain.preset.service;
 
 
-import com.sollertia.habit.domain.preset.dto.PreSetDto;
+import com.sollertia.habit.domain.preset.dto.PreSetVo;
 import com.sollertia.habit.domain.preset.repository.PreSetRepository;
 import com.sollertia.habit.global.exception.preset.PreSetNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -33,9 +33,9 @@ public class PreSetServiceImpl implements PreSetService{
     @Override
     public void deletePreSet() {
         try {
-            preSetRepository.deletePresetBySchduler();
-        }catch (Exception e){
-            throw new IllegalArgumentException("삭제할 PreSet 없습니다");
+            preSetRepository.deletePresetByScheduler();
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Not Found PreSet");
         }
     }
 }
