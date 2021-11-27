@@ -70,11 +70,8 @@ class StatisticsContollerTest {
         testUser = User.create(oauth2UserInfo);
         mockUserDetails = new UserDetailsImpl(testUser);
 
-        Calendar startDate = Calendar.getInstance();
-        DateFormat form = new SimpleDateFormat("yyyy-MM-dd");
-
         habitDto = HabitDtoImpl.builder()
-                .durationStart(form.format(startDate.getTime())).durationEnd(form.format(startDate.getTime()))
+                .durationStart("2021-11-01").durationEnd("2021-11-30")
                 .count(3).title("title").description("description").practiceDays("1234567").categoryId(1L).build();
         HabitTypeDto habitTypeDto = new HabitTypeDto("counter", "specificDay");
         Habit habit = Habit.createHabit(habitTypeDto.getHabitType(), habitDto, testUser);

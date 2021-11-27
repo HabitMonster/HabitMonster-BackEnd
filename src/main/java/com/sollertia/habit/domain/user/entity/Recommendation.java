@@ -21,6 +21,7 @@ public class Recommendation {
     @Column(nullable = false)
     private Integer number;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private RecommendationType type;
 

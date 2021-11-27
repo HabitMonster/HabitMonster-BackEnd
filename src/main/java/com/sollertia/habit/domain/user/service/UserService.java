@@ -3,8 +3,6 @@ package com.sollertia.habit.domain.user.service;
 import com.sollertia.habit.domain.habit.dto.HabitSummaryVo;
 import com.sollertia.habit.domain.habit.service.HabitServiceImpl;
 import com.sollertia.habit.domain.monster.dto.MonsterDto;
-import com.sollertia.habit.domain.monster.entity.Monster;
-import com.sollertia.habit.domain.monster.service.MonsterService;
 import com.sollertia.habit.domain.user.dto.*;
 import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.domain.user.follow.dto.FollowCount;
@@ -12,6 +10,7 @@ import com.sollertia.habit.domain.user.follow.service.FollowServiceImpl;
 import com.sollertia.habit.domain.user.repository.RecommendationRepository;
 import com.sollertia.habit.domain.user.repository.UserRepository;
 import com.sollertia.habit.global.exception.user.InvalidRecommendationTypeException;
+import com.sollertia.habit.global.utils.RandomUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,9 +26,9 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final FollowServiceImpl followService;
-    private final MonsterService monsterService;
     private final HabitServiceImpl habitService;
     private final RecommendationRepository recommendationRepository;
+    private final RandomUtil randomUtil;
 
     public UserInfoResponseDto getUserInfoResponseDto(User user) {
         return UserInfoResponseDto.builder()
@@ -38,12 +36,6 @@ public class UserService {
                 .statusCode(200)
                 .responseMessage("User Info Query Completed")
                 .build();
-    }
-
-    @Transactional
-    public User updateMonster(User user, Monster newMonster) {
-        user.updateMonster(newMonster);
-        return userRepository.save(user);
     }
 
     @Transactional
@@ -87,30 +79,6 @@ public class UserService {
                 .build();
     }
 
-    public MyPageResponseDto getUserDetailDto(User user) {
-        MonsterDto monster = monsterService.getMonsterVo(user);
-
-        return MyPageResponseDto.builder()
-                .userInfo(getUserDetailsVo(user))
-                .monster(monster)
-                .responseMessage("User Info Query Completed")
-                .statusCode(200)
-                .build();
-    }
-
-    private UserDetailsDto getUserDetailsVo(User user) {
-        FollowCount followCount = followService.getCountByUser(user);
-        Integer totalHabitCount = habitService.getAllHabitCountByUser(user);
-        return UserDetailsDto.builder()
-                .monsterCode(user.getMonsterCode())
-                .username(user.getUsername())
-                .email(user.getEmail())
-                .totalHabitCount(totalHabitCount)
-                .followersCount(followCount.getFollowersCount())
-                .followingsCount(followCount.getFollowingsCount())
-                .build();
-    }
-
     @Transactional
     public RecommendedUserListDto getRecommendedUserListDto(User user) {
         List<RecommendationDto> recommendationDtoList = new ArrayList<>();
@@ -121,12 +89,12 @@ public class UserService {
             if ( count == 10 ) {
                 throw new InvalidRecommendationTypeException("Recommendations List is Empty");
             }
-            int number = getRandomNumber();
+            int number = randomUtil.getRandomNumber();
             recommendationDtoList = recommendationRepository.searchByNumber(user, number);
             length = recommendationDtoList.size();
         }
 
-        int[] randomNumbers = getRandomNumbers(length);
+        int[] randomNumbers = randomUtil.getRandomNumbers(length);
         List<RecommendationDto> collect = Arrays.stream(randomNumbers)
                 .mapToObj(recommendationDtoList::get)
                 .collect(Collectors.toList());
@@ -135,24 +103,5 @@ public class UserService {
                 .responseMessage("Response Recommeded User List")
                 .statusCode(200)
                 .build();
-    }
-
-    private int getRandomNumber() {
-        int min = 0;
-        int max = 9;
-        Random random = new Random();
-        return random.nextInt((max - min) + 1) + min;
-    }
-
-    private int[] getRandomNumbers(int max) {
-        int size = 5;
-        if ( max < size ) {
-            size = max;
-        }
-        Random random = new Random();
-        return random.ints(0, max)
-                .distinct()
-                .limit(size)
-                .toArray();
     }
 }

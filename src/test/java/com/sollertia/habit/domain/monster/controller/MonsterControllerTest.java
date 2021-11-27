@@ -52,7 +52,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = MonsterController.class)
 @AutoConfigureMockMvc(addFilters = false)
 @RunWith(PowerMockRunner.class)
-class MonsterControllerTest {
+class
+MonsterControllerTest {
 
     @Autowired
     private MockMvc mvc;

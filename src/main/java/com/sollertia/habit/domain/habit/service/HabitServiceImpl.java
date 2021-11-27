@@ -8,6 +8,7 @@ import com.sollertia.habit.domain.habit.entity.Habit;
 import com.sollertia.habit.domain.habit.entity.HabitWithCounter;
 import com.sollertia.habit.domain.habit.repository.HabitRepository;
 import com.sollertia.habit.domain.habit.repository.HabitWithCounterRepository;
+import com.sollertia.habit.domain.habit.repository.HabitWithTimerRepository;
 import com.sollertia.habit.domain.history.entity.History;
 import com.sollertia.habit.domain.history.repository.HistoryRepository;
 import com.sollertia.habit.domain.monster.service.MonsterService;
@@ -19,7 +20,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.naming.NoPermissionException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -31,6 +31,8 @@ public class HabitServiceImpl implements HabitService {
 
     private final HabitWithCounterRepository habitWithCounterRepository;
 
+    private final HabitWithTimerRepository habitWithTimerRepository;
+
     private final HistoryRepository historyRepository;
 
     private final CompletedHabitRepository completedHabitRepository;
@@ -41,27 +43,14 @@ public class HabitServiceImpl implements HabitService {
     @Override
     public HabitDetailResponseDto createHabit(HabitTypeDto habitTypeDto, HabitDtoImpl createHabitRequestDto, User user) {
 
-        //임시 수정, getGoalCount override해서 형변환 없이 리팩토링 하기
-        HabitWithCounter habit = (HabitWithCounter) Habit.createHabit(habitTypeDto.getHabitType(), createHabitRequestDto, user);
-        HabitWithCounter savedHabit = (HabitWithCounter) habitRepository.save(habit);
+        Habit habit = Habit.createHabit(habitTypeDto.getHabitType(), createHabitRequestDto, user);
+        Habit savedHabit = (Habit) habitRepository.save(habit);
 
-        HabitDetail habitDetail = HabitDetail.builder()
-                .habitId(savedHabit.getId())
-                .category(savedHabit.getCategory())
-                .count(savedHabit.getGoalCountInSession())
-                .totalCount(Math.toIntExact(savedHabit.getGoalCountInSession() * savedHabit.getWholeDays()))
-                .description(savedHabit.getDescription())
-                .durationEnd(savedHabit.getDurationEnd().toString())
-                .durationStart(savedHabit.getDurationStart().toString())
-                .achievePercentage(savedHabit.getAchievePercentage())
-                .practiceDays(savedHabit.getPracticeDays())
-                .current(savedHabit.getCurrent())
-                .categoryId(savedHabit.getCategory().getCategoryId())
-                .title(savedHabit.getTitle())
-                .isAccomplished(false)
-                .build();
+        HabitDetail habitDetail = buildHabitDetail(savedHabit);
+
 
         return HabitDetailResponseDto.builder()
+
                 .habit(habitDetail)
                 .statusCode(200)
                 .responseMessage("Habit registered Completed")
@@ -72,23 +61,9 @@ public class HabitServiceImpl implements HabitService {
     @Override
     public HabitDetailResponseDto getHabitDetail(HabitTypeDto habitTypeDto, Long habitId) {
 
-        HabitWithCounter foundHabit = habitWithCounterRepository.findById(habitId).orElseThrow(
-                () -> new HabitIdNotFoundException("Not Found Habit"));
+        Habit foundHabit = getHabitFromRepository(habitTypeDto, habitId);
 
-        HabitDetail build = HabitDetail.builder()
-                .habitId(foundHabit.getId())
-                .category(foundHabit.getCategory())
-                .categoryId(foundHabit.getCategory().getCategoryId())
-                .count(foundHabit.getGoalCountInSession())
-                .totalCount(Math.toIntExact(foundHabit.getGoalCountInSession() * foundHabit.getWholeDays()))
-                .description(foundHabit.getDescription())
-                .durationEnd(foundHabit.getDurationEnd().toString())
-                .durationStart(foundHabit.getDurationStart().toString())
-                .achievePercentage(foundHabit.getAchievePercentage())
-                .practiceDays(foundHabit.getPracticeDays())
-                .current(foundHabit.getCurrent())
-                .title(foundHabit.getTitle())
-                .build();
+        HabitDetail build = buildHabitDetail(foundHabit);
 
         return HabitDetailResponseDto.builder()
                 .habit(build)
@@ -98,17 +73,16 @@ public class HabitServiceImpl implements HabitService {
     }
 
     @Override
-    public HabitCheckResponseDto checkHabit(HabitTypeDto habitTypeDto, Long habitId) {
+    public HabitCheckResponseDto checkHabit(HabitTypeDto habitTypeDto, Long habitId, LocalDate today) {
 
-        HabitWithCounter habitWithCounter = habitWithCounterRepository.findById(habitId).orElseThrow(
-                () -> new HabitIdNotFoundException("Not Found Habit"));
-        Boolean isAchieve = habitWithCounter.check(1L);
-        HabitWithCounter checkedHabit = habitWithCounterRepository.save(habitWithCounter);
-        HabitSummaryVo habitSummaryVo = HabitSummaryVo.of(checkedHabit);
+        Habit foundHabit = getHabitFromRepository(habitTypeDto, habitId);
+        Boolean isAchieve = foundHabit.check(1L);
+        Habit checkedHabit = (Habit) habitRepository.save(foundHabit);
+        HabitSummaryVo habitSummaryVo = HabitSummaryVo.of(foundHabit);
 
         if (isAchieve) {
-            plusExpPointAndMakeHistory(habitWithCounter);
-            deleteHabitIfCompleteToday(habitWithCounter);
+            plusExpPointAndMakeHistory(foundHabit);
+            deleteHabitIfCompleteToday(foundHabit, today);
         }
 
         return HabitCheckResponseDto.builder()
@@ -119,34 +93,18 @@ public class HabitServiceImpl implements HabitService {
 
     }
 
-    private void plusExpPointAndMakeHistory(HabitWithCounter habitWithCounter) {
-        monsterService.plusExpPoint(habitWithCounter.getUser());
-        History history = History.makeHistory(habitWithCounter);
-        historyRepository.save(history);
-    }
-
-    private void deleteHabitIfCompleteToday(HabitWithCounter habitWithCounter) {
-        if (habitWithCounter.getDurationEnd().equals(LocalDate.now())) {
-            CompletedHabit completedHabit = CompletedHabit.of(habitWithCounter);
-            completedHabitRepository.save(completedHabit);
-            habitWithCounterRepository.delete(habitWithCounter);
-        }
-    }
-
     @Override
     @Transactional
     public DefaultResponseDto deleteHabit(HabitTypeDto habitTypeDto, Long habitId, User user) {
 
-        HabitWithCounter habitWithCounter = habitWithCounterRepository.findById(habitId).orElseThrow(
-                () -> new HabitIdNotFoundException("Not Found habit"));
+        Habit foundHabit = getHabitFromRepository(habitTypeDto, habitId);
 
-        if ( isOwner(user, habitWithCounter) ) {
-            user.getHabit().remove(habitWithCounter);
-            monsterService.minusExpWithCount(user, habitWithCounter.getAccomplishCounter());
-            habitRepository.delete(habitWithCounter);
-        } else {
-            throw new HasNoPermissionException("User has no permission");
-        }
+        checkIsOwner(user, foundHabit);
+
+        user.getHabit().remove(foundHabit);
+        monsterService.minusExpWithCount(user, foundHabit.getAccomplishCounter());
+        habitRepository.delete(foundHabit);
+
 
         return DefaultResponseDto.builder()
                 .statusCode(200)
@@ -155,28 +113,23 @@ public class HabitServiceImpl implements HabitService {
     }
 
     @Override
-    public List<HabitSummaryVo> getHabitSummaryList(User user) {
-        LocalDate today = LocalDate.now();
+    public List<HabitSummaryVo> getHabitSummaryList(User user, LocalDate today) {
         int day = today.getDayOfWeek().getValue();
-
         List<Habit> habits = habitRepository.findTodayHabitListByUser(user, day, today);
         return HabitSummaryVo.listOf(habits);
     }
 
     @Override
     @Transactional
-    public HabitDetailResponseDto updateHabit(Long habitId, HabitUpdateRequestDto habitUpdateRequestDto, User user) {
+    public HabitDetailResponseDto updateHabit(HabitTypeDto habitTypeDto, Long habitId, HabitUpdateRequestDto habitUpdateRequestDto, User user) {
 
-        HabitWithCounter habit = habitWithCounterRepository.findById(habitId)
-                .orElseThrow(() -> new HabitIdNotFoundException("Not Found Habit"));
+        Habit foundHabit = getHabitFromRepository(habitTypeDto, habitId);
 
-        if ( isOwner(user, habit) ) {
-            habit.updateHabit(habitUpdateRequestDto);
-        } else {
-            throw new HasNoPermissionException("User has no permission");
-        }
+        checkIsOwner(user, foundHabit);
 
-        HabitDetail build = HabitDetail.of(habit);
+        foundHabit.updateHabit(habitUpdateRequestDto);
+
+        HabitDetail build = HabitDetail.of(foundHabit);
         return HabitDetailResponseDto.builder()
                 .habit(build)
                 .statusCode(200)
@@ -185,13 +138,30 @@ public class HabitServiceImpl implements HabitService {
 
     }
 
-    public HabitSummaryListResponseDto getHabitSummaryListResponseDto(User user) {
+    public HabitSummaryListResponseDto getHabitSummaryListResponseDto(User user, LocalDate today) {
         return HabitSummaryListResponseDto.builder()
-                .habits(getHabitSummaryList(user))
+                .habits(getHabitSummaryList(user, today))
                 .totalHabitCount(getAllHabitCountByUser(user))
                 .responseMessage("Habit Detail List Query Completed")
                 .statusCode(200)
                 .build();
+    }
+
+    private Habit getHabitFromRepository(HabitTypeDto habitTypeDto, Long habitId) {
+        Habit foundHabit = null;
+
+        switch (habitTypeDto.getHabitType()) {
+            case HABITWITHCOUNTER:
+                foundHabit = habitWithCounterRepository.findById(habitId).orElseThrow(
+                        () -> new HabitIdNotFoundException("Not Found Habit"));
+                break;
+            case HABITWITHTIMER:
+                foundHabit = habitWithTimerRepository.findById(habitId).orElseThrow(
+                        () -> new HabitIdNotFoundException("Not Found Habit"));
+
+                break;
+        }
+        return foundHabit;
     }
 
     public List<HabitSummaryVo> getHabitListByUser(User user) {
@@ -205,7 +175,42 @@ public class HabitServiceImpl implements HabitService {
         return currentHabitCount+complatedHabitCount;
     }
 
-    private boolean isOwner(User user, HabitWithCounter habitWithCounter) {
-        return habitWithCounter.getUser().getId().equals(user.getId());
+    private void checkIsOwner(User user, Habit habit) {
+        if (!habit.getUser().getId().equals(user.getId())) {
+            throw new HasNoPermissionException("User Has No Permissions");
+        }
+    }
+
+    private HabitDetail buildHabitDetail(Habit habit) {
+        HabitDetail habitDetail = HabitDetail.builder()
+                .habitId(habit.getId())
+                .category(habit.getCategory())
+                .count(habit.getGoalInSession())
+                .totalCount(habit.getTotalCount())
+                .description(habit.getDescription())
+                .durationEnd(habit.getDurationEnd().toString())
+                .durationStart(habit.getDurationStart().toString())
+                .achievePercentage(habit.getAchievePercentage())
+                .practiceDays(habit.getPracticeDays())
+                .current(habit.getCurrent())
+                .categoryId(habit.getCategory().getCategoryId())
+                .title(habit.getTitle())
+                .isAccomplished(false)
+                .build();
+        return habitDetail;
+    }
+
+    private void plusExpPointAndMakeHistory(Habit habit) {
+        monsterService.plusExpPoint(habit.getUser());
+        History history = History.makeHistory(habit);
+        historyRepository.save(history);
+    }
+
+    private void deleteHabitIfCompleteToday(Habit habit, LocalDate today) {
+        if (habit.getDurationEnd().equals(today)) {
+            CompletedHabit completedHabit = CompletedHabit.of(habit);
+            completedHabitRepository.save(completedHabit);
+            habitRepository.delete(habit);
+        }
     }
 }

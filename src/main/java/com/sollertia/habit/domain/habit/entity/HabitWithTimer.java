@@ -12,7 +12,7 @@ import javax.persistence.Entity;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-@Getter
+
 @Entity
 @DiscriminatorValue("T")
 @NoArgsConstructor
@@ -26,6 +26,11 @@ public class HabitWithTimer extends Habit {
     @Override
     public int getCurrent() {
         return this.currentDuration;
+    }
+
+    @Override
+    public int getGoalInSession() {
+        return this.goalDurationTime;
     }
 
     @Override

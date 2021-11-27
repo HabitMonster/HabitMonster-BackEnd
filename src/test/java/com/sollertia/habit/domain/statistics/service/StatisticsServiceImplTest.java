@@ -9,6 +9,7 @@ import com.sollertia.habit.domain.habit.entity.Habit;
 import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.domain.user.oauth2.userinfo.GoogleOauth2UserInfo;
 import com.sollertia.habit.domain.user.oauth2.userinfo.Oauth2UserInfo;
+import com.sollertia.habit.global.utils.RandomUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,6 +37,8 @@ class StatisticsServiceImplTest {
 
     @Mock
     private CompletedHabitRepository completedHabitRepository;
+    @Mock
+    private RandomUtil randomUtil;
 
     User testUser;
     HabitDtoImpl habitDto;
@@ -50,11 +53,8 @@ class StatisticsServiceImplTest {
         Oauth2UserInfo oauth2UserInfo = new GoogleOauth2UserInfo(attributes);
         testUser = User.create(oauth2UserInfo);
 
-        Calendar startDate = Calendar.getInstance();
-        DateFormat form = new SimpleDateFormat("yyyy-MM-dd");
-
         habitDto = HabitDtoImpl.builder()
-                .durationStart(form.format(startDate.getTime())).durationEnd(form.format(startDate.getTime()))
+                .durationStart("2021-11-01").durationEnd("2021-11-30")
                 .count(3).title("title").description("description").practiceDays("1234567").categoryId(1L).build();
         HabitTypeDto habitTypeDto = new HabitTypeDto("counter", "specificDay");
         Habit habit = Habit.createHabit(habitTypeDto.getHabitType(), habitDto, testUser);
