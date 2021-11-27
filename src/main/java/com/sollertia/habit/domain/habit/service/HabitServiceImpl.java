@@ -60,7 +60,6 @@ public class HabitServiceImpl implements HabitService {
     @Override
     public HabitDetailResponseDto getHabitDetail(HabitTypeDto habitTypeDto, Long habitId) {
 
-
         Habit foundHabit = getHabitFromRepository(habitTypeDto, habitId);
 
         HabitDetail build = buildHabitDetail(foundHabit);
@@ -101,13 +100,12 @@ public class HabitServiceImpl implements HabitService {
         HabitWithCounter habitWithCounter = habitWithCounterRepository.findById(habitId).orElseThrow(
                 () -> new HabitIdNotFoundException("Not Found habit"));
 
-        if ( isOwner(user, habitWithCounter) ) {
-            user.getHabit().remove(habitWithCounter);
-            monsterService.minusExpWithCount(user, habitWithCounter.getAccomplishCounter());
-            habitRepository.delete(habitWithCounter);
-        } else {
-            throw new HasNoPermissionException("User has no permission");
-        }
+        isOwner(user, habitWithCounter);
+
+        user.getHabit().remove(habitWithCounter);
+        monsterService.minusExpWithCount(user, habitWithCounter.getAccomplishCounter());
+        habitRepository.delete(habitWithCounter);
+
 
         return DefaultResponseDto.builder()
                 .statusCode(200)
@@ -129,11 +127,9 @@ public class HabitServiceImpl implements HabitService {
         HabitWithCounter habit = habitWithCounterRepository.findById(habitId)
                 .orElseThrow(() -> new HabitIdNotFoundException("Not Found Habit"));
 
-        if ( isOwner(user, habit) ) {
-            habit.updateHabit(habitUpdateRequestDto);
-        } else {
-            throw new HasNoPermissionException("User has no permission");
-        }
+        isOwner(user, habit);
+
+        habit.updateHabit(habitUpdateRequestDto);
 
         HabitDetail build = HabitDetail.of(habit);
         return HabitDetailResponseDto.builder()
@@ -181,8 +177,10 @@ public class HabitServiceImpl implements HabitService {
         return currentHabitCount+complatedHabitCount;
     }
 
-    private boolean isOwner(User user, HabitWithCounter habitWithCounter) {
-        return habitWithCounter.getUser().getId().equals(user.getId());
+    private void isOwner(User user, Habit habit) {
+        if (!habit.getUser().getId().equals(user.getId())) {
+            throw new HasNoPermissionException("User Has No Permissions");
+        }
     }
 
     private HabitDetail buildHabitDetail(Habit habit) {
