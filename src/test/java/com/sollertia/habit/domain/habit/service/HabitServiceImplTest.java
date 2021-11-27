@@ -27,6 +27,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.reflect.Whitebox;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -101,6 +102,10 @@ class HabitServiceImplTest {
 
         habit1 = (HabitWithCounter) Habit.createHabit(habitTypeDto1.getHabitType(), habitDto, testUser);
         habit2 = (HabitWithTimer) Habit.createHabit(habitTypeDto2.getHabitType(), habitDto, testUser);
+
+        Whitebox.setInternalState(testUser, "id", 1l);
+        Whitebox.setInternalState(habit1, "id", 1l);
+
     }
 
     @Test
@@ -160,6 +165,7 @@ class HabitServiceImplTest {
     @Test
     public void checkHabitTest() throws Exception {
         //given
+
         HabitDtoImpl habitDtoCheck = HabitDtoImpl.builder()
                 .title("test")
                 .description("testDescription")
@@ -183,18 +189,13 @@ class HabitServiceImplTest {
 
         HabitWithCounter habitCheck = (HabitWithCounter) Habit.createHabit(habitTypeDto1.getHabitType(), habitDtoCheck, testUser);
         HabitWithCounter habitDueToday = (HabitWithCounter) Habit.createHabit(habitTypeDto1.getHabitType(), habitDtoDueToday, testUser);
+        Whitebox.setInternalState(habitDueToday, "id", 5l);
         //habit id 1 -> isAchieve = false
         given(habitWithCounterRepository.findById(1l)).willReturn(Optional.ofNullable(habit1));
         //habit id 2 -> isAchieve = true
         given(habitWithCounterRepository.findById(2l)).willReturn(Optional.ofNullable(habitCheck));
         //habit id 3 -> isCompleteToday = true
-        given(habitWithCounterRepository.findById(3l)).willReturn(Optional.ofNullable(habitDueToday));
-
-        given(habitWithCounterRepository.save(habit1)).willReturn(habit1);
-
-        given(habitWithCounterRepository.save(habitCheck)).willReturn(habitCheck);
-
-        given(habitWithCounterRepository.save(habitDueToday)).willReturn(habitDueToday);
+        given(habitWithCounterRepository.findById(5l)).willReturn(Optional.ofNullable(habitDueToday));
 
 
         //when
@@ -202,7 +203,7 @@ class HabitServiceImplTest {
 
         HabitCheckResponseDto habitCheckResponseDto2 = habitService.checkHabit(habitTypeDto1, 2l, today);
 
-        HabitCheckResponseDto habitCheckResponseDto3 = habitService.checkHabit(habitTypeDto1, 3l, today);
+        HabitCheckResponseDto habitCheckResponseDto3 = habitService.checkHabit(habitTypeDto1, 5l, today);
 
 
 
@@ -219,7 +220,7 @@ class HabitServiceImplTest {
         verify(monsterService, times(2)).plusExpPoint(testUser);
         verify(historyRepository, times(2)).save(any());
         verify(completedHabitRepository, times(1)).save(any());
-        verify(habitWithCounterRepository, times(1)).delete(habitDueToday);
+        verify(habitRepository, times(1)).delete(habitDueToday);
     }
 
 
@@ -227,12 +228,13 @@ class HabitServiceImplTest {
     public void deleteHabitTest() throws Exception {
         //given
         given(habitWithCounterRepository.findById(habit1.getId())).willReturn(Optional.ofNullable(habit1));
+
         //when
         DefaultResponseDto defaultResponseDto = habitService.deleteHabit(habitTypeDto1, habit1.getId(), testUser);
         //then
         assertThat(defaultResponseDto.getResponseMessage()).isEqualTo("Habit Delete Completed");
         assertThat(defaultResponseDto.getStatusCode()).isEqualTo(200);
-        verify(monsterService, times(1)).minusExpWithCount(testUser, any());
+        verify(monsterService, times(1)).minusExpWithCount(eq(testUser), any());
         verify(habitRepository, times(1)).delete(habit1);
     }
 

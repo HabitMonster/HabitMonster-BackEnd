@@ -48,6 +48,7 @@ public class HabitServiceImpl implements HabitService {
 
         HabitDetail habitDetail = buildHabitDetail(savedHabit);
 
+
         return HabitDetailResponseDto.builder()
 
                 .habit(habitDetail)
@@ -98,7 +99,7 @@ public class HabitServiceImpl implements HabitService {
 
         Habit foundHabit = getHabitFromRepository(habitTypeDto, habitId);
 
-        isOwner(user, foundHabit);
+        checkIsOwner(user, foundHabit);
 
         user.getHabit().remove(foundHabit);
         monsterService.minusExpWithCount(user, foundHabit.getAccomplishCounter());
@@ -120,16 +121,15 @@ public class HabitServiceImpl implements HabitService {
 
     @Override
     @Transactional
-    public HabitDetailResponseDto updateHabit(Long habitId, HabitUpdateRequestDto habitUpdateRequestDto, User user) {
+    public HabitDetailResponseDto updateHabit(HabitTypeDto habitTypeDto, Long habitId, HabitUpdateRequestDto habitUpdateRequestDto, User user) {
 
-        HabitWithCounter habit = habitWithCounterRepository.findById(habitId)
-                .orElseThrow(() -> new HabitIdNotFoundException("Not Found Habit"));
+        Habit foundHabit = getHabitFromRepository(habitTypeDto, habitId);
 
-        isOwner(user, habit);
+        checkIsOwner(user, foundHabit);
 
-        habit.updateHabit(habitUpdateRequestDto);
+        foundHabit.updateHabit(habitUpdateRequestDto);
 
-        HabitDetail build = HabitDetail.of(habit);
+        HabitDetail build = HabitDetail.of(foundHabit);
         return HabitDetailResponseDto.builder()
                 .habit(build)
                 .statusCode(200)
@@ -175,7 +175,7 @@ public class HabitServiceImpl implements HabitService {
         return currentHabitCount+complatedHabitCount;
     }
 
-    private void isOwner(User user, Habit habit) {
+    private void checkIsOwner(User user, Habit habit) {
         if (!habit.getUser().getId().equals(user.getId())) {
             throw new HasNoPermissionException("User Has No Permissions");
         }
