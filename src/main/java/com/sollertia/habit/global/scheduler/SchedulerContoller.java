@@ -1,4 +1,4 @@
-package com.sollertia.habit.global;
+package com.sollertia.habit.global.scheduler;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

@@ -1,4 +1,4 @@
-package com.sollertia.habit.global.utils;
+package com.sollertia.habit.global.scheduler;
 
 
 import com.sollertia.habit.domain.category.enums.Category;
@@ -17,6 +17,7 @@ import com.sollertia.habit.domain.preset.service.PreSetServiceImpl;
 import com.sollertia.habit.domain.statistics.dto.StatisticsCategoryVo;
 import com.sollertia.habit.domain.statistics.dto.StatisticsSuccessCategoryAvgVo;
 import com.sollertia.habit.domain.statistics.entity.Statistics;
+import com.sollertia.habit.domain.statistics.enums.SessionType;
 import com.sollertia.habit.domain.statistics.repository.StatisticsRepository;
 import com.sollertia.habit.domain.user.entity.Recommendation;
 import com.sollertia.habit.domain.user.entity.User;
@@ -26,6 +27,7 @@ import com.sollertia.habit.domain.user.repository.UserRepository;
 import com.sollertia.habit.global.exception.monster.MonsterNotFoundException;
 import com.sollertia.habit.global.globaldto.SearchDateDto;
 import com.sollertia.habit.global.globalenum.DurationEnum;
+import com.sollertia.habit.global.utils.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -60,7 +62,6 @@ public class SchedulerRunner {
         LocalDate date = LocalDate.now();
         minusExpOnLapsedHabit(date);
         expireHabit(date);
-
     }
 
     @Scheduled(cron = "0 0 1 ? * SUN")
