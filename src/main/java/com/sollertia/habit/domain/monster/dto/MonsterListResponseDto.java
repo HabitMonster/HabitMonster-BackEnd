@@ -9,8 +9,7 @@ import lombok.experimental.SuperBuilder;
 import java.util.List;
 
 @Getter
-@NoArgsConstructor
 @SuperBuilder
 public class MonsterListResponseDto extends DefaultResponseDto {
-    private List<MonsterSummaryVo> monsters;
+    private List<MonsterSummaryDto> monsters;
 }

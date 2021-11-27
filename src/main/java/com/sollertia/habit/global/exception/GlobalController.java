@@ -18,7 +18,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.sql.SQLException;
 import java.time.format.DateTimeParseException;
 
 @RestControllerAdvice
@@ -27,11 +26,6 @@ public class GlobalController {
     @ExceptionHandler
     public ResponseEntity<ErrorResponseDto> FollowExceptionHandler(FollowException exception) {
         return new ResponseEntity<>(ErrorResponseDto.badRequest(exception.getMessage()), HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler
-    public ResponseEntity<ErrorResponseDto> SQLExceptionHandler(SQLException exception) {
-        return new ResponseEntity<>(ErrorResponseDto.badRequest(exception.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler

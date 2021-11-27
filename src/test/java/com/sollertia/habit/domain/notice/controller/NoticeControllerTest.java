@@ -1,7 +1,7 @@
 package com.sollertia.habit.domain.notice.controller;
 
 import com.sollertia.habit.domain.notice.dto.NoticeResponseDto;
-import com.sollertia.habit.domain.notice.dto.NoticeVo;
+import com.sollertia.habit.domain.notice.dto.NoticeDto;
 import com.sollertia.habit.domain.notice.service.NoticeServiceImpl;
 import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.domain.user.oauth2.userinfo.GoogleOauth2UserInfo;
@@ -74,10 +74,10 @@ class NoticeControllerTest {
 
         //given
         authenticated();
-        NoticeVo noticeVo = NoticeVo.builder().title("title").build();
-        List<NoticeVo> noticeVoList = new ArrayList<>();
-        noticeVoList.add(noticeVo);
-        NoticeResponseDto noticeResponseDto = NoticeResponseDto.builder().notices(noticeVoList).statusCode(200).responseMessage("Notice Query Completed").build();
+        NoticeDto noticeDto = NoticeDto.builder().title("title").build();
+        List<NoticeDto> noticeDtoList = new ArrayList<>();
+        noticeDtoList.add(noticeDto);
+        NoticeResponseDto noticeResponseDto = NoticeResponseDto.builder().notices(noticeDtoList).statusCode(200).responseMessage("Notice Query Completed").build();
         given(noticeService.getNoticeList()).willReturn(noticeResponseDto);
 
         //when

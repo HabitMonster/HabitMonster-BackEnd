@@ -12,5 +12,5 @@ import java.util.List;
 @NoArgsConstructor
 @SuperBuilder
 public class CategoryResponseDto extends DefaultResponseDto {
-        private List<CategoryVo> categories;
+        private List<CategoryDto> categories;
 }

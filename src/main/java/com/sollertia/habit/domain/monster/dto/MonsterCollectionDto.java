@@ -8,21 +8,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-public class MonsterCollectionVo {
+public class MonsterCollectionDto {
     private String monsterName;
     private String createdAt;
     private Integer maxLevel;
-    private List<MonsterDatabaseVo> monsterDatabases;
+    private List<MonsterDatabaseDto> monsterDatabases;
 
-    private MonsterCollectionVo(String monsterName, String createdAt, Integer maxLevel, List<MonsterDatabaseVo> monsterDatabases) {
+    private MonsterCollectionDto(String monsterName, String createdAt, Integer maxLevel, List<MonsterDatabaseDto> monsterDatabases) {
         this.monsterName = monsterName;
         this.createdAt = createdAt;
         this.maxLevel = maxLevel;
         this.monsterDatabases = monsterDatabases;
     }
 
-    public static MonsterCollectionVo of(MonsterCollection monsterCollection, List<MonsterDatabaseVo> monsterDatabases) {
-        return new MonsterCollectionVo(
+    public static MonsterCollectionDto of(MonsterCollection monsterCollection, List<MonsterDatabaseDto> monsterDatabases) {
+        return new MonsterCollectionDto(
                 monsterCollection.getMonsterName(),
                 monsterCollection.getCreateAt(),
                 monsterCollection.getMaxLevel().getValue(),
@@ -30,16 +30,18 @@ public class MonsterCollectionVo {
         );
     }
 
-    public static List<MonsterCollectionVo> listOf(List<MonsterCollection> monsterCollectionList) {
-        List<MonsterCollectionVo> monsterCollectionVoList = new ArrayList<>();
+    public static List<MonsterCollectionDto> listOf(List<MonsterCollection> monsterCollectionList) {
+
+        List<MonsterCollectionDto> monsterCollectionDtoList = new ArrayList<>();
 
         for (MonsterCollection monsterCollection : monsterCollectionList) {
             List<MonsterCollectionDatabase> monsterCollectionDatabaseList =
                     monsterCollection.getMonsterCollectionDatabaseList();
-            List<MonsterDatabaseVo> monsterDatabaseVoList = MonsterDatabaseVo.listOf(monsterCollectionDatabaseList);
-            monsterCollectionVoList.add(MonsterCollectionVo.of(monsterCollection, monsterDatabaseVoList));
+            List<MonsterDatabaseDto> monsterDatabaseDtoList =
+                    MonsterDatabaseDto.listOf(monsterCollectionDatabaseList);
+            monsterCollectionDtoList.add(MonsterCollectionDto.of(monsterCollection, monsterDatabaseDtoList));
         }
 
-        return monsterCollectionVoList;
+        return monsterCollectionDtoList;
     }
 }

@@ -8,5 +8,5 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @SuperBuilder
 public class MonsterResponseDto extends DefaultResponseDto {
-    private MonsterVo monster;
+    private MonsterDto monster;
 }

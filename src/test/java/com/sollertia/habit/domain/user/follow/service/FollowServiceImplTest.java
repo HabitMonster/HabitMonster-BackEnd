@@ -6,6 +6,7 @@ import com.sollertia.habit.domain.monster.enums.MonsterType;
 import com.sollertia.habit.domain.monster.enums.Level;
 import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.domain.user.follow.dto.FollowCheckDto;
+import com.sollertia.habit.domain.user.follow.dto.FollowDto;
 import com.sollertia.habit.domain.user.follow.dto.FollowResponseDto;
 import com.sollertia.habit.domain.user.follow.dto.FollowSearchResponseDto;
 import com.sollertia.habit.domain.user.follow.entity.Follow;
@@ -32,7 +33,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willThrow;
-import static org.mockito.Mockito.lenient;
 
 @ExtendWith(MockitoExtension.class)
 @RunWith(PowerMockRunner.class)
@@ -81,12 +81,12 @@ class FollowServiceImplTest {
     @Test
     void getFollowers() {
         //given
-        Follow follow = Follow.create(testUser2, testUser);
-        List<Follow> follows = new ArrayList<>();
-        follows.add(follow);
-        given(followRepository.findAllByFollowingId(testUser.getId())).willReturn(follows);
-        given(userRepository.findByMonsterCode(testUser2.getMonsterCode())).willReturn(java.util.Optional.ofNullable(testUser2));
-        lenient().when(followRepository.findByFollowerIdAndFollowingId(testUser2.getId(), testUser.getId())).thenReturn(follow);
+        FollowDto followers = new FollowDto(testUser2.getUsername(),1L, testUser2.getMonster().getMonsterDatabase().getImageUrl(),
+                testUser2.getMonsterCode(),false);
+        List<FollowDto> followDtoList = new ArrayList<>();
+        followDtoList.add(followers);
+
+        given(followRepository.searchFollowersByUser(testUser)).willReturn(followDtoList);
 
         //when
         FollowResponseDto followResponseDto = followService.getFollowers(testUser);
@@ -100,14 +100,15 @@ class FollowServiceImplTest {
         assertThat(followResponseDto.getResponseMessage()).isEqualTo("Followers Query Completed");
     }
 
-    @DisplayName("Followeings 가져오기")
+    @DisplayName("Followings 가져오기")
     @Test
     void getFollowings() {
         //given
-        Follow follow = Follow.create(testUser, testUser2);
-        List<Follow> follows = new ArrayList<>();
-        follows.add(follow);
-        given(followRepository.findAllByFollowerId(testUser.getId())).willReturn(follows);
+        FollowDto followings = new FollowDto(testUser2.getUsername(),1L, testUser2.getMonster().getMonsterDatabase().getImageUrl(),
+                testUser2.getMonsterCode(),true);
+        List<FollowDto> followDtoList = new ArrayList<>();
+        followDtoList.add(followings);
+        given(followRepository.searchFollowingsByUser(testUser)).willReturn(followDtoList);
 
         //when
         FollowResponseDto followResponseDto = followService.getFollowings(testUser);
@@ -176,9 +177,9 @@ class FollowServiceImplTest {
     @Test
     void searchFollowing() {
         //given
-        Follow follow = Follow.create(testUser2, testUser);
-        given(userRepository.findByMonsterCode(testUser2.getMonsterCode())).willReturn(java.util.Optional.ofNullable(testUser2));
-        lenient().when(followRepository.findByFollowerIdAndFollowingId(testUser2.getId(), testUser.getId())).thenReturn(follow);
+        FollowDto followings = new FollowDto(testUser2.getUsername(),1L, testUser2.getMonster().getMonsterDatabase().getImageUrl(),
+                testUser2.getMonsterCode(),false);
+        given(followRepository.searchUser(testUser2.getMonsterCode(),testUser)).willReturn(followings);
 
         //when
         FollowSearchResponseDto responseDto = followService.searchFollowing(testUser2.getMonsterCode(), testUser);
@@ -196,8 +197,10 @@ class FollowServiceImplTest {
     @Test
     void searchFollowingMyself() {
         //given
-        given(userRepository.findByMonsterCode(testUser2.getMonsterCode()))
-                .willReturn(Optional.of(testUser2));
+        FollowDto followings = new FollowDto(testUser2.getUsername(),1L, testUser2.getMonster().getMonsterDatabase().getImageUrl(),
+                testUser2.getMonsterCode(),null);
+        given(followRepository.searchUser(testUser2.getMonsterCode(),testUser2))
+                .willReturn(followings);
         //when
         FollowSearchResponseDto responseDto = followService.searchFollowing(testUser2.getMonsterCode(), testUser2);
 
@@ -225,7 +228,7 @@ class FollowServiceImplTest {
     @DisplayName("searchFollowing UserNoFound")
     @Test
     void searchFollowingUserNotFound() {
-        willThrow(UserIdNotFoundException.class).given(userRepository).findByMonsterCode(testUser2.getMonsterCode());
+        willThrow(UserIdNotFoundException.class).given(followRepository).searchUser(testUser2.getMonsterCode(),testUser);
         assertThrows(UserIdNotFoundException.class,
                 () -> followService.searchFollowing(testUser2.getMonsterCode(), testUser));
     }

@@ -28,11 +28,12 @@ public class MonsterService {
     private final MonsterCollectionService monsterCollectionService;
 
     public MonsterListResponseDto getAllMonsters(User user) {
-        List<MonsterCollection> monsterCollectionList = monsterCollectionService.getMonsterCollectionListByUser(user);
-        List<MonsterType> collect = monsterCollectionList.stream().map(MonsterCollection::getMonsterType).collect(Collectors.toList());
+        List<MonsterType> monsterTypeList = monsterCollectionService.getMonsterTypeListByUser(user);
         List<MonsterDatabase> monsterDatabaseList = monsterDatabaseRepository.findAllByLevel(Level.LV1);
+
         return MonsterListResponseDto.builder()
-                .monsters(MonsterSummaryVo.listFromMonsterDatabasesDisabledIfNotIn(monsterDatabaseList, collect))
+                .monsters(MonsterSummaryDto.listFromMonsterDatabasesDisabledIfNotIn
+                        (monsterDatabaseList, monsterTypeList))
                 .responseMessage("LV1 Monster Query Completed")
                 .statusCode(200)
                 .build();
@@ -41,23 +42,26 @@ public class MonsterService {
     @Transactional
     public MonsterResponseDto updateMonster(User user,
                                             MonsterSelectRequestDto requestDto) {
-        String monsterName = requestDto.getMonsterName();
-        MonsterDatabase monsterDatabase = getMonsterDatabaseById(requestDto.getMonsterId());
-        Monster newMonster = Monster.createNewMonster(monsterName, monsterDatabase);
         Monster currentMonster = user.getMonster();
-
         if ( currentMonster == null || currentMonster.changeable()) {
+            Monster newMonster = getNewMonster(requestDto);
             newMonster = changeMonster(user, newMonster);
+
+            MonsterDto monsterDto = MonsterDto.of(newMonster);
+            return MonsterResponseDto.builder()
+                    .monster(monsterDto)
+                    .responseMessage("Selected Monster")
+                    .statusCode(200)
+                    .build();
         } else {
             throw new NotReachedMaximumLevelException("New monsters require max level and EXP.");
         }
+    }
 
-        MonsterVo monsterVo = MonsterVo.of(newMonster);
-        return MonsterResponseDto.builder()
-                .monster(monsterVo)
-                .responseMessage("Selected Monster")
-                .statusCode(200)
-                .build();
+    private Monster getNewMonster(MonsterSelectRequestDto requestDto) {
+        String monsterName = requestDto.getMonsterName();
+        MonsterDatabase monsterDatabase = getMonsterDatabaseById(requestDto.getMonsterId());
+        return Monster.createNewMonster(monsterName, monsterDatabase);
     }
 
     private Monster changeMonster(User user, Monster monster) {
@@ -72,10 +76,10 @@ public class MonsterService {
                                             MonsterSelectRequestDto requestDto) {
         Monster monster = getMonsterByUser(user);
         monster = monster.updateName(requestDto.getMonsterName());
-        MonsterVo monsterVo = MonsterVo.of(monster);
+        MonsterDto monsterDto = MonsterDto.of(monster);
 
         return MonsterResponseDto.builder()
-                .monster(monsterVo)
+                .monster(monsterDto)
                 .responseMessage("Change Monster Name")
                 .statusCode(200)
                 .build();
@@ -89,9 +93,9 @@ public class MonsterService {
                 .build();
     }
 
-    public MonsterVo getMonsterVo(User user) {
+    public MonsterDto getMonsterVo(User user) {
         Monster monster = getMonsterByUser(user);
-        return MonsterVo.of(monster);
+        return MonsterDto.of(monster);
     }
 
     @Transactional

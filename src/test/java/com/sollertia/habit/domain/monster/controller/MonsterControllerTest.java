@@ -94,8 +94,8 @@ MonsterControllerTest {
     void getAllMonsters() throws Exception {
         //given
         authenticated();
-        List<MonsterSummaryVo> summaryVoList = new ArrayList<>();
-        summaryVoList.add(new MonsterSummaryVo(1L,"monster.img"));
+        List<MonsterSummaryDto> summaryVoList = new ArrayList<>();
+        summaryVoList.add(new MonsterSummaryDto(1L,"monster.img"));
         MonsterListResponseDto responseDto = MonsterListResponseDto.builder().monsters(summaryVoList).responseMessage("LV1 Monster Query Completed").statusCode(200).build();
 
         given(monsterService.getAllMonsters(testUser))
@@ -118,7 +118,7 @@ MonsterControllerTest {
         //given
         authenticated();
         MonsterResponseDto responseDto = MonsterResponseDto.builder()
-                .monster(MonsterVo.builder().monsterImage("monster.img").monsterName("testmonster").build())
+                .monster(MonsterDto.builder().monsterImage("monster.img").monsterName("testmonster").build())
                 .responseMessage("Selected Monster")
                 .statusCode(200).build();
 
@@ -150,7 +150,7 @@ MonsterControllerTest {
         //given
         authenticated();
         MonsterResponseDto responseDto = MonsterResponseDto.builder()
-                .monster(MonsterVo.builder().monsterImage("monster.img").monsterName("testmonster").build())
+                .monster(MonsterDto.builder().monsterImage("monster.img").monsterName("testmonster").build())
                 .responseMessage("Change Monster Name")
                 .statusCode(200).build();
 
@@ -181,8 +181,8 @@ MonsterControllerTest {
     void getMonsterCollection() throws Exception {
         //given
         authenticated();
-        List<MonsterCollectionVo> monsterCollectionVoList = new ArrayList<>();
-        List<MonsterDatabaseVo> monsterDatabases = new ArrayList<>();
+        List<MonsterCollectionDto> monsterCollectionDtoList = new ArrayList<>();
+        List<MonsterDatabaseDto> monsterDatabases = new ArrayList<>();
         Monster mockMonster = mock(Monster.class);
         given(mockMonster.getCreatedAt()).willReturn(LocalDateTime.now());
         given(mockMonster.getLevel()).willReturn(Level.LV1);
@@ -190,9 +190,9 @@ MonsterControllerTest {
         given(mockMonsterDatabase.getMonsterType()).willReturn(MonsterType.BLUE);
         given(mockMonster.getMonsterDatabase()).willReturn(mockMonsterDatabase);
         MonsterCollection monsterCollection = MonsterCollection.createMonsterCollection(mockMonster);
-        monsterCollectionVoList.add(MonsterCollectionVo.of(monsterCollection, monsterDatabases));
+        monsterCollectionDtoList.add(MonsterCollectionDto.of(monsterCollection, monsterDatabases));
         MonsterCollectionResponseDto responseDto = MonsterCollectionResponseDto.builder()
-                .monsters(monsterCollectionVoList)
+                .monsters(monsterCollectionDtoList)
                 .responseMessage("Monster Collection Query Completed")
                 .statusCode(200).build();
 
@@ -214,7 +214,7 @@ MonsterControllerTest {
         //given
         authenticated();
         MonsterResponseDto responseDto = MonsterResponseDto.builder()
-                .monster(MonsterVo.builder().monsterImage("monster.img").monsterName("testmonster").build())
+                .monster(MonsterDto.builder().monsterImage("monster.img").monsterName("testmonster").build())
                 .responseMessage("Selected Monster")
                 .statusCode(200).build();
 

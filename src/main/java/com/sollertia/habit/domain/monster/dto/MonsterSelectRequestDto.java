@@ -1,6 +1,5 @@
 package com.sollertia.habit.domain.monster.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,7 +9,6 @@ import javax.validation.constraints.Size;
 
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 public class MonsterSelectRequestDto {
    private Long monsterId;
    @NotBlank(message = "값이 비어있지 않아야 합니다.")

@@ -8,14 +8,13 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
-@NoArgsConstructor
 @Getter
-public class MonsterSummaryVo {
+public class MonsterSummaryDto {
     private Long monsterId;
     private String monsterImage;
     private boolean enable = true;
 
-    public MonsterSummaryVo(Long monsterId, String monsterImage) {
+    public MonsterSummaryDto(Long monsterId, String monsterImage) {
         this.monsterId = monsterId;
         this.monsterImage = monsterImage;
     }
@@ -28,23 +27,23 @@ public class MonsterSummaryVo {
         this.setEnable(false);
     }
 
-    public static MonsterSummaryVo of(MonsterDatabase monsterDatabase) {
-        return new MonsterSummaryVo(monsterDatabase.getId(), monsterDatabase.getImageUrl());
+    public static MonsterSummaryDto of(MonsterDatabase monsterDatabase) {
+        return new MonsterSummaryDto(monsterDatabase.getId(), monsterDatabase.getImageUrl());
     }
 
-    public static MonsterSummaryVo disabledOf(MonsterDatabase monsterDatabase) {
-        MonsterSummaryVo summaryVo = new MonsterSummaryVo(monsterDatabase.getId(), monsterDatabase.getImageUrl());
+    public static MonsterSummaryDto disabledOf(MonsterDatabase monsterDatabase) {
+        MonsterSummaryDto summaryVo = new MonsterSummaryDto(monsterDatabase.getId(), monsterDatabase.getImageUrl());
         summaryVo.toDisable();
         return summaryVo;
     }
 
-    public static List<MonsterSummaryVo> listFromMonsterDatabasesDisabledIfNotIn(List<MonsterDatabase> monsterList, List<MonsterType> monsterTypeList) {
-        List<MonsterSummaryVo> summaryVoList = new ArrayList<>();
+    public static List<MonsterSummaryDto> listFromMonsterDatabasesDisabledIfNotIn(List<MonsterDatabase> monsterList, List<MonsterType> monsterTypeList) {
+        List<MonsterSummaryDto> summaryVoList = new ArrayList<>();
         for (MonsterDatabase monsterDatabase : monsterList) {
             if ( monsterTypeList.contains(monsterDatabase.getMonsterType()) ) {
-                summaryVoList.add(MonsterSummaryVo.disabledOf(monsterDatabase));
+                summaryVoList.add(MonsterSummaryDto.disabledOf(monsterDatabase));
             } else {
-                summaryVoList.add(MonsterSummaryVo.of(monsterDatabase));
+                summaryVoList.add(MonsterSummaryDto.of(monsterDatabase));
             }
         }
         return summaryVoList;

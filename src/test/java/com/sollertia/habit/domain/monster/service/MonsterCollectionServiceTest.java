@@ -90,7 +90,7 @@ class MonsterCollectionServiceTest {
     @Test
     void getMonsterCollection() {
         //given
-        given(monsterCollectionRepository.findAllByUser(testUser))
+        given(monsterCollectionRepository.searchByUser(testUser))
                 .willReturn(mockMonsterCollectionList);
 
         //when
@@ -100,6 +100,6 @@ class MonsterCollectionServiceTest {
         assertThat(responseDto.getStatusCode()).isEqualTo(200);
         assertThat(responseDto.getResponseMessage()).isEqualTo("Monster Collection Query Completed");
 
-        verify(monsterCollectionRepository).findAllByUser(testUser);
+        verify(monsterCollectionRepository).searchByUser(testUser);
     }
 }
