@@ -38,7 +38,7 @@ public class HabitSummaryVo {
         return summaryVoList;
     }
 
-    public static HabitSummaryVo of(HabitWithCounter habit) {
+    public static HabitSummaryVo of(Habit habit) {
         return HabitSummaryVo.builder()
                 .habitId(habit.getId())
                 .title(habit.getTitle())
