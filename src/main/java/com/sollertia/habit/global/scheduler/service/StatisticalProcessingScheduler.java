@@ -138,33 +138,21 @@ public class StatisticalProcessingScheduler {
         Optional<Map.Entry<MonsterType, Long>> max = monsterTypeCount
                 .entrySet()
                 .stream()
-                .max((Map.Entry<MonsterType, Long> e1, Map.Entry<MonsterType, Long> e2)
-                        -> e1.getValue().compareTo(e2.getValue()));
+                .max(Comparator.comparing(Map.Entry::getValue));
+
+        if (max.isPresent()) {
+            SaveMostPickedMonsterStatistics(sessionType, max);
+        }
 
         Optional<Map.Entry<MonsterType, Long>> min = monsterTypeCount
                 .entrySet()
                 .stream()
-                .min((Map.Entry<MonsterType, Long> e1, Map.Entry<MonsterType, Long> e2)
-                        -> e1.getValue().compareTo(e2.getValue()));
+                .min(Comparator.comparing(Map.Entry::getValue));
 
-        String contentsMax = sessionType.getString()
-                + " 가장 많이 선택된 몬스터는 누구일까요?";
+        if (min.isPresent()) {
+            SaveMinimumPickedMonster(sessionType, min);
+        }
 
-        String contentMin = sessionType.getString()
-                + " 가장 적게 선택된 몬스터는 누구일까요?";
-
-        String valueMax =
-                max.get().getKey()
-                + ", 총 " + max.get().getValue()
-                + "회";
-
-        String valueMin =
-                min.get().getKey()
-                + ", 총 " + min.get().getValue()
-                + "회";
-
-        statisticsRepository.save(new Statistics(contentsMax, valueMax, sessionType));
-        statisticsRepository.save(new Statistics(contentMin, valueMin, sessionType));
         log.info("Save monster Type End");
     }
 
@@ -175,19 +163,44 @@ public class StatisticalProcessingScheduler {
         Optional<Map.Entry<String, Integer>> max = mostFaildedDay
                 .entrySet()
                 .stream()
-                .max((Map.Entry<String, Integer> e1, Map.Entry<String, Integer> e2)
-                        -> e1.getValue().compareTo(e2.getValue()));
+                .max(Comparator.comparing(Map.Entry::getValue));
 
-        String valueMax = sessionType.getString()
-                + " 사람들은 어떤 요일에 가장 많이 습관을 실패했을까요?";
+        if (max.isPresent()) {
+            String valueMax = sessionType.getString()
+                    + " 사람들은 어떤 요일에 가장 많이 습관을 실패했을까요?";
 
 
-        String content =
+            String content =
+                    SchedulerUtils.daysParseString(max.get().getKey())
+                    + ", 총 " + max.get().getValue()
+                    + "회";
+
+            statisticsRepository.save(new Statistics(valueMax, content, sessionType));
+        }
+    }
+
+    private void SaveMinimumPickedMonster(SessionType sessionType, Optional<Map.Entry<MonsterType, Long>> min) {
+        String contentMin = sessionType.getString()
+                + " 가장 적게 선택된 몬스터는 누구일까요?";
+
+        String valueMin =
+                min.get().getKey()
+                        + ", 총 " + min.get().getValue()
+                        + "회";
+
+        statisticsRepository.save(new Statistics(contentMin, valueMin, sessionType));
+    }
+
+    private void SaveMostPickedMonsterStatistics(SessionType sessionType, Optional<Map.Entry<MonsterType, Long>> max) {
+        String contentsMax = sessionType.getString()
+                + " 가장 많이 선택된 몬스터는 누구일까요?";
+
+        String valueMax =
                 max.get().getKey()
-                + ", 총 " + max.get().getValue()
-                + "회";
+                        + ", 총 " + max.get().getValue()
+                        + "회";
 
-        statisticsRepository.save(new Statistics(valueMax, content, sessionType));
+        statisticsRepository.save(new Statistics(contentsMax, valueMax, sessionType));
     }
 
 }
