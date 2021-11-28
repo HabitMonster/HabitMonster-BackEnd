@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.validation.Valid;
+
 @RestController
 @RequiredArgsConstructor
 public class MonsterController {
@@ -34,7 +36,7 @@ public class MonsterController {
     @PatchMapping("/user/monster")
     public MonsterResponseDto updateMonster(
             @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @RequestBody MonsterSelectRequestDto requestDto) {
+            @Valid @RequestBody MonsterSelectRequestDto requestDto) {
         return monsterService.updateMonster(userDetails.getUser(), requestDto);
     }
 
@@ -42,7 +44,7 @@ public class MonsterController {
     @PatchMapping("/monster/name")
     public MonsterResponseDto updateMonsterName(
             @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @RequestBody MonsterSelectRequestDto requestDto) {
+            @Valid @RequestBody MonsterSelectRequestDto requestDto) {
         monsterCollectionService.updateMonsterName(userDetails.getUser(), requestDto.getMonsterName());
         return monsterService.updateMonsterName(userDetails.getUser(), requestDto);
     }
