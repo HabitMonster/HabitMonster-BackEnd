@@ -8,6 +8,8 @@ import lombok.Getter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+
+
 @Entity
 @Getter
 public class History extends TimeStamped {
