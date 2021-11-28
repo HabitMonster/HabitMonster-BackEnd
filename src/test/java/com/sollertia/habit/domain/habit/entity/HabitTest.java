@@ -9,6 +9,7 @@ import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.global.exception.habit.BadDataAboutHabitException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -32,43 +33,71 @@ class HabitTest {
     }
 
     @Test
-    public void createHabitTest() {
-
+    @DisplayName("HabitWithCounter 인 경우")
+    public void createHabitTest1() {
         //given
         HabitDtoImpl habitDto = createHabitDto("2021-11-17", "2022-11-17", "345");
-
         //when
         Habit habit1 = Habit.createHabit(HabitType.HABITWITHCOUNTER, habitDto, testUser);
-        Habit habit2 = Habit.createHabit(HabitType.HABITWITHTIMER, habitDto, testUser);
-
         //then
         assertThat(habit1.getClass()).isEqualTo(HabitWithCounter.class);
-        assertThat(habit2.getClass()).isEqualTo(HabitWithTimer.class);
+
 
     }
 
     @Test
-    public void getWholeDayTest() {
+    @DisplayName("HabitWithTimer 인 경우")
+    public void createHabitTest2() throws Exception {
+        //given
+        HabitDtoImpl habitDto = createHabitDto("2021-11-17", "2022-11-17", "345");
+        //when
+        Habit habit2 = Habit.createHabit(HabitType.HABITWITHTIMER, habitDto, testUser);
+        //then
+        assertThat(habit2.getClass()).isEqualTo(HabitWithTimer.class);
+    }
+
+    @Test
+    @DisplayName("Get Whole Days Case: 매일하는습관")
+    public void getWholeDayTest1() {
 
         //given
         HabitDtoImpl habitDto1 = createHabitDto("2021-11-17", "2022-11-17", "1234567"); //매일하는 습관, 1년, 365회
+        //when
+        Habit habit1 = Habit.createHabit(HabitType.HABITWITHCOUNTER, habitDto1, testUser);
+        //then
+        assertThat(habit1.getWholeDays()).isEqualTo(365l);
+
+    }
+    @Test
+    @DisplayName("Get Whole Days Case: 정해진 요일에 하지만, 총 기간이 7로 나누어 떨어지는 습관")
+    public void getWholeDayTest2() {
+
+        //given
         HabitDtoImpl habitDto2 = createHabitDto("2021-11-03", "2021-11-24", "156"); //3주, 주당 3회, 9회
+        //when
+        Habit habit2 = Habit.createHabit(HabitType.HABITWITHCOUNTER, habitDto2, testUser);
+        //then
+        assertThat(habit2.getWholeDays()).isEqualTo(9l);
+
+    }
+
+    @Test
+    @DisplayName("Get Whole Days Case: 정해진 요일에 수행하며, 나머지가 발생하는 습관")
+    public void getWholeDayTest3() {
+
+        //given
         HabitDtoImpl habitDto3 = createHabitDto("2021-11-03", "2021-11-30", "127"); //12번, 일요일 건너감
 
         //when
-        Habit habit1 = Habit.createHabit(HabitType.HABITWITHCOUNTER, habitDto1, testUser);
-        Habit habit2 = Habit.createHabit(HabitType.HABITWITHCOUNTER, habitDto2, testUser);
         Habit habit3 = Habit.createHabit(HabitType.HABITWITHCOUNTER, habitDto3, testUser);
 
         //then
-
-        assertThat(habit1.getWholeDays()).isEqualTo(365l);
-        assertThat(habit2.getWholeDays()).isEqualTo(9l);
         assertThat(habit3.getWholeDays()).isEqualTo(12l);
 
     }
 
     @Test
+    @DisplayName("달성율 계산 확인 테스트")
     public void getAchievePercentageTest() throws Exception {
 
         //given
@@ -90,6 +119,7 @@ class HabitTest {
 
 
     @Test
+    @DisplayName("총 기간 셋팅 시 계산된 총 기간이 일주일 미만인 경우 Throw Exception")
     public void setWholeDays_failedCase() throws Exception{
 
         //given
@@ -106,6 +136,7 @@ class HabitTest {
     }
 
     @Test
+    @DisplayName("Habit Update Basic Case: title, description")
     public void updateHabitTest_TitleDescription() throws Exception {
         //given
         HabitDtoImpl habitDto = createHabitDto("2021-11-17", "2022-11-17", "1234567");
@@ -120,6 +151,7 @@ class HabitTest {
     }
 
     @Test
+    @DisplayName("Habit Update Case: 목표 카운트가 줄어들어 습관 달성이 성공하는 경우")
     public void updateHabitTest_current_count_is_bigger_than_new_goal_count() throws Exception {
         //given
         HabitDtoImpl testDto = HabitDtoImpl.builder()
@@ -146,6 +178,7 @@ class HabitTest {
     }
 
     @Test
+    @DisplayName("Habit Update Case: 목표 카운트가 늘어나 성공했던 습관 달성이 진행중으로 변경되는 경우")
     public void updateHabitTest_new_goal_count_is_bigger_than_current_one() throws Exception {
         //given
         HabitDtoImpl testDto = HabitDtoImpl.builder()
