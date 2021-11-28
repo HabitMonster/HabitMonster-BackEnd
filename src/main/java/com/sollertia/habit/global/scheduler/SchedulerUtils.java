@@ -2,6 +2,8 @@ package com.sollertia.habit.global.scheduler;
 
 import com.sollertia.habit.domain.statistics.enums.SessionType;
 import com.sollertia.habit.global.globaldto.SearchDateDto;
+import com.sollertia.habit.global.globalenum.DurationEnum;
+import org.hibernate.Session;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -9,10 +11,10 @@ import java.time.LocalTime;
 
 public class SchedulerUtils {
 
-    public static SearchDateDto getSearchDateDto(SessionType durationEnum) {
+    public static SearchDateDto getSearchDateDto(SessionType sessionType) {
         LocalDate schedulerNow = LocalDate.now();
         SearchDateDto result = null;
-        switch (durationEnum) {
+        switch (sessionType) {
             case DAILY:
                 result = new SearchDateDto(
                         schedulerNow.atStartOfDay().minusDays(1),
@@ -37,5 +39,4 @@ public class SchedulerUtils {
         }
         return result;
     }
-
 }
