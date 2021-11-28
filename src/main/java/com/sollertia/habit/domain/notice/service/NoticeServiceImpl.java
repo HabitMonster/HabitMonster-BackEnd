@@ -1,7 +1,7 @@
 package com.sollertia.habit.domain.notice.service;
 
+import com.sollertia.habit.domain.notice.dto.NoticeDto;
 import com.sollertia.habit.domain.notice.dto.NoticeResponseDto;
-import com.sollertia.habit.domain.notice.dto.NoticeVo;
 import com.sollertia.habit.domain.notice.repository.NoticeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,11 +18,11 @@ public class NoticeServiceImpl implements NoticeService{
 
     @Override
     public NoticeResponseDto getNoticeList() {
-        List<NoticeVo> noticeVoList = noticeRepository.findAll().stream().map(NoticeVo::of)
+        List<NoticeDto> noticeDtoList = noticeRepository.findAll().stream().map(NoticeDto::of)
                 .collect(Collectors.toCollection(ArrayList::new));
 
         return NoticeResponseDto.builder()
-                .notices(noticeVoList)
+                .notices(noticeDtoList)
                 .responseMessage("Notice Query Completed")
                 .statusCode(200)
                 .build();

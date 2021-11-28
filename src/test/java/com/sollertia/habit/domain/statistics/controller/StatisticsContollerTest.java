@@ -1,12 +1,12 @@
 package com.sollertia.habit.domain.statistics.controller;
 
-import com.sollertia.habit.domain.completedhabbit.dto.SimpleHabitVo;
+import com.sollertia.habit.domain.completedhabbit.dto.SimpleHabitDto;
 import com.sollertia.habit.domain.completedhabbit.entity.CompletedHabit;
-import com.sollertia.habit.domain.statistics.dto.StatisticsResponseDto;
-import com.sollertia.habit.domain.statistics.service.StatisticsServiceImpl;
 import com.sollertia.habit.domain.habit.dto.HabitDtoImpl;
 import com.sollertia.habit.domain.habit.dto.HabitTypeDto;
 import com.sollertia.habit.domain.habit.entity.Habit;
+import com.sollertia.habit.domain.statistics.dto.StatisticsResponseDto;
+import com.sollertia.habit.domain.statistics.service.StatisticsServiceImpl;
 import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.domain.user.oauth2.userinfo.GoogleOauth2UserInfo;
 import com.sollertia.habit.domain.user.oauth2.userinfo.Oauth2UserInfo;
@@ -26,9 +26,10 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -58,7 +59,7 @@ class StatisticsContollerTest {
     SecurityContext securityContext;
     HabitDtoImpl habitDto;
     CompletedHabit completedHabit;
-    List<SimpleHabitVo> simpleHabitVoList;
+    List<SimpleHabitDto> simpleHabitDtoList;
 
     @BeforeEach
     private void beforeEach() {
@@ -70,18 +71,15 @@ class StatisticsContollerTest {
         testUser = User.create(oauth2UserInfo);
         mockUserDetails = new UserDetailsImpl(testUser);
 
-        Calendar startDate = Calendar.getInstance();
-        DateFormat form = new SimpleDateFormat("yyyy-MM-dd");
-
         habitDto = HabitDtoImpl.builder()
-                .durationStart(form.format(startDate.getTime())).durationEnd(form.format(startDate.getTime()))
+                .durationStart("2021-11-01").durationEnd("2021-11-30")
                 .count(3).title("title").description("description").practiceDays("1234567").categoryId(1L).build();
         HabitTypeDto habitTypeDto = new HabitTypeDto("counter", "specificDay");
         Habit habit = Habit.createHabit(habitTypeDto.getHabitType(), habitDto, testUser);
         completedHabit = CompletedHabit.of(habit);
 
-        simpleHabitVoList = new ArrayList<>();
-        simpleHabitVoList.add(new SimpleHabitVo(completedHabit));
+        simpleHabitDtoList = new ArrayList<>();
+        simpleHabitDtoList.add(new SimpleHabitDto(completedHabit));
 
     }
 
@@ -100,7 +98,7 @@ class StatisticsContollerTest {
                 .succeededCount(10)
                 .failedCount(10)
                 .totalCount(20)
-                .habitList(simpleHabitVoList)
+                .habitList(simpleHabitDtoList)
                 .responseMessage("Statistics Query Completed").statusCode(200).build();
 
         given(statisticsService.getStatistics(testUser, date))
@@ -123,6 +121,17 @@ class StatisticsContollerTest {
                 .andExpect(jsonPath("$.statusCode").value(responseDto.getStatusCode()));
 
         verify(statisticsService).getStatistics(testUser, "2021-11");
+    }
+
+    @Test
+    void getGlobalStatistics() throws Exception {
+
+        //when
+        mvc.perform(get("/statistics/global"))
+                .andDo(print())
+
+                //then
+                .andExpect(status().isOk());
     }
 
 }

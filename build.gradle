@@ -1,8 +1,6 @@
 plugins {
     id 'org.springframework.boot' version '2.5.6'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-    //QueryDsl
-    id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
     id 'java'
     id 'jacoco'
 }
@@ -14,13 +12,6 @@ sourceCompatibility = '1.8'
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
-    }
-}
-
-bootJar {
-    copy {
-        from "build/reports/jacoco/test/html"
-        into "src/main/resources/static/docs/jacoco"
     }
 }
 
@@ -68,6 +59,10 @@ dependencies {
     implementation 'com.querydsl:querydsl-jpa'
     implementation 'com.querydsl:querydsl-apt'
 
+    annotationProcessor("com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jpa")
+    annotationProcessor("jakarta.persistence:jakarta.persistence-api")
+    annotationProcessor("jakarta.annotation:jakarta.annotation-api")
+
     //thymeleaf
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 }
@@ -76,27 +71,19 @@ test {
     useJUnitPlatform()
 }
 
-//QueryDSL
-def querydslDir = "$buildDir/generated/querydsl"
-
-querydsl {
-    jpa = true
-    querydslSourcesDir = querydslDir
-}
-sourceSets {
-    main.java.srcDir querydslDir
-}
-configurations {
-    querydsl.extendsFrom compileClasspath
-
+jacoco {
+    reportsDir(file("src/main/resources/static/docs/jacoco"))
 }
 
-compileQuerydsl.doFirst {
-    if ( file(querydslDir).exists() )
-        delete(file(querydslDir))
-}
+jacocoTestReport {
+    dependsOn test // tests are required to run before generating the report
 
-compileQuerydsl {
-    options.annotationProcessorPath = configurations.querydsl
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    "com/sollertia/habit/domain/**/Q*.class"
+            ])
+        }))
+    }
 }
 

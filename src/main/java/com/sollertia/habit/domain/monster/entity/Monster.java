@@ -87,4 +87,9 @@ public class Monster extends TimeStamped {
     public void updateMonsterDatabase(MonsterDatabase monsterDatabase) {
         setMonsterDatabase(monsterDatabase);
     }
+
+    public boolean changeable() {
+        return this.getLevel().getValue().equals(Level.MAX_LEVEL) &
+                this.getExpPoint().equals(Level.MAX_EXP);
+    }
 }

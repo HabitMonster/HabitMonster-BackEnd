@@ -3,37 +3,35 @@ package com.sollertia.habit.domain.monster.service;
 
 import com.sollertia.habit.domain.monster.dto.*;
 import com.sollertia.habit.domain.monster.entity.Monster;
-import com.sollertia.habit.domain.monster.entity.MonsterCollection;
 import com.sollertia.habit.domain.monster.entity.MonsterDatabase;
 import com.sollertia.habit.domain.monster.enums.Level;
 import com.sollertia.habit.domain.monster.enums.MonsterType;
 import com.sollertia.habit.domain.monster.repository.MonsterDatabaseRepository;
 import com.sollertia.habit.domain.monster.repository.MonsterRepository;
 import com.sollertia.habit.domain.user.entity.User;
-import com.sollertia.habit.domain.user.repository.UserRepository;
 import com.sollertia.habit.global.exception.monster.MonsterNotFoundException;
+import com.sollertia.habit.global.exception.monster.NotReachedMaximumLevelException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class MonsterService {
-
     private final MonsterRepository monsterRepository;
+
     private final MonsterDatabaseRepository monsterDatabaseRepository;
     private final MonsterCollectionService monsterCollectionService;
-    private final UserRepository userRepository;
 
     public MonsterListResponseDto getAllMonsters(User user) {
-        List<MonsterCollection> monsterCollectionList = monsterCollectionService.getMonsterCollectionListByUser(user);
-        List<MonsterType> collect = monsterCollectionList.stream().map(MonsterCollection::getMonsterType).collect(Collectors.toList());
+        List<MonsterType> monsterTypeList = monsterCollectionService.getMonsterTypeListByUser(user);
         List<MonsterDatabase> monsterDatabaseList = monsterDatabaseRepository.findAllByLevel(Level.LV1);
+
         return MonsterListResponseDto.builder()
-                .monsters(MonsterSummaryVo.listFromMonsterDatabasesDisabledIfNotIn(monsterDatabaseList, collect))
+                .monsters(MonsterSummaryDto.listFromMonsterDatabasesDisabledIfNotIn
+                        (monsterDatabaseList, monsterTypeList))
                 .responseMessage("LV1 Monster Query Completed")
                 .statusCode(200)
                 .build();
@@ -42,26 +40,33 @@ public class MonsterService {
     @Transactional
     public MonsterResponseDto updateMonster(User user,
                                             MonsterSelectRequestDto requestDto) {
-        String monsterName = requestDto.getMonsterName();
-        MonsterDatabase monsterDatabase = getMonsterDatabaseById(requestDto.getMonsterId());
+        Monster currentMonster = user.getMonster();
+        if ( currentMonster == null || currentMonster.changeable()) {
+            Monster newMonster = getNewMonster(requestDto);
+            newMonster = changeMonster(user, newMonster);
 
-        Monster monster = Monster.createNewMonster(monsterName, monsterDatabase);
-        Monster savedMonster = monsterRepository.save(monster);
-        User updatedUser = updateMonster(user, savedMonster);
-        monsterCollectionService.addMonsterCollection(savedMonster);
-
-        MonsterVo monsterVo = MonsterVo.of(updatedUser.getMonster());
-
-        return MonsterResponseDto.builder()
-                .monster(monsterVo)
-                .responseMessage("Selected Monster")
-                .statusCode(200)
-                .build();
+            MonsterDto monsterDto = MonsterDto.of(newMonster);
+            return MonsterResponseDto.builder()
+                    .monster(monsterDto)
+                    .responseMessage("Selected Monster")
+                    .statusCode(200)
+                    .build();
+        } else {
+            throw new NotReachedMaximumLevelException("New monsters require max level and EXP.");
+        }
     }
 
-    private User updateMonster(User user, Monster newMonster) {
-        user.updateMonster(newMonster);
-        return userRepository.save(user);
+    private Monster getNewMonster(MonsterSelectRequestDto requestDto) {
+        String monsterName = requestDto.getMonsterName();
+        MonsterDatabase monsterDatabase = getMonsterDatabaseById(requestDto.getMonsterId());
+        return Monster.createNewMonster(monsterName, monsterDatabase);
+    }
+
+    private Monster changeMonster(User user, Monster monster) {
+        Monster savedMonster = monsterRepository.save(monster);
+        user.updateMonster(savedMonster);
+        monsterCollectionService.addMonsterCollection(savedMonster);
+        return savedMonster;
     }
 
     @Transactional
@@ -69,10 +74,10 @@ public class MonsterService {
                                             MonsterSelectRequestDto requestDto) {
         Monster monster = getMonsterByUser(user);
         monster = monster.updateName(requestDto.getMonsterName());
-        MonsterVo monsterVo = MonsterVo.of(monster);
+        MonsterDto monsterDto = MonsterDto.of(monster);
 
         return MonsterResponseDto.builder()
-                .monster(monsterVo)
+                .monster(monsterDto)
                 .responseMessage("Change Monster Name")
                 .statusCode(200)
                 .build();
@@ -86,9 +91,9 @@ public class MonsterService {
                 .build();
     }
 
-    public MonsterVo getMonsterVo(User user) {
+    private MonsterDto getMonsterVo(User user) {
         Monster monster = getMonsterByUser(user);
-        return MonsterVo.of(monster);
+        return MonsterDto.of(monster);
     }
 
     @Transactional
@@ -96,20 +101,20 @@ public class MonsterService {
         Monster monster = getMonsterByUser(user);
         boolean isLevelUp = monster.plusExpPoint();
         if ( isLevelUp ) {
-            Level level = monster.levelUp();
-            evoluteMonster(monster, level);
+            evoluteMonster(monster);
             monsterCollectionService.addEvolutedMonster(user);
         }
     }
 
-    private void evoluteMonster(Monster monster, Level level) {
+    private void evoluteMonster(Monster monster) {
+        Level level = monster.levelUp();
         MonsterType monsterType = monster.getMonsterDatabase().getMonsterType();
         MonsterDatabase monsterDatabase = monsterDatabaseRepository.findByMonsterTypeAndLevel(monsterType, level)
                 .orElseThrow( () -> new MonsterNotFoundException("Not Found Monster Database"));
         monster.updateMonsterDatabase(monsterDatabase);
     }
 
-    public MonsterDatabase getMonsterDatabaseById(Long id) {
+    private MonsterDatabase getMonsterDatabaseById(Long id) {
         return monsterDatabaseRepository.findById(id).orElseThrow(
                 () -> new MonsterNotFoundException("Not Found Monster Id")
         );

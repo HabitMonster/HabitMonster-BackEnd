@@ -10,6 +10,7 @@ import javax.persistence.*;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(indexes = @Index(name = "follow_follower_following_idx", columnList = "follower_id, following_id", unique = true))
 public class Follow {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

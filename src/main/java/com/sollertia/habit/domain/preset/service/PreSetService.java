@@ -1,11 +1,13 @@
 package com.sollertia.habit.domain.preset.service;
 
-import com.sollertia.habit.domain.preset.dto.PreSetVo;
+
+
+import com.sollertia.habit.domain.preset.dto.PreSetDto;
 
 import java.util.List;
 
 public interface PreSetService {
-    List<PreSetVo> categoryPreSetList(Long categoryId);
-    PreSetVo getPreSet(Long preSetId);
+    List<PreSetDto> categoryPreSetList(Long categoryId);
+    PreSetDto getPreSet(Long preSetId);
     void deletePreSet();
 }

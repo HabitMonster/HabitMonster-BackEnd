@@ -1,6 +1,6 @@
 package com.sollertia.habit.domain.category.enums;
 
-import com.sollertia.habit.domain.category.dto.CategoryVo;
+import com.sollertia.habit.domain.category.dto.CategoryDto;
 import com.sollertia.habit.global.exception.habit.InvalidCategoryException;
 
 import java.util.ArrayList;
@@ -21,10 +21,10 @@ public enum Category {
         return this.category;
     }
 
-    public static List<CategoryVo> getCategories() {
-        List<CategoryVo> list = new ArrayList<>();
+    public static List<CategoryDto> getCategories() {
+        List<CategoryDto> list = new ArrayList<>();
         for (Category c: Category.values()) {
-            list.add(CategoryVo.builder().categoryId(c.getCategoryId()).category(c).build());
+            list.add(CategoryDto.builder().categoryId(c.getCategoryId()).category(c).build());
         }
         return list;
     }
@@ -36,5 +36,24 @@ public enum Category {
             }
         }
         throw  new InvalidCategoryException("Not Found Category ID");
+    }
+
+    public static String getKorean(Category category) {
+        switch (category) {
+            case Health:
+                return "건강";
+            case Study:
+                return "공부";
+            case Life:
+                return "생활";
+            case Emotion:
+                return "감정 관리";
+            case Relation:
+                return "관계";
+            case Hobby:
+                return "취미";
+            default:
+                return "기타";
+        }
     }
 }

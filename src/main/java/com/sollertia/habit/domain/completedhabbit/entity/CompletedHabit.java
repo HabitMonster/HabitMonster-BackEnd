@@ -6,7 +6,6 @@ import com.sollertia.habit.domain.habit.entity.Habit;
 import com.sollertia.habit.domain.habit.enums.HabitType;
 import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.global.utils.TimeStamped;
-import com.sollertia.habit.testdata.TestCompletedHabitDto;
 import lombok.Getter;
 
 import javax.persistence.*;
@@ -23,6 +22,10 @@ public class CompletedHabit extends TimeStamped {
     private Long id;
 
     private String title;
+
+    private String description;
+
+    private String practiceDays;
 
     private Long accomplishCounter;
 
@@ -54,6 +57,10 @@ public class CompletedHabit extends TimeStamped {
     private void setTitle(String title) {
         this.title = title;
     }
+
+    private void setDescription(String description) {this.description = description;}
+
+    private void setPracticeDays(String practiceDays) {this.practiceDays = practiceDays;}
 
     private void setAccomplishCounter(Long accomplishCounter) {
         this.accomplishCounter = accomplishCounter;
@@ -97,13 +104,15 @@ public class CompletedHabit extends TimeStamped {
     public static CompletedHabit of(Habit habit) {
         CompletedHabit completedHabit = new CompletedHabit();
         completedHabit.setTitle(habit.getTitle());
+        completedHabit.setDescription(habit.getDescription());
+        completedHabit.setPracticeDays(habit.getPracticeDays());
         completedHabit.setAccomplishCounter(habit.getAccomplishCounter());
         completedHabit.setUser(habit.getUser());
         completedHabit.setCategory(habit.getCategory());
         completedHabit.setHabitType(HabitType.HABITWITHCOUNTER);
         completedHabit.setAchievementPercentage(habit.getAchievePercentage());
         completedHabit.setSuccess(completedHabit.getAchievementPercentage() >= 85L);
-        completedHabit.setGoalCount(habit.getNPerDay());
+        completedHabit.setGoalCount((long)habit.getGoalInSession());
 //        completedHabit.setGoalTime();
         completedHabit.setStartDate(habit.getDurationStart());
         completedHabit.setEndupDate(habit.getDurationEnd());
@@ -118,16 +127,4 @@ public class CompletedHabit extends TimeStamped {
         }
         return completedHabitList;
     }
-    //test용
-    public CompletedHabit(TestCompletedHabitDto dto){
-        this.user = dto.getUser();
-        this.title = dto.getTitle();
-        this.isSuccess = dto.getIsSuccess();
-
-    }
-    //test용
-    public CompletedHabit() {
-
-    }
-
 }

@@ -8,7 +8,9 @@ import com.sollertia.habit.domain.monster.entity.MonsterCollection;
 import com.sollertia.habit.domain.user.enums.ProviderType;
 import com.sollertia.habit.domain.user.oauth2.userinfo.Oauth2UserInfo;
 import com.sollertia.habit.global.utils.TimeStamped;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -17,13 +19,18 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(uniqueConstraints = {
+        @UniqueConstraint(columnNames = "social_id"),
+        @UniqueConstraint(columnNames = "monster_code")})
 public class User extends TimeStamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name="social_id")
     private String socialId;
 
+    @Column(name="monster_code")
     private String monsterCode;
 
     private String username;

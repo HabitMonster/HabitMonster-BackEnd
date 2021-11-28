@@ -1,14 +1,16 @@
 package com.sollertia.habit.domain.user.oauth2.loginutil;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sollertia.habit.domain.user.oauth2.dto.KakaoOauthResponseDto;
-import com.sollertia.habit.domain.user.oauth2.loginutil.KakaoSocialLoginUtil;
-import com.sollertia.habit.domain.user.oauth2.userinfo.Oauth2UserInfo;
 import com.sollertia.habit.domain.user.enums.ProviderType;
+import com.sollertia.habit.domain.user.oauth2.dto.KakaoOauthResponseDto;
+import com.sollertia.habit.domain.user.oauth2.userinfo.Oauth2UserInfo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.runner.RunWith;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.reflect.Whitebox;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.http.MediaType;
@@ -23,6 +25,7 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 
 @ExtendWith(MockitoExtension.class)
 @RestClientTest(KakaoSocialLoginUtil.class)
+@RunWith(PowerMockRunner.class)
 class KakaoSocialLoginUtilTest {
 
     @Autowired
@@ -39,9 +42,14 @@ class KakaoSocialLoginUtilTest {
     @BeforeEach
     public void setUp() throws Exception {
         authCode = "abcdefg1234567";
-        KakaoOauthResponseDto responseDto = new KakaoOauthResponseDto(
-                "token_type", "access_token", "expires_in", "refresh_token", "refresh_token_expires_in", "scope"
-        );
+        KakaoOauthResponseDto responseDto = new KakaoOauthResponseDto();
+        Whitebox.setInternalState(responseDto, "token_type", "token_type");
+        Whitebox.setInternalState(responseDto, "access_token", "access_token");
+        Whitebox.setInternalState(responseDto, "expires_in", "expires_in");
+        Whitebox.setInternalState(responseDto, "refresh_token", "refresh_token");
+        Whitebox.setInternalState(responseDto, "refresh_token_expires_in", "refresh_token_expires_in");
+        Whitebox.setInternalState(responseDto, "scope", "scope");
+
         String responseTokenJson = objectMapper.writeValueAsString(responseDto);
         properties.put("nickname", "tester");
         attributes.put("id", "123456789");
