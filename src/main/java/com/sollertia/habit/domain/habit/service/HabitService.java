@@ -18,7 +18,7 @@ public interface HabitService {
 
      DefaultResponseDto deleteHabit(HabitTypeDto habitTypeDto, Long habitId, User user);
 
-     List<HabitSummaryVo> getHabitSummaryList(User user, LocalDate today) throws Throwable;
+     HabitSummaryListResponseDto getHabitSummaryList(User user, LocalDate today) throws Throwable;
 
     HabitDetailResponseDto updateHabit(HabitTypeDto habitTypeDto, Long habitId, HabitUpdateRequestDto habitUpdateRequestDto, User user);
 }
