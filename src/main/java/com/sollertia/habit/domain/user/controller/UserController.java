@@ -1,6 +1,9 @@
 package com.sollertia.habit.domain.user.controller;
 
-import com.sollertia.habit.domain.user.dto.*;
+import com.sollertia.habit.domain.user.dto.RecommendedUserListDto;
+import com.sollertia.habit.domain.user.dto.UserDetailResponseDto;
+import com.sollertia.habit.domain.user.dto.UserInfoResponseDto;
+import com.sollertia.habit.domain.user.dto.UsernameUpdateRequestDto;
 import com.sollertia.habit.domain.user.security.userdetail.UserDetailsImpl;
 import com.sollertia.habit.domain.user.service.UserService;
 import io.swagger.annotations.ApiOperation;

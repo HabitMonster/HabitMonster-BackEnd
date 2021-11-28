@@ -11,7 +11,6 @@ import com.sollertia.habit.global.globaldto.SearchDateDto;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.sollertia.habit.domain.completedhabbit.entity.QCompletedHabit.completedHabit;

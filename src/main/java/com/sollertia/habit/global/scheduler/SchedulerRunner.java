@@ -10,13 +10,6 @@ import com.sollertia.habit.domain.history.entity.History;
 import com.sollertia.habit.domain.history.repository.HistoryRepository;
 import com.sollertia.habit.domain.monster.entity.Monster;
 import com.sollertia.habit.domain.monster.repository.MonsterRepository;
-import com.sollertia.habit.domain.preset.dto.PreSetDto;
-import com.sollertia.habit.domain.preset.entity.PreSet;
-import com.sollertia.habit.domain.preset.repository.PreSetRepository;
-import com.sollertia.habit.domain.preset.service.PreSetServiceImpl;
-import com.sollertia.habit.domain.statistics.dto.StatisticsCategoryVo;
-import com.sollertia.habit.domain.statistics.dto.StatisticsSuccessCategoryAvgVo;
-import com.sollertia.habit.domain.statistics.entity.Statistics;
 import com.sollertia.habit.domain.statistics.enums.SessionType;
 import com.sollertia.habit.domain.statistics.repository.StatisticsRepository;
 import com.sollertia.habit.domain.user.entity.Recommendation;
@@ -26,11 +19,8 @@ import com.sollertia.habit.domain.user.repository.RecommendationRepository;
 import com.sollertia.habit.domain.user.repository.UserRepository;
 import com.sollertia.habit.global.exception.monster.MonsterNotFoundException;
 import com.sollertia.habit.global.globaldto.SearchDateDto;
-import com.sollertia.habit.global.globalenum.DurationEnum;
 import com.sollertia.habit.global.scheduler.service.DataManagingScheduler;
 import com.sollertia.habit.global.scheduler.service.StatisticalProcessingScheduler;
-import com.sollertia.habit.global.utils.RandomUtil;
-import com.sollertia.habit.global.utils.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -38,9 +28,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Component

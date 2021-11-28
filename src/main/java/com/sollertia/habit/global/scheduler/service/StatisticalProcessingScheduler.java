@@ -10,7 +10,6 @@ import com.sollertia.habit.domain.statistics.entity.Statistics;
 import com.sollertia.habit.domain.statistics.enums.SessionType;
 import com.sollertia.habit.domain.statistics.repository.StatisticsRepository;
 import com.sollertia.habit.global.globaldto.SearchDateDto;
-import com.sollertia.habit.global.globalenum.DurationEnum;
 import com.sollertia.habit.global.scheduler.SchedulerUtils;
 import com.sollertia.habit.global.utils.RedisUtil;
 import lombok.RequiredArgsConstructor;

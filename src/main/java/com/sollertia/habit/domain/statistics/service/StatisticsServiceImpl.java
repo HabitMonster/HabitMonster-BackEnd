@@ -3,8 +3,8 @@ package com.sollertia.habit.domain.statistics.service;
 import com.sollertia.habit.domain.completedhabbit.dto.SimpleHabitDto;
 import com.sollertia.habit.domain.completedhabbit.entity.CompletedHabit;
 import com.sollertia.habit.domain.completedhabbit.repository.CompletedHabitRepository;
-import com.sollertia.habit.domain.statistics.dto.GlobalStatisticsResponseDto;
 import com.sollertia.habit.domain.statistics.dto.GlobalStatisticsDto;
+import com.sollertia.habit.domain.statistics.dto.GlobalStatisticsResponseDto;
 import com.sollertia.habit.domain.statistics.dto.StatisticsResponseDto;
 import com.sollertia.habit.domain.statistics.entity.Statistics;
 import com.sollertia.habit.domain.statistics.repository.StatisticsRepository;
@@ -18,7 +18,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 @RequiredArgsConstructor
 @Service
