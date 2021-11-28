@@ -1,7 +1,7 @@
 package com.sollertia.habit.domain.notice.service;
 
 import com.sollertia.habit.domain.notice.dto.NoticeResponseDto;
-import com.sollertia.habit.domain.notice.dto.NoticeVo;
+import com.sollertia.habit.domain.notice.dto.NoticeDto;
 import com.sollertia.habit.domain.notice.entiy.Notice;
 import com.sollertia.habit.domain.notice.repository.NoticeRepository;
 import org.junit.jupiter.api.Test;
@@ -34,8 +34,8 @@ class NoticeServiceImplTest {
     @Test
     void getNotice(){
         //given
-        NoticeVo noticeVo = NoticeVo.builder().id(1L).title("title").build();
-        Notice notice = Notice.create(noticeVo);
+        NoticeDto noticeDto = NoticeDto.builder().id(1L).title("title").build();
+        Notice notice = Notice.create(noticeDto);
         Whitebox.setInternalState(notice, "createdAt", LocalDateTime.now());
         List<Notice> notices = new ArrayList<>();
         notices.add(notice);

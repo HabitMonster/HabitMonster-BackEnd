@@ -11,13 +11,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class FollowServiceImpl implements FollowService {
+public class  FollowServiceImpl implements FollowService {
 
     private final FollowRepository followRepository;
 
@@ -26,9 +24,7 @@ public class FollowServiceImpl implements FollowService {
     @Override
     public FollowResponseDto getFollowers(User user) {
 
-        List<FollowVo> followers = followRepository.findAllByFollowingId(user.getId()).stream()
-                .map(f -> FollowVo.followerOf(f, checkFollow(f.getFollower().getMonsterCode(), user).getIsFollowed()))
-                .collect(Collectors.toCollection(ArrayList::new));
+        List<FollowDto> followers = followRepository.searchFollowersByUser(user);
 
         return FollowResponseDto.builder()
                 .followers(followers)
@@ -40,8 +36,7 @@ public class FollowServiceImpl implements FollowService {
     @Override
     public FollowResponseDto getFollowings(User user) {
 
-        List<FollowVo> followings = followRepository.findAllByFollowerId(user.getId()).stream()
-                .map(FollowVo::followingOf).collect(Collectors.toCollection(ArrayList::new));
+        List<FollowDto> followings = followRepository.searchFollowingsByUser(user);
 
         return FollowResponseDto.builder()
                 .followings(followings)
@@ -50,12 +45,9 @@ public class FollowServiceImpl implements FollowService {
                 .build();
     }
 
-    public FollowResponseDto getFollowers(String monsterCode) {
+    public FollowResponseDto getFollowers(String monsterCode, User user) {
         User targetUser = getUserByMonsterCode(monsterCode);
-
-        List<FollowVo> followers = followRepository.findAllByFollowingId(targetUser.getId()).stream()
-                .map(follow -> FollowVo.followerOf(follow, null))
-                .collect(Collectors.toCollection(ArrayList::new));
+        List<FollowDto> followers = followRepository.searchFollowersByUser(user, targetUser);
 
         return FollowResponseDto.builder()
                 .followers(followers)
@@ -64,12 +56,9 @@ public class FollowServiceImpl implements FollowService {
                 .build();
     }
 
-    public FollowResponseDto getFollowings(String monsterCode) {
+    public FollowResponseDto getFollowings(String monsterCode, User user) {
         User targetUser = getUserByMonsterCode(monsterCode);
-
-        List<FollowVo> followings = followRepository.findAllByFollowerId(targetUser.getId()).stream()
-                .map(following -> FollowVo.followingOf(following, null))
-                .collect(Collectors.toCollection(ArrayList::new));
+        List<FollowDto> followings = followRepository.searchFollowingsByUser(user, targetUser);
 
         return FollowResponseDto.builder()
                 .followings(followings)
@@ -90,6 +79,8 @@ public class FollowServiceImpl implements FollowService {
 
         if (isFollowBetween(user, followingUser)) {
             throw new FollowException("Already Follow");
+        } else if ( followingUser.isDisabled() ) {
+            throw new FollowException("User is Droped");
         }
 
         Follow follow = Follow.create(user, followingUser);
@@ -111,17 +102,20 @@ public class FollowServiceImpl implements FollowService {
 
     @Override
     public FollowSearchResponseDto searchFollowing(String followingId, User user) {
+        FollowDto searchUser = followRepository.searchUser(followingId, user);
 
-        User searchUser = getUserByMonsterCode(followingId);
+        if(searchUser==null){
+            return FollowSearchResponseDto.builder().userInfo(null).statusCode(400).responseMessage("Not Found User").build();
+        }
 
-        FollowSearchResponseVo followSearchResponseVo = FollowSearchResponseVo.of(searchUser, checkFollow(followingId, user).getIsFollowed());
-
-        return FollowSearchResponseDto.builder().userInfo(followSearchResponseVo).statusCode(200).responseMessage("Search Completed").build();
+        return FollowSearchResponseDto.builder().userInfo(searchUser).statusCode(200).responseMessage("Search Completed").build();
     }
 
     @Override
     public FollowCheckDto checkFollow(String followingId, User user) {
-
+        if ( user.getMonsterCode().equals(followingId) ) {
+            FollowCheckDto.builder().isFollowed(null).statusCode(200).responseMessage("isFollowedMySelf").build();
+        }
         User checkUser = getUserByMonsterCode(followingId);
 
         return isFollowBetween(user, checkUser) ?
@@ -133,9 +127,10 @@ public class FollowServiceImpl implements FollowService {
         return followRepository.findByFollowerIdAndFollowingId(user.getId(), checkUser.getId()) != null;
     }
 
+    @Override
     public FollowCount getCountByUser(User targetUser) {
-        Integer followersCount = followRepository.countByFollowing(targetUser);
-        Integer followingsCount = followRepository.countByFollower(targetUser);
+        long followersCount = followRepository.countByFollowing(targetUser);
+        long followingsCount = followRepository.countByFollower(targetUser);
         return new FollowCount(followersCount, followingsCount);
     }
 

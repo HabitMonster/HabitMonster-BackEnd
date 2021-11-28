@@ -17,13 +17,18 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(uniqueConstraints = {
+        @UniqueConstraint(columnNames = "social_id"),
+        @UniqueConstraint(columnNames = "monster_code")})
 public class User extends TimeStamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name="social_id")
     private String socialId;
 
+    @Column(name="monster_code")
     private String monsterCode;
 
     private String username;

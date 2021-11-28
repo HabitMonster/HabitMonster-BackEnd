@@ -9,5 +9,5 @@ import java.util.List;
 @Getter
 @SuperBuilder
 public class MonsterCollectionResponseDto extends DefaultResponseDto {
-    private List<MonsterCollectionVo> monsters;
+    private List<MonsterCollectionDto> monsters;
 }

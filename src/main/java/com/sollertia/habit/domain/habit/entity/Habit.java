@@ -6,6 +6,7 @@ import com.sollertia.habit.domain.habit.dto.HabitDtoImpl;
 import com.sollertia.habit.domain.habit.dto.HabitUpdateRequestDto;
 import com.sollertia.habit.domain.habit.enums.HabitType;
 import com.sollertia.habit.domain.user.entity.User;
+import com.sollertia.habit.global.exception.habit.BadDataAboutHabitException;
 import com.sollertia.habit.global.utils.TimeStamped;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -57,11 +58,6 @@ public abstract class Habit extends TimeStamped {
     @JsonIgnore
     private User user;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "team_id")
-//    @JsonIgnore
-//    private Team team;
-
     @Enumerated(EnumType.STRING)
     private Category category;
 
@@ -94,16 +90,18 @@ public abstract class Habit extends TimeStamped {
     }
 
     protected void setAccomplishInSession(Boolean accomplishInSession) {
-        isAccomplishInSession = accomplishInSession;
+        this.isAccomplishInSession = accomplishInSession;
     }
-
-    public abstract int getCurrent();
 
     public void setWholeDays() {
 
         int wholeCount = 0;
         Long until = this.durationStart.until(durationEnd, ChronoUnit.DAYS);
         int wholeDays = until.intValue();
+
+        if (wholeDays < 7) {
+            throw new BadDataAboutHabitException("Bad Habit Data About Date");
+        }
 
         int startDay = this.durationStart.getDayOfWeek().getValue();
 
@@ -143,28 +141,25 @@ public abstract class Habit extends TimeStamped {
     }
 
     public Long getAchievePercentage() {
-        if (wholeDays == 0) {
-            return 0l;
-        }
         double percentage = ((double)this.accomplishCounter / (double)this.wholeDays) * 100;
         return Math.round(percentage);
     }
+
+    public int getTotalCount() {
+        return Math.toIntExact(this.getGoalInSession() * this.getWholeDays());
+    }
+
     protected void checkAccomplishCounter() {
         this.accomplishCounter += 1;
     }
     protected void cancelAccomplishCounter() {
         this.accomplishCounter -= 1;
     }
-
     protected void setUser(User user) {
         this.user = user;
         user.getHabit().add(this);
     }
 
-//    protected void setTeam(Team team) {
-//        this.team = team;
-//        team.getHabitsWithCounter().add(this);
-//    }
 
     protected void setCategory(Category category) {
         this.category = category;
@@ -181,8 +176,6 @@ public abstract class Habit extends TimeStamped {
         return null;
     }
 
-    public abstract void updateHabit(HabitUpdateRequestDto habitUpdateRequestDto);
-
     protected void updateTitle(String title) {
         this.title = title;
     }
@@ -190,7 +183,14 @@ public abstract class Habit extends TimeStamped {
     protected void updateDescription(String description) {
         this.description = description;
     }
+
+    public abstract void updateHabit(HabitUpdateRequestDto habitUpdateRequestDto);
+
     public abstract Boolean check(Long value);
+
+    public abstract int getGoalInSession();
+
+    public abstract int getCurrent();
 
 
 

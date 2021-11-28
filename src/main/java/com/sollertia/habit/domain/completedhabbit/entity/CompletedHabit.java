@@ -23,6 +23,10 @@ public class CompletedHabit extends TimeStamped {
 
     private String title;
 
+    private String description;
+
+    private String practiceDays;
+
     private Long accomplishCounter;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -53,6 +57,10 @@ public class CompletedHabit extends TimeStamped {
     private void setTitle(String title) {
         this.title = title;
     }
+
+    private void setDescription(String description) {this.description = description;}
+
+    private void setPracticeDays(String practiceDays) {this.practiceDays = practiceDays;}
 
     private void setAccomplishCounter(Long accomplishCounter) {
         this.accomplishCounter = accomplishCounter;
@@ -96,13 +104,15 @@ public class CompletedHabit extends TimeStamped {
     public static CompletedHabit of(Habit habit) {
         CompletedHabit completedHabit = new CompletedHabit();
         completedHabit.setTitle(habit.getTitle());
+        completedHabit.setDescription(habit.getDescription());
+        completedHabit.setPracticeDays(habit.getPracticeDays());
         completedHabit.setAccomplishCounter(habit.getAccomplishCounter());
         completedHabit.setUser(habit.getUser());
         completedHabit.setCategory(habit.getCategory());
         completedHabit.setHabitType(HabitType.HABITWITHCOUNTER);
         completedHabit.setAchievementPercentage(habit.getAchievePercentage());
         completedHabit.setSuccess(completedHabit.getAchievementPercentage() >= 85L);
-        completedHabit.setGoalCount(habit.getNPerDay());
+        completedHabit.setGoalCount(habit.getNPerDay()); //교체 필요
 //        completedHabit.setGoalTime();
         completedHabit.setStartDate(habit.getDurationStart());
         completedHabit.setEndupDate(habit.getDurationEnd());

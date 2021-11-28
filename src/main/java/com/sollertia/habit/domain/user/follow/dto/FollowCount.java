@@ -6,6 +6,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class FollowCount {
-    private Integer followersCount;
-    private Integer followingsCount;
+    private Long followersCount;
+    private Long followingsCount;
 }

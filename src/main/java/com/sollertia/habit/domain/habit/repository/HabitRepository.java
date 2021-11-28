@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 import java.time.LocalDate;
 import java.util.List;
 
-public interface HabitRepository<T extends Habit> extends JpaRepository<T, Long> {
+public interface HabitRepository<T extends Habit> extends JpaRepository<T, Long>, HabitRepositoryCustom{
     @Query("select h from Habit h " +
             "where h.user = :user " +
             "and h.practiceDays like %:day% " +
