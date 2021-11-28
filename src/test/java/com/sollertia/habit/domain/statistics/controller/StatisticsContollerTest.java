@@ -2,7 +2,11 @@ package com.sollertia.habit.domain.statistics.controller;
 
 import com.sollertia.habit.domain.completedhabbit.dto.SimpleHabitDto;
 import com.sollertia.habit.domain.completedhabbit.entity.CompletedHabit;
+import com.sollertia.habit.domain.statistics.dto.GlobalStatisticsDto;
+import com.sollertia.habit.domain.statistics.dto.GlobalStatisticsResponseDto;
 import com.sollertia.habit.domain.statistics.dto.StatisticsResponseDto;
+import com.sollertia.habit.domain.statistics.entity.Statistics;
+import com.sollertia.habit.domain.statistics.enums.SessionType;
 import com.sollertia.habit.domain.statistics.service.StatisticsServiceImpl;
 import com.sollertia.habit.domain.habit.dto.HabitDtoImpl;
 import com.sollertia.habit.domain.habit.dto.HabitTypeDto;
@@ -15,6 +19,7 @@ import com.sollertia.habit.domain.user.security.userdetail.UserDetailsImpl;
 import com.sollertia.habit.global.utils.RedisUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.powermock.reflect.Whitebox;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -124,13 +129,29 @@ class StatisticsContollerTest {
 
     @Test
     void getGlobalStatistics() throws Exception {
+        //given
+        Statistics statistics = new Statistics();
+        Whitebox.setInternalState(statistics, "id", 1L);
+        Whitebox.setInternalState(statistics, "contents", "test");
+        Whitebox.setInternalState(statistics, "value", "test");
+        Whitebox.setInternalState(statistics, "sessionType", SessionType.STATIC);
+        GlobalStatisticsResponseDto responseDto = GlobalStatisticsResponseDto.builder()
+                .statusCode(200)
+                .responseMessage("Global Statistics Query Completed")
+                .statistics(List.of(GlobalStatisticsDto.of(statistics)))
+                .build();
+        given(statisticsService.getGlobalStatistics()).willReturn(responseDto);
 
         //when
         mvc.perform(get("/statistics/global"))
                 .andDo(print())
 
                 //then
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.statusCode").value(responseDto.getStatusCode()))
+                .andExpect(jsonPath("$.responseMessage").value(responseDto.getResponseMessage()))
+                .andExpect(jsonPath("$.statistics[0].content").value(responseDto.getStatistics().get(0).getContent()))
+                .andExpect(jsonPath("$.statistics[0].value").value(responseDto.getStatistics().get(0).getValue()));
     }
 
 }
