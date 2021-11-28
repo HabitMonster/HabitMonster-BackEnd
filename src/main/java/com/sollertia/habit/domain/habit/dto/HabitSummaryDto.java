@@ -14,7 +14,7 @@ import java.util.List;
 
 @Getter
 @Builder
-public class HabitSummaryVo {
+public class HabitSummaryDto {
     private Long habitId;
     private String title;
     private String description;
@@ -30,16 +30,16 @@ public class HabitSummaryVo {
     private int achieveCount;
     private int totalCount;
 
-    public static List<HabitSummaryVo> listOf(List<Habit> habits) {
-        List<HabitSummaryVo> summaryVoList = new ArrayList<>();
+    public static List<HabitSummaryDto> listOf(List<Habit> habits) {
+        List<HabitSummaryDto> summaryVoList = new ArrayList<>();
         for (Habit habit : habits) {
             summaryVoList.add(of((HabitWithCounter) habit));
         }
         return summaryVoList;
     }
 
-    public static HabitSummaryVo of(Habit habit) {
-        return HabitSummaryVo.builder()
+    public static HabitSummaryDto of(Habit habit) {
+        return HabitSummaryDto.builder()
                 .habitId(habit.getId())
                 .title(habit.getTitle())
                 .description(habit.getDescription())
