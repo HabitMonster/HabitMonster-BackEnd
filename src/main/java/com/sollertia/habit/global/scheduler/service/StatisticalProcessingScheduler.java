@@ -4,6 +4,7 @@ import com.sollertia.habit.domain.category.enums.Category;
 import com.sollertia.habit.domain.completedhabbit.repository.CompletedHabitRepository;
 import com.sollertia.habit.domain.habit.repository.HabitRepository;
 import com.sollertia.habit.domain.history.repository.HistoryRepository;
+import com.sollertia.habit.domain.monster.repository.MonsterRepository;
 import com.sollertia.habit.domain.statistics.dto.StatisticsCategoryVo;
 import com.sollertia.habit.domain.statistics.dto.StatisticsSuccessCategoryAvgVo;
 import com.sollertia.habit.domain.statistics.entity.Statistics;
@@ -13,23 +14,16 @@ import com.sollertia.habit.global.globaldto.SearchDateDto;
 import com.sollertia.habit.global.scheduler.SchedulerUtils;
 import com.sollertia.habit.global.utils.RedisUtil;
 import lombok.RequiredArgsConstructor;
-import com.sollertia.habit.domain.history.repository.HistoryRepository;
-import com.sollertia.habit.domain.monster.repository.MonsterRepository;
-import com.sollertia.habit.domain.statistics.entity.Statistics;
-import com.sollertia.habit.domain.statistics.enums.SessionType;
-import com.sollertia.habit.domain.statistics.repository.StatisticsRepository;
-import com.sollertia.habit.global.globaldto.SearchDateDto;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.*;
-import java.util.Map;
-import java.util.Optional;
 
 import static com.sollertia.habit.global.scheduler.SchedulerUtils.getSearchDateDto;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class StatisticalProcessingScheduler {
 
@@ -42,7 +36,7 @@ public class StatisticalProcessingScheduler {
 
     public void statisticsMonthMaxMinusByCategory(SessionType durationEnum) {
 
-        SearchDateDto duration = SchedulerUtils.getSearchDateDto(durationEnum);
+        SearchDateDto duration = getSearchDateDto(durationEnum);
 
         List<StatisticsCategoryVo> list = historyRepository.statisticsMonthMaxMinusByCategory(duration);
         Category category = Category.Health;

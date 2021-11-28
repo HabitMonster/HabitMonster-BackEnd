@@ -3,43 +3,39 @@ package com.sollertia.habit.global.scheduler.service;
 import com.sollertia.habit.domain.category.enums.Category;
 import com.sollertia.habit.domain.completedhabbit.entity.CompletedHabit;
 import com.sollertia.habit.domain.completedhabbit.repository.CompletedHabitRepository;
-import com.sollertia.habit.domain.preset.dto.PreSetDto;
-import com.sollertia.habit.domain.preset.entity.PreSet;
-import com.sollertia.habit.domain.preset.repository.PreSetRepository;
-import com.sollertia.habit.domain.preset.service.PreSetService;
-import com.sollertia.habit.global.utils.RandomUtil;
-import com.sollertia.habit.global.utils.RedisUtil;
-import lombok.RequiredArgsConstructor;
-import com.sollertia.habit.domain.category.enums.Category;
-import com.sollertia.habit.domain.completedhabbit.entity.CompletedHabit;
-import com.sollertia.habit.domain.completedhabbit.repository.CompletedHabitRepository;
 import com.sollertia.habit.domain.habit.entity.Habit;
 import com.sollertia.habit.domain.habit.repository.HabitRepository;
 import com.sollertia.habit.domain.history.entity.History;
 import com.sollertia.habit.domain.history.repository.HistoryRepository;
 import com.sollertia.habit.domain.monster.entity.Monster;
 import com.sollertia.habit.domain.monster.repository.MonsterRepository;
+import com.sollertia.habit.domain.preset.dto.PreSetDto;
+import com.sollertia.habit.domain.preset.entity.PreSet;
+import com.sollertia.habit.domain.preset.repository.PreSetRepository;
+import com.sollertia.habit.domain.preset.service.PreSetService;
 import com.sollertia.habit.domain.user.entity.Recommendation;
 import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.domain.user.enums.RecommendationType;
+import com.sollertia.habit.domain.user.follow.repository.FollowRepository;
 import com.sollertia.habit.domain.user.repository.RecommendationRepository;
 import com.sollertia.habit.domain.user.repository.UserRepository;
 import com.sollertia.habit.global.exception.monster.MonsterNotFoundException;
+import com.sollertia.habit.global.utils.RandomUtil;
+import com.sollertia.habit.global.utils.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.stream.Collectors;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @Slf4j(topic = "SCHEDULER_FILE_LOGGER")
+@Transactional
 @RequiredArgsConstructor
 public class DataManagingScheduler {
 
@@ -53,9 +49,11 @@ public class DataManagingScheduler {
     private final PreSetRepository preSetRepository;
     private final RedisUtil redisUtil;
     private final RandomUtil randomUtil;
+    private final FollowRepository followRepository;
 
 
     public void minusExpOnLapsedHabit(LocalDate date) {
+        log.info("Minus Exp Start");
         String day = String.valueOf(date.minusDays(1).getDayOfWeek().getValue());
         List<Habit> habitsWithDaysAndAccomplish = habitRepository.findHabitsWithDaysAndAccomplish(day, false);
 
@@ -64,6 +62,7 @@ public class DataManagingScheduler {
             makeHistoryOf(habit);
         }
         habitRepository.updateAccomplishInSessionToFalse();
+        log.info("Minus Exp End");
     }
 
     private void minusExpFromOwnerOf(Habit habit) {
@@ -79,11 +78,13 @@ public class DataManagingScheduler {
     }
 
     public void expireHabit(LocalDate date) {
+        log.info("Expire Habit Start");
         List<Habit> habitListForDelete = habitRepository.findAllByDurationEndLessThan(date);
         log.info("Habit count for delete: " + habitListForDelete.size());
 
         moveToCompletedHabitList(habitListForDelete);
         deleteHabitList(habitListForDelete);
+        log.info("Expire Habit End");
     }
 
     private void moveToCompletedHabitList(List<Habit> habitListForDelete) {
@@ -123,7 +124,7 @@ public class DataManagingScheduler {
     }
 
     public void makePreset() {
-
+        log.info("Make New Preset Start");
         preSetService.deletePreSet();
 
         for (int i = 1; i < 8; i++) {
@@ -165,6 +166,16 @@ public class DataManagingScheduler {
             }
 
             preSetRepository.saveAll(preSets);
+            log.info("Make New Preset End");
         }
+    }
+
+    public void dropUserIfDisabled() {
+        log.info("Drop user Start");
+        List<User> userList = userRepository.findAllByDisabledIsTrue();
+        followRepository.deleteAllByFollowerIn(userList);
+        followRepository.deleteAllByFollowingIn(userList);
+        userRepository.deleteAll(userList);
+        log.info("Drop user end");
     }
 }

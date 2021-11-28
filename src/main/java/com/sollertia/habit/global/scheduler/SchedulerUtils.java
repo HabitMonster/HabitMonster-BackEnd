@@ -2,8 +2,6 @@ package com.sollertia.habit.global.scheduler;
 
 import com.sollertia.habit.domain.statistics.enums.SessionType;
 import com.sollertia.habit.global.globaldto.SearchDateDto;
-import com.sollertia.habit.global.globalenum.DurationEnum;
-import org.hibernate.Session;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
