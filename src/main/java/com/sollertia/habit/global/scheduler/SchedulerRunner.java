@@ -23,8 +23,8 @@ public class SchedulerRunner {
     private final StatisticsRepository statisticsRepository;
 
 //    @Scheduled(cron = "0 0 0 * * *")
-    @Scheduled(cron = "0 * * * * *")
-    @Transactional
+ //   @Scheduled(cron = "0 * * * * *")
+  //  @Transactional
     public void runWhenEveryMidNight() {
         LocalDate date = LocalDate.now();
         dataManagingScheduler.dropUserIfDisabled();
@@ -33,18 +33,18 @@ public class SchedulerRunner {
     }
 
 //    @Scheduled(cron = "0 0 1 ? * SUN")
-    @Scheduled(cron = "30 * * * * SUN")
+    @Scheduled(cron = "30 * * * * *")
     @Transactional
     public void runWhenEveryWeek() {
-        dataManagingScheduler.makeRecommendations();
+        //dataManagingScheduler.makeRecommendations();
         dataManagingScheduler.makePreset();
-        statisticsRepository.deleteAllBySessionType(SessionType.WEEKLY);
-        statisticalProcessingScheduler.saveMonsterTypeStatistics(SessionType.WEEKLY);
+        //statisticsRepository.deleteAllBySessionType(SessionType.WEEKLY);
+        //statisticalProcessingScheduler.saveMonsterTypeStatistics(SessionType.WEEKLY);
     }
 
 //    @Scheduled(cron = "0 0 1 1 * *")
-    @Scheduled(cron = "50 * * * * *")
-    @Transactional
+//    @Scheduled(cron = "50 * * * * *")
+ //   @Transactional
     public void runWhenEveryMonth() {
         statisticsRepository.deleteAllBySessionType(SessionType.MONTHLY);
         statisticalProcessingScheduler.statisticsMonthMaxMinusByCategory(SessionType.MONTHLY);

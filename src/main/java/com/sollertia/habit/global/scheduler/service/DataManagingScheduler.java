@@ -128,8 +128,10 @@ public class DataManagingScheduler {
     public void makePreset() {
         log.info("Make New Preset Start");
         preSetService.deletePreSet();
+
         Long achievementPercentageLong;
         List<CompletedHabit> completedHabitList = new ArrayList<>();
+
         Category[] categories = Category.values();
         for (Category c : categories) {
             CategoryAvg categoryAvg = categoryAvgRepository.findByCategory(c);
