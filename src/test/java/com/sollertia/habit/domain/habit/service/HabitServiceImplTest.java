@@ -161,8 +161,8 @@ class HabitServiceImplTest {
 
     @Test
     public void checkHabitTest() throws Exception {
-        //given
 
+        //given
         HabitDtoImpl habitDtoCheck = HabitDtoImpl.builder()
                 .title("test")
                 .description("testDescription")
@@ -205,8 +205,6 @@ class HabitServiceImplTest {
 
 
         //then
-
-
         assertThat(habitCheckResponseDto.getStatusCode()).isEqualTo(200);
         assertThat(habitCheckResponseDto.getResponseMessage()).isEqualTo("Check Habit Completed");
         assertThat(habitCheckResponseDto2.getStatusCode()).isEqualTo(200);
@@ -269,6 +267,20 @@ class HabitServiceImplTest {
 
 
     }
+
+    @Test
+    public void getAllHabitCountByUserTest() throws Exception {
+        //given
+        given(habitRepository.countByUser(testUser)).willReturn(3);
+        given(completedHabitRepository.countByUser(testUser)).willReturn(2);
+        //when
+        Integer allHabitCountByUser = habitService.getAllHabitCountByUser(testUser);
+        //then
+        assertThat(allHabitCountByUser).isEqualTo(5);
+    }
+
+
+
 
 
 
