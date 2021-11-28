@@ -94,9 +94,10 @@ MonsterControllerTest {
     void getAllMonsters() throws Exception {
         //given
         authenticated();
-        List<MonsterSummaryDto> summaryVoList = new ArrayList<>();
-        summaryVoList.add(new MonsterSummaryDto(1L,"monster.img"));
-        MonsterListResponseDto responseDto = MonsterListResponseDto.builder().monsters(summaryVoList).responseMessage("LV1 Monster Query Completed").statusCode(200).build();
+        List<MonsterSummaryDto> summaryDtoList = new ArrayList<>();
+        MonsterSummaryDto summaryDto = new MonsterSummaryDto(1L, "monster.img");
+        summaryDtoList.add(summaryDto);
+        MonsterListResponseDto responseDto = MonsterListResponseDto.builder().monsters(summaryDtoList).responseMessage("LV1 Monster Query Completed").statusCode(200).build();
 
         given(monsterService.getAllMonsters(testUser))
                 .willReturn(responseDto);
@@ -105,10 +106,10 @@ MonsterControllerTest {
                 .andDo(print())
         //then
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.monsters[0].monsterId").value("1"))
-                .andExpect(jsonPath("$.monsters[0].monsterImage").value("monster.img"))
-                .andExpect(jsonPath("$.responseMessage").value("LV1 Monster Query Completed"))
-                .andExpect(jsonPath("$.statusCode").value("200"));
+                .andExpect(jsonPath("$.monsters[0].monsterId").value(summaryDto.getMonsterId()))
+                .andExpect(jsonPath("$.monsters[0].monsterImage").value(summaryDto.getMonsterImage()))
+                .andExpect(jsonPath("$.responseMessage").value(responseDto.getResponseMessage()))
+                .andExpect(jsonPath("$.statusCode").value(responseDto.getStatusCode()));
 
         verify(monsterService).getAllMonsters(testUser);
     }
@@ -137,10 +138,10 @@ MonsterControllerTest {
                 .andDo(print())
                 //then
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.monster.monsterImage").value("monster.img"))
-                .andExpect(jsonPath("$.monster.monsterName").value("testmonster"))
-                .andExpect(jsonPath("$.responseMessage").value("Selected Monster"))
-                .andExpect(jsonPath("$.statusCode").value("200"));
+                .andExpect(jsonPath("$.monster.monsterImage").value(responseDto.getMonster().getMonsterImage()))
+                .andExpect(jsonPath("$.monster.monsterName").value(responseDto.getMonster().getMonsterName()))
+                .andExpect(jsonPath("$.responseMessage").value(responseDto.getResponseMessage()))
+                .andExpect(jsonPath("$.statusCode").value(responseDto.getStatusCode()));
 
         verify(monsterService).updateMonster(eq(testUser), any(MonsterSelectRequestDto.class));
     }
@@ -169,10 +170,10 @@ MonsterControllerTest {
                 .andDo(print())
                 //then
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.monster.monsterImage").value("monster.img"))
-                .andExpect(jsonPath("$.monster.monsterName").value("testmonster"))
-                .andExpect(jsonPath("$.responseMessage").value("Change Monster Name"))
-                .andExpect(jsonPath("$.statusCode").value("200"));
+                .andExpect(jsonPath("$.monster.monsterImage").value(responseDto.getMonster().getMonsterImage()))
+                .andExpect(jsonPath("$.monster.monsterName").value(responseDto.getMonster().getMonsterName()))
+                .andExpect(jsonPath("$.responseMessage").value(responseDto.getResponseMessage()))
+                .andExpect(jsonPath("$.statusCode").value(responseDto.getStatusCode()));
 
         verify(monsterService).updateMonsterName(eq(testUser), any(MonsterSelectRequestDto.class));
     }
@@ -183,12 +184,17 @@ MonsterControllerTest {
         authenticated();
         List<MonsterCollectionDto> monsterCollectionDtoList = new ArrayList<>();
         List<MonsterDatabaseDto> monsterDatabases = new ArrayList<>();
+
+        LocalDateTime now = LocalDateTime.now();
         Monster mockMonster = mock(Monster.class);
-        given(mockMonster.getCreatedAt()).willReturn(LocalDateTime.now());
+        given(mockMonster.getCreatedAt()).willReturn(now);
         given(mockMonster.getLevel()).willReturn(Level.LV1);
+        given(mockMonster.getName()).willReturn("test");
+
         MonsterDatabase mockMonsterDatabase = mock(MonsterDatabase.class);
-        given(mockMonsterDatabase.getMonsterType()).willReturn(MonsterType.BLUE);
         given(mockMonster.getMonsterDatabase()).willReturn(mockMonsterDatabase);
+        given(mockMonsterDatabase.getMonsterType()).willReturn(MonsterType.BLUE);
+
         MonsterCollection monsterCollection = MonsterCollection.createMonsterCollection(mockMonster);
         monsterCollectionDtoList.add(MonsterCollectionDto.of(monsterCollection, monsterDatabases));
         MonsterCollectionResponseDto responseDto = MonsterCollectionResponseDto.builder()
@@ -204,13 +210,17 @@ MonsterControllerTest {
                 //then
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.responseMessage").value(responseDto.getResponseMessage()))
-                .andExpect(jsonPath("$.statusCode").value(responseDto.getStatusCode()));
+                .andExpect(jsonPath("$.statusCode").value(responseDto.getStatusCode()))
+                .andExpect(jsonPath("$.monsters[0].createdAt").value(now.toLocalDate().toString()))
+                .andExpect(jsonPath("$.monsters[0].maxLevel").value(mockMonster.getLevel().getValue()))
+                .andExpect(jsonPath("$.monsters[0].monsterName").value(mockMonster.getName()));
+
 
         verify(monsterCollectionService).getMonsterCollectionResponseDto(testUser);
     }
 
     @Test
-    void getMonsterResponseDtoFromUser() throws Exception {
+    void getMonsterFromUser() throws Exception {
         //given
         authenticated();
         MonsterResponseDto responseDto = MonsterResponseDto.builder()
@@ -226,14 +236,14 @@ MonsterControllerTest {
                 .andDo(print())
                 //then
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.monster.monsterImage").value("monster.img"))
-                .andExpect(jsonPath("$.monster.monsterName").value("testmonster"))
-                .andExpect(jsonPath("$.responseMessage").value("Selected Monster"))
-                .andExpect(jsonPath("$.statusCode").value("200"));
+                .andExpect(jsonPath("$.monster.monsterImage").value(responseDto.getMonster().getMonsterImage()))
+                .andExpect(jsonPath("$.monster.monsterName").value(responseDto.getMonster().getMonsterName()))
+                .andExpect(jsonPath("$.responseMessage").value(responseDto.getResponseMessage()))
+                .andExpect(jsonPath("$.statusCode").value(responseDto.getStatusCode()));
     }
 
     @Test
-    void getMonsterResponseDtoFromUseHasNotMonster() throws Exception {
+    void getMonsterFromUserHasNotMonster() throws Exception {
         //given
         authenticated();
         String errorMessage = "Not Found User of Selected Monster";

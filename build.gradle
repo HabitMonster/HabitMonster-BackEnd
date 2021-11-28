@@ -17,13 +17,6 @@ configurations {
     }
 }
 
-bootJar {
-    copy {
-        from "build/reports/jacoco/test/html"
-        into "src/main/resources/static/docs/jacoco"
-    }
-}
-
 repositories {
     mavenCentral()
 }
@@ -73,6 +66,21 @@ test {
     useJUnitPlatform()
 }
 
+jacoco {
+    reportsDir(file("src/main/resources/static/docs/jacoco"))
+}
+
+jacocoTestReport {
+    dependsOn test // tests are required to run before generating the report
+
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    "com/sollertia/habit/domain/**/Q*.class"
+            ])
+        }))
+    }
+}
 //QueryDSL
 def querydslDir = "$buildDir/generated/querydsl"
 
@@ -86,11 +94,6 @@ sourceSets {
 configurations {
     querydsl.extendsFrom compileClasspath
 
-}
-
-compileQuerydsl.doFirst {
-    if ( file(querydslDir).exists() )
-        delete(file(querydslDir))
 }
 
 compileQuerydsl {
