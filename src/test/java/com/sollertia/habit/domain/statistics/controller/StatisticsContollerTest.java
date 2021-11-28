@@ -122,4 +122,15 @@ class StatisticsContollerTest {
         verify(statisticsService).getStatistics(testUser, "2021-11");
     }
 
+    @Test
+    void getGlobalStatistics() throws Exception {
+
+        //when
+        mvc.perform(get("/statistics/global"))
+                .andDo(print())
+
+                //then
+                .andExpect(status().isOk());
+    }
+
 }

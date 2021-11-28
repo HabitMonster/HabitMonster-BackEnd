@@ -1,10 +1,7 @@
 package com.sollertia.habit.domain.habit.service;
 
 import com.sollertia.habit.domain.completedhabbit.repository.CompletedHabitRepository;
-import com.sollertia.habit.domain.habit.dto.HabitCheckResponseDto;
-import com.sollertia.habit.domain.habit.dto.HabitDetailResponseDto;
-import com.sollertia.habit.domain.habit.dto.HabitDtoImpl;
-import com.sollertia.habit.domain.habit.dto.HabitTypeDto;
+import com.sollertia.habit.domain.habit.dto.*;
 import com.sollertia.habit.domain.habit.entity.Habit;
 import com.sollertia.habit.domain.habit.entity.HabitWithCounter;
 import com.sollertia.habit.domain.habit.entity.HabitWithTimer;
@@ -30,9 +27,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
@@ -126,10 +121,6 @@ class HabitServiceImplTest {
         assertThat(result.getHabit().getDurationStart()).isEqualTo(habit1.getDurationStart().toString());
 
 
-
-
-
-
         assertThat(result.getHabit().getAchievePercentage()).isEqualTo(habit1.getAchievePercentage());
         assertThat(result.getHabit().getPracticeDays()).isEqualTo(habit1.getPracticeDays());
         assertThat(result.getHabit().getCurrent()).isEqualTo(habit1.getCurrent());
@@ -170,8 +161,8 @@ class HabitServiceImplTest {
 
     @Test
     public void checkHabitTest() throws Exception {
-        //given
 
+        //given
         HabitDtoImpl habitDtoCheck = HabitDtoImpl.builder()
                 .title("test")
                 .description("testDescription")
@@ -214,8 +205,6 @@ class HabitServiceImplTest {
 
 
         //then
-
-
         assertThat(habitCheckResponseDto.getStatusCode()).isEqualTo(200);
         assertThat(habitCheckResponseDto.getResponseMessage()).isEqualTo("Check Habit Completed");
         assertThat(habitCheckResponseDto2.getStatusCode()).isEqualTo(200);
@@ -243,6 +232,55 @@ class HabitServiceImplTest {
         verify(monsterService, times(1)).minusExpWithCount(eq(testUser), any());
         verify(habitRepository, times(1)).delete(habit1);
     }
+
+    @Test
+    public void getHabitSummaryList() throws Exception {
+        //given
+        int day = today.getDayOfWeek().getValue();
+        List<Habit> habitList = new ArrayList<>();
+        habitList.add(habit1);
+        given(habitRepository.findTodayHabitListByUser(testUser, day, today)).willReturn(habitList);
+
+        //when
+        HabitSummaryListResponseDto result = habitService.getHabitSummaryList(testUser, today);
+
+        //then
+        assertThat(result.getHabits().size()).isEqualTo(1);
+        assertThat(result.getHabits().get(0).getHabitId()).isEqualTo(habit1.getId());
+        assertThat(result.getHabits().get(0).getTitle()).isEqualTo(habit1.getTitle());
+        assertThat(result.getStatusCode()).isEqualTo(200);
+        assertThat(result.getResponseMessage()).isEqualTo("Habit Detail List Query Completed");
+
+    }
+
+    @Test
+    public void updateHabitTest() throws Exception {
+        //given
+        given(habitWithCounterRepository.findById(habit1.getId())).willReturn(Optional.ofNullable(habit1));
+        HabitUpdateRequestDto habitUpdateRequestDto = new HabitUpdateRequestDto("Updated", "Updated", 3);
+        //when
+        HabitDetailResponseDto result = habitService.updateHabit(habitTypeDto1, 1l, habitUpdateRequestDto, testUser);
+        //then
+        assertThat(result.getHabit().getCount()).isEqualTo(3);
+        assertThat(result.getStatusCode()).isEqualTo(200);
+        assertThat(result.getResponseMessage()).isEqualTo("Habit updated");
+
+
+    }
+
+    @Test
+    public void getAllHabitCountByUserTest() throws Exception {
+        //given
+        given(habitRepository.countByUser(testUser)).willReturn(3);
+        given(completedHabitRepository.countByUser(testUser)).willReturn(2);
+        //when
+        Integer allHabitCountByUser = habitService.getAllHabitCountByUser(testUser);
+        //then
+        assertThat(allHabitCountByUser).isEqualTo(5);
+    }
+
+
+
 
 
 
