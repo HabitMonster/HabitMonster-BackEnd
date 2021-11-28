@@ -1,10 +1,7 @@
 package com.sollertia.habit.domain.habit.service;
 
 import com.sollertia.habit.domain.completedhabbit.repository.CompletedHabitRepository;
-import com.sollertia.habit.domain.habit.dto.HabitCheckResponseDto;
-import com.sollertia.habit.domain.habit.dto.HabitDetailResponseDto;
-import com.sollertia.habit.domain.habit.dto.HabitDtoImpl;
-import com.sollertia.habit.domain.habit.dto.HabitTypeDto;
+import com.sollertia.habit.domain.habit.dto.*;
 import com.sollertia.habit.domain.habit.entity.Habit;
 import com.sollertia.habit.domain.habit.entity.HabitWithCounter;
 import com.sollertia.habit.domain.habit.entity.HabitWithTimer;
@@ -30,9 +27,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
@@ -247,10 +242,20 @@ class HabitServiceImplTest {
     @Test
     public void getHabitSummaryList() throws Exception {
         //given
+        int day = today.getDayOfWeek().getValue();
+        List<Habit> habitList = new ArrayList<>();
+        habitList.add(habit1);
+        given(habitRepository.findTodayHabitListByUser(testUser, day, today)).willReturn(habitList);
 
         //when
+        HabitSummaryListResponseDto result = habitService.getHabitSummaryList(testUser, today);
 
         //then
+        assertThat(result.getHabits().size()).isEqualTo(1);
+        assertThat(result.getHabits().get(0).getHabitId()).isEqualTo(habit1.getId());
+        assertThat(result.getHabits().get(0).getTitle()).isEqualTo(habit1.getTitle());
+        assertThat(result.getStatusCode()).isEqualTo(200);
+        assertThat(result.getResponseMessage()).isEqualTo("Habit Detail List Query Completed");
 
     }
 
