@@ -27,6 +27,7 @@ import com.sollertia.habit.domain.user.repository.UserRepository;
 import com.sollertia.habit.global.exception.monster.MonsterNotFoundException;
 import com.sollertia.habit.global.globaldto.SearchDateDto;
 import com.sollertia.habit.global.globalenum.DurationEnum;
+import com.sollertia.habit.global.scheduler.service.DataManagingScheduler;
 import com.sollertia.habit.global.utils.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -52,23 +53,22 @@ public class SchedulerRunner {
     private final MonsterRepository monsterRepository;
     private final HistoryRepository historyRepository;
     private final StatisticsRepository statisticsRepository;
-    private final UserRepository userRepository;
-    private final RecommendationRepository recommendationRepository;
     private final RedisUtil redisUtil;
+    private final DataManagingScheduler dataManagingScheduler;
 
     @Scheduled(cron = "0 0 0 * * *")
     @Transactional
     public void runWhenEveryMidNight() {
         LocalDate date = LocalDate.now();
-        minusExpOnLapsedHabit(date);
-        expireHabit(date);
+        dataManagingScheduler.minusExpOnLapsedHabit(date);
+        dataManagingScheduler.expireHabit(date);
     }
 
     @Scheduled(cron = "0 0 1 ? * SUN")
     @Transactional
     public void runWhenEveryWeek() {
         makePreset();
-        makeRecommendations();
+        dataManagingScheduler.makeRecommendations();
     }
 
     @Scheduled(cron = "0 0 0 1 * *")
@@ -79,47 +79,6 @@ public class SchedulerRunner {
         statisticsAvgAchievementPercentageByCategory(DurationEnum.MONTHLY);
         statisticsMaxSelectedByCategory(DurationEnum.MONTHLY);
         maintainNumberOfHabitByUser();
-    }
-
-    private void minusExpOnLapsedHabit(LocalDate date) {
-        String day = String.valueOf(date.minusDays(1).getDayOfWeek().getValue());
-        List<Habit> habitsWithDaysAndAccomplish = habitRepository.findHabitsWithDaysAndAccomplish(day, false);
-
-        for (Habit habit : habitsWithDaysAndAccomplish) {
-            minusExpFromOwnerOf(habit);
-            makeHistoryOf(habit);
-        }
-        habitRepository.updateAccomplishInSessionToFalse();
-    }
-
-    private void minusExpFromOwnerOf(Habit habit) {
-        Monster monster = monsterRepository.findByUserId(habit.getUser().getId()).orElseThrow(
-                () -> new MonsterNotFoundException(habit.getUser().getSocialId() + "의 몬스터를 찾을 수 없습니다."));
-        monster.minusExpPoint();
-        monsterRepository.saveAndFlush(monster);
-    }
-
-    private void makeHistoryOf(Habit habit) {
-        History history = History.makeHistory(habit);
-        historyRepository.save(history);
-    }
-
-    private void expireHabit(LocalDate date) {
-        List<Habit> habitListForDelete = habitRepository.findAllByDurationEndLessThan(date);
-        log.info("Habit count for delete: " + habitListForDelete.size());
-
-        moveToCompletedHabitList(habitListForDelete);
-        deleteHabitList(habitListForDelete);
-    }
-
-    private void moveToCompletedHabitList(List<Habit> habitListForDelete) {
-        List<CompletedHabit> completedHabitList = CompletedHabit.listOf(habitListForDelete);
-        completedHabitRepository.saveAll(completedHabitList);
-    }
-
-    private void deleteHabitList(List<Habit> habitListForDelete) {
-        List<Long> habitIdListForDelete = habitListForDelete.stream().map(Habit::getId).collect(Collectors.toList());
-        habitRepository.deleteAllById(habitIdListForDelete);
     }
 
     private void makePreset() {
@@ -202,31 +161,6 @@ public class SchedulerRunner {
 
         }
         return result;
-    }
-
-
-    private void makeRecommendations() {
-        log.info("Start Remake Recommendations");
-        RecommendationType[] values = RecommendationType.values();
-        List<Recommendation> recommendationList = new ArrayList<>();
-
-        for (RecommendationType value : values) {
-            List<User> top10List = getTop10(value);
-            recommendationList.addAll(Recommendation.listOf(top10List, value));
-        }
-        recommendationRepository.deleteAll();
-        recommendationRepository.saveAll(recommendationList);
-        log.info("End Remake Recommendations");
-    }
-
-    private List<User> getTop10(RecommendationType value) {
-        if (value.getId() <= 8) {
-            return userRepository.searchTop10ByCategory(Category.getCategory(value.getId()));
-        } else if (value.getId() == 9) {
-            return userRepository.searchTop10ByFollow();
-        } else {
-            return new ArrayList<>();
-        }
     }
 
     public void statisticsMonthMaxMinusByCategory(DurationEnum durationEnum) {
