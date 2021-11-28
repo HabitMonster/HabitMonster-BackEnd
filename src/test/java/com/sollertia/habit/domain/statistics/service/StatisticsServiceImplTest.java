@@ -2,10 +2,15 @@ package com.sollertia.habit.domain.statistics.service;
 
 import com.sollertia.habit.domain.completedhabbit.entity.CompletedHabit;
 import com.sollertia.habit.domain.completedhabbit.repository.CompletedHabitRepository;
+import com.sollertia.habit.domain.statistics.dto.GlobalStatisticsDto;
+import com.sollertia.habit.domain.statistics.dto.GlobalStatisticsResponseDto;
 import com.sollertia.habit.domain.statistics.dto.StatisticsResponseDto;
 import com.sollertia.habit.domain.habit.dto.HabitDtoImpl;
 import com.sollertia.habit.domain.habit.dto.HabitTypeDto;
 import com.sollertia.habit.domain.habit.entity.Habit;
+import com.sollertia.habit.domain.statistics.entity.Statistics;
+import com.sollertia.habit.domain.statistics.enums.SessionType;
+import com.sollertia.habit.domain.statistics.repository.StatisticsRepository;
 import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.domain.user.oauth2.userinfo.GoogleOauth2UserInfo;
 import com.sollertia.habit.domain.user.oauth2.userinfo.Oauth2UserInfo;
@@ -37,6 +42,8 @@ class StatisticsServiceImplTest {
 
     @Mock
     private CompletedHabitRepository completedHabitRepository;
+    @Mock
+    private StatisticsRepository statisticsRepository;
     @Mock
     private RandomUtil randomUtil;
 
@@ -93,5 +100,46 @@ class StatisticsServiceImplTest {
                 .isEqualTo(completedHabitList.get(0).getAccomplishCounter());
         assertThat(responseDto.getHabitList().get(0).getEndUPDate())
                 .isEqualTo(completedHabitList.get(0).getEndupDate().toString());
+    }
+
+    @Test
+    void getGlobalStatistics() {
+        //given
+        Statistics statistics1 = new Statistics();
+        Whitebox.setInternalState(statistics1, "id", 1L);
+        Whitebox.setInternalState(statistics1, "contents", "test1");
+        Whitebox.setInternalState(statistics1, "value", "test1");
+        Whitebox.setInternalState(statistics1, "sessionType", SessionType.STATIC);
+        Statistics statistics2 = new Statistics();
+        Whitebox.setInternalState(statistics2, "id", 2L);
+        Whitebox.setInternalState(statistics2, "contents", "test2");
+        Whitebox.setInternalState(statistics2, "value", "test2");
+        Whitebox.setInternalState(statistics2, "sessionType", SessionType.STATIC);
+        List<Statistics> statistics = List.of(statistics1, statistics2);
+
+        given(statisticsRepository.findAll()).willReturn(statistics);
+        given(randomUtil.getRandomNumbers(2)).willReturn(new int[]{0,1});
+
+        //when
+        GlobalStatisticsResponseDto responseDto = statisticsService.getGlobalStatistics();
+
+        //then
+        assertThat(responseDto.getResponseMessage()).isEqualTo("Global Statistics Query Completed");
+        assertThat(responseDto.getStatusCode()).isEqualTo(200);
+    }
+
+    @Test
+    void emptyGlobalStatisticsDto() {
+        //given
+        List<Statistics> statistics = new ArrayList<>();
+
+        given(statisticsRepository.findAll()).willReturn(statistics);
+
+        //when
+        GlobalStatisticsResponseDto responseDto = statisticsService.getGlobalStatistics();
+
+        //then
+        assertThat(responseDto.getResponseMessage()).isEqualTo("Global Statistics is Empty");
+        assertThat(responseDto.getStatusCode()).isEqualTo(200);
     }
 }
