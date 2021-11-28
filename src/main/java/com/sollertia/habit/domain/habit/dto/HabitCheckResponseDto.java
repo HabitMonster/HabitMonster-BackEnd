@@ -8,5 +8,5 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @SuperBuilder
 public class HabitCheckResponseDto extends DefaultResponseDto {
-    private HabitSummaryVo habit;
+    private HabitSummaryDto habit;
 }

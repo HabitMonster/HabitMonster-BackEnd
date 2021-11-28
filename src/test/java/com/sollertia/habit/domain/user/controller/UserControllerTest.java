@@ -3,7 +3,7 @@ package com.sollertia.habit.domain.user.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sollertia.habit.domain.category.enums.Category;
-import com.sollertia.habit.domain.habit.dto.HabitSummaryVo;
+import com.sollertia.habit.domain.habit.dto.HabitSummaryDto;
 import com.sollertia.habit.domain.monster.dto.MonsterDto;
 import com.sollertia.habit.domain.user.dto.*;
 import com.sollertia.habit.domain.user.entity.User;
@@ -194,7 +194,7 @@ class UserControllerTest {
                 .followingsCount(30L)
                 .build();
 
-        HabitSummaryVo habitSummaryVo = HabitSummaryVo.builder()
+        HabitSummaryDto habitSummaryDto = HabitSummaryDto.builder()
                 .habitId(3L)
                 .title("test")
                 .description("test")
@@ -210,8 +210,8 @@ class UserControllerTest {
                 .achieveCount(15)
                 .totalCount(30)
                 .build();
-        List<HabitSummaryVo> habitSummaryVoList = new ArrayList<>();
-        habitSummaryVoList.add(habitSummaryVo);
+        List<HabitSummaryDto> habitSummaryDtoList = new ArrayList<>();
+        habitSummaryDtoList.add(habitSummaryDto);
 
         MonsterDto monsterDto = MonsterDto.builder()
                 .monsterId(30L)
@@ -227,7 +227,7 @@ class UserControllerTest {
                 .statusCode(200)
                 .responseMessage("User Detail Response")
                 .userInfo(userDetailsDto)
-                .habits(habitSummaryVoList)
+                .habits(habitSummaryDtoList)
                 .monster(monsterDto)
                 .build();
 
@@ -248,15 +248,15 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.monster.monsterImage").value(monsterDto.getMonsterImage()))
                 .andExpect(jsonPath("$.monster.monsterName").value(monsterDto.getMonsterName()))
                 .andExpect(jsonPath("$.monster.monsterLevel").value(monsterDto.getMonsterLevel()))
-                .andExpect(jsonPath("$.habits[0].habitId").value(habitSummaryVo.getHabitId()))
-                .andExpect(jsonPath("$.habits[0].categoryId").value(habitSummaryVo.getCategoryId()))
-                .andExpect(jsonPath("$.habits[0].count").value(habitSummaryVo.getCount()))
-                .andExpect(jsonPath("$.habits[0].current").value(habitSummaryVo.getCurrent()))
-                .andExpect(jsonPath("$.habits[0].achieveCount").value(habitSummaryVo.getAchieveCount()))
-                .andExpect(jsonPath("$.habits[0].title").value(habitSummaryVo.getTitle()))
-                .andExpect(jsonPath("$.habits[0].description").value(habitSummaryVo.getDescription()))
-                .andExpect(jsonPath("$.habits[0].durationStart").value(habitSummaryVo.getDurationStart()))
-                .andExpect(jsonPath("$.habits[0].durationEnd").value(habitSummaryVo.getDurationEnd()))
+                .andExpect(jsonPath("$.habits[0].habitId").value(habitSummaryDto.getHabitId()))
+                .andExpect(jsonPath("$.habits[0].categoryId").value(habitSummaryDto.getCategoryId()))
+                .andExpect(jsonPath("$.habits[0].count").value(habitSummaryDto.getCount()))
+                .andExpect(jsonPath("$.habits[0].current").value(habitSummaryDto.getCurrent()))
+                .andExpect(jsonPath("$.habits[0].achieveCount").value(habitSummaryDto.getAchieveCount()))
+                .andExpect(jsonPath("$.habits[0].title").value(habitSummaryDto.getTitle()))
+                .andExpect(jsonPath("$.habits[0].description").value(habitSummaryDto.getDescription()))
+                .andExpect(jsonPath("$.habits[0].durationStart").value(habitSummaryDto.getDurationStart()))
+                .andExpect(jsonPath("$.habits[0].durationEnd").value(habitSummaryDto.getDurationEnd()))
                 .andExpect(jsonPath("$.responseMessage").value("User Detail Response"))
                 .andExpect(jsonPath("$.statusCode").value("200"));
 

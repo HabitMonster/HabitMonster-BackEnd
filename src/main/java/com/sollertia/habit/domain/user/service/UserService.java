@@ -1,6 +1,6 @@
 package com.sollertia.habit.domain.user.service;
 
-import com.sollertia.habit.domain.habit.dto.HabitSummaryVo;
+import com.sollertia.habit.domain.habit.dto.HabitSummaryDto;
 import com.sollertia.habit.domain.habit.service.HabitServiceImpl;
 import com.sollertia.habit.domain.monster.dto.MonsterDto;
 import com.sollertia.habit.domain.user.dto.*;
@@ -68,7 +68,7 @@ public class UserService {
 
         UserDetailsDto userInfoVo = UserDetailsDto.from(userMonsterDto, followCount, totalHabitCount);
         MonsterDto monsterDto = MonsterDto.from(userMonsterDto);
-        List<HabitSummaryVo> habits = habitService.getHabitListByUser(userMonsterDto.getUser());
+        List<HabitSummaryDto> habits = habitService.getHabitListByUser(userMonsterDto.getUser());
 
         return UserDetailResponseDto.builder()
                 .userInfo(userInfoVo)
