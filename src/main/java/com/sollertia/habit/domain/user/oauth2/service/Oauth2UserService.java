@@ -1,6 +1,7 @@
 package com.sollertia.habit.domain.user.oauth2.service;
 
 
+import com.sollertia.habit.domain.completedhabbit.repository.CompletedHabitRepository;
 import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.domain.user.follow.repository.FollowRepository;
 import com.sollertia.habit.domain.user.oauth2.userinfo.Oauth2UserInfo;
@@ -18,6 +19,7 @@ public class Oauth2UserService {
 
     private final UserRepository userRepository;
     private final FollowRepository followRepository;
+    private final CompletedHabitRepository completedHabitRepository;
 
     @Transactional
     public Oauth2UserInfo putUserInto(Oauth2UserInfo userInfo) {
@@ -48,6 +50,7 @@ public class Oauth2UserService {
     private void deleteUser(User user) {
         followRepository.deleteByFollower(user);
         followRepository.deleteByFollowing(user);
+        completedHabitRepository.deleteByUser(user);
         userRepository.delete(user);
         userRepository.flush();
     }
