@@ -78,7 +78,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
         return queryFactory
                 .selectFrom(user)
                 .join(follow)
-                .on(follow.follower.eq(user))
+                .on(follow.following.eq(user))
                 .where(user.disabled.isFalse())
                 .groupBy(user)
                 .orderBy(follow.count().desc())

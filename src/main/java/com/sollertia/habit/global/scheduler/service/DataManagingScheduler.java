@@ -92,8 +92,10 @@ public class DataManagingScheduler {
     }
 
     private List<User> getTop10(RecommendationType value) {
-        if (value.getId() <= 8) {
+        if (value.getId() < 8) {
             return userRepository.searchTop10ByCategory(Category.getCategory(value.getId()));
+        } else if (value.getId() == 8) {
+            return userRepository.searchTop10ByCategory(null);
         } else if (value.getId() == 9) {
             return userRepository.searchTop10ByFollow();
         } else {
