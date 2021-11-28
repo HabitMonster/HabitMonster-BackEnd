@@ -244,6 +244,16 @@ class HabitServiceImplTest {
         verify(habitRepository, times(1)).delete(habit1);
     }
 
+    @Test
+    public void getHabitSummaryList() throws Exception {
+        //given
+
+        //when
+
+        //then
+
+    }
+
 
 
 }
