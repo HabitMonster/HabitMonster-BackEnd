@@ -32,7 +32,7 @@ public class SchedulerRunner {
     }
 
 //    @Scheduled(cron = "0 0 1 ? * SUN")
-    @Scheduled(cron = "0 51 * * * *")
+    @Scheduled(cron = "0 2 * * * *")
     @Transactional
     public void runWhenEveryWeek() {
         dataManagingScheduler.makeRecommendations();

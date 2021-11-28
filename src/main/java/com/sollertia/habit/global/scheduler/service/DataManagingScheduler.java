@@ -147,7 +147,7 @@ public class DataManagingScheduler {
             int size = Math.min(list.size(), 3);
             HashSet<Integer> randomNum = new HashSet<>();
             while(randomNum.size() < size){
-                randomNum.add(randomUtil.getRandomNumber(size));
+                randomNum.add(randomUtil.getRandomNumber(list.size()));
             }
             for (Integer integer : randomNum) {
                 completedHabitList.add(list.get(integer));

@@ -58,6 +58,7 @@ public class PreSet {
     private void setUserId(Long userId) {this.userId = userId;}
 
     public PreSet(PreSetDto preSetDto){
+        setUserId(preSetDto.getUserId());
         setCategoryId(preSetDto.getCategoryId());
         setCategory(Category.getCategory(preSetDto.getCategoryId()));
         setCount(preSetDto.getCount());

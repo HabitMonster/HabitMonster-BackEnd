@@ -6,7 +6,6 @@ import com.sollertia.habit.domain.habit.entity.Habit;
 import com.sollertia.habit.domain.habit.enums.HabitType;
 import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.global.utils.TimeStamped;
-import com.sollertia.habit.testdata.TestCompletedHabitDto;
 import lombok.Getter;
 
 import javax.persistence.*;
@@ -128,16 +127,4 @@ public class CompletedHabit extends TimeStamped {
         }
         return completedHabitList;
     }
-    //test용
-    public CompletedHabit(TestCompletedHabitDto dto){
-        this.user = dto.getUser();
-        this.title = dto.getTitle();
-        this.isSuccess = dto.getIsSuccess();
-
-    }
-    //test용
-    public CompletedHabit() {
-
-    }
-
 }
