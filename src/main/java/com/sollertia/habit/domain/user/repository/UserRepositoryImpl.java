@@ -10,7 +10,6 @@ import com.sollertia.habit.domain.user.dto.UserMonsterDto;
 import com.sollertia.habit.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 
-
 import java.util.List;
 
 import static com.sollertia.habit.domain.completedhabbit.entity.QCompletedHabit.completedHabit;

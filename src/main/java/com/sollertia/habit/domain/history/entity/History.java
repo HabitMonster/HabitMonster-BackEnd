@@ -4,8 +4,6 @@ import com.sollertia.habit.domain.category.enums.Category;
 import com.sollertia.habit.domain.habit.entity.Habit;
 import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.global.utils.TimeStamped;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 
 import javax.persistence.*;

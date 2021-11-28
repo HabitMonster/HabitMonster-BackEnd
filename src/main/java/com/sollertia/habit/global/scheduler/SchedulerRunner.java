@@ -26,6 +26,8 @@ import com.sollertia.habit.domain.user.repository.RecommendationRepository;
 import com.sollertia.habit.domain.user.repository.UserRepository;
 import com.sollertia.habit.global.exception.monster.MonsterNotFoundException;
 import com.sollertia.habit.global.globaldto.SearchDateDto;
+import com.sollertia.habit.global.scheduler.service.DataManagingScheduler;
+import com.sollertia.habit.global.scheduler.service.StatisticalProcessingScheduler;
 import com.sollertia.habit.global.globalenum.DurationEnum;
 import com.sollertia.habit.global.scheduler.service.DataManagingScheduler;
 import com.sollertia.habit.global.utils.RedisUtil;
@@ -36,9 +38,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
@@ -46,15 +47,18 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class SchedulerRunner {
 
-    private final PreSetRepository preSetRepository;
+    private final DataManagingScheduler dataManagingScheduler;
+    private final StatisticalProcessingScheduler statisticalProcessingScheduler;
+
     private final CompletedHabitRepository completedHabitRepository;
-    private final PreSetServiceImpl preSetService;
     private final HabitRepository habitRepository;
     private final MonsterRepository monsterRepository;
     private final HistoryRepository historyRepository;
     private final StatisticsRepository statisticsRepository;
     private final RedisUtil redisUtil;
     private final DataManagingScheduler dataManagingScheduler;
+    private final UserRepository userRepository;
+    private final RecommendationRepository recommendationRepository;
 
     @Scheduled(cron = "0 0 0 * * *")
     @Transactional
@@ -67,100 +71,25 @@ public class SchedulerRunner {
     @Scheduled(cron = "0 0 1 ? * SUN")
     @Transactional
     public void runWhenEveryWeek() {
-        makePreset();
         dataManagingScheduler.makeRecommendations();
+        dataManagingScheduler.makePreset();
     }
 
     @Scheduled(cron = "0 0 0 1 * *")
     @Transactional
     public void runWhenEveryMonth() {
         statisticsRepository.deleteAllInBatch();
-        statisticsMonthMaxMinusByCategory(DurationEnum.MONTHLY);
-        statisticsAvgAchievementPercentageByCategory(DurationEnum.MONTHLY);
-        statisticsMaxSelectedByCategory(DurationEnum.MONTHLY);
-        maintainNumberOfHabitByUser();
+        statisticalProcessingScheduler.statisticsMonthMaxMinusByCategory(SessionType.MONTHLY);
+        statisticalProcessingScheduler.statisticsAvgAchievementPercentageByCategory(SessionType.MONTHLY);
+        statisticalProcessingScheduler.statisticsMaxSelectedByCategory(SessionType.MONTHLY);
+        statisticalProcessingScheduler.maintainNumberOfHabitByUser();
     }
 
-    private void makePreset() {
-
-        preSetService.deletePreSet();
-
-        for (int i = 1; i < 8; i++) {
-            String key = "PreSet::" + i;
-            redisUtil.deleteData(key);
-        }
-
-        List<CompletedHabit> completedHabitList = new ArrayList<>();
-        Category[] categories = Category.values();
-        for (Category c : categories) {
-            String achievementPercentage;
-            if(redisUtil.hasKey(c.toString())){
-                achievementPercentage = redisUtil.getData(c.toString());
-            }else{
-                achievementPercentage = "70";
-            }
-            Long achievementPercentageLong = Long.parseLong(achievementPercentage);
-            List<CompletedHabit> list = completedHabitRepository.habitMoreThanAvgAchievementPercentageByCategory(c, achievementPercentageLong);
-
-            if(list.size()==0){continue;}
-
-            int size = Math.min(list.size(), 3);
-            HashSet<Integer> randomNum = new HashSet<>();
-            while(randomNum.size() < size){
-                randomNum.add((int) (Math.random() * list.size()));
-            }
-            for (Integer integer : randomNum) {
-                completedHabitList.add(list.get(integer));
-            }
-        }
-
-        if(completedHabitList.size()!=0) {
-            List<PreSetDto> habits = completedHabitList.stream()
-                    .map(PreSetDto::new).collect(Collectors.toCollection(ArrayList::new));
-
-            List<PreSet> preSets = new ArrayList<>();
-            for (PreSetDto h : habits) {
-                preSets.add(new PreSet(h));
-            }
-
-            preSetRepository.saveAll(preSets);
-        }
-    }
-
-    public void saveMonsterTypeStatistics(DurationEnum durationEnum) {
-        SearchDateDto duration = getSearchDateDto(durationEnum);
+    public void saveMonsterTypeStatistics(SessionType durationEnum) {
+        SearchDateDto duration = SchedulerUtils.getSearchDateDto(durationEnum);
         monsterRepository.getMonsterTypeCount(duration);
         // 이후 최대값 최소값 찾아 String 만들고 statisticsRepository 저장
 
-    }
-
-    public SearchDateDto getSearchDateDto(DurationEnum durationEnum) {
-        LocalDate schedulerNow = LocalDate.now();
-        SearchDateDto result = null;
-        switch (durationEnum) {
-            case DAILY:
-                result = new SearchDateDto(
-                        schedulerNow.atStartOfDay().minusDays(1),
-                        LocalDateTime.of(schedulerNow.minusDays(1), LocalTime.MAX).withNano(0)
-                );
-                break;
-
-            case WEEKLY:
-                result = new SearchDateDto(
-                        schedulerNow.atStartOfDay().minusDays(8),
-                        LocalDateTime.of(schedulerNow.minusDays(1), LocalTime.MAX).withNano(0)
-                );
-                break;
-
-            case MONTHLY:
-                result = new SearchDateDto(
-                        schedulerNow.atStartOfDay().minusMonths(1),
-                        LocalDateTime.of(schedulerNow.minusDays(1), LocalTime.MAX).withNano(0)
-                );
-                break;
-
-        }
-        return result;
     }
 
     public void statisticsMonthMaxMinusByCategory(DurationEnum durationEnum) {

@@ -2,11 +2,11 @@ package com.sollertia.habit.domain.statistics.controller;
 
 import com.sollertia.habit.domain.completedhabbit.dto.SimpleHabitDto;
 import com.sollertia.habit.domain.completedhabbit.entity.CompletedHabit;
-import com.sollertia.habit.domain.statistics.dto.StatisticsResponseDto;
-import com.sollertia.habit.domain.statistics.service.StatisticsServiceImpl;
 import com.sollertia.habit.domain.habit.dto.HabitDtoImpl;
 import com.sollertia.habit.domain.habit.dto.HabitTypeDto;
 import com.sollertia.habit.domain.habit.entity.Habit;
+import com.sollertia.habit.domain.statistics.dto.StatisticsResponseDto;
+import com.sollertia.habit.domain.statistics.service.StatisticsServiceImpl;
 import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.domain.user.oauth2.userinfo.GoogleOauth2UserInfo;
 import com.sollertia.habit.domain.user.oauth2.userinfo.Oauth2UserInfo;
@@ -26,9 +26,10 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;

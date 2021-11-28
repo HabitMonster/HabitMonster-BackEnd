@@ -2,19 +2,15 @@ package com.sollertia.habit.domain.monster.repository;
 
 import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.sollertia.habit.domain.monster.dto.MonsterTypeCountDto;
-import com.sollertia.habit.domain.monster.entity.QMonster;
-import com.sollertia.habit.domain.monster.entity.QMonsterDatabase;
 import com.sollertia.habit.global.globaldto.SearchDateDto;
-import io.swagger.models.auth.In;
 import lombok.RequiredArgsConstructor;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.sollertia.habit.domain.monster.entity.QMonster.*;
-import static com.sollertia.habit.domain.monster.entity.QMonsterDatabase.*;
+import static com.sollertia.habit.domain.monster.entity.QMonster.monster;
+import static com.sollertia.habit.domain.monster.entity.QMonsterDatabase.monsterDatabase;
 
 @RequiredArgsConstructor
 public class MonsterRepositoryImpl implements MonsterRepositoryCustom {
