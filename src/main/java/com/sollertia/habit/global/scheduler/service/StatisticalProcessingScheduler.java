@@ -15,7 +15,6 @@ import com.sollertia.habit.global.globaldto.SearchDateDto;
 import com.sollertia.habit.global.scheduler.SchedulerUtils;
 import com.sollertia.habit.global.scheduler.entity.CategoryAvg;
 import com.sollertia.habit.global.scheduler.repository.CategoryAvgRepository;
-import com.sollertia.habit.global.utils.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -54,7 +53,7 @@ public class StatisticalProcessingScheduler {
         }
         String contents = "지난 달 가장 많은 감점을 받은 카테고리는?";
 
-        Statistics statistics = new Statistics(contents, category.toString(), SessionType.MONTHLY);
+        Statistics statistics = new Statistics(contents, Category.getKorean(category), SessionType.MONTHLY);
         statisticsRepository.save(statistics);
     }
 
@@ -68,7 +67,7 @@ public class StatisticalProcessingScheduler {
         for (StatisticsSuccessCategoryAvgVo vo : list) {
             int avg = (int) Math.round(vo.getAvgPer());
             categoryAvgRepository.save(new CategoryAvg(vo.getCategory(), (long) avg));
-            String contents = "지난 달" + vo.getCategory().toString() + "의 평균 성공률";
+            String contents = "지난 달 " + Category.getKorean(vo.getCategory()) + "의 평균 성공률";
             String value = avg + "%";
             statisticsList.add(new Statistics(contents, value,  SessionType.MONTHLY));
         }
@@ -114,7 +113,7 @@ public class StatisticalProcessingScheduler {
 
         String contents = "지난 달 가장 많은 사람이 선택한 카테고리는?";
 
-        Statistics statistics = new Statistics(contents, resultCategory.toString(), SessionType.MONTHLY);
+        Statistics statistics = new Statistics(contents, Category.getKorean(resultCategory), SessionType.MONTHLY);
         statisticsRepository.save(statistics);
     }
 
@@ -123,7 +122,7 @@ public class StatisticalProcessingScheduler {
         List<Long> users = habitRepository.statisticsGetNumberOfUser();
         int totalUser = users.size();
 
-        String contents = "현재 사용자들이 평균적으로 유지하고 있는 습관의 총 개수";
+        String contents = "사용자들이 평균적으로 유지하는 습관 수";
         String value = Integer.toString(Math.round(habits / totalUser));
 
         Statistics statistics = new Statistics(contents, value, SessionType.MONTHLY);
@@ -158,17 +157,16 @@ public class StatisticalProcessingScheduler {
 
     public void saveMostFailedDay(SessionType sessionType) {
         SearchDateDto searchDateDto = getSearchDateDto(sessionType);
-        Map<String, Integer> mostFaildedDay = historyRepository.getMostFaildedDay(searchDateDto);
+        Map<Integer, Long> mostFaildedDay = historyRepository.getMostFaildedDay(searchDateDto);
 
-        Optional<Map.Entry<String, Integer>> max = mostFaildedDay
+        Optional<Map.Entry<Integer, Long>> max = mostFaildedDay
                 .entrySet()
                 .stream()
                 .max(Comparator.comparing(Map.Entry::getValue));
 
         if (max.isPresent()) {
             String valueMax = sessionType.getString()
-                    + " 사람들은 어떤 요일에 가장 많이 습관을 실패했을까요?";
-
+                    + " 사람들이 가장 많이 달성을 실패한 요일?";
 
             String content =
                     SchedulerUtils.daysParseString(max.get().getKey())

@@ -35,7 +35,7 @@ public class HistoryRepositoryImpl implements HistoryRepositoryCustom{
     }
 
     @Override
-    public Map<String, Integer> getMostFaildedDay(SearchDateDto searchDateDto) {
+    public Map<Integer, Long> getMostFaildedDay(SearchDateDto searchDateDto) {
         List<Tuple> result = jpaQueryFactory
                 .select(history.dayOfWeek, history.id.count())
                 .from(history)
@@ -47,10 +47,10 @@ public class HistoryRepositoryImpl implements HistoryRepositoryCustom{
         return resultToHashMap(result);
     }
 
-    private Map<String, Integer> resultToHashMap(List<Tuple> result) {
-        Map<String, Integer> resultMap = new HashMap<>();
+    private Map<Integer, Long> resultToHashMap(List<Tuple> result) {
+        Map<Integer, Long> resultMap = new HashMap<>();
         for (Tuple tuple : result) {
-            resultMap.put(tuple.get(0, String.class), tuple.get(1, Integer.class));
+            resultMap.put(tuple.get(0, Integer.class), tuple.get(1, Long.class));
         }
         return resultMap;
     }

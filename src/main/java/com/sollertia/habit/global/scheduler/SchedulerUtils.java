@@ -28,9 +28,10 @@ public class SchedulerUtils {
                 break;
 
             case MONTHLY:
+                LocalDate lastMonth = schedulerNow.minusMonths(1L);
                 result = new SearchDateDto(
-                        schedulerNow.atStartOfDay().minusMonths(1),
-                        LocalDateTime.of(schedulerNow.minusDays(1), LocalTime.MAX).withNano(0)
+                        LocalDateTime.of(lastMonth.withDayOfMonth(1), LocalTime.MAX).withNano(0),
+                        LocalDateTime.of(lastMonth.withDayOfMonth(lastMonth.lengthOfMonth()), LocalTime.MAX).withNano(0)
                 );
                 break;
 
@@ -38,28 +39,28 @@ public class SchedulerUtils {
         return result;
     }
 
-    public static String daysParseString(String day) {
+    public static String daysParseString(Integer day) {
         String result = null;
         switch (day) {
-            case "1":
+            case 1:
                 result = "월요일";
                 break;
-            case "2":
+            case 2:
                 result = "화요일";
                 break;
-            case "3":
+            case 3:
                 result = "수요일";
                 break;
-            case "4":
+            case 4:
                 result = "목요일";
                 break;
-            case "5":
+            case 5:
                 result = "금요일";
                 break;
-            case "6":
+            case 6:
                 result = "토요일";
                 break;
-            case "7":
+            case 7:
                 result = "일요일";
                 break;
         }

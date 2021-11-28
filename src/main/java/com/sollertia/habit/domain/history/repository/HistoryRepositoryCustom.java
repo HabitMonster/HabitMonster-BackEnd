@@ -8,6 +8,6 @@ import java.util.Map;
 
 public interface HistoryRepositoryCustom {
 
-    Map<String, Integer> getMostFaildedDay(SearchDateDto searchDateDto);
+    Map<Integer, Long> getMostFaildedDay(SearchDateDto searchDateDto);
     List<StatisticsCategoryVo> statisticsMonthMaxMinusByCategory(SearchDateDto duration);
 }
