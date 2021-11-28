@@ -114,7 +114,7 @@ public class  FollowServiceImpl implements FollowService {
     @Override
     public FollowCheckDto checkFollow(String followingId, User user) {
         if ( user.getMonsterCode().equals(followingId) ) {
-            FollowCheckDto.builder().isFollowed(null).statusCode(200).responseMessage("isFollowedMySelf").build();
+            return FollowCheckDto.builder().isFollowed(null).statusCode(200).responseMessage("isFollowedMySelf").build();
         }
         User checkUser = getUserByMonsterCode(followingId);
 
