@@ -106,7 +106,7 @@ public class DataManagingScheduler {
             List<User> top10List = getTop10(value);
             recommendationList.addAll(Recommendation.listOf(top10List, value));
         }
-        recommendationRepository.deleteAll();
+        recommendationRepository.deleteAllInBatch();
         recommendationRepository.saveAll(recommendationList);
         log.info("End Remake Recommendations");
     }
@@ -175,6 +175,7 @@ public class DataManagingScheduler {
         List<User> userList = userRepository.findAllByDisabledIsTrue();
         followRepository.deleteAllByFollowerIn(userList);
         followRepository.deleteAllByFollowingIn(userList);
+        completedHabitRepository.deleteAllByUserIn(userList);
         userRepository.deleteAll(userList);
         log.info("Drop user end");
     }

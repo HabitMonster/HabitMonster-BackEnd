@@ -4,6 +4,7 @@ import com.sollertia.habit.domain.category.enums.Category;
 import com.sollertia.habit.domain.completedhabbit.repository.CompletedHabitRepository;
 import com.sollertia.habit.domain.habit.repository.HabitRepository;
 import com.sollertia.habit.domain.history.repository.HistoryRepository;
+import com.sollertia.habit.domain.monster.enums.MonsterType;
 import com.sollertia.habit.domain.monster.repository.MonsterRepository;
 import com.sollertia.habit.domain.statistics.dto.StatisticsCategoryVo;
 import com.sollertia.habit.domain.statistics.dto.StatisticsSuccessCategoryAvgVo;
@@ -14,6 +15,7 @@ import com.sollertia.habit.global.globaldto.SearchDateDto;
 import com.sollertia.habit.global.scheduler.SchedulerUtils;
 import com.sollertia.habit.global.utils.RedisUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +26,7 @@ import static com.sollertia.habit.global.scheduler.SchedulerUtils.getSearchDateD
 
 @Service
 @Transactional
+@Slf4j(topic = "SCHEDULER_FILE_LOGGER")
 @RequiredArgsConstructor
 public class StatisticalProcessingScheduler {
 
@@ -131,19 +134,20 @@ public class StatisticalProcessingScheduler {
     }
 
     public void saveMonsterTypeStatistics(SessionType sessionType) {
+        log.info("Save monster Type Start");
         SearchDateDto duration = getSearchDateDto(sessionType);
-        Map<String, Integer> monsterTypeCount = monsterRepository.getMonsterTypeCount(duration);
+        Map<MonsterType, Long> monsterTypeCount = monsterRepository.getMonsterTypeCount(duration);
 
-        Optional<Map.Entry<String, Integer>> max = monsterTypeCount
+        Optional<Map.Entry<MonsterType, Long>> max = monsterTypeCount
                 .entrySet()
                 .stream()
-                .max((Map.Entry<String, Integer> e1, Map.Entry<String, Integer> e2)
+                .max((Map.Entry<MonsterType, Long> e1, Map.Entry<MonsterType, Long> e2)
                         -> e1.getValue().compareTo(e2.getValue()));
 
-        Optional<Map.Entry<String, Integer>> min = monsterTypeCount
+        Optional<Map.Entry<MonsterType, Long>> min = monsterTypeCount
                 .entrySet()
                 .stream()
-                .min((Map.Entry<String, Integer> e1, Map.Entry<String, Integer> e2)
+                .min((Map.Entry<MonsterType, Long> e1, Map.Entry<MonsterType, Long> e2)
                         -> e1.getValue().compareTo(e2.getValue()));
 
         String contentsMax = sessionType.getString()
@@ -166,7 +170,7 @@ public class StatisticalProcessingScheduler {
 
         statisticsRepository.save(new Statistics(contentsMax, valueMax, sessionType));
         statisticsRepository.save(new Statistics(contentMin, valueMin, sessionType));
-
+        log.info("Save monster Type End");
     }
 
     public void saveMostFailedDay(SessionType sessionType) {
