@@ -20,5 +20,11 @@ public interface HabitService {
 
      HabitSummaryListResponseDto getHabitSummaryList(User user, LocalDate today) throws Throwable;
 
-    HabitDetailResponseDto updateHabit(HabitTypeDto habitTypeDto, Long habitId, HabitUpdateRequestDto habitUpdateRequestDto, User user);
+     HabitDetailResponseDto updateHabit(HabitTypeDto habitTypeDto, Long habitId, HabitUpdateRequestDto habitUpdateRequestDto, User user);
+
+     List<HabitSummaryDto> getHabitListByUser(User user);
+
+     Integer getAllHabitCountByUser(User user);
+
+
 }

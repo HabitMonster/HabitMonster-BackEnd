@@ -140,7 +140,20 @@ public class HabitServiceImpl implements HabitService {
 
     }
 
-    public List<HabitSummaryDto> getHabitSummaryListFromDB(User user, LocalDate today) {
+    @Override
+    public List<HabitSummaryDto> getHabitListByUser(User user) {
+        List<Habit> habits = habitRepository.findByUserOrderByCreatedAtDesc(user);
+        return HabitSummaryDto.listOf(habits);
+    }
+
+    @Override
+    public Integer getAllHabitCountByUser(User user) {
+        Integer currentHabitCount = habitRepository.countByUser(user);
+        Integer complatedHabitCount = completedHabitRepository.countByUser(user);
+        return currentHabitCount+complatedHabitCount;
+    }
+
+    private List<HabitSummaryDto> getHabitSummaryListFromDB(User user, LocalDate today) {
         int day = today.getDayOfWeek().getValue();
         List<Habit> habits = habitRepository.findTodayHabitListByUser(user, day, today);
         return HabitSummaryDto.listOf(habits);
@@ -161,17 +174,6 @@ public class HabitServiceImpl implements HabitService {
                 break;
         }
         return foundHabit;
-    }
-
-    public List<HabitSummaryDto> getHabitListByUser(User user) {
-        List<Habit> habits = habitRepository.findByUserOrderByCreatedAtDesc(user);
-        return HabitSummaryDto.listOf(habits);
-    }
-
-    public Integer getAllHabitCountByUser(User user) {
-        Integer currentHabitCount = habitRepository.countByUser(user);
-        Integer complatedHabitCount = completedHabitRepository.countByUser(user);
-        return currentHabitCount+complatedHabitCount;
     }
 
     private void checkIsOwner(User user, Habit habit) {
