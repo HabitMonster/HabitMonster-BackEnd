@@ -3,8 +3,6 @@ package com.sollertia.habit.domain.habit.entity;
 import com.sollertia.habit.domain.habit.dto.HabitDtoImpl;
 import com.sollertia.habit.domain.habit.dto.HabitUpdateRequestDto;
 import com.sollertia.habit.domain.habit.enums.HabitType;
-
-
 import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.global.exception.habit.BadDataAboutHabitException;
 import org.junit.jupiter.api.Assertions;
@@ -14,10 +12,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-
 import java.util.ArrayList;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 

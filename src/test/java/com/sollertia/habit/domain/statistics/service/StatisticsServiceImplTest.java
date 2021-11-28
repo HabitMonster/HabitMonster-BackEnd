@@ -2,12 +2,11 @@ package com.sollertia.habit.domain.statistics.service;
 
 import com.sollertia.habit.domain.completedhabbit.entity.CompletedHabit;
 import com.sollertia.habit.domain.completedhabbit.repository.CompletedHabitRepository;
-import com.sollertia.habit.domain.statistics.dto.GlobalStatisticsDto;
-import com.sollertia.habit.domain.statistics.dto.GlobalStatisticsResponseDto;
-import com.sollertia.habit.domain.statistics.dto.StatisticsResponseDto;
 import com.sollertia.habit.domain.habit.dto.HabitDtoImpl;
 import com.sollertia.habit.domain.habit.dto.HabitTypeDto;
 import com.sollertia.habit.domain.habit.entity.Habit;
+import com.sollertia.habit.domain.statistics.dto.GlobalStatisticsResponseDto;
+import com.sollertia.habit.domain.statistics.dto.StatisticsResponseDto;
 import com.sollertia.habit.domain.statistics.entity.Statistics;
 import com.sollertia.habit.domain.statistics.enums.SessionType;
 import com.sollertia.habit.domain.statistics.repository.StatisticsRepository;
@@ -25,10 +24,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
