@@ -10,6 +10,6 @@ import java.util.List;
 @Getter
 @SuperBuilder
 public class HabitSummaryListResponseDto extends DefaultResponseDto {
-    private List<HabitSummaryVo> habits;
+    private List<HabitSummaryDto> habits;
     private Integer totalHabitCount;
 }

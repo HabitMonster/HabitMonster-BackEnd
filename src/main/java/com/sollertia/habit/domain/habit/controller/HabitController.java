@@ -77,7 +77,7 @@ public class HabitController {
     public HabitSummaryListResponseDto getHabitSummaryList(
             @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
         LocalDate today = LocalDate.now();
-        return habitService.getHabitSummaryListResponseDto(userDetails.getUser(), today);
+        return habitService.getHabitSummaryList(userDetails.getUser(), today);
     }
 
 }

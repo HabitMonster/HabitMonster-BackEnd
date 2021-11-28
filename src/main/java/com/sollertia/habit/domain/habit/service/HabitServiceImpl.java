@@ -5,7 +5,6 @@ import com.sollertia.habit.domain.completedhabbit.entity.CompletedHabit;
 import com.sollertia.habit.domain.completedhabbit.repository.CompletedHabitRepository;
 import com.sollertia.habit.domain.habit.dto.*;
 import com.sollertia.habit.domain.habit.entity.Habit;
-import com.sollertia.habit.domain.habit.entity.HabitWithCounter;
 import com.sollertia.habit.domain.habit.repository.HabitRepository;
 import com.sollertia.habit.domain.habit.repository.HabitWithCounterRepository;
 import com.sollertia.habit.domain.habit.repository.HabitWithTimerRepository;
@@ -78,7 +77,7 @@ public class HabitServiceImpl implements HabitService {
         Habit foundHabit = getHabitFromRepository(habitTypeDto, habitId);
         Boolean isAchieve = foundHabit.check(1L);
         Habit checkedHabit = (Habit) habitRepository.save(foundHabit);
-        HabitSummaryVo habitSummaryVo = HabitSummaryVo.of(foundHabit);
+        HabitSummaryDto habitSummaryDto = HabitSummaryDto.of(foundHabit);
 
         if (isAchieve) {
             plusExpPointAndMakeHistory(foundHabit);
@@ -88,7 +87,7 @@ public class HabitServiceImpl implements HabitService {
         return HabitCheckResponseDto.builder()
                 .statusCode(200)
                 .responseMessage("Check Habit Completed")
-                .habit(habitSummaryVo)
+                .habit(habitSummaryDto)
                 .build();
 
     }
@@ -112,13 +111,16 @@ public class HabitServiceImpl implements HabitService {
                 .build();
     }
 
-    @Override
-    public List<HabitSummaryVo> getHabitSummaryList(User user, LocalDate today) {
-        int day = today.getDayOfWeek().getValue();
-        List<Habit> habits = habitRepository.findTodayHabitListByUser(user, day, today);
-        return HabitSummaryVo.listOf(habits);
-    }
 
+    @Override
+    public HabitSummaryListResponseDto getHabitSummaryList(User user, LocalDate today) {
+        return HabitSummaryListResponseDto.builder()
+                .habits(getHabitSummaryListFromDB(user, today))
+                .totalHabitCount(getAllHabitCountByUser(user))
+                .responseMessage("Habit Detail List Query Completed")
+                .statusCode(200)
+                .build();
+    }
     @Override
     @Transactional
     public HabitDetailResponseDto updateHabit(HabitTypeDto habitTypeDto, Long habitId, HabitUpdateRequestDto habitUpdateRequestDto, User user) {
@@ -138,13 +140,23 @@ public class HabitServiceImpl implements HabitService {
 
     }
 
-    public HabitSummaryListResponseDto getHabitSummaryListResponseDto(User user, LocalDate today) {
-        return HabitSummaryListResponseDto.builder()
-                .habits(getHabitSummaryList(user, today))
-                .totalHabitCount(getAllHabitCountByUser(user))
-                .responseMessage("Habit Detail List Query Completed")
-                .statusCode(200)
-                .build();
+    @Override
+    public List<HabitSummaryDto> getHabitListByUser(User user) {
+        List<Habit> habits = habitRepository.findByUserOrderByCreatedAtDesc(user);
+        return HabitSummaryDto.listOf(habits);
+    }
+
+    @Override
+    public Integer getAllHabitCountByUser(User user) {
+        Integer currentHabitCount = habitRepository.countByUser(user);
+        Integer complatedHabitCount = completedHabitRepository.countByUser(user);
+        return currentHabitCount+complatedHabitCount;
+    }
+
+    private List<HabitSummaryDto> getHabitSummaryListFromDB(User user, LocalDate today) {
+        int day = today.getDayOfWeek().getValue();
+        List<Habit> habits = habitRepository.findTodayHabitListByUser(user, day, today);
+        return HabitSummaryDto.listOf(habits);
     }
 
     private Habit getHabitFromRepository(HabitTypeDto habitTypeDto, Long habitId) {
@@ -162,17 +174,6 @@ public class HabitServiceImpl implements HabitService {
                 break;
         }
         return foundHabit;
-    }
-
-    public List<HabitSummaryVo> getHabitListByUser(User user) {
-        List<Habit> habits = habitRepository.findByUserOrderByCreatedAtDesc(user);
-        return HabitSummaryVo.listOf(habits);
-    }
-
-    public Integer getAllHabitCountByUser(User user) {
-        Integer currentHabitCount = habitRepository.countByUser(user);
-        Integer complatedHabitCount = completedHabitRepository.countByUser(user);
-        return currentHabitCount+complatedHabitCount;
     }
 
     private void checkIsOwner(User user, Habit habit) {
