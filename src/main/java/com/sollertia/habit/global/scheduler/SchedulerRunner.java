@@ -75,9 +75,9 @@ public class SchedulerRunner {
     @Transactional
     public void runWhenEveryMonth() {
         statisticsRepository.deleteAllInBatch();
-        statisticsMonthMaxMinusByCategory(DurationEnum.MONTHLY);
-        statisticsAvgAchievementPercentageByCategory(DurationEnum.MONTHLY);
-        statisticsMaxSelectedByCategory(DurationEnum.MONTHLY);
+        statisticsMonthMaxMinusByCategory(SessionType.MONTHLY);
+        statisticsAvgAchievementPercentageByCategory(SessionType.MONTHLY);
+        statisticsMaxSelectedByCategory(SessionType.MONTHLY);
         maintainNumberOfHabitByUser();
     }
 
@@ -168,41 +168,14 @@ public class SchedulerRunner {
         }
     }
 
-    public void saveMonsterTypeStatistics(DurationEnum durationEnum) {
-        SearchDateDto duration = getSearchDateDto(durationEnum);
+    public void saveMonsterTypeStatistics(SessionType sessionType) {
+        SearchDateDto duration = SchedulerUtils.getSearchDateDto(sessionType);
         monsterRepository.getMonsterTypeCount(duration);
         // 이후 최대값 최소값 찾아 String 만들고 statisticsRepository 저장
 
     }
 
-    public SearchDateDto getSearchDateDto(DurationEnum durationEnum) {
-        LocalDate schedulerNow = LocalDate.now();
-        SearchDateDto result = null;
-        switch (durationEnum) {
-            case DAILY:
-                result = new SearchDateDto(
-                        schedulerNow.atStartOfDay().minusDays(1),
-                        LocalDateTime.of(schedulerNow.minusDays(1), LocalTime.MAX).withNano(0)
-                );
-                break;
 
-            case WEEKLY:
-                result = new SearchDateDto(
-                        schedulerNow.atStartOfDay().minusDays(8),
-                        LocalDateTime.of(schedulerNow.minusDays(1), LocalTime.MAX).withNano(0)
-                );
-                break;
-
-            case MONTHLY:
-                result = new SearchDateDto(
-                        schedulerNow.atStartOfDay().minusMonths(1),
-                        LocalDateTime.of(schedulerNow.minusDays(1), LocalTime.MAX).withNano(0)
-                );
-                break;
-
-        }
-        return result;
-    }
 
 
     private void makeRecommendations() {
@@ -229,9 +202,9 @@ public class SchedulerRunner {
         }
     }
 
-    public void statisticsMonthMaxMinusByCategory(DurationEnum durationEnum) {
+    public void statisticsMonthMaxMinusByCategory(SessionType durationEnum) {
 
-        SearchDateDto duration = getSearchDateDto(durationEnum);
+        SearchDateDto duration = SchedulerUtils.getSearchDateDto(durationEnum);
         LocalDate lastMonth = LocalDate.now().minusMonths(1L);
 
         List<StatisticsCategoryVo> list = historyRepository.statisticsMonthMaxMinusByCategory(duration);
@@ -249,14 +222,14 @@ public class SchedulerRunner {
 //        statisticsRepository.save(statistics);
     }
 
-    public void statisticsAvgAchievementPercentageByCategory(DurationEnum durationEnum) {
+    public void statisticsAvgAchievementPercentageByCategory(SessionType durationEnum) {
 
         Category[] categories = Category.values();
         for (Category c : categories) {
             redisUtil.deleteData(c.toString());
         }
 
-        SearchDateDto duration = getSearchDateDto(durationEnum);
+        SearchDateDto duration = SchedulerUtils.getSearchDateDto(durationEnum);
         LocalDate lastMonth = LocalDate.now().minusMonths(1L);
 
         List<StatisticsSuccessCategoryAvgVo> list = completedHabitRepository.statisticsAvgAchievementPercentageByCategory(duration);
@@ -273,9 +246,9 @@ public class SchedulerRunner {
         statisticsRepository.saveAll(statisticsList);
     }
 
-    public void statisticsMaxSelectedByCategory(DurationEnum durationEnum) {
+    public void statisticsMaxSelectedByCategory(SessionType durationEnum) {
 
-        SearchDateDto duration = getSearchDateDto(durationEnum);
+        SearchDateDto duration = SchedulerUtils.getSearchDateDto(durationEnum);
         LocalDate lastMonth = LocalDate.now().minusMonths(1L);
         LocalDate start = lastMonth.withDayOfMonth(1);
         LocalDate end = lastMonth.withDayOfMonth(lastMonth.lengthOfMonth());
