@@ -73,6 +73,9 @@ class MonsterCollectionServiceTest {
 
         mockMonsterCollectionList.add(MonsterCollection.createMonsterCollection(monster1));
         mockMonsterCollectionList.add(MonsterCollection.createMonsterCollection(monster2));
+
+        MonsterCollectionDatabase.from(monsterDatabase1, mockMonsterCollectionList.get(0));
+        MonsterCollectionDatabase.from(monsterDatabase2, mockMonsterCollectionList.get(1));
     }
 
     @Test
@@ -88,13 +91,35 @@ class MonsterCollectionServiceTest {
 
         //then
         assertThat(monsterCollection.getMonsterName()).isEqualTo(monster1.getName());
+        assertThat(monsterCollection.getMaxLevel()).isEqualTo(monster1.getLevel());
+        assertThat(monsterCollection.getMonsterType()).isEqualTo(monster1.getMonsterDatabase().getMonsterType());
+        assertThat(monsterCollection.getCreatedAt()).isEqualTo(monster1.getCreatedAt().toLocalDate().toString());
 
         verify(monsterCollectionRepository).save(any(MonsterCollection.class));
         verify(monsterCollectionDatabaseRepository).save(any(MonsterCollectionDatabase.class));
     }
 
     @Test
-    void getMonsterCollection() {
+    void addEvolutedMonster() {
+        //given
+        monster1.levelUp();
+        testUser.updateMonster(monster1);
+        given(monsterCollectionRepository
+                .findByUserAndMonsterType(testUser, monster1.getMonsterDatabase().getMonsterType()))
+                .willReturn(mockMonsterCollectionList.get(0));
+
+        //when
+        MonsterCollection monsterCollection = monsterCollectionService.addEvolutedMonster(testUser);
+
+        //then
+        assertThat(monsterCollection.getMaxLevel()).isEqualTo(monster1.getLevel());
+        assertThat(monsterCollection.getMonsterName()).isEqualTo(monster1.getName());
+        assertThat(monsterCollection.getCreatedAt()).isEqualTo(monster1.getCreatedAt().toLocalDate().toString());
+        assertThat(monsterCollection.getMonsterType()).isEqualTo(monster1.getMonsterDatabase().getMonsterType());
+    }
+
+    @Test
+    void getMonsterCollectionResponseDto() {
         //given
         given(monsterCollectionRepository.searchByUser(testUser))
                 .willReturn(mockMonsterCollectionList);
@@ -108,4 +133,64 @@ class MonsterCollectionServiceTest {
 
         verify(monsterCollectionRepository).searchByUser(testUser);
     }
+
+    @Test
+    void getMonsterCollectionResponseDtoOnlyOne() {
+        //given
+        mockMonsterCollectionList.remove(1);
+        given(monsterCollectionRepository.searchByUser(testUser))
+                .willReturn(mockMonsterCollectionList);
+
+
+        //when
+        MonsterCollectionResponseDto responseDto = monsterCollectionService.getMonsterCollectionResponseDto(testUser);
+
+        //then
+        assertThat(responseDto.getStatusCode()).isEqualTo(200);
+        assertThat(responseDto.getMonsters()).isEqualTo(null);
+        assertThat(responseDto.getResponseMessage()).isEqualTo("Monster Collection Query Completed");
+
+        verify(monsterCollectionRepository).searchByUser(testUser);
+    }
+
+    @Test
+    void updateMonsterName() {
+        //given
+        testUser.updateMonster(monster1);
+        String newMonsterName = "newMonsterName";
+        given(monsterCollectionRepository
+                .findByUserAndMonsterType(testUser, testUser.getMonster().getMonsterDatabase().getMonsterType()))
+                .willReturn(mockMonsterCollectionList.get(0));
+
+        //when
+        monsterCollectionService.updateMonsterName(testUser, newMonsterName);
+
+        //then
+        verify(monsterCollectionRepository)
+                .findByUserAndMonsterType(testUser, testUser.getMonster().getMonsterDatabase().getMonsterType());
+    }
+
+    @Test
+    void getMonsterTypeListByUser() {
+        //given
+        List<MonsterType> monsterTypeList = new ArrayList<>();
+        monsterTypeList.add(MonsterType.BLUE);
+        monsterTypeList.add(MonsterType.RED);
+        monsterTypeList.add(MonsterType.ORANGE);
+        given(monsterCollectionRepository
+                .searchTypeListByUser(testUser))
+                .willReturn(monsterTypeList);
+
+        //when
+        List<MonsterType> typeList = monsterCollectionService.getMonsterTypeListByUser(testUser);
+
+        //then
+        assertThat(typeList.size()).isEqualTo(3);
+        assertThat(typeList.get(0)).isEqualTo(monsterTypeList.get(0));
+        assertThat(typeList.get(1)).isEqualTo(monsterTypeList.get(1));
+        assertThat(typeList.get(2)).isEqualTo(monsterTypeList.get(2));
+        verify(monsterCollectionRepository).searchTypeListByUser(testUser);
+    }
+
+
 }

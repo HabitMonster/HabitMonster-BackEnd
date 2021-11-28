@@ -19,8 +19,8 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class MonsterCollectionService {
-
     private final MonsterCollectionDatabaseRepository monsterCollectionDatabaseRepository;
+
     private final MonsterCollectionRepository monsterCollectionRepository;
 
     @Transactional

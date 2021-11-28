@@ -61,8 +61,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         configuration.addAllowedOrigin("http://localhost:3000");
         configuration.addAllowedOrigin("https://habitmonster.ga");
-        configuration.addAllowedOrigin("https://keen-mestorf-c78311.netlify.app");
         configuration.addAllowedOrigin("https://lucid-brahmagupta-c0fb60.netlify.app");
+        configuration.addAllowedOrigin("https://habitmonster.app");
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
         configuration.setMaxAge(3600L);

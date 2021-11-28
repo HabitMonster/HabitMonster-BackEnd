@@ -1,7 +1,7 @@
 package com.sollertia.habit.domain.user.service;
 
 import com.sollertia.habit.domain.category.enums.Category;
-import com.sollertia.habit.domain.habit.dto.HabitSummaryVo;
+import com.sollertia.habit.domain.habit.dto.HabitSummaryDto;
 import com.sollertia.habit.domain.habit.service.HabitServiceImpl;
 import com.sollertia.habit.domain.monster.entity.Monster;
 import com.sollertia.habit.domain.monster.entity.MonsterDatabase;
@@ -158,8 +158,8 @@ class UserServiceTest {
         given(followService.getCountByUser(otherUser))
                 .willReturn(followCount);
 
-        List<HabitSummaryVo> habitSummaryVoList = new ArrayList<>();
-        HabitSummaryVo habitSummaryVo = HabitSummaryVo.builder()
+        List<HabitSummaryDto> habitSummaryDtoList = new ArrayList<>();
+        HabitSummaryDto habitSummaryDto = HabitSummaryDto.builder()
                 .habitId(3L)
                 .title("test")
                 .description("test")
@@ -175,9 +175,9 @@ class UserServiceTest {
                 .achieveCount(15)
                 .totalCount(30)
                 .build();
-        habitSummaryVoList.add(habitSummaryVo);
+        habitSummaryDtoList.add(habitSummaryDto);
         given(habitService.getHabitListByUser(otherUser))
-                .willReturn(habitSummaryVoList);
+                .willReturn(habitSummaryDtoList);
 
         //when
         UserDetailResponseDto responseDto = userService.getUserDetailDtoByMonsterCode(testUser, otherUser.getMonsterCode());
@@ -198,19 +198,19 @@ class UserServiceTest {
         assertThat(responseDto.getMonster().getMonsterExpPoint()).isEqualTo(monster2.getExpPoint());
         assertThat(responseDto.getMonster().getCreateAt()).isEqualTo(monster2.getCreatedAt().toLocalDate().toString());
         assertThat(responseDto.getMonster().getCreateAt()).isEqualTo(monster2.getCreatedAt().toLocalDate().toString());
-        assertThat(responseDto.getHabits().get(0).getHabitId()).isEqualTo(habitSummaryVo.getHabitId());
-        assertThat(responseDto.getHabits().get(0).getTitle()).isEqualTo(habitSummaryVo.getTitle());
-        assertThat(responseDto.getHabits().get(0).getDescription()).isEqualTo(habitSummaryVo.getDescription());
-        assertThat(responseDto.getHabits().get(0).getDurationEnd()).isEqualTo(habitSummaryVo.getDurationEnd());
-        assertThat(responseDto.getHabits().get(0).getDurationStart()).isEqualTo(habitSummaryVo.getDurationStart());
-        assertThat(responseDto.getHabits().get(0).getCategoryId()).isEqualTo(habitSummaryVo.getCategoryId());
-        assertThat(responseDto.getHabits().get(0).getCategory()).isEqualTo(habitSummaryVo.getCategory());
-        assertThat(responseDto.getHabits().get(0).getCount()).isEqualTo(habitSummaryVo.getCount());
-        assertThat(responseDto.getHabits().get(0).getCurrent()).isEqualTo(habitSummaryVo.getCurrent());
-        assertThat(responseDto.getHabits().get(0).getIsAccomplished()).isEqualTo(habitSummaryVo.getIsAccomplished());
-        assertThat(responseDto.getHabits().get(0).getPracticeDays()).isEqualTo(habitSummaryVo.getPracticeDays());
-        assertThat(responseDto.getHabits().get(0).getAchieveCount()).isEqualTo(habitSummaryVo.getAchieveCount());
-        assertThat(responseDto.getHabits().get(0).getTotalCount()).isEqualTo(habitSummaryVo.getTotalCount());
+        assertThat(responseDto.getHabits().get(0).getHabitId()).isEqualTo(habitSummaryDto.getHabitId());
+        assertThat(responseDto.getHabits().get(0).getTitle()).isEqualTo(habitSummaryDto.getTitle());
+        assertThat(responseDto.getHabits().get(0).getDescription()).isEqualTo(habitSummaryDto.getDescription());
+        assertThat(responseDto.getHabits().get(0).getDurationEnd()).isEqualTo(habitSummaryDto.getDurationEnd());
+        assertThat(responseDto.getHabits().get(0).getDurationStart()).isEqualTo(habitSummaryDto.getDurationStart());
+        assertThat(responseDto.getHabits().get(0).getCategoryId()).isEqualTo(habitSummaryDto.getCategoryId());
+        assertThat(responseDto.getHabits().get(0).getCategory()).isEqualTo(habitSummaryDto.getCategory());
+        assertThat(responseDto.getHabits().get(0).getCount()).isEqualTo(habitSummaryDto.getCount());
+        assertThat(responseDto.getHabits().get(0).getCurrent()).isEqualTo(habitSummaryDto.getCurrent());
+        assertThat(responseDto.getHabits().get(0).getIsAccomplished()).isEqualTo(habitSummaryDto.getIsAccomplished());
+        assertThat(responseDto.getHabits().get(0).getPracticeDays()).isEqualTo(habitSummaryDto.getPracticeDays());
+        assertThat(responseDto.getHabits().get(0).getAchieveCount()).isEqualTo(habitSummaryDto.getAchieveCount());
+        assertThat(responseDto.getHabits().get(0).getTotalCount()).isEqualTo(habitSummaryDto.getTotalCount());
 
         verify(userRepository).userDetailByMonsterCode(otherUser.getMonsterCode(), testUser);
         verify(followService).getCountByUser(otherUser);
