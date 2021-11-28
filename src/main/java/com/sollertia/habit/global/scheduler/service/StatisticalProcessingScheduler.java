@@ -182,7 +182,7 @@ public class StatisticalProcessingScheduler {
                 + " 가장 적게 선택된 몬스터는 누구일까요?";
 
         String valueMin =
-                min.get().getKey()
+                min.get().getKey().getName()
                         + ", 총 " + min.get().getValue()
                         + "회";
 
@@ -194,7 +194,7 @@ public class StatisticalProcessingScheduler {
                 + " 가장 많이 선택된 몬스터는 누구일까요?";
 
         String valueMax =
-                max.get().getKey()
+                max.get().getKey().getName()
                         + ", 총 " + max.get().getValue()
                         + "회";
 
