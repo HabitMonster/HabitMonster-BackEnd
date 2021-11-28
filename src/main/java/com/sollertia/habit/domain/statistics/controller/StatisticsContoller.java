@@ -19,7 +19,8 @@ public class StatisticsContoller {
 
     @ApiOperation(value = "통계 페이지", notes = "기본 통계 정보 반환")
     @GetMapping("/statistics")
-    private StatisticsResponseDto getStatistics(@RequestParam String date, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    private StatisticsResponseDto getStatistics(@RequestParam String date,
+                                                @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         return statisticsService.getStatistics(userDetails.getUser(), date);
 
