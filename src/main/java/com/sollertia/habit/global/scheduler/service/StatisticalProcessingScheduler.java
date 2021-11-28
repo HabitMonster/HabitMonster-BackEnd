@@ -13,6 +13,8 @@ import com.sollertia.habit.domain.statistics.enums.SessionType;
 import com.sollertia.habit.domain.statistics.repository.StatisticsRepository;
 import com.sollertia.habit.global.globaldto.SearchDateDto;
 import com.sollertia.habit.global.scheduler.SchedulerUtils;
+import com.sollertia.habit.global.scheduler.entity.CategoryAvg;
+import com.sollertia.habit.global.scheduler.repository.CategoryAvgRepository;
 import com.sollertia.habit.global.utils.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,11 +37,11 @@ public class StatisticalProcessingScheduler {
     private final HabitRepository habitRepository;
     private final StatisticsRepository statisticsRepository;
     private final MonsterRepository monsterRepository;
-    private final RedisUtil redisUtil;
+    private final CategoryAvgRepository categoryAvgRepository;
 
-    public void statisticsMonthMaxMinusByCategory(SessionType durationEnum) {
+    public void statisticsMonthMaxMinusByCategory(SessionType sessionType) {
 
-        SearchDateDto duration = getSearchDateDto(durationEnum);
+        SearchDateDto duration = getSearchDateDto(sessionType);
 
         List<StatisticsCategoryVo> list = historyRepository.statisticsMonthMaxMinusByCategory(duration);
         Category category = Category.Health;
@@ -56,21 +58,16 @@ public class StatisticalProcessingScheduler {
         statisticsRepository.save(statistics);
     }
 
-    public void statisticsAvgAchievementPercentageByCategory(SessionType durationEnum) {
+    public void statisticsAvgAchievementPercentageByCategory(SessionType sessionType) {
 
-        Category[] categories = Category.values();
-        for (Category c : categories) {
-            redisUtil.deleteData(c.toString());
-        }
-
-        SearchDateDto duration = SchedulerUtils.getSearchDateDto(durationEnum);
+        SearchDateDto duration = SchedulerUtils.getSearchDateDto(sessionType);
 
         List<StatisticsSuccessCategoryAvgVo> list = completedHabitRepository.statisticsAvgAchievementPercentageByCategory(duration);
 
         List<Statistics> statisticsList = new ArrayList<>();
         for (StatisticsSuccessCategoryAvgVo vo : list) {
             int avg = (int) Math.round(vo.getAvgPer());
-            redisUtil.setDataExpire(vo.getCategory().toString(), Integer.toString(avg));
+            categoryAvgRepository.save(new CategoryAvg(vo.getCategory(), (long) avg));
             String contents = "지난 달" + vo.getCategory().toString() + "의 평균 성공률";
             String value = avg + "%";
             statisticsList.add(new Statistics(contents, value,  SessionType.MONTHLY));
@@ -79,9 +76,9 @@ public class StatisticalProcessingScheduler {
         statisticsRepository.saveAll(statisticsList);
     }
 
-    public void statisticsMaxSelectedByCategory(SessionType durationEnum) {
+    public void statisticsMaxSelectedByCategory(SessionType sessionType) {
 
-        SearchDateDto duration = SchedulerUtils.getSearchDateDto(durationEnum);
+        SearchDateDto duration = SchedulerUtils.getSearchDateDto(sessionType);
         LocalDate lastMonth = LocalDate.now().minusMonths(1L);
         LocalDate start = lastMonth.withDayOfMonth(1);
         LocalDate end = lastMonth.withDayOfMonth(lastMonth.lengthOfMonth());

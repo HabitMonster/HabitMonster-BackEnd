@@ -41,7 +41,7 @@ public class SchedulerRunner {
         statisticalProcessingScheduler.saveMonsterTypeStatistics(SessionType.WEEKLY);
     }
 
-    @Scheduled(cron = "0 0 1 1 * *")
+//    @Scheduled(cron = "0 0 1 1 * *")
 //    @Scheduled(cron = "50 * * * * *")
     @Transactional
     public void runWhenEveryMonth() {

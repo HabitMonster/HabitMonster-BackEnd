@@ -20,6 +20,8 @@ import com.sollertia.habit.domain.user.follow.repository.FollowRepository;
 import com.sollertia.habit.domain.user.repository.RecommendationRepository;
 import com.sollertia.habit.domain.user.repository.UserRepository;
 import com.sollertia.habit.global.exception.monster.MonsterNotFoundException;
+import com.sollertia.habit.global.scheduler.entity.CategoryAvg;
+import com.sollertia.habit.global.scheduler.repository.CategoryAvgRepository;
 import com.sollertia.habit.global.utils.RandomUtil;
 import com.sollertia.habit.global.utils.RedisUtil;
 import lombok.RequiredArgsConstructor;
@@ -47,9 +49,9 @@ public class DataManagingScheduler {
     private final HistoryRepository historyRepository;
     private final PreSetService preSetService;
     private final PreSetRepository preSetRepository;
-    private final RedisUtil redisUtil;
     private final RandomUtil randomUtil;
     private final FollowRepository followRepository;
+    private final CategoryAvgRepository categoryAvgRepository;
 
 
     public void minusExpOnLapsedHabit(LocalDate date) {
@@ -127,21 +129,17 @@ public class DataManagingScheduler {
         log.info("Make New Preset Start");
         preSetService.deletePreSet();
 
-        for (int i = 1; i < 8; i++) {
-            String key = "PreSet::" + i;
-            redisUtil.deleteData(key);
-        }
-
+        Long achievementPercentageLong;
         List<CompletedHabit> completedHabitList = new ArrayList<>();
+
         Category[] categories = Category.values();
         for (Category c : categories) {
-            String achievementPercentage;
-            if(redisUtil.hasKey(c.toString())){
-                achievementPercentage = redisUtil.getData(c.toString());
+            CategoryAvg categoryAvg = categoryAvgRepository.findByCategory(c);
+            if(categoryAvg != null){
+                achievementPercentageLong = categoryAvg.getAchievementPercentage();
             }else{
-                achievementPercentage = "70";
+                achievementPercentageLong = 70L;
             }
-            Long achievementPercentageLong = Long.parseLong(achievementPercentage);
             List<CompletedHabit> list = completedHabitRepository.habitMoreThanAvgAchievementPercentageByCategory(c, achievementPercentageLong);
 
             if(list.size()==0){continue;}
