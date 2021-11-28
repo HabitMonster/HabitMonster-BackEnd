@@ -22,8 +22,8 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class MonsterService {
-
     private final MonsterRepository monsterRepository;
+
     private final MonsterDatabaseRepository monsterDatabaseRepository;
     private final MonsterCollectionService monsterCollectionService;
 
@@ -93,7 +93,7 @@ public class MonsterService {
                 .build();
     }
 
-    public MonsterDto getMonsterVo(User user) {
+    private MonsterDto getMonsterVo(User user) {
         Monster monster = getMonsterByUser(user);
         return MonsterDto.of(monster);
     }
@@ -116,7 +116,7 @@ public class MonsterService {
         monster.updateMonsterDatabase(monsterDatabase);
     }
 
-    public MonsterDatabase getMonsterDatabaseById(Long id) {
+    private MonsterDatabase getMonsterDatabaseById(Long id) {
         return monsterDatabaseRepository.findById(id).orElseThrow(
                 () -> new MonsterNotFoundException("Not Found Monster Id")
         );

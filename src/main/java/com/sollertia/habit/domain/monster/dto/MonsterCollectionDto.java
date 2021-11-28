@@ -24,7 +24,7 @@ public class MonsterCollectionDto {
     public static MonsterCollectionDto of(MonsterCollection monsterCollection, List<MonsterDatabaseDto> monsterDatabases) {
         return new MonsterCollectionDto(
                 monsterCollection.getMonsterName(),
-                monsterCollection.getCreateAt(),
+                monsterCollection.getCreatedAt(),
                 monsterCollection.getMaxLevel().getValue(),
                 monsterDatabases
         );

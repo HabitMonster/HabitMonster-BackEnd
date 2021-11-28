@@ -14,6 +14,7 @@ import com.sollertia.habit.domain.user.oauth2.userinfo.GoogleOauth2UserInfo;
 import com.sollertia.habit.domain.user.oauth2.userinfo.Oauth2UserInfo;
 import com.sollertia.habit.domain.user.repository.UserRepository;
 import com.sollertia.habit.global.exception.monster.MonsterNotFoundException;
+import com.sollertia.habit.global.exception.monster.NotReachedMaximumLevelException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -185,6 +186,25 @@ class MonsterServiceTest {
     }
 
     @Test
+    void updateMonsterIfUserHasMonsterNotReachedMaximumLevel() {
+        //given
+        Whitebox.setInternalState(monster1, "level", Level.LV3);
+        Whitebox.setInternalState(monster1, "expPoint", Level.MAX_EXP);
+        testUser.updateMonster(monster1);
+
+        MonsterSelectRequestDto mockRequestDto = new MonsterSelectRequestDto();
+        Whitebox.setInternalState(mockRequestDto, "monsterId", 1L);
+        Whitebox.setInternalState(mockRequestDto, "monsterName", monster2.getName());
+
+        //when, then
+        assertThrows(NotReachedMaximumLevelException.class,
+                () -> monsterService.updateMonster(testUser, mockRequestDto));
+        verify(monsterDatabaseRepository, never()).findById(1L);
+        verify(monsterCollectionService, never()).addMonsterCollection(any(Monster.class));
+        verify(monsterRepository, never()).save(any(Monster.class));
+    }
+
+    @Test
     void updateMonsterNotInDatabase() {
         //given
         updatedTestUser.updateMonster(monster1);
@@ -214,6 +234,83 @@ class MonsterServiceTest {
 
         //then
         assertThat(monster1.getExpPoint()).isEqualTo(monster1.getLevel().getPlusPoint().intValue());
+        verify(monsterRepository).findByUserId(any());
+    }
+
+    @Test
+    void plusExpPointLevelUp() {
+        //given
+        Level level = monster1.getLevel();
+        testUser.updateMonster(monster1);
+        Whitebox.setInternalState(monster1, "expPoint", 99L);
+        given(monsterRepository.findByUserId(any()))
+                .willReturn(Optional.of(monster1));
+        given(monsterDatabaseRepository
+                .findByMonsterTypeAndLevel(monster1.getMonsterDatabase().getMonsterType(), Level.nextOf(level)))
+                .willReturn(Optional.of(mockMonsterDatabaseList.get(1)));
+        //when
+        monsterService.plusExpPoint(testUser);
+
+        //then
+        assertThat(monster1.getLevel()).isEqualTo(Level.nextOf(level));
+        assertThat(monster1.getMonsterDatabase()).isEqualTo(mockMonsterDatabaseList.get(1));
+        assertThat(monster1.getExpPoint()).isEqualTo(level.getPlusPoint()-1);
+
+        verify(monsterRepository).findByUserId(any());
+        verify(monsterDatabaseRepository).
+                findByMonsterTypeAndLevel(mockMonsterDatabaseList.get(0).getMonsterType(), monster1.getLevel());
+
+    }
+
+    @Test
+    void plusExpPointLevelUpMonsterDBNotFound() {
+        //given
+        Level level = monster1.getLevel();
+        testUser.updateMonster(monster1);
+        Whitebox.setInternalState(monster1, "expPoint", 99L);
+        given(monsterRepository.findByUserId(any()))
+                .willReturn(Optional.of(monster1));
+        given(monsterDatabaseRepository
+                .findByMonsterTypeAndLevel(monster1.getMonsterDatabase().getMonsterType(), Level.nextOf(level)))
+                .willReturn(Optional.empty());
+
+        //when, then
+        assertThrows(MonsterNotFoundException.class,
+                () -> monsterService.plusExpPoint(testUser));
+        verify(monsterRepository).findByUserId(any());
+        verify(monsterDatabaseRepository).
+                findByMonsterTypeAndLevel(monster1.getMonsterDatabase().getMonsterType(), monster1.getLevel());
+
+    }
+
+    @Test
+    void minusExpWithCount() {
+        //given
+        testUser.updateMonster(monster1);
+        Whitebox.setInternalState(monster1, "expPoint", 90L);
+        given(monsterRepository.findByUserId(any()))
+                .willReturn(Optional.of(monster1));
+
+        //when
+        monsterService.minusExpWithCount(testUser, 3L);
+
+        //then
+        assertThat(monster1.getExpPoint()).isEqualTo(90L - 3L * monster1.getLevel().getMinusPoint());
+        verify(monsterRepository).findByUserId(any());
+    }
+
+    @Test
+    void minusExpWithCountZero() {
+        //given
+        testUser.updateMonster(monster1);
+        given(monsterRepository.findByUserId(any()))
+                .willReturn(Optional.of(monster1));
+
+        //when
+        monsterService.minusExpWithCount(testUser, 3L);
+
+        //then
+        assertThat(monster1.getExpPoint()).isEqualTo(monster1.getExpPoint());
         verify(monsterRepository).findByUserId(any());
     }
 
