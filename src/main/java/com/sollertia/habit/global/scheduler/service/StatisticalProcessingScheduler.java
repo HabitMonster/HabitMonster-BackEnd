@@ -148,22 +148,20 @@ public class StatisticalProcessingScheduler {
                         -> e1.getValue().compareTo(e2.getValue()));
 
         String contentsMax = sessionType.getString()
-                + "가장 많이 선택된 몬스터는 누구일까요?";
+                + " 가장 많이 선택된 몬스터는 누구일까요?";
 
         String contentMin = sessionType.getString()
-                + "가장 적게 선택된 몬스터는 누구일까요?";
+                + " 가장 적게 선택된 몬스터는 누구일까요?";
 
-        String valueMax = sessionType.getString()
-                + "가장 많이 선택된 monster는 "
-                + max.get().getKey() + "이며"
-                + "총" + max.get().getValue()
-                + "회 선택받았습니다!";
+        String valueMax =
+                max.get().getKey()
+                + ", 총 " + max.get().getValue()
+                + "회";
 
-        String valueMin = sessionType.getString()
-                + "가장 적게 선택된 monster는 "
-                + min.get().getKey() + "이며"
-                + "총" + min.get().getValue()
-                + "회 선택받았습니다!";
+        String valueMin =
+                min.get().getKey()
+                + ", 총 " + min.get().getValue()
+                + "회";
 
         statisticsRepository.save(new Statistics(contentsMax, valueMax, sessionType));
         statisticsRepository.save(new Statistics(contentMin, valueMin, sessionType));
@@ -181,15 +179,13 @@ public class StatisticalProcessingScheduler {
                         -> e1.getValue().compareTo(e2.getValue()));
 
         String valueMax = sessionType.getString()
-                + "사람들은 어떤 요일에 가장 많이 습관을 실패했을까요?";
+                + " 사람들은 어떤 요일에 가장 많이 습관을 실패했을까요?";
 
 
-        String content = sessionType.getString()
-                + "가장 많은 유저가"
-                + max.get().getKey()
-                + "요일에 습관 달성을 실패했습니다."
-                + "총" + max.get().getValue()
-                + "번의 습관 실패가 기록되어 있네요";
+        String content =
+                max.get().getKey()
+                + ", 총 " + max.get().getValue()
+                + "회";
 
         statisticsRepository.save(new Statistics(valueMax, content, sessionType));
     }
