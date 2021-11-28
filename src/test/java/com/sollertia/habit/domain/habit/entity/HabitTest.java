@@ -1,6 +1,7 @@
 package com.sollertia.habit.domain.habit.entity;
 
 import com.sollertia.habit.domain.habit.dto.HabitDtoImpl;
+import com.sollertia.habit.domain.habit.dto.HabitUpdateRequestDto;
 import com.sollertia.habit.domain.habit.enums.HabitType;
 
 
@@ -41,8 +42,6 @@ class HabitTest {
         Habit habit2 = Habit.createHabit(HabitType.HABITWITHTIMER, habitDto, testUser);
 
         //then
-
-
         assertThat(habit1.getClass()).isEqualTo(HabitWithCounter.class);
         assertThat(habit2.getClass()).isEqualTo(HabitWithTimer.class);
 
@@ -104,6 +103,71 @@ class HabitTest {
         //then
         assertThat(thrown.getMessage()).isEqualTo("Bad Habit Data About Date");
 
+    }
+
+    @Test
+    public void updateHabitTest_TitleDescription() throws Exception {
+        //given
+        HabitDtoImpl habitDto = createHabitDto("2021-11-17", "2022-11-17", "1234567");
+        Habit habit = Habit.createHabit(HabitType.HABITWITHCOUNTER, habitDto, testUser);
+        HabitUpdateRequestDto habitUpdateRequestDto = new HabitUpdateRequestDto("UpdateCompletedTitle", "Updated", 3);
+        //when
+        habit.updateHabit(habitUpdateRequestDto);
+        //then
+        assertThat(habit.getTitle()).isEqualTo("UpdateCompletedTitle");
+        assertThat(habit.getDescription()).isEqualTo("Updated");
+
+    }
+
+    @Test
+    public void updateHabitTest_current_count_is_bigger_than_new_goal_count() throws Exception {
+        //given
+        HabitDtoImpl testDto = HabitDtoImpl.builder()
+                .title("test")
+                .description("test")
+                .count(3)
+                .durationStart("2021-11-17")
+                .durationEnd("2022-11-17")
+                .categoryId(2l)
+                .practiceDays("1234567")
+                .build();
+        Habit habit = Habit.createHabit(HabitType.HABITWITHCOUNTER, testDto, testUser);
+
+        //when
+        habit.check(1l);
+        habit.check(1l); //current = 2, goal = 3
+
+        HabitUpdateRequestDto habitUpdateRequestDto = new HabitUpdateRequestDto("UpdateCompletedTitle", "Updated", 2);
+        habit.updateHabit(habitUpdateRequestDto); //change goal to 2
+
+        //then
+        assertThat(habit.getCurrent()).isEqualTo(2);
+        assertThat(habit.getIsAccomplishInSession()).isTrue();
+    }
+
+    @Test
+    public void updateHabitTest_new_goal_count_is_bigger_than_current_one() throws Exception {
+        //given
+        HabitDtoImpl testDto = HabitDtoImpl.builder()
+                .title("test")
+                .description("test")
+                .count(3)
+                .durationStart("2021-11-17")
+                .durationEnd("2022-11-17")
+                .categoryId(2l)
+                .practiceDays("1234567")
+                .build();
+        Habit habit = Habit.createHabit(HabitType.HABITWITHCOUNTER, testDto, testUser);
+        //when
+        habit.check(1l);
+        habit.check(1l);
+        habit.check(1l);
+
+        HabitUpdateRequestDto habitUpdateRequestDto = new HabitUpdateRequestDto("UpdateCompletedTitle", "Updated", 5);
+        habit.updateHabit(habitUpdateRequestDto);
+
+        //then
+        assertThat(habit.getIsAccomplishInSession()).isFalse();
     }
 
 

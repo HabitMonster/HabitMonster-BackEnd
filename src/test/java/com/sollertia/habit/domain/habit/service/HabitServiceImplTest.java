@@ -121,10 +121,6 @@ class HabitServiceImplTest {
         assertThat(result.getHabit().getDurationStart()).isEqualTo(habit1.getDurationStart().toString());
 
 
-
-
-
-
         assertThat(result.getHabit().getAchievePercentage()).isEqualTo(habit1.getAchievePercentage());
         assertThat(result.getHabit().getPracticeDays()).isEqualTo(habit1.getPracticeDays());
         assertThat(result.getHabit().getCurrent()).isEqualTo(habit1.getCurrent());
@@ -256,6 +252,21 @@ class HabitServiceImplTest {
         assertThat(result.getHabits().get(0).getTitle()).isEqualTo(habit1.getTitle());
         assertThat(result.getStatusCode()).isEqualTo(200);
         assertThat(result.getResponseMessage()).isEqualTo("Habit Detail List Query Completed");
+
+    }
+
+    @Test
+    public void updateHabitTest() throws Exception {
+        //given
+        given(habitWithCounterRepository.findById(habit1.getId())).willReturn(Optional.ofNullable(habit1));
+        HabitUpdateRequestDto habitUpdateRequestDto = new HabitUpdateRequestDto("Updated", "Updated", 3);
+        //when
+        HabitDetailResponseDto result = habitService.updateHabit(habitTypeDto1, 1l, habitUpdateRequestDto, testUser);
+        //then
+        assertThat(result.getHabit().getCount()).isEqualTo(3);
+        assertThat(result.getStatusCode()).isEqualTo(200);
+        assertThat(result.getResponseMessage()).isEqualTo("Habit updated");
+
 
     }
 
