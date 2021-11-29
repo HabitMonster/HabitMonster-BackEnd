@@ -101,7 +101,6 @@ class UserRepositoryImplTest {
         assertThat(userMonsterDto.getMonsterCode()).isEqualTo("monsterCode2");
         assertThat(userMonsterDto.getUsername()).isEqualTo(testUser2.getUsername());
         assertThat(userMonsterDto.getEmail()).isEqualTo("tester2.test.com");
-        assertThat(userMonsterDto.getMonsterId()).isEqualTo(2L);
         assertThat(userMonsterDto.getLevelOneId()).isEqualTo(MonsterType.RED.getLv1Id());
         assertThat(userMonsterDto.getMonsterImage()).isEqualTo("red.img");
         assertThat(userMonsterDto.getMonsterName()).isEqualTo("red");
@@ -110,8 +109,6 @@ class UserRepositoryImplTest {
         assertThat(userMonsterDto.getMonsterExpPoint()).isEqualTo(0L);
         assertThat(userMonsterDto.getIsFollowed()).isEqualTo(false);
         assertThat(userMonsterDto.getUser()).isEqualTo(testUser2);
-
-
     }
 
 
