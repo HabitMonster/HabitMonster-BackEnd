@@ -17,12 +17,16 @@ public class RandomUtil {
 
     public int[] getRandomNumbers(int max) {
         int size = 5;
-        if ( max < size ) {
+        if (max < size) {
             size = max;
         }
         return RAND.ints(0, max)
                 .distinct()
                 .limit(size)
                 .toArray();
+    }
+
+    public int getRandomNumber(int size) {
+        return (int) (Math.random() * size);
     }
 }

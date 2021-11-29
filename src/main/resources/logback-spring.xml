@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+    <property name="home" value="logs"/>
+
+    <appender name="SCHEDULER_FILE_APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${home}/scheduler-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <charset>utf8</charset>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="SCHEDULER_FILE_LOGGER" level="INFO" additivity="true">
+        <appender-ref ref="SCHEDULER_FILE_APPENDER"/>
+    </logger>
+
+    <logger name="org.hibernate.SQL" level="DEBUG" additivity="true">
+        <appender-ref ref="SCHEDULER_FILE_APPENDER"/>
+    </logger>
+</configuration>

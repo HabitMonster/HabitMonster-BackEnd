@@ -18,6 +18,7 @@ public class PreSet {
     private String description;
     private int period;
     private int count;
+    private Long userId;
     @Enumerated(EnumType.STRING)
     private Category category;
     private String practiceDays;
@@ -54,7 +55,10 @@ public class PreSet {
         this.practiceDays = practiceDays;
     }
 
+    private void setUserId(Long userId) {this.userId = userId;}
+
     public PreSet(PreSetDto preSetDto){
+        setUserId(preSetDto.getUserId());
         setCategoryId(preSetDto.getCategoryId());
         setCategory(Category.getCategory(preSetDto.getCategoryId()));
         setCount(preSetDto.getCount());

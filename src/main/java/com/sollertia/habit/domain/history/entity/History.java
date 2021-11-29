@@ -20,11 +20,11 @@ public class History extends TimeStamped {
 
     private LocalDateTime endUpDateTime;
 
+    private int dayOfWeek;
+
     private Boolean isSuccessToday;
 
     private String habitTitle;
-
-    private int dayOfWeek;
 
     @Enumerated(EnumType.STRING)
     private Category category;
@@ -53,7 +53,7 @@ public class History extends TimeStamped {
         this.habitTitle = habitTitle;
     }
 
-    public void setDayOfWeek(int dayOfWeek) {
+    private void setDayOfWeek(int dayOfWeek) {
         this.dayOfWeek = dayOfWeek;
     }
 
