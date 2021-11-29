@@ -29,7 +29,9 @@ public class NaverOauth2UserInfo extends Oauth2UserInfo {
             return null;
         }
 
-        return (String) response.get("nickname");
+        String name = (String) response.get("nickname");
+        name = name.replace(" ", "");
+        return name;
     }
 
     @Override

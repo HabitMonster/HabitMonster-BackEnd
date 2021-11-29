@@ -22,7 +22,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 @RequiredArgsConstructor
 @RestController
@@ -48,14 +47,11 @@ public class PreSetController {
         Calendar endDate = Calendar.getInstance();
         DateFormat form = new SimpleDateFormat("yyyy-MM-dd");
         endDate.add(Calendar.DATE, preSetDto.getPeriod());
-        long diffInMillies = Math.abs(endDate.getTime().getTime() - startDate.getTime().getTime());
-        long wholeDays = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
 
         HabitDtoImpl habitDto = HabitDtoImpl.builder()
                 .durationStart(form.format(startDate.getTime()))
                 .durationEnd(form.format(endDate.getTime()))
                 .count(preSetDto.getCount())
-                .totalCount(Math.toIntExact(preSetDto.getCount() * wholeDays))
                 .title(preSetDto.getTitle())
                 .description(preSetDto.getDescription())
                 .practiceDays(preSetDto.getPracticeDays())

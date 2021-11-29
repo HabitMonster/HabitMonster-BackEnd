@@ -1,11 +1,10 @@
 package com.sollertia.habit.domain.user.security.jwt.filter;
 
+import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.domain.user.oauth2.userinfo.GoogleOauth2UserInfo;
 import com.sollertia.habit.domain.user.oauth2.userinfo.Oauth2UserInfo;
-import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.domain.user.security.userdetail.UserDetailsImpl;
 import com.sollertia.habit.domain.user.security.userdetail.UserDetailsServiceImpl;
-import com.sollertia.habit.domain.user.security.jwt.filter.JwtTokenProvider;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;

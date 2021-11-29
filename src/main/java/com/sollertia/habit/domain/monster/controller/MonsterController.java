@@ -9,13 +9,14 @@ import com.sollertia.habit.domain.monster.service.MonsterService;
 import com.sollertia.habit.domain.user.security.userdetail.UserDetailsImpl;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
+
+import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
@@ -34,7 +35,7 @@ public class MonsterController {
     @PatchMapping("/user/monster")
     public MonsterResponseDto updateMonster(
             @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @RequestBody MonsterSelectRequestDto requestDto) {
+            @Valid @RequestBody MonsterSelectRequestDto requestDto) {
         return monsterService.updateMonster(userDetails.getUser(), requestDto);
     }
 
@@ -42,7 +43,7 @@ public class MonsterController {
     @PatchMapping("/monster/name")
     public MonsterResponseDto updateMonsterName(
             @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @RequestBody MonsterSelectRequestDto requestDto) {
+            @Valid @RequestBody MonsterSelectRequestDto requestDto) {
         monsterCollectionService.updateMonsterName(userDetails.getUser(), requestDto.getMonsterName());
         return monsterService.updateMonsterName(userDetails.getUser(), requestDto);
     }

@@ -14,6 +14,7 @@ import com.sollertia.habit.domain.user.oauth2.userinfo.Oauth2UserInfo;
 import com.sollertia.habit.domain.user.security.jwt.filter.JwtTokenProvider;
 import com.sollertia.habit.domain.user.security.userdetail.UserDetailsImpl;
 import com.sollertia.habit.domain.user.service.UserService;
+import com.sollertia.habit.global.exception.user.InvalidRecommendationTypeException;
 import com.sollertia.habit.global.utils.RedisUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -264,7 +265,7 @@ class UserControllerTest {
     }
 
     @Test
-    void getRecommendedUserInfoByMonsterCode() throws Exception {
+    void getRecommendedUsers() throws Exception {
         //given
         authenticated();
         List<RecommendationDto> recommendationDtoList = new ArrayList<>();
@@ -315,6 +316,24 @@ class UserControllerTest {
 
                 .andExpect(jsonPath("$.responseMessage").value("Response Recommeded User List"))
                 .andExpect(jsonPath("$.statusCode").value("200"));
+
+        verify(userService).getRecommendedUserListDto(testUser);
+    }
+
+    @Test
+    void getRecommendedUsersEmpty() throws Exception {
+        //given
+        authenticated();
+        given(userService.getRecommendedUserListDto(testUser))
+                .willThrow(new InvalidRecommendationTypeException("Recommendations List is Empty"));
+
+        //when
+        mvc.perform(get("/users/recommended"))
+                .andDo(print())
+                //then
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.responseMessage").value("Recommendations List is Empty"))
+                .andExpect(jsonPath("$.statusCode").value("404"));
 
         verify(userService).getRecommendedUserListDto(testUser);
     }
