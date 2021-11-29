@@ -94,7 +94,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 throw ex;
             }
         }
-
         filterChain.doFilter(request,response);
 }
     private void createRequest(HttpServletRequest request, String message, String clientRequestUri, String messageBody, String method, int code) {

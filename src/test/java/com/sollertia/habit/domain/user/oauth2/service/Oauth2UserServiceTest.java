@@ -1,10 +1,17 @@
 package com.sollertia.habit.domain.user.oauth2.service;
 
+import com.sollertia.habit.domain.completedhabbit.repository.CompletedHabitRepository;
+import com.sollertia.habit.domain.monster.entity.Monster;
+import com.sollertia.habit.domain.monster.entity.MonsterDatabase;
+import com.sollertia.habit.domain.monster.enums.Level;
+import com.sollertia.habit.domain.monster.enums.MonsterType;
 import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.domain.user.enums.ProviderType;
+import com.sollertia.habit.domain.user.follow.repository.FollowRepository;
 import com.sollertia.habit.domain.user.oauth2.userinfo.GoogleOauth2UserInfo;
 import com.sollertia.habit.domain.user.oauth2.userinfo.KakaoOauth2UserInfo;
 import com.sollertia.habit.domain.user.oauth2.userinfo.Oauth2UserInfo;
+import com.sollertia.habit.domain.user.repository.RecommendationRepository;
 import com.sollertia.habit.domain.user.repository.UserRepository;
 import com.sollertia.habit.global.exception.user.OAuthProviderMissMatchException;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,6 +39,12 @@ class Oauth2UserServiceTest {
 
     @Mock
     private UserRepository userRepository;
+    @Mock
+    private FollowRepository followRepository;
+    @Mock
+    private CompletedHabitRepository completedHabitRepository;
+    @Mock
+    private RecommendationRepository recommendationRepository;
 
     private User googleUser;
     private User kakaoUser;
@@ -80,6 +93,30 @@ class Oauth2UserServiceTest {
     }
 
     @Test
+    void putUserHasMonsterInto() {
+        //given
+        MonsterDatabase monsterDatabase = new MonsterDatabase(Level.LV1, MonsterType.BLUE, "test.img");
+        Monster monster = Monster.createNewMonster("test", monsterDatabase);
+        googleUser.updateMonster(monster);
+        given(userRepository.findBySocialId(googleUser.getSocialId()))
+                .willReturn(Optional.of(googleUser));
+
+        //when
+        Oauth2UserInfo oauth2UserInfo = oauth2UserService.putUserInto(googleUserInfo);
+
+        //then
+        assertThat(oauth2UserInfo.getUser()).isEqualTo(googleUser);
+        assertThat(oauth2UserInfo.getEmail()).isEqualTo(googleUserInfo.getEmail());
+        assertThat(oauth2UserInfo.getName()).isEqualTo(googleUserInfo.getName());
+        assertThat(oauth2UserInfo.getId()).isEqualTo(googleUserInfo.getId());
+        assertThat(oauth2UserInfo.getProviderType()).isEqualTo(ProviderType.GOOGLE);
+        assertThat(oauth2UserInfo.isFirstLogin()).isFalse();
+
+        verify(userRepository).findBySocialId(googleUser.getSocialId());
+        verify(userRepository, never()).save(any(User.class));
+    }
+
+    @Test
     void putNewUserInto() {
         //given
         given(userRepository.findBySocialId(googleUser.getSocialId()))
@@ -114,5 +151,35 @@ class Oauth2UserServiceTest {
 
         verify(userRepository).findBySocialId(googleUser.getSocialId());
         verify(userRepository, never()).save(any(User.class));
+    }
+
+    @Test
+    void reCreateUser() {
+        //given
+        googleUser.toDisabled();
+        given(userRepository.findBySocialId(googleUser.getSocialId()))
+                .willReturn(Optional.of(googleUser));
+        given(userRepository.save(any(User.class)))
+                .willReturn(googleUser);
+
+        //when
+        Oauth2UserInfo oauth2UserInfo = oauth2UserService.putUserInto(googleUserInfo);
+
+        //then
+        assertThat(oauth2UserInfo.getUser()).isEqualTo(googleUser);
+        assertThat(oauth2UserInfo.getEmail()).isEqualTo(googleUser.getEmail());
+        assertThat(oauth2UserInfo.getName()).isEqualTo(googleUser.getUsername());
+        assertThat(oauth2UserInfo.getId()).isEqualTo(googleUser.getSocialId());
+        assertThat(oauth2UserInfo.getProviderType()).isEqualTo(ProviderType.GOOGLE);
+        assertThat(oauth2UserInfo.isFirstLogin()).isTrue();
+
+        verify(userRepository).findBySocialId(googleUser.getSocialId());
+        verify(followRepository).deleteByFollower(googleUser);
+        verify(followRepository).deleteByFollowing(googleUser);
+        verify(completedHabitRepository).deleteByUser(googleUser);
+        verify(recommendationRepository).deleteByUser(googleUser);
+        verify(userRepository).delete(googleUser);
+        verify(userRepository).flush();
+        verify(userRepository, times(2)).save(any(User.class));
     }
 }

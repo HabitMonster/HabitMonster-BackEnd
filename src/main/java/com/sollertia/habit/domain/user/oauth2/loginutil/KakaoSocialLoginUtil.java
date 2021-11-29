@@ -9,6 +9,7 @@ import com.sollertia.habit.domain.user.oauth2.userinfo.Oauth2UserInfo;
 import com.sollertia.habit.domain.user.oauth2.userinfo.Oauth2UserInfoFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.json.JsonParseException;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -45,8 +46,7 @@ public class KakaoSocialLoginUtil implements SocialLoginUtil {
             String accessToken = getAccessTokenByCode(authCode);
             return getUserInfoByToken(accessToken);
         } catch (JsonProcessingException exception) {
-            System.out.println(exception.getMessage());
-            return null;
+            throw new JsonParseException(exception);
         }
     }
 

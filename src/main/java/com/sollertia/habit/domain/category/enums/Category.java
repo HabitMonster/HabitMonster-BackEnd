@@ -37,4 +37,23 @@ public enum Category {
         }
         throw  new InvalidCategoryException("Not Found Category ID");
     }
+
+    public static String getKorean(Category category) {
+        switch (category) {
+            case Health:
+                return "건강";
+            case Study:
+                return "공부";
+            case Life:
+                return "생활";
+            case Emotion:
+                return "감정 관리";
+            case Relation:
+                return "관계";
+            case Hobby:
+                return "취미";
+            default:
+                return "기타";
+        }
+    }
 }

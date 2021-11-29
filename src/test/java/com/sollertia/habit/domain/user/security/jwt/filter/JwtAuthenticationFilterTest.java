@@ -195,6 +195,4 @@ class JwtAuthenticationFilterTest {
         assertThrows(MalformedJwtException.class,
                 () -> jwtAuthenticationFilter.doFilterInternal(request, response, chain));
     }
-
-
 }

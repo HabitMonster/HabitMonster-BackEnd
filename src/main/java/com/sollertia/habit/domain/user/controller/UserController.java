@@ -1,6 +1,9 @@
 package com.sollertia.habit.domain.user.controller;
 
-import com.sollertia.habit.domain.user.dto.*;
+import com.sollertia.habit.domain.user.dto.RecommendedUserListDto;
+import com.sollertia.habit.domain.user.dto.UserDetailResponseDto;
+import com.sollertia.habit.domain.user.dto.UserInfoResponseDto;
+import com.sollertia.habit.domain.user.dto.UsernameUpdateRequestDto;
 import com.sollertia.habit.domain.user.security.userdetail.UserDetailsImpl;
 import com.sollertia.habit.domain.user.service.UserService;
 import io.swagger.annotations.ApiOperation;
@@ -53,7 +56,7 @@ public class UserController {
 
     @ApiOperation(value = "추천 유저 정보 조회", notes = "사용자, 몬스터, 습관 정보 응답")
     @GetMapping("/users/recommended")
-    public RecommendedUserListDto getRecommendedUserInfoByMonsterCode(
+    public RecommendedUserListDto getRecommendedUsers(
             @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         return userService.getRecommendedUserListDto(userDetails.getUser());

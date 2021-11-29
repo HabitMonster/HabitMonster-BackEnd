@@ -1,7 +1,4 @@
-# This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
-# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
-
-name: Java CI with Gradle
+name: CI/CD HabitMonster
 
 on:
   push:
@@ -44,6 +41,33 @@ jobs:
       with:
         format: YYYY-MM-DDTHH-mm-ss
         utcOffset: "+09:00"
+
+
+    # docker 이미지 빌드 준비
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    # 프로젝트 복호화 위해 dockerfile 내용 수정
+    - name: Revise Dockerfile
+      run: |
+        sed -i 's/OUR-PASSWORD/${{secrets.JASYPT_KEY}}/g' Dockerfile
+
+    # dockerhub login
+    - name: Login to DockerHub
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    # dockerhub에 image push
+    - name: Build and push
+      id: docker_build
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        file: ./Dockerfile
+        push: true
+        tags: smallzoodev/habitmonsterscheduler:latest
         
     # 배포 준비 - 빌드된 파일과 eb 환경 설정 관련 파일들 패키지로 묶어 zip으로 만들어서 보내줘야함
     # sed -i ~ 구문 : properies파일 암호화 풀기 위해서는 jasypt decode 키를 포함해서 빌드 명령을 내줘야함 그러기 위해 프로젝트에 저장된 빌드명령 변경

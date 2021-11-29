@@ -4,16 +4,17 @@ import com.sollertia.habit.domain.monster.dto.*;
 import com.sollertia.habit.domain.monster.entity.Monster;
 import com.sollertia.habit.domain.monster.entity.MonsterCollection;
 import com.sollertia.habit.domain.monster.entity.MonsterDatabase;
+import com.sollertia.habit.domain.monster.enums.Level;
 import com.sollertia.habit.domain.monster.enums.MonsterType;
 import com.sollertia.habit.domain.monster.service.MonsterCollectionService;
 import com.sollertia.habit.domain.monster.service.MonsterService;
 import com.sollertia.habit.domain.user.entity.User;
-import com.sollertia.habit.domain.monster.enums.Level;
 import com.sollertia.habit.domain.user.oauth2.userinfo.GoogleOauth2UserInfo;
 import com.sollertia.habit.domain.user.oauth2.userinfo.Oauth2UserInfo;
 import com.sollertia.habit.domain.user.security.jwt.filter.JwtTokenProvider;
 import com.sollertia.habit.domain.user.security.userdetail.UserDetailsImpl;
 import com.sollertia.habit.global.exception.monster.MonsterNotFoundException;
+import com.sollertia.habit.global.exception.monster.NotReachedMaximumLevelException;
 import com.sollertia.habit.global.utils.RedisUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,8 +42,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -147,6 +147,31 @@ MonsterControllerTest {
     }
 
     @Test
+    void updateMonsterNotReachedMaximumLevel() throws Exception {
+        //given
+        authenticated();
+        given(monsterService.updateMonster(eq(testUser), any(MonsterSelectRequestDto.class)))
+                .willThrow(new NotReachedMaximumLevelException("New monsters require max level and EXP."));
+
+        String json = "{\n" +
+                "  \"monsterId\": 1,\n" +
+                "  \"monsterName\": \"mycat\"\n" +
+                "}";
+
+        //when
+        mvc.perform(patch("/user/monster")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andDo(print())
+                //then
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.responseMessage").value("New monsters require max level and EXP."))
+                .andExpect(jsonPath("$.statusCode").value(400));
+
+        verify(monsterService).updateMonster(eq(testUser), any(MonsterSelectRequestDto.class));
+    }
+
+    @Test
     void updateMonsterName() throws Exception {
         //given
         authenticated();
@@ -176,6 +201,28 @@ MonsterControllerTest {
                 .andExpect(jsonPath("$.statusCode").value(responseDto.getStatusCode()));
 
         verify(monsterService).updateMonsterName(eq(testUser), any(MonsterSelectRequestDto.class));
+    }
+
+    @Test
+    void updateMonsterNameTooLong() throws Exception {
+        //given
+        authenticated();
+        String json = "{\n" +
+                "  \"monsterId\": 1,\n" +
+                "  \"monsterName\": \"testmonstertestmonstertestmonstertestmonstertestmonster\"\n" +
+                "}";
+
+        //when
+        mvc.perform(patch("/monster/name")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andDo(print())
+                //then
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.responseMessage").value("ValidException"))
+                .andExpect(jsonPath("$.statusCode").value(400));
+
+        verify(monsterService, never()).updateMonsterName(eq(testUser), any(MonsterSelectRequestDto.class));
     }
 
     @Test

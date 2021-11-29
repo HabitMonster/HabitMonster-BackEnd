@@ -97,7 +97,7 @@ public abstract class Habit extends TimeStamped {
 
         int wholeCount = 0;
         Long until = this.durationStart.until(durationEnd, ChronoUnit.DAYS);
-        int wholeDays = until.intValue();
+        int wholeDays = until.intValue() +1;
 
         if (wholeDays < 7) {
             throw new BadDataAboutHabitException("Bad Habit Data About Date");

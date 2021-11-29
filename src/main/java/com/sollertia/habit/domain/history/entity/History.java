@@ -3,6 +3,7 @@ package com.sollertia.habit.domain.history.entity;
 import com.sollertia.habit.domain.category.enums.Category;
 import com.sollertia.habit.domain.habit.entity.Habit;
 import com.sollertia.habit.domain.user.entity.User;
+import com.sollertia.habit.global.utils.TimeStamped;
 import lombok.Getter;
 
 import javax.persistence.*;
@@ -11,13 +12,15 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-public class History {
+public class History extends TimeStamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private LocalDateTime endUpDateTime;
+
+    private int dayOfWeek;
 
     private Boolean isSuccessToday;
 
@@ -50,6 +53,10 @@ public class History {
         this.habitTitle = habitTitle;
     }
 
+    private void setDayOfWeek(int dayOfWeek) {
+        this.dayOfWeek = dayOfWeek;
+    }
+
     protected History() {
 
     }
@@ -61,6 +68,7 @@ public class History {
         history.setSuccessToday(habit.getIsAccomplishInSession());
         history.setEndUpDateTime(history.getIsSuccessToday() ?
                 schedulerNow : schedulerNow.minusDays(1));
+        history.setDayOfWeek(history.getEndUpDateTime().getDayOfWeek().getValue());
         history.setHabitTitle(habit.getTitle());
         history.setUser(habit.getUser());
         return history;

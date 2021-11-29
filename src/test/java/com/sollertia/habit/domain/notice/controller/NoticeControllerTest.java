@@ -1,7 +1,7 @@
 package com.sollertia.habit.domain.notice.controller;
 
-import com.sollertia.habit.domain.notice.dto.NoticeResponseDto;
 import com.sollertia.habit.domain.notice.dto.NoticeDto;
+import com.sollertia.habit.domain.notice.dto.NoticeResponseDto;
 import com.sollertia.habit.domain.notice.service.NoticeServiceImpl;
 import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.domain.user.oauth2.userinfo.GoogleOauth2UserInfo;
@@ -12,6 +12,7 @@ import com.sollertia.habit.global.utils.RedisUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -34,6 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = NoticeController.class)
+@AutoConfigureMockMvc(addFilters = false)
 class NoticeControllerTest {
 
     @Autowired

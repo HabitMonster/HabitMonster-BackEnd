@@ -23,7 +23,9 @@ public class KakaoOauth2UserInfo extends Oauth2UserInfo {
             return null;
         }
 
-        return (String) properties.get("nickname");
+        String name = (String) properties.get("nickname");
+        name = name.replace(" ", "");
+        return name;
     }
 
     @Override

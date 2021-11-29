@@ -5,12 +5,16 @@ import com.sollertia.habit.domain.monster.entity.MonsterDatabase;
 import com.sollertia.habit.domain.monster.enums.Level;
 import com.sollertia.habit.domain.monster.enums.MonsterType;
 import com.sollertia.habit.domain.user.entity.User;
-import com.sollertia.habit.domain.user.follow.dto.*;
+import com.sollertia.habit.domain.user.follow.dto.FollowCheckDto;
+import com.sollertia.habit.domain.user.follow.dto.FollowDto;
+import com.sollertia.habit.domain.user.follow.dto.FollowResponseDto;
+import com.sollertia.habit.domain.user.follow.dto.FollowSearchResponseDto;
 import com.sollertia.habit.domain.user.follow.service.FollowServiceImpl;
 import com.sollertia.habit.domain.user.oauth2.userinfo.GoogleOauth2UserInfo;
 import com.sollertia.habit.domain.user.oauth2.userinfo.Oauth2UserInfo;
 import com.sollertia.habit.domain.user.security.jwt.filter.JwtTokenProvider;
 import com.sollertia.habit.domain.user.security.userdetail.UserDetailsImpl;
+import com.sollertia.habit.global.exception.user.FollowException;
 import com.sollertia.habit.global.utils.RedisUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -18,6 +22,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -40,6 +45,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = FollowController.class)
+@AutoConfigureMockMvc(addFilters = false)
 @RunWith(PowerMockRunner.class)
 class FollowControllerTest {
 
@@ -161,6 +167,25 @@ class FollowControllerTest {
                 .andExpect(jsonPath("$.isFollowed").value("true"))
                 .andExpect(jsonPath("$.responseMessage").value("Success Follow"))
                 .andExpect(jsonPath("$.statusCode").value("200"));
+
+        verify(followService).requestFollow("1234G", testUser);
+    }
+
+    @DisplayName("Follow 하기 예외")
+    @Test
+    void requestFollowException() throws Exception {
+        //given
+        authenticated();
+        given(followService.requestFollow("1234G", testUser))
+                .willThrow(new FollowException("You can't follow yourself"));
+
+        //when
+        mvc.perform(patch("/follow/1234G"))
+                .andDo(print())
+                //then
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.responseMessage").value("You can't follow yourself"))
+                .andExpect(jsonPath("$.statusCode").value("400"));
 
         verify(followService).requestFollow("1234G", testUser);
     }

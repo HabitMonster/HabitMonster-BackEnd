@@ -5,7 +5,6 @@ import com.sollertia.habit.domain.habit.dto.HabitDtoImpl;
 import com.sollertia.habit.domain.habit.dto.HabitUpdateRequestDto;
 import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.global.exception.habit.AlreadyGoalCountException;
-import lombok.Getter;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;

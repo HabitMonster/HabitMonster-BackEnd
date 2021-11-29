@@ -12,4 +12,8 @@ public interface CompletedHabitRepository extends JpaRepository<CompletedHabit, 
     List<CompletedHabit> findAllByUserAndStartDateBetweenOrderByStartDate(User user, LocalDate start, LocalDate end);
 
     Integer countByUser(User user);
+
+    void deleteByUser(User user);
+
+    void deleteAllByUserIn(List<User> userList);
 }

@@ -11,6 +11,7 @@ import com.sollertia.habit.domain.user.oauth2.userinfo.GoogleOauth2UserInfo;
 import com.sollertia.habit.domain.user.oauth2.userinfo.Oauth2UserInfo;
 import com.sollertia.habit.domain.user.security.jwt.filter.JwtTokenProvider;
 import com.sollertia.habit.domain.user.security.userdetail.UserDetailsImpl;
+import com.sollertia.habit.global.exception.preset.PreSetNotFoundException;
 import com.sollertia.habit.global.utils.RedisUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -34,6 +35,7 @@ import java.util.Map;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -149,6 +151,26 @@ class PreSetControllerTest {
                 .andExpect(jsonPath("$.statusCode").value(200));
 
         verify(preSetService).getPreSet(1L);
+    }
+
+    @DisplayName("PreSet Not Found")
+    @Test
+    void selectPreSetNotFound() throws Exception {
+        //given
+        authenticated();
+        given(preSetService.getPreSet(1L))
+                .willThrow(new PreSetNotFoundException("Not Found PreSet"));
+
+        //when
+        mvc.perform(post("/presets/1"))
+                .andDo(print())
+                //then
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.responseMessage").value("Not Found PreSet"))
+                .andExpect(jsonPath("$.statusCode").value(400));
+
+        verify(preSetService).getPreSet(1L);
+        verify(habitService, never()).createHabit(any(), any(), eq(testUser));
     }
 
 }
