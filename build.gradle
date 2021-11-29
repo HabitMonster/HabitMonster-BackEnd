@@ -81,7 +81,7 @@ jacocoTestReport {
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {
             fileTree(dir: it, exclude: [
-                    "com/sollertia/habit/domain/**/Q*.class"
+                    "com/sollertia/habit/**/Q*.class"
             ])
         }))
     }

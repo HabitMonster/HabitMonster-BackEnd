@@ -14,6 +14,7 @@ import com.sollertia.habit.domain.user.oauth2.userinfo.GoogleOauth2UserInfo;
 import com.sollertia.habit.domain.user.oauth2.userinfo.Oauth2UserInfo;
 import com.sollertia.habit.domain.user.security.jwt.filter.JwtTokenProvider;
 import com.sollertia.habit.domain.user.security.userdetail.UserDetailsImpl;
+import com.sollertia.habit.global.exception.user.FollowException;
 import com.sollertia.habit.global.utils.RedisUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -164,6 +165,25 @@ class FollowControllerTest {
                 .andExpect(jsonPath("$.isFollowed").value("true"))
                 .andExpect(jsonPath("$.responseMessage").value("Success Follow"))
                 .andExpect(jsonPath("$.statusCode").value("200"));
+
+        verify(followService).requestFollow("1234G", testUser);
+    }
+
+    @DisplayName("Follow 하기 예외")
+    @Test
+    void requestFollowException() throws Exception {
+        //given
+        authenticated();
+        given(followService.requestFollow("1234G", testUser))
+                .willThrow(new FollowException("You can't follow yourself"));
+
+        //when
+        mvc.perform(patch("/follow/1234G"))
+                .andDo(print())
+                //then
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.responseMessage").value("You can't follow yourself"))
+                .andExpect(jsonPath("$.statusCode").value("400"));
 
         verify(followService).requestFollow("1234G", testUser);
     }

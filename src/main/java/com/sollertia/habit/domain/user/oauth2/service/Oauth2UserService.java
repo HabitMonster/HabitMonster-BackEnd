@@ -1,6 +1,7 @@
 package com.sollertia.habit.domain.user.oauth2.service;
 
 
+import com.sollertia.habit.domain.completedhabbit.repository.CompletedHabitRepository;
 import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.domain.user.follow.repository.FollowRepository;
 import com.sollertia.habit.domain.user.oauth2.userinfo.Oauth2UserInfo;
@@ -18,6 +19,7 @@ public class Oauth2UserService {
 
     private final UserRepository userRepository;
     private final FollowRepository followRepository;
+    private final CompletedHabitRepository completedHabitRepository;
 
     @Transactional
     public Oauth2UserInfo putUserInto(Oauth2UserInfo userInfo) {
@@ -28,16 +30,10 @@ public class Oauth2UserService {
 
     private Oauth2UserInfo updateUserInfo(Oauth2UserInfo userInfo) {
         Optional<User> optionalUser = userRepository.findBySocialId(userInfo.getId());
-        if ( optionalUser.isPresent() && !optionalUser.get().isDisabled() ) {
-            User user = optionalUser.get();
-            if ( user.getMonster() == null ) {
-                userInfo.toFirstLogin();
-            }
+        if ( optionalUser.isPresent() ) {
+            User user = getUser(userInfo, optionalUser);
+            checkFirstLogin(userInfo, user);
             userInfo.putUser(user);
-        } else if ( optionalUser.isPresent() && optionalUser.get().isDisabled() ) {
-            deleteUser(optionalUser.get());
-            userInfo.putUser(createUser(userInfo));
-            userInfo.toFirstLogin();
         } else {
             userInfo.putUser(createUser(userInfo));
             userInfo.toFirstLogin();
@@ -45,11 +41,27 @@ public class Oauth2UserService {
         return userInfo;
     }
 
-    private void deleteUser(User user) {
+    private void checkFirstLogin(Oauth2UserInfo userInfo, User user) {
+        if ( user.getMonster() == null ) {
+            userInfo.toFirstLogin();
+        }
+    }
+
+    private User getUser(Oauth2UserInfo userInfo, Optional<User> optionalUser) {
+        User user = optionalUser.get();
+        if ( user.isDisabled() ) {
+            user = reCreateUser(optionalUser.get(), userInfo);
+        }
+        return user;
+    }
+
+    private User reCreateUser(User user, Oauth2UserInfo userInfo) {
         followRepository.deleteByFollower(user);
         followRepository.deleteByFollowing(user);
+        completedHabitRepository.deleteByUser(user);
         userRepository.delete(user);
         userRepository.flush();
+        return createUser(userInfo);
     }
 
     private User createUser(Oauth2UserInfo userInfo) {

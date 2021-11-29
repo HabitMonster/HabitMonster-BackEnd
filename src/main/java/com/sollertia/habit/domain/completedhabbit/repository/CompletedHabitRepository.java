@@ -13,5 +13,7 @@ public interface CompletedHabitRepository extends JpaRepository<CompletedHabit, 
 
     Integer countByUser(User user);
 
+    void deleteByUser(User user);
+
     void deleteAllByUserIn(List<User> userList);
 }

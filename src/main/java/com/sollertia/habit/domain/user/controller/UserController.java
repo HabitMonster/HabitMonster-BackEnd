@@ -56,7 +56,7 @@ public class UserController {
 
     @ApiOperation(value = "추천 유저 정보 조회", notes = "사용자, 몬스터, 습관 정보 응답")
     @GetMapping("/users/recommended")
-    public RecommendedUserListDto getRecommendedUserInfoByMonsterCode(
+    public RecommendedUserListDto getRecommendedUsers(
             @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         return userService.getRecommendedUserListDto(userDetails.getUser());

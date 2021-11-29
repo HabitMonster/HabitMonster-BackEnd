@@ -2,12 +2,14 @@ package com.sollertia.habit.domain.user.oauth2.controller;
 
 
 import com.sollertia.habit.domain.user.entity.User;
+import com.sollertia.habit.domain.user.enums.ProviderType;
 import com.sollertia.habit.domain.user.oauth2.service.Oauth2UserService;
 import com.sollertia.habit.domain.user.oauth2.service.SocialLoginService;
 import com.sollertia.habit.domain.user.oauth2.userinfo.GoogleOauth2UserInfo;
 import com.sollertia.habit.domain.user.oauth2.userinfo.Oauth2UserInfo;
 import com.sollertia.habit.domain.user.security.jwt.filter.JwtTokenProvider;
 import com.sollertia.habit.global.exception.user.InvalidSocialNameException;
+import com.sollertia.habit.global.exception.user.OAuthProviderMissMatchException;
 import com.sollertia.habit.global.utils.RedisUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -102,6 +104,35 @@ class Oauth2ControllerTest {
         verify(oauth2UserService).putUserInto(mockUserInfo);
         verify(jwtTokenProvider).responseAccessToken(testUser);
         verify(jwtTokenProvider).responseRefreshToken(testUser);
+    }
+
+    @Test
+    void missMatchException() throws Exception {
+        //given
+        String code = "abcdefg1234567";
+        String socialName = "google";
+
+        given(socialLoginService.getUserInfo(socialName, code))
+                .willReturn(mockUserInfo);
+        given(oauth2UserService.putUserInto(mockUserInfo))
+                .willThrow(new OAuthProviderMissMatchException("Looks like you're signed up with " + mockUserInfo.getProviderType() +
+                        " account. Please use your " + ProviderType.KAKAO + " account to login."));
+
+        //when
+        mvc.perform(get("/user/login/google")
+                        .param("code", code))
+                .andDo(print())
+
+                //then
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.statusCode").value(400))
+                .andExpect(jsonPath("$.responseMessage").value("Looks like you're signed up with " + mockUserInfo.getProviderType() +
+                        " account. Please use your " + ProviderType.KAKAO + " account to login."));
+
+        verify(socialLoginService).getUserInfo(socialName, code);
+        verify(oauth2UserService).putUserInto(mockUserInfo);
+        verify(jwtTokenProvider, never()).responseAccessToken(testUser);
+        verify(jwtTokenProvider, never()).responseRefreshToken(testUser);
     }
 
     @Test
