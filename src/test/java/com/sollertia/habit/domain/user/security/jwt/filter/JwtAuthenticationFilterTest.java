@@ -196,5 +196,15 @@ class JwtAuthenticationFilterTest {
                 () -> jwtAuthenticationFilter.doFilterInternal(request, response, chain));
     }
 
+    @DisplayName("Token is Null")
+    @Test
+    void tokenIsNull() {
+        //given
+        request.setRequestURI("/test");
+        request.setMethod("GET");
+        assertThrows(NullPointerException.class,
+                () -> jwtAuthenticationFilter.doFilterInternal(request, response, chain));
+    }
+
 
 }
