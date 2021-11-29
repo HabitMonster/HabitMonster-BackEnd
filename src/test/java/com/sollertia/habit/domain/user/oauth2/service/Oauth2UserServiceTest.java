@@ -11,6 +11,7 @@ import com.sollertia.habit.domain.user.follow.repository.FollowRepository;
 import com.sollertia.habit.domain.user.oauth2.userinfo.GoogleOauth2UserInfo;
 import com.sollertia.habit.domain.user.oauth2.userinfo.KakaoOauth2UserInfo;
 import com.sollertia.habit.domain.user.oauth2.userinfo.Oauth2UserInfo;
+import com.sollertia.habit.domain.user.repository.RecommendationRepository;
 import com.sollertia.habit.domain.user.repository.UserRepository;
 import com.sollertia.habit.global.exception.user.OAuthProviderMissMatchException;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,6 +43,8 @@ class Oauth2UserServiceTest {
     private FollowRepository followRepository;
     @Mock
     private CompletedHabitRepository completedHabitRepository;
+    @Mock
+    private RecommendationRepository recommendationRepository;
 
     private User googleUser;
     private User kakaoUser;
@@ -174,6 +177,7 @@ class Oauth2UserServiceTest {
         verify(followRepository).deleteByFollower(googleUser);
         verify(followRepository).deleteByFollowing(googleUser);
         verify(completedHabitRepository).deleteByUser(googleUser);
+        verify(recommendationRepository).deleteByUser(googleUser);
         verify(userRepository).delete(googleUser);
         verify(userRepository).flush();
         verify(userRepository, times(2)).save(any(User.class));
