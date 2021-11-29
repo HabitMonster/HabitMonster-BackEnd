@@ -58,7 +58,7 @@ class HabitTest {
     public void getWholeDayTest1() {
 
         //given
-        HabitDtoImpl habitDto1 = createHabitDto("2021-11-17", "2022-11-17", "1234567"); //매일하는 습관, 1년, 365회
+        HabitDtoImpl habitDto1 = createHabitDto("2021-11-17", "2022-11-16", "1234567"); //매일하는 습관, 1년, 365회
         //when
         Habit habit1 = Habit.createHabit(HabitType.HABITWITHCOUNTER, habitDto1, testUser);
         //then
@@ -98,8 +98,8 @@ class HabitTest {
     public void getAchievePercentageTest() throws Exception {
 
         //given
-        HabitDtoImpl habitDto2 = createHabitDto("2021-11-17", "2021-11-27", "1234567");
-        HabitDtoImpl habitDto3 = createHabitDto("2021-11-17", "2021-11-30", "1234567");
+        HabitDtoImpl habitDto2 = createHabitDto("2021-11-17", "2021-11-26", "1234567");
+        HabitDtoImpl habitDto3 = createHabitDto("2021-11-17", "2021-11-29", "1234567");
 
 
         Habit habit1 = Habit.createHabit(HabitType.HABITWITHCOUNTER, habitDto2, testUser);
