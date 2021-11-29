@@ -93,12 +93,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 createRequest(request, "refreshToken Malformed", request.getRequestURI(), messageBody, method, 401);
                 throw ex;
             }
-        } else {
-            messageBody = getBody(request);
-            createRequest(request, "Token is Null", request.getRequestURI(), messageBody, method, 401);
-            throw new NullPointerException("Token is Null");
         }
-
         filterChain.doFilter(request,response);
 }
     private void createRequest(HttpServletRequest request, String message, String clientRequestUri, String messageBody, String method, int code) {
