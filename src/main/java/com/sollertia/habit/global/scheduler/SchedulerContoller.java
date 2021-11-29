@@ -1,5 +1,6 @@
 package com.sollertia.habit.global.scheduler;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +19,7 @@ import java.util.stream.Stream;
 
 
 @Controller
+@Profile("scheduler")
 public class SchedulerContoller {
 
     @GetMapping("/scheduler")
