@@ -33,9 +33,9 @@ public class JwtTokenProvider {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
 
-    public static final long ACCESS_TOKEN_USETIME = 1 * 60 * 60 * 1000L;
+    public static final long ACCESS_TOKEN_USETIME = 2 * 60 * 60 * 1000L;
 
-    public static final long REFRESH_TOKEN_USETIME = 7 * 24 * 60 * 60 * 1000L;
+    public static final long REFRESH_TOKEN_USETIME = 5 * 24 * 60 * 60 * 1000L;
 
     public String responseRefreshToken(User user) {
         return createToken(user.getSocialId(), user.getProviderType(), REFRESH_TOKEN_USETIME);
