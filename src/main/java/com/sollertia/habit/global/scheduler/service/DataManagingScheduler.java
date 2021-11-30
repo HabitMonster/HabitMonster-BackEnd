@@ -23,7 +23,6 @@ import com.sollertia.habit.global.exception.monster.MonsterNotFoundException;
 import com.sollertia.habit.global.scheduler.entity.CategoryAvg;
 import com.sollertia.habit.global.scheduler.repository.CategoryAvgRepository;
 import com.sollertia.habit.global.utils.RandomUtil;
-import com.sollertia.habit.global.utils.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -64,6 +63,7 @@ public class DataManagingScheduler {
             makeHistoryOf(habit);
         }
         habitRepository.updateAccomplishInSessionToFalse();
+        habitRepository.updateCurrentCountZero();
         log.info("Minus Exp End");
     }
 
@@ -174,6 +174,7 @@ public class DataManagingScheduler {
         followRepository.deleteAllByFollowerIn(userList);
         followRepository.deleteAllByFollowingIn(userList);
         completedHabitRepository.deleteAllByUserIn(userList);
+        recommendationRepository.deleteByUserIn(userList);
         userRepository.deleteAll(userList);
         log.info("Drop user end");
     }
