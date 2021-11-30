@@ -24,7 +24,7 @@ public class RedisUtil {
         stringRedisTemplate.expire(key, duration, TimeUnit.SECONDS);
     }
 
-    public void setDataExpire(String key, String value) {
+    public void setData(String key, String value) {
         ValueOperations<String, String> valueOperations = stringRedisTemplate.opsForValue();
         valueOperations.set(key, value);
     }
