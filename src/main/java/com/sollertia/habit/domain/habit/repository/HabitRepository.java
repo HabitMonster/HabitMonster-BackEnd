@@ -22,13 +22,18 @@ public interface HabitRepository<T extends Habit> extends JpaRepository<T, Long>
     @Query("select h from Habit h join fetch h.user where h.practiceDays like %:day% and h.isAccomplishInSession = :complete")
     List<Habit> findHabitsWithDaysAndAccomplish(@Param("day") String day, @Param("complete") Boolean complete);
 
+
     @Modifying(clearAutomatically = true)
     @Query("update Habit h set h.isAccomplishInSession = false")
     int updateAccomplishInSessionToFalse();
 
-    List<Habit> findAllByDurationEndLessThan(LocalDate date);
+    @Modifying(clearAutomatically = true)
+    @Query("update HabitWithCounter h set h.currentCount = 0")
+    void updateCurrentCountZero();
 
+    List<Habit> findAllByDurationEndLessThan(LocalDate date);
     List<Habit> findByUser(User user);
+
     List<Habit> findByUserOrderByCreatedAtDesc(User user);
 
     Integer countByUser(User user);
