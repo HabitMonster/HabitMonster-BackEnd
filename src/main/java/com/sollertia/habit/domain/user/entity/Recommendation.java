@@ -13,12 +13,13 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(indexes = @Index(name = "recommendation_number_idx", columnList = "number"))
 public class Recommendation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "number", nullable = false)
     private Integer number;
 
     @Enumerated(EnumType.STRING)
