@@ -1,6 +1,12 @@
 package com.sollertia.habit.domain.user.repository;
 
 import com.sollertia.habit.TestConfig;
+import com.sollertia.habit.domain.category.enums.Category;
+import com.sollertia.habit.domain.completedhabbit.entity.CompletedHabit;
+import com.sollertia.habit.domain.completedhabbit.repository.CompletedHabitRepository;
+import com.sollertia.habit.domain.habit.dto.HabitDtoImpl;
+import com.sollertia.habit.domain.habit.dto.HabitTypeDto;
+import com.sollertia.habit.domain.habit.entity.Habit;
 import com.sollertia.habit.domain.monster.entity.Monster;
 import com.sollertia.habit.domain.monster.entity.MonsterDatabase;
 import com.sollertia.habit.domain.monster.enums.Level;
@@ -27,8 +33,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -48,6 +53,8 @@ class UserRepositoryImplTest {
     @Autowired
     private MonsterDatabaseRepository monsterDatabaseRepository;
     @Autowired
+    private CompletedHabitRepository completedHabitRepository;
+    @Autowired
     EntityManager em;
 
     User testUser;
@@ -55,7 +62,6 @@ class UserRepositoryImplTest {
     Monster monster;
     Monster monster2;
     Follow follow;
-
 
     @BeforeEach
     private void beforeEach() {
@@ -71,7 +77,6 @@ class UserRepositoryImplTest {
         testUser.updateMonster(monster);
         testUser.setMonsterCode("monsterCode");
         testUser = userRepository.save(testUser);
-        em.flush();
 
         attributes.clear();
         attributes.put("sub", "1234");
@@ -85,11 +90,52 @@ class UserRepositoryImplTest {
         testUser2.updateMonster(monster2);
         testUser2.setMonsterCode("monsterCode2");
         testUser2 = userRepository.save(testUser2);
-        em.flush();
 
         follow = Follow.create(testUser2, testUser);
         follow = followRepository.save(follow);
 
+        HabitDtoImpl habitDto = HabitDtoImpl.builder()
+                .title("test")
+                .description("testDescription")
+                .durationStart("2021-11-17")
+                .durationEnd("2022-11-17")
+                .categoryId(6l)
+                .practiceDays("1234567")
+                .count(10)
+                .build();
+
+        HabitTypeDto habitTypeDto = new HabitTypeDto("counter", "specificDay");
+        Habit habit = Habit.createHabit(habitTypeDto.getHabitType(), habitDto, testUser);
+        CompletedHabit completedHabit = CompletedHabit.of(habit);
+        completedHabitRepository.save(completedHabit);
+
+        HabitDtoImpl habitDto2 = HabitDtoImpl.builder()
+                .title("test")
+                .description("testDescription")
+                .durationStart("2021-11-17")
+                .durationEnd("2022-11-17")
+                .categoryId(4l)
+                .practiceDays("1234567")
+                .count(10)
+                .build();
+
+        Habit habit2 = Habit.createHabit(habitTypeDto.getHabitType(), habitDto2, testUser2);
+        CompletedHabit completedHabit2 = CompletedHabit.of(habit2);
+        completedHabitRepository.save(completedHabit2);
+
+        HabitDtoImpl habitDto3 = HabitDtoImpl.builder()
+                .title("test")
+                .description("testDescription")
+                .durationStart("2021-11-17")
+                .durationEnd("2022-11-17")
+                .categoryId(3l)
+                .practiceDays("1234567")
+                .count(10)
+                .build();
+
+        Habit habit3 = Habit.createHabit(habitTypeDto.getHabitType(), habitDto3, testUser2);
+        CompletedHabit completedHabit3 = CompletedHabit.of(habit3);
+        completedHabitRepository.save(completedHabit3);
     }
 
     @DisplayName("특정유저 상세 정보 가져오기")
@@ -109,6 +155,34 @@ class UserRepositoryImplTest {
         assertThat(userMonsterDto.getMonsterExpPoint()).isEqualTo(0L);
         assertThat(userMonsterDto.getIsFollowed()).isEqualTo(false);
         assertThat(userMonsterDto.getUser()).isEqualTo(testUser2);
+    }
+
+    @Test
+    void searchTop10ByCategory(){
+
+        List<User> userList = userRepository.searchTop10ByCategory(Category.Hobby);
+
+        assertThat(userList.size()).isEqualTo(1L);
+        assertThat(userList.get(0)).isEqualTo(testUser);
+    }
+
+    @Test
+    void searchTop10ByAllCategories(){
+
+        List<User> userList = userRepository.searchTop10ByCategory(null);
+
+        assertThat(userList.size()).isEqualTo(2L);
+        assertThat(userList.get(0)).isEqualTo(testUser2);
+        assertThat(userList.get(1)).isEqualTo(testUser);
+    }
+
+    @Test
+    void searchTop10ByFollow(){
+
+        List<User> userList = userRepository.searchTop10ByFollow();
+
+        assertThat(userList.size()).isEqualTo(1L);
+        assertThat(userList.get(0)).isEqualTo(testUser);
     }
 
 
