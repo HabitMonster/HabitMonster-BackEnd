@@ -87,7 +87,11 @@ public class UserService {
         while ( length == 0 ) {
             count++;
             if ( count == 10 ) {
-                throw new InvalidRecommendationTypeException("Recommendations List is Empty");
+                return RecommendedUserListDto.builder()
+                        .userList(recommendationDtoList)
+                        .responseMessage("Recommendations List is Empty")
+                        .statusCode(200)
+                        .build();
             }
             int number = randomUtil.getRandomNumber();
             recommendationDtoList = recommendationRepository.searchByNumber(user, number);
