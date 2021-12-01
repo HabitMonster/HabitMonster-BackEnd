@@ -149,12 +149,20 @@ public abstract class Habit extends TimeStamped {
         return Math.toIntExact(this.getGoalInSession() * this.getWholeDays());
     }
 
+    protected void updateTitle(String title) {
+        this.title = title;
+    }
+
+    protected void updateDescription(String description) {
+        this.description = description;
+    }
     protected void checkAccomplishCounter() {
         this.accomplishCounter += 1;
     }
     protected void cancelAccomplishCounter() {
         this.accomplishCounter -= 1;
     }
+
     protected void setUser(User user) {
         this.user = user;
         user.getHabit().add(this);
@@ -174,14 +182,6 @@ public abstract class Habit extends TimeStamped {
                 return HabitWithCounter.createHabitWithCounter(habitDto, user);
         }
         return null;
-    }
-
-    protected void updateTitle(String title) {
-        this.title = title;
-    }
-
-    protected void updateDescription(String description) {
-        this.description = description;
     }
 
     public abstract void updateHabit(HabitUpdateRequestDto habitUpdateRequestDto);
