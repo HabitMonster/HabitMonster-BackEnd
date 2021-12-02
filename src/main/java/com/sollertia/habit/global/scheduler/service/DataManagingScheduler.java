@@ -55,7 +55,7 @@ public class DataManagingScheduler {
 
     public void minusExpOnLapsedHabit(LocalDate date) {
         log.info("Minus Exp Start");
-        String day = String.valueOf(date.minusDays(1).getDayOfWeek().getValue());
+        String day = String.valueOf(date.getDayOfWeek().getValue());
         List<Habit> habitsWithDaysAndAccomplish = habitRepository.findHabitsWithDaysAndAccomplish(day, false);
 
         for (Habit habit : habitsWithDaysAndAccomplish) {
@@ -81,7 +81,7 @@ public class DataManagingScheduler {
 
     public void expireHabit(LocalDate date) {
         log.info("Expire Habit Start");
-        List<Habit> habitListForDelete = habitRepository.findAllByDurationEndLessThan(date);
+        List<Habit> habitListForDelete = habitRepository.findAllByDurationEndLessThanEqual(date);
         log.info("Habit count for delete: " + habitListForDelete.size());
 
         moveToCompletedHabitList(habitListForDelete);

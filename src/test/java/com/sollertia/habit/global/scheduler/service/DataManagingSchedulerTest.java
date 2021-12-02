@@ -117,7 +117,7 @@ class DataManagingSchedulerTest {
         @Test
     void minusExpOnLapsedHabit() {
         //given
-        String day = String.valueOf(today.minusDays(1).getDayOfWeek().getValue());
+        String day = String.valueOf(today.getDayOfWeek().getValue());
         given(habitRepository.findHabitsWithDaysAndAccomplish(day, false))
                 .willReturn(habits);
         given(monsterRepository.findByUserId(testUser.getId()))
@@ -135,13 +135,13 @@ class DataManagingSchedulerTest {
     @Test
     void expireHabit() {
         //given
-        given(habitRepository.findAllByDurationEndLessThan(today))
+        given(habitRepository.findAllByDurationEndLessThanEqual(today))
                 .willReturn(habits);
 
         //when
         dataManagingScheduler.expireHabit(today);
 
-        verify(habitRepository).findAllByDurationEndLessThan(today);
+        verify(habitRepository).findAllByDurationEndLessThanEqual(today);
         verify(completedHabitRepository).saveAll(any());
         verify(habitRepository).deleteAllById(any());
     }

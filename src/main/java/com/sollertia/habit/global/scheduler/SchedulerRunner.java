@@ -24,7 +24,7 @@ public class SchedulerRunner {
     private final StatisticalProcessingScheduler statisticalProcessingScheduler;
     private final StatisticsRepository statisticsRepository;
 
-    @Scheduled(cron = "0 0 0 * * *")
+    @Scheduled(cron = "0 57 23 * * *")
     @Transactional
     public void runWhenEveryMidNight() {
         LocalDate date = LocalDate.now();
