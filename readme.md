@@ -24,7 +24,7 @@
 **`Design`**
 - 김남희, 김도희, 김소영
 
-### Tech Stack
+## Tech Stack
 **`Back-end`**
 
  - Java 11
@@ -47,7 +47,7 @@
  - Jenkins
  - Docker
 
-### Tools
+## Tools
 
  - IntelliJ
  - Jacoco
@@ -56,16 +56,22 @@
  - Discord
 
 ## 설계
-**`ERD`**
-
-![image](https://user-images.githubusercontent.com/52302236/144214975-dcec5dfb-cf6c-4c99-9bdb-4957e26cac92.png)
-
-**`Service Architecture`**
-
+### Service Architecture
 ![image](https://user-images.githubusercontent.com/52302236/144214888-d32fcbca-a184-4ee2-8198-001f544b6ef6.png)
 
-## Dev
- - ...
+### ERD
+**[Habit Monster ERD](https://github.com/HabitMonster/HabitMonster-BackEnd.wiki.git)** 
+
+### API
+**[API Docs](https://www.notion.so/API-ac61bf0496864e3a8001c8a8db2deb7f)**<br>
+**[API Table](https://www.notion.so/4665be7ab8724d698c517fdd2db7f32f?v=72fc26f889fb4866a1c20fd9581e1086)**
+
+## Development Point
+ - [협업 프로세스](https://www.notion.so/Conventions-9a7edb85e3aa4673a128516bd15307fa)
+ - [팩터리 메서드를 사용하여 유지보수 개선하기](https://www.notion.so/Habit-Factory-Method-7a5bf9ccc40b4f7d9768598a73cfda55)
+ - [AWS ElastiCache 사용하기](https://www.notion.so/AWS-ElastiCache-4370e59a4cf84abd9c10c08b19707e4e)
+ - [부하 테스트와 성능 개선](https://www.notion.so/95a7548b52cc4125b0981a9fd5f90e90)
+ - [소셜 로그인](https://www.notion.so/e227c5c3c35c4eb8ae2c5651642d406c)
 
 ## Frontend Repository
 
