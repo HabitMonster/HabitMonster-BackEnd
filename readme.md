@@ -54,6 +54,8 @@
 ## Tools
 
  - IntelliJ
+ - Jmeter
+ - Swagger
  - Jacoco
  - Slack
  - Notion
@@ -74,9 +76,16 @@
 > 자세한 내용은 링크를 참고해주세요.
  - [협업 프로세스](https://www.notion.so/Conventions-9a7edb85e3aa4673a128516bd15307fa)
  - [팩터리 메서드를 사용하여 유지보수 개선하기](https://www.notion.so/Habit-Factory-Method-7a5bf9ccc40b4f7d9768598a73cfda55)
+ - [우리가 CI/CD 설계를 적용한 방법](https://www.notion.so/CI-CD-d4f34cc540de4e828d830f98f04f2243)
  - [AWS ElastiCache 사용하기](https://www.notion.so/AWS-ElastiCache-4370e59a4cf84abd9c10c08b19707e4e)
+ - [Redis Caching으로 DB접근 최소화 하기](https://www.notion.so/Redis-Caching-063620b4d74847c7bfc4a23ffd955d66)
  - [부하 테스트와 성능 개선](https://www.notion.so/95a7548b52cc4125b0981a9fd5f90e90)
- - [소셜 로그인](https://www.notion.so/e227c5c3c35c4eb8ae2c5651642d406c)
+ - [소셜 로그인 적용하기](https://www.notion.so/e227c5c3c35c4eb8ae2c5651642d406c)
+ - [Test Code 작성에 대하여](https://www.notion.so/Test-Code-453583d9ba1645ef9d84dc8b0ae685f8)
+ - [JWT](https://www.notion.so/JWT-AccessToken-RefreshToken-Redis-8178cef55c5843f196e06782865c63a7)
+ - [MYSQL 설치했다가 RDS로 돌아온 이유](https://www.notion.so/RDS-68aaab589f6f4a76806aa92021390744)
+ - [jsyapt로 프로퍼티 암호화 하기](https://www.notion.so/jsyapt-e16dde727acf4032892c4ffdbc556bc1)
+ - [Spring Scheduler](https://www.notion.so/Spring-Scheduler-e70ca6a65f7e456594d79b2dbc489980)
 
 ## Frontend Repository
 
