@@ -2,10 +2,14 @@
 
 ![image](https://user-images.githubusercontent.com/52302236/144210892-92dcd87d-ef0c-4745-988e-83acfd130abb.png)
 
+ - **[시연 영상](https://www.youtube.com/watch?v=iGXQKHdxAOw)<br>**
+ - **[발표 자료](https://docs.google.com/presentation/d/1EKbsZDJIJ7VaPle3TCrsjCcb8ofM6DjGuboHs2ftJrs/edit?usp=sharing)<br>**
+ - **[팀 노션 주소](https://www.notion.so/HabitMonster-2d5e2e26fb9c4c4ca619ed2c74bfc078)**
+
 
 ## 1. 프로젝트 소개
+몬스터가 성장하는 만큼, 당신의 습관도 성장할 거에요. 몬스터와 함께하는 습관 형성 서비스
 ### [Habit Monster](https://habitmonster.app/)
->사용자가 원하는 습관을 형성할 수 있게 도와주는 서비스
 
 우리들의 삶은 습관으로 이루어져 있다고 생각합니다.<br>
 오늘 하루 우리는 습관대로 생각하고, 말하고 행동해왔을 겁니다.<br>
@@ -60,13 +64,14 @@
 ![image](https://user-images.githubusercontent.com/52302236/144214888-d32fcbca-a184-4ee2-8198-001f544b6ef6.png)
 
 ### ERD
-**[Habit Monster ERD](https://github.com/HabitMonster/HabitMonster-BackEnd.wiki.git)** 
+**[Habit Monster ERD](https://github.com/HabitMonster/HabitMonster-BackEnd/wiki/Habit-Monster-ERD)** 
 
 ### API
 **[API Docs](https://www.notion.so/API-ac61bf0496864e3a8001c8a8db2deb7f)**<br>
 **[API Table](https://www.notion.so/4665be7ab8724d698c517fdd2db7f32f?v=72fc26f889fb4866a1c20fd9581e1086)**
 
 ## Development Point
+> 자세한 내용은 링크를 참고해주세요.
  - [협업 프로세스](https://www.notion.so/Conventions-9a7edb85e3aa4673a128516bd15307fa)
  - [팩터리 메서드를 사용하여 유지보수 개선하기](https://www.notion.so/Habit-Factory-Method-7a5bf9ccc40b4f7d9768598a73cfda55)
  - [AWS ElastiCache 사용하기](https://www.notion.so/AWS-ElastiCache-4370e59a4cf84abd9c10c08b19707e4e)
