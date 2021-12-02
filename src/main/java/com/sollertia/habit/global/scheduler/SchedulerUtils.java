@@ -15,15 +15,15 @@ public class SchedulerUtils {
         switch (sessionType) {
             case DAILY:
                 result = new SearchDateDto(
-                        schedulerNow.atStartOfDay().minusDays(1),
-                        LocalDateTime.of(schedulerNow.minusDays(1), LocalTime.MAX).withNano(0)
+                        schedulerNow.atStartOfDay(),
+                        LocalDateTime.of(schedulerNow, LocalTime.MAX).withNano(0)
                 );
                 break;
 
             case WEEKLY:
                 result = new SearchDateDto(
-                        schedulerNow.atStartOfDay().minusDays(8),
-                        LocalDateTime.of(schedulerNow.minusDays(1), LocalTime.MAX).withNano(0)
+                        schedulerNow.atStartOfDay().minusDays(7),
+                        LocalDateTime.of(schedulerNow, LocalTime.MAX).withNano(0)
                 );
                 break;
 
