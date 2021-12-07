@@ -28,10 +28,10 @@ public interface HabitRepository<T extends Habit> extends JpaRepository<T, Long>
     int updateAccomplishInSessionToFalse();
 
     @Modifying(clearAutomatically = true)
-    @Query("update HabitWithCounter h set h.currentCount = 0")
+    @Query("update HabitWithCounter h set h.currentCount = 0 where h.currentCount > 0")
     void updateCurrentCountZero();
 
-    List<Habit> findAllByDurationEndLessThan(LocalDate date);
+    List<Habit> findAllByDurationEndLessThanEqual(LocalDate date);
     List<Habit> findByUser(User user);
 
     List<Habit> findByUserOrderByCreatedAtDesc(User user);

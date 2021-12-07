@@ -1,4 +1,4 @@
-name: CI/CD HabitMonster
+name: CI/CD HabitMonster  
 
 on:
   push:
