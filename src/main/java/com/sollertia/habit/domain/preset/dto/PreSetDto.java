@@ -8,13 +8,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.time.Duration;
 
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PreSetDto {
+public class PreSetDto implements Serializable {
     private Long presetId;
     private Long categoryId;
     private String title;
