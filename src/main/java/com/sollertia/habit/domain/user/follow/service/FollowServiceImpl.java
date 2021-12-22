@@ -57,6 +57,7 @@ public class  FollowServiceImpl implements FollowService {
     }
 
     public FollowResponseDto getFollowings(String monsterCode, User user) {
+
         User targetUser = getUserByMonsterCode(monsterCode);
         List<FollowDto> followings = followRepository.searchFollowingsByUser(user, targetUser);
 
