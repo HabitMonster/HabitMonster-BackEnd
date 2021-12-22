@@ -3,8 +3,12 @@ package com.sollertia.habit.global.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cache.ehcache.EhCacheCacheManager;
+import org.springframework.cache.jcache.JCacheCacheManager;
+import org.springframework.cache.jcache.JCacheManagerFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -18,16 +22,17 @@ import java.time.Duration;
 @EnableCaching
 public class CachingConfig {
 
-    @Autowired
-    RedisConnectionFactory ConnectionFactory;
+    @Bean
+    public JCacheManagerFactoryBean jCacheManagerFactoryBean() throws Exception{
+        JCacheManagerFactoryBean jCacheManagerFactoryBean = new JCacheManagerFactoryBean();
+        jCacheManagerFactoryBean.setCacheManagerUri(new ClassPathResource("ehcache.xml").getURI());
+        return jCacheManagerFactoryBean;
+    }
 
     @Bean
-    public CacheManager redisCacheManager() {
-        RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
-                .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
-                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()))
-                .entryTtl(Duration.ofDays(2));
-
-        return RedisCacheManager.RedisCacheManagerBuilder.fromConnectionFactory(ConnectionFactory).cacheDefaults(redisCacheConfiguration).build();
+    public JCacheCacheManager jCacheCacheManager(JCacheManagerFactoryBean jCacheManagerFactoryBean) {
+        JCacheCacheManager jCacheCacheManager = new JCacheCacheManager();
+        jCacheCacheManager.setCacheManager(jCacheManagerFactoryBean.getObject());
+        return jCacheCacheManager;
     }
 }

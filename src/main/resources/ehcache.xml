@@ -1,0 +1,30 @@
+<config
+        xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+        xmlns='http://www.ehcache.org/v3'
+        xmlns:jsr107="http://www.ehcache.org/v3/jsr107"
+        xsi:schemaLocation="http://www.ehcache.org/v3 http://www.ehcache.org/schema/ehcache-core.xsd
+http://www.ehcache.org/v3/jsr107 http://www.ehcache.org/schema/ehcache-107-ext-3.0.xsd">
+    <service>
+        <jsr107:defaults enable-management="true" enable-statistics="true"/>
+    </service>
+
+    <cache-template name="category">
+        <resources>
+            <heap unit="entries">20</heap>
+            <offheap unit="MB">10</offheap>
+        </resources>
+    </cache-template>
+    <cache-template name="preSet">
+        <expiry>
+            <ttl unit="seconds">172800</ttl>
+        </expiry>
+        <resources>
+            <heap unit="entries">20</heap>
+            <offheap unit="MB">10</offheap>
+        </resources>
+    </cache-template>
+    <cache alias="categories" uses-template="category">
+    </cache>
+    <cache alias="PreSet" uses-template="preSet">
+    </cache>
+</config>
