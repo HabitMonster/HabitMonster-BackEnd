@@ -1,7 +1,6 @@
 package com.sollertia.habit.domain.preset.dto;
 
 
-import com.sollertia.habit.global.utils.DefaultResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,6 +13,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class PreSetResponseDto extends DefaultResponseDto implements Serializable {
+public class PreSetResponseDto implements Serializable {
     private List<PreSetDto> preSets;
+    private Integer statusCode;
+    private String responseMessage;
 }
