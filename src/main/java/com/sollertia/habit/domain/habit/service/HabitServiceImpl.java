@@ -80,7 +80,8 @@ public class HabitServiceImpl implements HabitService {
         HabitSummaryDto habitSummaryDto = HabitSummaryDto.of(foundHabit);
 
         if (isAchieve) {
-            plusExpPointAndMakeHistory(foundHabit);
+            plusExpPoint(foundHabit);
+            makeHistory(foundHabit);
             deleteHabitIfCompleteToday(foundHabit, today);
         }
 
@@ -90,6 +91,15 @@ public class HabitServiceImpl implements HabitService {
                 .habit(habitSummaryDto)
                 .build();
 
+    }
+
+    private void plusExpPoint(Habit habit) {
+        monsterService.plusExpPoint(habit.getUser());
+    }
+
+    private void makeHistory(Habit habit) {
+        History history = History.makeHistory(habit);
+        historyRepository.save(history);
     }
 
     @Override
@@ -199,12 +209,6 @@ public class HabitServiceImpl implements HabitService {
                 .isAccomplished(false)
                 .build();
         return habitDetail;
-    }
-
-    private void plusExpPointAndMakeHistory(Habit habit) {
-        monsterService.plusExpPoint(habit.getUser());
-        History history = History.makeHistory(habit);
-        historyRepository.save(history);
     }
 
     private void deleteHabitIfCompleteToday(Habit habit, LocalDate today) {

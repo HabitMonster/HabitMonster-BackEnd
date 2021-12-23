@@ -96,15 +96,31 @@ public abstract class Habit extends TimeStamped {
     public void setWholeDays() {
 
         int wholeCount = 0;
-        Long until = this.durationStart.until(durationEnd, ChronoUnit.DAYS);
-        int wholeDays = until.intValue() +1;
 
-        if (wholeDays < 7) {
-            throw new BadDataAboutHabitException("Bad Habit Data About Date");
+        Long until = this.durationStart.until(durationEnd, ChronoUnit.DAYS);
+        int durationDays = until.intValue() + 1;
+        checkWholeDays(durationDays);
+        if (this.practiceDays.length() == 7) {
+            this.wholeDays = Long.valueOf(durationDays);
+            return;
         }
 
         int startDay = this.durationStart.getDayOfWeek().getValue();
 
+        ArrayList<Integer> days = splitPracticeDays();
+
+        wholeCount += (durationDays / 7) * this.practiceDays.length();
+
+        changeDurationDaysInToWholeDays(durationDays, wholeCount, startDay, days);
+    }
+
+    private void checkWholeDays(int wholeDays) {
+        if (wholeDays < 7) {
+            throw new BadDataAboutHabitException("Bad Habit Data About Date");
+        }
+    }
+
+    private ArrayList<Integer> splitPracticeDays() {
         ArrayList<Integer> days = new ArrayList<>();
         int[] ints = Stream.of(this.practiceDays.split("")).mapToInt(Integer::parseInt).toArray();
         for (int anInt : ints) {
@@ -114,20 +130,15 @@ public abstract class Habit extends TimeStamped {
         if (days.stream().anyMatch(x -> x == 7)) {
             days.add(0);
         }
+        return days;
+    }
 
-        if (this.practiceDays.length() == 7) {
-            this.wholeDays = Long.valueOf(wholeDays);
-            return;
-        }
-
-
-        wholeCount += (wholeDays / 7) * this.practiceDays.length();
-
-        if (wholeDays % 7 == 0) {
+    private void changeDurationDaysInToWholeDays(int durationDays, int wholeCount, int startDay, ArrayList<Integer> days) {
+        if (durationDays % 7 == 0) {
             this.wholeDays = Long.valueOf(wholeCount);
             return;
         } else {
-            for (int i = startDay; i <= startDay + (wholeDays % 7); i++) {
+            for (int i = startDay; i <= startDay + (durationDays % 7); i++) {
                 int leftover = i % 7;
                 boolean contains = days.stream().anyMatch(x -> x == leftover);
                 if (contains) {
@@ -137,11 +148,10 @@ public abstract class Habit extends TimeStamped {
             this.wholeDays = Long.valueOf(wholeCount);
             return;
         }
-
     }
 
     public Long getAchievePercentage() {
-        double percentage = ((double)this.accomplishCounter / (double)this.wholeDays) * 100;
+        double percentage = ((double) this.accomplishCounter / (double) this.wholeDays) * 100;
         return Math.round(percentage);
     }
 
@@ -156,9 +166,11 @@ public abstract class Habit extends TimeStamped {
     protected void updateDescription(String description) {
         this.description = description;
     }
+
     protected void checkAccomplishCounter() {
         this.accomplishCounter += 1;
     }
+
     protected void cancelAccomplishCounter() {
         this.accomplishCounter -= 1;
     }
@@ -191,7 +203,6 @@ public abstract class Habit extends TimeStamped {
     public abstract int getGoalInPeriod();
 
     public abstract int getCurrent();
-
 
 
 }

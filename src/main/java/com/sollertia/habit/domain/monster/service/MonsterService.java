@@ -62,6 +62,12 @@ public class MonsterService {
         return Monster.createNewMonster(monsterName, monsterDatabase);
     }
 
+    private MonsterDatabase getMonsterDatabaseById(Long id) {
+        return monsterDatabaseRepository.findById(id).orElseThrow(
+                () -> new MonsterNotFoundException("Not Found Monster Id")
+        );
+    }
+
     private Monster changeMonster(User user, Monster monster) {
         Monster savedMonster = monsterRepository.save(monster);
         user.updateMonster(savedMonster);
@@ -112,12 +118,6 @@ public class MonsterService {
         MonsterDatabase monsterDatabase = monsterDatabaseRepository.findByMonsterTypeAndLevel(monsterType, level)
                 .orElseThrow( () -> new MonsterNotFoundException("Not Found Monster Database"));
         monster.updateMonsterDatabase(monsterDatabase);
-    }
-
-    private MonsterDatabase getMonsterDatabaseById(Long id) {
-        return monsterDatabaseRepository.findById(id).orElseThrow(
-                () -> new MonsterNotFoundException("Not Found Monster Id")
-        );
     }
 
     @Transactional
