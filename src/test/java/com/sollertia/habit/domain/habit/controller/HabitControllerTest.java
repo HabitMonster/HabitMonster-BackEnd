@@ -3,7 +3,6 @@ package com.sollertia.habit.domain.habit.controller;
 import com.sollertia.habit.domain.habit.dto.*;
 import com.sollertia.habit.domain.habit.entity.Habit;
 import com.sollertia.habit.domain.habit.entity.HabitWithCounter;
-import com.sollertia.habit.domain.habit.service.HabitService;
 import com.sollertia.habit.domain.habit.service.HabitServiceImpl;
 import com.sollertia.habit.domain.user.entity.User;
 import com.sollertia.habit.domain.user.oauth2.userinfo.GoogleOauth2UserInfo;
@@ -142,7 +141,7 @@ public class HabitControllerTest {
     public void habitCheckTest() throws Exception {
         //given
         authenticated();
-        habit.check(1l);
+        habit.checkCount(1l);
         HabitSummaryDto habitSummaryDto = HabitSummaryDto.of(habit);
         HabitCheckResponseDto returnDto = HabitCheckResponseDto
                 .builder()

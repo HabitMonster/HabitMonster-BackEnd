@@ -42,16 +42,16 @@ public class HabitDetail {
                 .description(habit.getDescription())
                 .durationStart(habit.getDurationStart().toString())
                 .durationEnd(habit.getDurationEnd().toString())
-                .count(habit.getGoalInSession())
-                .isAccomplished(habit.getIsAccomplishInSession())
+                .count(habit.getGoalInPeriod())
+                .isAccomplished(habit.getIsAccomplishInPeriod())
                 .practiceDays(habit.getPracticeDays())
                 .current(habit.getCurrent())
                 .achievePercentage(habit.getAchievePercentage())
                 .categoryId(habit.getCategory().getCategoryId())
                 .category(habit.getCategory())
-                .achieveCount(Math.toIntExact(habit.getAccomplishCounter() * habit.getGoalInSession() +
-                        (habit.getIsAccomplishInSession() ? 0 : habit.getCurrent())))
-                .totalCount(Math.toIntExact(habit.getWholeDays() * habit.getGoalInSession()))
+                .achieveCount(Math.toIntExact(habit.getAccomplishCounter() * habit.getGoalInPeriod() +
+                        (habit.getIsAccomplishInPeriod() ? 0 : habit.getCurrent())))
+                .totalCount(Math.toIntExact(habit.getWholeDays() * habit.getGoalInPeriod()))
                 .build();
     }
 }

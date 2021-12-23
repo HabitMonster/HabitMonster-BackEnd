@@ -18,7 +18,7 @@ public class HabitWithCounter extends Habit {
 
     private int currentCount = 0;
 
-    private int goalCountInSession;
+    private int goalCountInPeriod;
 
     public int getCurrentCount() {
         return currentCount;
@@ -36,26 +36,26 @@ public class HabitWithCounter extends Habit {
     }
 
     @Override
-    public int getGoalInSession() {
-        return this.goalCountInSession;
+    public int getGoalInPeriod() {
+        return this.goalCountInPeriod;
     }
 
     @Override
     public void updateHabit(HabitUpdateRequestDto habitUpdateRequestDto) {
         this.updateTitle(habitUpdateRequestDto.getTitle());
         this.updateDescription(habitUpdateRequestDto.getDescription());
-        this.goalCountInSession = habitUpdateRequestDto.getCount();
-        if ( this.getCurrent() >= this.getGoalInSession() ) {
-            this.setCurrent(this.getGoalInSession());
+        this.goalCountInPeriod = habitUpdateRequestDto.getCount();
+        if ( this.getCurrent() >= this.getGoalInPeriod() ) {
+            this.setCurrent(this.getGoalInPeriod());
             this.accomplishToday();
-        } else if ( this.getIsAccomplishInSession() ) {
-            this.setAccomplishInSession(false);
+        } else if ( this.getIsAccomplishInPeriod() ) {
+            this.setAccomplishInPeriod(false);
             super.cancelAccomplishCounter();
         }
     }
 
-    private void setGoalCountInSession(int goalCountInSession) {
-        this.goalCountInSession = goalCountInSession;
+    private void setGoalCountInPeriod(int goalCountInPeriod) {
+        this.goalCountInPeriod = goalCountInPeriod;
     }
 
     public static HabitWithCounter createHabitWithCounter(HabitDtoImpl habitDtoImpl, User user) {
@@ -68,18 +68,18 @@ public class HabitWithCounter extends Habit {
         habit.setDurationEnd(endUpDate);
         habit.setUser(user);
         habit.setCategory(Category.getCategory(habitDtoImpl.getCategoryId()));
-        habit.setGoalCountInSession(habitDtoImpl.getCount());
+        habit.setGoalCountInPeriod(habitDtoImpl.getCount());
         habit.setPracticeDays(habitDtoImpl.getPracticeDays());
         habit.setWholeDays();
         return habit;
     }
 
     @Override
-    public Boolean check(Long value) {
-        if ( this.currentCount + value < this.goalCountInSession ) {
+    public Boolean checkCount(Long value) {
+        if ( this.currentCount + value < this.goalCountInPeriod) {
             this.currentCount += value;
             return false;
-        } else if ( this.currentCount + value == this.goalCountInSession ) {
+        } else if ( this.currentCount + value == this.goalCountInPeriod) {
             this.currentCount += value;
             this.accomplishToday();
             return true;
@@ -89,7 +89,7 @@ public class HabitWithCounter extends Habit {
     }
 
     private void accomplishToday() {
-        this.setAccomplishInSession(true);
+        this.setAccomplishInPeriod(true);
         super.checkAccomplishCounter();
     }
 }

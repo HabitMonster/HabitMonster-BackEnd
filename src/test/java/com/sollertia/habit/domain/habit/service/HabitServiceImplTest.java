@@ -111,7 +111,7 @@ class HabitServiceImplTest {
         //then
         assertThat(result.getHabit().getHabitId()).isEqualTo(habit1.getId());
         assertThat(result.getHabit().getCategory()).isEqualTo(habit1.getCategory());
-        assertThat(result.getHabit().getCount()).isEqualTo(habit1.getGoalInSession());
+        assertThat(result.getHabit().getCount()).isEqualTo(habit1.getGoalInPeriod());
         assertThat(result.getHabit().getTotalCount()).isEqualTo(habit1.getTotalCount());
         assertThat(result.getHabit().getDescription()).isEqualTo(habit1.getDescription());
         assertThat(result.getHabit().getDurationEnd()).isEqualTo(habit1.getDurationEnd().toString());
@@ -123,7 +123,7 @@ class HabitServiceImplTest {
         assertThat(result.getHabit().getCurrent()).isEqualTo(habit1.getCurrent());
         assertThat(result.getHabit().getCategoryId()).isEqualTo(habit1.getCategory().getCategoryId());
         assertThat(result.getHabit().getTitle()).isEqualTo(habit1.getTitle());
-        assertThat(result.getHabit().getIsAccomplished()).isEqualTo(habit1.getIsAccomplishInSession());
+        assertThat(result.getHabit().getIsAccomplished()).isEqualTo(habit1.getIsAccomplishInPeriod());
 
         assertThat(result.getResponseMessage()).isEqualTo("Habit registered Completed");
         assertThat(result.getStatusCode()).isEqualTo(200);
@@ -139,7 +139,7 @@ class HabitServiceImplTest {
         //then
         assertThat(result.getHabit().getHabitId()).isEqualTo(habit1.getId());
         assertThat(result.getHabit().getCategory()).isEqualTo(habit1.getCategory());
-        assertThat(result.getHabit().getCount()).isEqualTo(habit1.getGoalInSession());
+        assertThat(result.getHabit().getCount()).isEqualTo(habit1.getGoalInPeriod());
         assertThat(result.getHabit().getTotalCount()).isEqualTo(habit1.getTotalCount());
         assertThat(result.getHabit().getDescription()).isEqualTo(habit1.getDescription());
         assertThat(result.getHabit().getDurationEnd()).isEqualTo(habit1.getDurationEnd().toString());
@@ -149,7 +149,7 @@ class HabitServiceImplTest {
         assertThat(result.getHabit().getCurrent()).isEqualTo(habit1.getCurrent());
         assertThat(result.getHabit().getCategoryId()).isEqualTo(habit1.getCategory().getCategoryId());
         assertThat(result.getHabit().getTitle()).isEqualTo(habit1.getTitle());
-        assertThat(result.getHabit().getIsAccomplished()).isEqualTo(habit1.getIsAccomplishInSession());
+        assertThat(result.getHabit().getIsAccomplished()).isEqualTo(habit1.getIsAccomplishInPeriod());
 
         assertThat(result.getResponseMessage()).isEqualTo("Habit Detail Query Completed");
         assertThat(result.getStatusCode()).isEqualTo(200);

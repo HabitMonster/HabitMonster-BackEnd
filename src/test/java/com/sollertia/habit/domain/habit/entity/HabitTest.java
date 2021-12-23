@@ -106,8 +106,8 @@ class HabitTest {
         Habit habit2 = Habit.createHabit(HabitType.HABITWITHCOUNTER, habitDto3, testUser);
         //when
 
-        habit1.check(1l);
-        habit2.check(1l);
+        habit1.checkCount(1l);
+        habit2.checkCount(1l);
 
         //then
         assertThat(habit1.getAchievePercentage()).isEqualTo(10l);
@@ -163,15 +163,15 @@ class HabitTest {
         Habit habit = Habit.createHabit(HabitType.HABITWITHCOUNTER, testDto, testUser);
 
         //when
-        habit.check(1l);
-        habit.check(1l); //current = 2, goal = 3
+        habit.checkCount(1l);
+        habit.checkCount(1l); //current = 2, goal = 3
 
         HabitUpdateRequestDto habitUpdateRequestDto = new HabitUpdateRequestDto("UpdateCompletedTitle", "Updated", 2);
         habit.updateHabit(habitUpdateRequestDto); //change goal to 2
 
         //then
         assertThat(habit.getCurrent()).isEqualTo(2);
-        assertThat(habit.getIsAccomplishInSession()).isTrue();
+        assertThat(habit.getIsAccomplishInPeriod()).isTrue();
     }
 
     @Test
@@ -189,15 +189,15 @@ class HabitTest {
                 .build();
         Habit habit = Habit.createHabit(HabitType.HABITWITHCOUNTER, testDto, testUser);
         //when
-        habit.check(1l);
-        habit.check(1l);
-        habit.check(1l);
+        habit.checkCount(1l);
+        habit.checkCount(1l);
+        habit.checkCount(1l);
 
         HabitUpdateRequestDto habitUpdateRequestDto = new HabitUpdateRequestDto("UpdateCompletedTitle", "Updated", 5);
         habit.updateHabit(habitUpdateRequestDto);
 
         //then
-        assertThat(habit.getIsAccomplishInSession()).isFalse();
+        assertThat(habit.getIsAccomplishInPeriod()).isFalse();
     }
 
 

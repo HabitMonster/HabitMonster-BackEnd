@@ -75,7 +75,7 @@ public class HabitServiceImpl implements HabitService {
     public HabitCheckResponseDto checkHabit(HabitTypeDto habitTypeDto, Long habitId, LocalDate today) {
 
         Habit foundHabit = getHabitFromRepository(habitTypeDto, habitId);
-        Boolean isAchieve = foundHabit.check(1L);
+        Boolean isAchieve = foundHabit.checkCount(1L);
         Habit checkedHabit = (Habit) habitRepository.save(foundHabit);
         HabitSummaryDto habitSummaryDto = HabitSummaryDto.of(foundHabit);
 
@@ -186,7 +186,7 @@ public class HabitServiceImpl implements HabitService {
         HabitDetail habitDetail = HabitDetail.builder()
                 .habitId(habit.getId())
                 .category(habit.getCategory())
-                .count(habit.getGoalInSession())
+                .count(habit.getGoalInPeriod())
                 .totalCount(habit.getTotalCount())
                 .description(habit.getDescription())
                 .durationEnd(habit.getDurationEnd().toString())

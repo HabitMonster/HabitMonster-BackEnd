@@ -65,7 +65,7 @@ public class History extends TimeStamped {
         LocalDateTime schedulerNow = LocalDateTime.now();
         History history = new History();
         history.setCategory(habit.getCategory());
-        history.setSuccessToday(habit.getIsAccomplishInSession());
+        history.setSuccessToday(habit.getIsAccomplishInPeriod());
         history.setEndUpDateTime(history.getIsSuccessToday() ?
                 schedulerNow : schedulerNow.minusDays(1));
         history.setDayOfWeek(history.getEndUpDateTime().getDayOfWeek().getValue());

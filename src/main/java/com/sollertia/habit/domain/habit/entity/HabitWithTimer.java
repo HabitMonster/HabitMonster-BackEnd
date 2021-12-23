@@ -28,7 +28,7 @@ public class HabitWithTimer extends Habit {
     }
 
     @Override
-    public int getGoalInSession() {
+    public int getGoalInPeriod() {
         return this.goalDurationTime;
     }
 
@@ -60,11 +60,11 @@ public class HabitWithTimer extends Habit {
     }
 
     @Override
-    public Boolean check(Long value) {
+    public Boolean checkCount(Long value) {
         this.currentDuration += value;
         boolean isAccomplishToday = this.currentDuration >= this.goalDurationTime;
         if (isAccomplishToday) {
-            this.setAccomplishInSession(true);
+            this.setAccomplishInPeriod(true);
         }
         return isAccomplishToday;
     }

@@ -16,15 +16,15 @@ public interface HabitRepository<T extends Habit> extends JpaRepository<T, Long>
             "and h.practiceDays like %:day% " +
             "and h.durationStart <= :today " +
             "and h.durationEnd >= :today " +
-            "order by h.isAccomplishInSession, h.createdAt desc")
+            "order by h.isAccomplishInPeriod, h.createdAt desc")
     List<Habit> findTodayHabitListByUser(@Param("user") User user, @Param("day") int day, @Param("today") LocalDate today);
 
-    @Query("select h from Habit h join fetch h.user where h.practiceDays like %:day% and h.isAccomplishInSession = :complete")
+    @Query("select h from Habit h join fetch h.user where h.practiceDays like %:day% and h.isAccomplishInPeriod = :complete")
     List<Habit> findHabitsWithDaysAndAccomplish(@Param("day") String day, @Param("complete") Boolean complete);
 
 
     @Modifying(clearAutomatically = true)
-    @Query("update Habit h set h.isAccomplishInSession = false")
+    @Query("update Habit h set h.isAccomplishInPeriod = false")
     int updateAccomplishInSessionToFalse();
 
     @Modifying(clearAutomatically = true)
